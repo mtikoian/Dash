@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ErrorAuthorization" xml:space="preserve">
+    <value>No tienes permiso para acceder al recurso solicitado.!</value>
+  </data>
+  <data name="CreateDataset" xml:space="preserve">
+    <value>Crear un conjunto de datos.</value>
+  </data>
+  <data name="CreateDatabase" xml:space="preserve">
+    <value>¡Crear una base de datos!</value>
+  </data>
+  <data name="CreateReport" xml:space="preserve">
+    <value>Crear un informe.</value>
+  </data>
+  <data name="CreateUser" xml:space="preserve">
+    <value>¡Crear un usuario!</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>¡Cancelar!</value>
+  </data>
+  <data name="Help" xml:space="preserve">
+    <value>¡Help! - </value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Ahorra!</value>
+  </data>
+  <data name="GetStarted" xml:space="preserve">
+    <value>¡Comencemos!</value>
+  </data>
+  <data name="ToggleHelp" xml:space="preserve">
+    <value>¡Cambiar contexto ayuda!</value>
+  </data>
+  <data name="TextDataset" xml:space="preserve">
+    <value>Un conjunto de datos se conecta a una base de datos y define las tablas y columnas que deben incluirse en ese conjunto de datos.!</value>
+  </data>
+  <data name="TextDatabase" xml:space="preserve">
+    <value>Puede utilizar cualquier base de datos de SQL Server. Crear una base de datos proporciona el host, nombre de la base de datos, usuario y contraseña.!</value>
+  </data>
+  <data name="TextReport" xml:space="preserve">
+    <value>Crear un informe de un conjunto de datos. Seleccione las columnas disponibles para el conjunto de datos, reordenar las columnas, ordenar y filtrar.  Escuchar los datos como se construye el informe. Luego crear un gráfico basado en el informe.!</value>
+  </data>
+  <data name="TextUser" xml:space="preserve">
+    <value>Crear usuarios en Dash proporcionando su información de inicio de sesión y establecer las funciones para el usuario.!</value>
+  </data>
+  <data name="AreYouSure" xml:space="preserve">
+    <value>¿Está seguro?</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>Acciones</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>¡Eliminar!</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Editar!</value>
+  </data>
+  <data name="ErrorInvalidId" xml:space="preserve">
+    <value>El identificador proporcionado no es válido.!</value>
+  </data>
+  <data name="Copy" xml:space="preserve">
+    <value>¡Copiar!</value>
+  </data>
+  <data name="ErrorEmailAddress" xml:space="preserve">
+    <value>{0} no es un email válido.</value>
+  </data>
+  <data name="ErrorMaxLength" xml:space="preserve">
+    <value>{0} no puede ser más que {1} caracteres.!</value>
+  </data>
+  <data name="ErrorRequired" xml:space="preserve">
+    <value>{0} es obligatorio.</value>
+  </data>
+  <data name="ErrorEmailAddressFormat" xml:space="preserve">
+    <value>Debe introducir una dirección de correo electrónico con el formato correcto.!</value>
+  </data>
+  <data name="FirstPage" xml:space="preserve">
+    <value>Primera página</value>
+  </data>
+  <data name="LastPage" xml:space="preserve">
+    <value>Última página</value>
+  </data>
+  <data name="NextPage" xml:space="preserve">
+    <value>Página Siguiente</value>
+  </data>
+  <data name="NoData" xml:space="preserve">
+    <value>No hay resultados</value>
+  </data>
+  <data name="Page" xml:space="preserve">
+    <value>Página</value>
+  </data>
+  <data name="PerPage" xml:space="preserve">
+    <value>Por página</value>
+  </data>
+  <data name="PreviousPage" xml:space="preserve">
+    <value>Página Anterior</value>
+  </data>
+  <data name="Showing" xml:space="preserve">
+    <value>Mostrando {0} - {1} de {2}.</value>
+  </data>
+  <data name="ConfirmDeleteBody" xml:space="preserve">
+    <value>¿Seguro de que desea eliminar esto {0}?</value>
+  </data>
+  <data name="ConfirmDelete" xml:space="preserve">
+    <value>Confirmar eliminación</value>
+  </data>
+  <data name="ErrorConnectingToDataSource" xml:space="preserve">
+    <value>Hubo un problema al conectar al origen de datos.!</value>
+  </data>
+  <data name="ErrorMinMaxLength" xml:space="preserve">
+    <value>{0} debe ser al menos {1} caracteres y no más de {1} caracteres.!</value>
+  </data>
+  <data name="ErrorFixIt" xml:space="preserve">
+    <value>Hay errores en el formulario.  Fijar los campos resaltados en rojo y vuelva a intentarlo.!</value>
+  </data>
+  <data name="ErrorAlreadyLoggedIn" xml:space="preserve">
+    <value>No se puede hacer que cuando ya estas conectado.!</value>
+  </data>
+  <data name="ErrorNotLoggedIn" xml:space="preserve">
+    <value>Tienes que iniciar sesión para acceder a la página solicitada.!</value>
+  </data>
+  <data name="ErrorMembershipProvider" xml:space="preserve">
+    <value>Póngase en contacto con su administrador de red para obtener ayuda con asuntos de cuenta.!</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Cerrar</value>
+  </data>
+  <data name="HelpEnabled" xml:space="preserve">
+    <value>Ayuda contextual está activada ahora. Usted verá un icono de signo de interrogación que indica donde hay ayuda.!</value>
+  </data>
+  <data name="HelpDisabled" xml:space="preserve">
+    <value>Ayuda contextual está desactivada.!</value>
+  </data>
+  <data name="LoadingError" xml:space="preserve">
+    <value>Hubo un problema esta tabla de carga.!</value>
+  </data>
+  <data name="TryAgain" xml:space="preserve">
+    <value>¡Vuelve a intentarlo!</value>
+  </data>
+  <data name="ErrorChartLoad" xml:space="preserve">
+    <value>Error al cargar la tabla.!</value>
+  </data>
+  <data name="ErrorMatch" xml:space="preserve">
+    <value>{0} no coincide con {1}.!</value>
+  </data>
+  <data name="ErrorMinLength" xml:space="preserve">
+    <value>Este campo no es suficiente.!</value>
+  </data>
+  <data name="MoveDown" xml:space="preserve">
+    <value>Desplazar hacia abajo</value>
+  </data>
+  <data name="MoveUp" xml:space="preserve">
+    <value>Mover hacia arriba</value>
+  </data>
+  <data name="NoMatchesFound" xml:space="preserve">
+    <value>No se encontraron resultados!</value>
+  </data>
+  <data name="DeleteAll" xml:space="preserve">
+    <value>Eliminar Todas</value>
+  </data>
+  <data name="Role" xml:space="preserve">
+    <value>Rol</value>
+  </data>
+  <data name="SelectRole" xml:space="preserve">
+    <value>Seleccionar Rol</value>
+  </data>
+  <data name="SelectUser" xml:space="preserve">
+    <value>Seleccionar usuario</value>
+  </data>
+  <data name="Rename" xml:space="preserve">
+    <value>Renombre</value>
+  </data>
+  <data name="ID" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="Owner" xml:space="preserve">
+    <value>Propietario</value>
+  </data>
+  <data name="LastModified" xml:space="preserve">
+    <value>Actualizado</value>
+  </data>
+  <data name="CopyOf" xml:space="preserve">
+    <value>Copia de {0}</value>
+  </data>
+</root>

@@ -1,0 +1,2 @@
+﻿CREATE USER [Dash] FOR LOGIN [Dash];
+

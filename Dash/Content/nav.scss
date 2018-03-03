@@ -1,0 +1,41 @@
+﻿@import "bootstrap/functions";
+@import "bootstrap/variables";
+
+#menuBtn {
+    cursor: pointer;
+    color: $info;
+}
+
+.nav-side {
+    width: 16rem;
+    padding-left: 0;
+
+    li {
+        line-height: 2.6rem;
+
+        a {
+            display: block;
+            text-decoration: none;
+            color: #999999;
+
+            .rn {
+                padding-left: 1rem;
+            }
+
+            span {
+                display: none;
+                padding-left: 1.5rem;
+            }
+
+            &:hover {
+                color: #fff;
+                background: rgba(255,255,255,0.2);
+                border-left: $info 2px solid;
+            }
+
+            &:active, &:focus {
+                text-decoration: none;
+            }
+        }
+    }
+}

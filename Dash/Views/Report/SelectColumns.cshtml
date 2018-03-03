@@ -1,0 +1,46 @@
+@model Dash.Models.Report
+@using Dash.I18n
+
+@using (Html.BeginBootForm("SelectColumns", "Report", null, Reports.SelectColumns, "columnSelectorLoad",
+    method: HttpVerbs.Put))
+{
+    @Html.HiddenFor(model => model.Id)
+    @Html.HiddenFor(model => model.CloseParent)
+    @Html.ToCard(Reports.SelectColumnsExplain, BootstrapTypes.Primary)
+
+    <div class="col-12">
+        <div class="row">
+            <div class="col-6"><h4>@Reports.Available</h4></div>
+            <div class="col-6"><h4>@Reports.Selected</h4></div>
+        </div>
+        <div class="row column-list">
+            @if (Model != null)
+            {
+                var i = -1;
+                var left = -1;
+                var right = -1;
+                foreach (var column in Model.DatasetColumnsByDisplay)
+                {
+                    if (column.DisplayOrder > 0)
+                    {
+                        ++right;
+                    }
+                    else
+                    {
+                        ++left;
+                    }
+                    ++i;
+
+                    <div class="column-item column-item-y-@(column.DisplayOrder > 0 ? right : left) @(column.DisplayOrder > 0 ? "column-item-right" : "column-item-left")" data-item-id="@column.Id">
+                        <div>
+                            @column.Title
+                            <input type="hidden" name="columns[@i].Id" value="@column.ReportColumnId" />
+                            <input type="hidden" name="columns[@i].ColumnId" value="@column.Id" />
+                            <input type="hidden" name="columns[@i].DisplayOrder" value="@column.DisplayOrder" class="column-grid-display-order" />
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+}

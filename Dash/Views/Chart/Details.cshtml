@@ -1,0 +1,82 @@
+@using Dash.I18n
+@model Dash.Models.Chart
+
+<div class="chart-form" data-event="chartLoad" data-close-event="chartUnload"
+     data-url="@Url.Action("DetailsOptions", "Chart", new { id = Model.Id })" data-title="@Model.Name" data-basic-dialog="true">
+
+    <div class="hidden">
+        @if (Dash.Authorization.HasAccess("Dataset", "Create"))
+        {
+            <div class="p-1 modal-sql" data-title="@Core.ViewSql" data-basic-dialog="true">
+                <div class="col-12">
+                    <div class="sql-content">
+                        <pre><code class="language-sql sql-text"></code></pre>
+                        <div class="sql-error"></div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="row ml-2 mr-2 mb-1 pb-1 tab-nav-content">
+        <div class="col-12">
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="nav-item">
+                    <a href="#" id="tabRanges_@Model.Id" class="nav-link active">@Charts.Ranges</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">@Core.Actions</a>
+                    <div class="dropdown-menu" role="menu">
+                        @if (Model.IsOwner)
+                        {
+                            @Html.AuthorizedActionLink(Charts.ChangeType, "ChangeType", "Chart", new { id = Model.Id }, new {
+                                @class = "dropdown-item rngn-ajax rngn-dialog",
+                                @data_title = Charts.ChangeType
+                            })
+                            @Html.AuthorizedActionLink(Charts.Rename, "Rename", "Chart", new { id = Model.Id }, new {
+                                @class = "dropdown-item rngn-ajax rngn-prompt",
+                                @data_update_target = ".dialog-header",
+                                @data_title = Charts.Rename,
+                                @data_message = Charts.NewName
+                            })
+                            @Html.AuthorizedActionLink(Charts.ShareChart, "Share", "Chart", new { id = Model.Id }, new {
+                                @class = "dropdown-item rngn-ajax rngn-dialog",
+                                @data_title = Charts.ShareChart
+                            })
+                        }
+                        @Html.AuthorizedActionLink(Charts.CopyChart, "Copy", "Chart", new { id = Model.Id }, new {
+                            @class = "dropdown-item rngn-ajax rngn-prompt",
+                            @data_title = Charts.CopyChart,
+                            @data_message = Charts.NewName
+                        })
+                        @if (Dash.Authorization.HasAccess("Dataset", "Create"))
+                        {
+                            <a href="#" class="dropdown-item view-sql">@Html.Raw(Core.ViewSql)</a>
+                        }
+
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item disabled">@Core.Owner: @Model.Owner.FullName</a>
+                    </div>
+                </li>
+            </ul>
+
+            <div class="table-wrapper range-table-wrapper"></div>
+        </div>
+    </div>
+
+    <div class="chart-container p-1" data-url="@Url.Action("Data", "Chart", new { id = Model.Id })">
+        <div class="chart-spinner hidden">
+            @Html.Partial("_Spinner")
+        </div>
+        <div class="chart-error hidden">
+            <div>@Core.ErrorChartLoad</div>
+        </div>
+        <canvas class="chart-canvas hidden" />
+    </div>
+
+    <form action="@Url.Action("Export", "Chart")" class="export-form" method="POST" target="_blank">
+        <input type="hidden" name="filename" value="" class="export-filename" />
+        <input type="hidden" name="width" value="" class="export-width" />
+        <input type="hidden" name="data" value="" class="export-data" />
+    </form>
+</div>

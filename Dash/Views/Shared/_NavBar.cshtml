@@ -1,0 +1,31 @@
+﻿@using Dash.I18n
+
+<div id="sidebarWrapper">
+    <ul class="nav-side" id="menu">
+        <li id="menuBtn">
+            <a><i class="rn rn-menu rn-lg"></i></a>
+        </li>
+
+        @if (Dash.Authorization.IsLoggedIn) {
+            @Html.AuthorizedMenu(Widgets.LinkAdd, "Create", "Dashboard", "plus")
+            <li class="dropdown-divider"></li>
+            @Html.AuthorizedMenu(Databases.MenuItem, "Index", "Database", "database")
+            @Html.AuthorizedMenu(Datasets.MenuItem, "Index", "Dataset", "th")
+            @Html.AuthorizedMenu(Reports.MenuItem, "Index", "Report", "list-alt")
+            @Html.AuthorizedMenu(Charts.MenuItem, "Index", "Chart", "chart-bar")
+            @Html.AuthorizedMenu(Users.MenuItem, "Index", "User", "user")
+            @Html.AuthorizedMenu(Dash.I18n.Roles.MenuItem, "Index", "Role", "key")
+            @Html.AuthorizedMenu(Permissions.MenuItem, "Index", "Permission", "lock-open")
+            <li class="dropdown-divider"></li>
+            @Html.AuthorizedMenu(Core.GetStarted, "Start", "Dashboard", "lightbulb")
+            <li>
+                <a href="@Url.Action("ToggleContextHelp","Account")" id="toggleContextHelpBtn" class="@Html.Raw(Dash.Authorization.WantsHelp ? "help-active" : "")" title="@Core.ToggleHelp">
+                    <i class="rn rn-help rn-lg"></i> <span>@Html.Raw(Core.ToggleHelp)</span>
+                </a>
+            </li>
+            <li class="dropdown-divider"></li>
+            @Html.AuthorizedMenu(Account.UpdateAccount, "Update", "Account", "asterisk")
+            @Html.AuthorizedMenu(Account.Logout, "LogOff", "Account", "logout")
+        }
+    </ul>
+</div>

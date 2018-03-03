@@ -1,0 +1,34 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>@Dash.I18n.Core.Dashboard</title>
+    <link rel="stylesheet" href="~/Dist/core.css" />
+    <link rel="icon" href="~/favicon.ico">
+</head>
+<body data-base-url="@Url.Content("~")" data-resx="@Url.Action("Index", "Resx", null)" data-lang="@Dash.Authorization.LanguageCode">
+    @{ Html.RenderPartial("_NavBar"); }
+
+    <div id="contentWrapper">
+        @RenderBody()
+
+        <div id="loader" class="dialog-loading hidden">
+            @Html.Partial("_Spinner")
+        </div>
+
+        <script type="text/javascript" src="~/Dist/core.js"></script>
+        <script type="text/javascript" src="~/Dist/modules.js"></script>
+
+        @if (ViewBag.Error != null || TempData.ContainsKey("Error"))
+        {
+            <script type="text/javascript">$.ready(function () { Alertify.error(@Html.EscapeForJs((string)(ViewBag.Error ?? TempData["Error"]))) });</script>
+        }
+        @if (TempData.ContainsKey("Message"))
+        {
+            <script type="text/javascript">$.ready(function () { Alertify.success(@Html.EscapeForJs((string)TempData["Message"])) });</script>
+        }
+    </div>
+</body>
+</html>

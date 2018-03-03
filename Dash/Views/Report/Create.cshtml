@@ -1,0 +1,12 @@
+﻿@model Dash.Models.CreateReport
+@using Dash.I18n
+
+@using (Html.BeginBootForm("Create", "Report", null, Reports.CreateReport, null, null))
+{
+    @Html.ToCard(Reports.CreateReportExplain, BootstrapTypes.Primary)
+
+    <div class="col-6 pt-1">
+        @Html.LabelDropDownListFor(model => model.DatasetId, Dash.Models.Dataset.GetDatasetsForUser().ToSelectList(d => d.Name, d => d.Id.ToString()))
+        @Html.LabelInputFor(model => model.Name)
+    </div>
+}

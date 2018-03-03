@@ -1,0 +1,285 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Chart_RangeAggregator" xml:space="preserve">
+    <value>Select how you want the data for this range to be aggregated together when calculating the Y value.</value>
+  </data>
+  <data name="Chart_RangeColor" xml:space="preserve">
+    <value>Select to color to use to display this range on the chart. This color will be used to show the data for this range, and a lighter version of this color will be used for the Y axis for this range.</value>
+  </data>
+  <data name="Chart_RangeInterval" xml:space="preserve">
+    <value>Select the size of the periods that you want to group time series data into.  If the X axis column is a date/time, X axis ticks/labels will be calculated using this period.</value>
+  </data>
+  <data name="Chart_RangeReport" xml:space="preserve">
+    <value>Select the report that you want to supply data for this range. After selecting a report, you'll be able to select columns from that report for the X and Y axis.</value>
+  </data>
+  <data name="Chart_Ranges" xml:space="preserve">
+    <value>Each chart range adds a new set of data to the chart.  Any report you have access to can be used as a range.  Use the up and down arrows to control the ordering of ranges, which determine which X and Y axis labels are used where.</value>
+  </data>
+  <data name="Chart_RangeXAxis" xml:space="preserve">
+    <value>Select the column to use for the X axis. The X axis column values from the first range will be used as ticks/labels for the X axis. Use the up and down arrows to the right to re-order ranges and change which one is used for the X axis labels.</value>
+  </data>
+  <data name="Chart_RangeYAxis" xml:space="preserve">
+    <value>Select the column to use for the Y axis. The Y axis column values from the first range will be used as ticks/labels for the Y axis on the left side of the chart. Subsequent Y axis columns will be used as ticks/labels on the right side.</value>
+  </data>
+  <data name="Database_AllowPaging" xml:space="preserve">
+    <value>Some databases offer paging using OFFSET or LIMIT.  SQL Server 2008 R2 and below does not allow offsets.  If using SQL Server 2008 R2 or lower, uncheck this box.</value>
+  </data>
+  <data name="Database_ConfirmPass" xml:space="preserve">
+    <value>Re-enter the password for confirmation.</value>
+  </data>
+  <data name="Database_ConnectionString" xml:space="preserve">
+    <value>If a connection string is provided, it will be used instead of building one from the other fields.</value>
+  </data>
+  <data name="Database_DatabaseName" xml:space="preserve">
+    <value>Database name is the name of the database on the server. </value>
+  </data>
+  <data name="Database_Host" xml:space="preserve">
+    <value>Host is the DNS name or IP of the database server.</value>
+  </data>
+  <data name="Database_IsEmptyPassword" xml:space="preserve">
+    <value>Check this to confirm that no password is needed.</value>
+  </data>
+  <data name="Database_Name" xml:space="preserve">
+    <value>Name must be a unique name for this database. It does not have to be the same as the database name.</value>
+  </data>
+  <data name="Database_Pass" xml:space="preserve">
+    <value>When adding a new database, the password and matching confirm password must be entered. If editing, you can leave the password blank and it will use the existing value. Passwords are securely encrypted before being saved.</value>
+  </data>
+  <data name="Database_Port" xml:space="preserve">
+    <value>Port is the port number to connect to the database server on. It will default to the default for the database type if left empty.</value>
+  </data>
+  <data name="Database_User" xml:space="preserve">
+    <value>User is the username to use when connecting to the database.</value>
+  </data>
+  <data name="DatasetColumn_ColumnId" xml:space="preserve">
+    <value>Select the table and column that should be used for this column in reports.</value>
+  </data>
+  <data name="DatasetColumn_DataTypeId" xml:space="preserve">
+    <value>The column data type is used to create SQL for the column. Select the closest type from the list.</value>
+  </data>
+  <data name="DatasetColumn_Derived" xml:space="preserve">
+    <value>Use this to enter SQL to modify the value returned as this column. Reference fields using [TableName].[ColumnName] for SQL Server, or `TableName`.`ColumnName` for MySQL.</value>
+  </data>
+  <data name="DatasetColumn_Details" xml:space="preserve">
+    <value>Columns specify all the table columns that users will be able to access in a report. Columns can be created by hand or automatically imported from the database with the `Import Columns` button.</value>
+  </data>
+  <data name="DatasetColumn_FilterQuery" xml:space="preserve">
+    <value>Use the filter query to lookup data to substitute for the value of this column, like replacing a StatusID with a name. The value for the option must be aliased as `Value` and match the value of this column. The text to display must be aliased as `Text`.</value>
+  </data>
+  <data name="DatasetColumn_FilterTypeId" xml:space="preserve">
+    <value>The filter type determines the operators the user will have when creating report filters using this column.  The `Select` filter type lets you query another table for lookup values.</value>
+  </data>
+  <data name="DatasetColumn_Link" xml:space="preserve">
+    <value>Provide a link that clicking on the column value will open in a new window. Substitute values from columns in the row into the link using the fully qualifed column name [SchemaName].[TableName].[ColumnName] for SQL Server, or `TableName'.'ColumnName` for MySQL.</value>
+  </data>
+  <data name="DatasetColumn_Title" xml:space="preserve">
+    <value>The column title is a friendly column name that the user will see when creating reports.</value>
+  </data>
+  <data name="DatasetJoin_Details" xml:space="preserve">
+    <value>Joins specify tables that can be queried in addition to the primary table. Table name, join type, and keys are required for each join. Joins need to be ordered as they would be used in a SQL query. Use the up and down arrows to change join order.</value>
+  </data>
+  <data name="DatasetJoin_JoinKeys" xml:space="preserve">
+    <value>Specify the columns and their relationship(s) that will be used when joining the tables. Use fully qualified names like [TableName].[ColumnName] for SQL Server, or `TableName`.`ColumnName` for MySQL.</value>
+  </data>
+  <data name="DatasetJoin_JoinType" xml:space="preserve">
+    <value>Specify the type of SQL JOIN to use with this table.</value>
+  </data>
+  <data name="DatasetJoin_TableName" xml:space="preserve">
+    <value>Enter the fully qualified table name of the table you want to join to the primary table for this dataset.</value>
+  </data>
+  <data name="Dataset_Conditions" xml:space="preserve">
+    <value>Enter a SQL WHERE statement (without the WHERE keyword) to limit the data that the user can access.</value>
+  </data>
+  <data name="Dataset_CurrencyFormat" xml:space="preserve">
+    <value>&lt;p&gt;Currency formats are comprised of two tokens: one representing the currency denomination and it's location in the string, and another representing the symbol for thousands, the decimal place, and the precision.&lt;/p&gt;&lt;p&gt;&lt;b&gt;{s:$}&lt;/b&gt; represents the currency denomination. The dollar sign in this example with be used for the currency denomination and can be replaced by any character.&lt;/p&gt;&lt;p&gt;&lt;b&gt;{[t:,][d:.][p:2]}&lt;/b&gt; represents the currency value. It is composed of three tokens: &lt;i&gt;[t:,]&lt;/i&gt; indicates the symbol to use to separate thousands (in this case a comma),&lt;i&gt;[d:.]&lt;/i&gt; indicates the symbol to use to separate decimals (in this case a decimal point), and &lt;i&gt;[p:2]&lt;/i&gt; indicates the number of decimal places (in this case two).&lt;/p&gt;&lt;table id="format-currency" class="pt-1 table table-striped table-bordered table-sm table-hover"&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Number&lt;/th&gt;&lt;th&gt;Format&lt;/th&gt;&lt;th&gt;String&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;1000.234&lt;/td&gt;&lt;td&gt;{s:$} {[t:,][d:.][p:2]}&lt;/td&gt;&lt;td&gt;$ 1,000.23&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;1000.234&lt;/td&gt;&lt;td&gt;{s:$}{[t:][d:.][p:1]}&lt;/td&gt;&lt;td&gt;$1000.2&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;1000.234&lt;/td&gt;&lt;td&gt;{s:£}{[t:,][d:.][p:3]}&lt;/td&gt;&lt;td&gt;£1,000.234&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;1000.234&lt;/td&gt;&lt;td&gt;{[t:.][d:,][p:2]} {s:€}&lt;/td&gt;&lt;td&gt;1.000,23 €&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;</value>
+  </data>
+  <data name="Dataset_DatabaseId" xml:space="preserve">
+    <value>Select the database this dataset will query. If you need to change the database after creating the dataset, use the `Change Database` link.</value>
+  </data>
+  <data name="Dataset_DatasetRole" xml:space="preserve">
+    <value>Add the roles that can access this dataset.  Administrators will be able to view/modify any dataset. </value>
+  </data>
+  <data name="Dataset_DateFormat" xml:space="preserve">
+    <value>&lt;table class="table table-hover table-bordered table-sm table-striped"&gt;&lt;tbody&gt;&lt;tr&gt;&lt;th&gt;&lt;/th&gt;&lt;th&gt;Token&lt;/th&gt;&lt;th&gt;Output&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Month&lt;/b&gt;&lt;/td&gt;&lt;td&gt;M&lt;/td&gt;&lt;td&gt;1 2 ... 11 12&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;MM&lt;/td&gt;&lt;td&gt;01 02 ... 11 12&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;MMM&lt;/td&gt;&lt;td&gt;Jan Feb ... Nov Dec&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;MMMM&lt;/td&gt;&lt;td&gt;January February ... November December&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Day of Month&lt;/b&gt;&lt;/td&gt;&lt;td&gt;D&lt;/td&gt;&lt;td&gt;1 2 ... 30 31&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;Do&lt;/td&gt;&lt;td&gt;1st 2nd ... 30th 31st&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;DD&lt;/td&gt;&lt;td&gt;01 02 ... 30 31&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Day of Week&lt;/b&gt;&lt;/td&gt;&lt;td&gt;d&lt;/td&gt;&lt;td&gt;0 1 ... 5 6&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;ddd&lt;/td&gt;&lt;td&gt;Sun Mon ... Fri Sat&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;dddd&lt;/td&gt;&lt;td&gt;Sunday Monday ... Friday Saturday&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Year&lt;/b&gt;&lt;/td&gt;&lt;td&gt;YY&lt;/td&gt;&lt;td&gt;70 71 ... 29 30&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;YYYY&lt;/td&gt;&lt;td&gt;1970 1971 ... 2029 2030&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;AM/PM&lt;/b&gt;&lt;/td&gt;&lt;td&gt;A&lt;/td&gt;&lt;td&gt;AM PM&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;a&lt;/td&gt;&lt;td&gt;am pm&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Hour&lt;/b&gt;&lt;/td&gt;&lt;td&gt;H&lt;/td&gt;&lt;td&gt;0 1 ... 22 23&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;HH&lt;/td&gt;&lt;td&gt;00 01 ... 22 23&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;h&lt;/td&gt;&lt;td&gt;1 2 ... 11 12&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;hh&lt;/td&gt;&lt;td&gt;01 02 ... 11 12&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Minute&lt;/b&gt;&lt;/td&gt;&lt;td&gt;m&lt;/td&gt;&lt;td&gt;0 1 ... 58 59&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;mm&lt;/td&gt;&lt;td&gt;00 01 ... 58 59&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Second&lt;/b&gt;&lt;/td&gt;&lt;td&gt;s&lt;/td&gt;&lt;td&gt;0 1 ... 58 59&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;ss&lt;/td&gt;&lt;td&gt;00 01 ... 58 59&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Fractional Second&lt;/b&gt;&lt;/td&gt;&lt;td&gt;S&lt;/td&gt;&lt;td&gt;0 1 ... 8 9&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;SS&lt;/td&gt;&lt;td&gt;0 1 ... 98 99&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;SSS&lt;/td&gt;&lt;td&gt;0 1 ... 998 999&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Timezone&lt;/b&gt;&lt;/td&gt;&lt;td&gt;ZZ&lt;/td&gt;&lt;td&gt;-0700 -0600 ... +0600 +0700&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;</value>
+  </data>
+  <data name="Dataset_Description" xml:space="preserve">
+    <value>Enter an optional description to make it easier for users to select a dataset when creating reports.</value>
+  </data>
+  <data name="Dataset_Name" xml:space="preserve">
+    <value>Enter a unique name for the dataset.</value>
+  </data>
+  <data name="Dataset_PrimarySource" xml:space="preserve">
+    <value>Select the primary table or stored procedure to query for this dataset.</value>
+  </data>
+  <data name="Permission_ActionName" xml:space="preserve">
+    <value>Enter the name of the controller action itself, or the parent action it uses.</value>
+  </data>
+  <data name="Permission_ControllerName" xml:space="preserve">
+    <value>Enter the name of the controller. You don't need to add `Controller` at the end.</value>
+  </data>
+  <data name="Report_FilterColumn" xml:space="preserve">
+    <value>Select the column to use to filter report data.</value>
+  </data>
+  <data name="Report_FilterCriteria" xml:space="preserve">
+    <value>Enter a text value that you want to compare to the filter column.</value>
+  </data>
+  <data name="Report_FilterOperator" xml:space="preserve">
+    <value>Select the operator to use when comparing criteria.</value>
+  </data>
+  <data name="Report_Filters" xml:space="preserve">
+    <value>Filters limit the data that shows up in the table and chart. Filters for different columns will show data matching both filters. Adding two filters for the same column will show data matching either filter. Click the `Save` button to save filters and update the report.</value>
+  </data>
+  <data name="Report_GroupDerived" xml:space="preserve">
+    <value>Use this textbox to add SQL to modify the grouping column. Reference the grouping column with {0}.</value>
+  </data>
+  <data name="Report_Groups" xml:space="preserve">
+    <value>Groups control how the data is grouped together before being displayed. Use the Aggregator to choose a aggregation method. For each group, select a column to group by. Optionally, use the text field to enter SQL to modify the grouping function. Use the up and down arrows to change the grouping order.</value>
+  </data>
+  <data name="Role_Name" xml:space="preserve">
+    <value>Give this role a unique name.</value>
+  </data>
+  <data name="Role_RolePermission" xml:space="preserve">
+    <value>Add all the permissions that should be included in this role.</value>
+  </data>
+  <data name="Role_Users" xml:space="preserve">
+    <value>Add users that can access this role. The next time the user logs in, they will have access to the new permissions.</value>
+  </data>
+  <data name="UserMembership_Password" xml:space="preserve">
+    <value>Password must be at least 6 characters long and contain at least one special character.</value>
+  </data>
+  <data name="User_IsActive" xml:space="preserve">
+    <value>Check this box if you want this user to be able to login.</value>
+  </data>
+  <data name="User_LanguageId" xml:space="preserve">
+    <value>This will be the default language in which this user will see the site.</value>
+  </data>
+  <data name="User_UID" xml:space="preserve">
+    <value>The UserID is login name for the user.</value>
+  </data>
+  <data name="User_UserRole" xml:space="preserve">
+    <value>A user will be able to login, but not do anything if they don't have any roles assigned.</value>
+  </data>
+  <data name="Dataset_TypeId" xml:space="preserve">
+    <value>Select if this dataset will query tables or a stored procedure. Using a stored proc instead of tables will disable other features like conditions and joins.</value>
+  </data>
+  <data name="DatasetColumn_IsParam" xml:space="preserve">
+    <value>Check this if this is an input parameter for the procedure. Parameter columns will be visible for use when filtering a report, but will not be viewable as a column in the report.</value>
+  </data>
+</root>

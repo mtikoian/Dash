@@ -1,0 +1,21 @@
+﻿@using Dash.I18n
+@using Dash.Models
+@model User
+
+@using (Html.BeginBootForm("Update", "Account", null, Account.UpdateAccount)) {
+    @Html.HiddenFor(model => model.Id)
+
+    <div class="col-6">
+        @Html.LabelInputFor(model => model.FirstName)
+        @Html.LabelInputFor(model => model.LastName)
+
+        @if (Dash.Authorization.UsingDashAuth) {
+            @Html.LabelPasswordFor(model => model.Password, new { data_match = "ConfirmPassword", required = Model.Id == 0 })
+            @Html.LabelPasswordFor(model => model.ConfirmPassword, new { required = Model.Id == 0 })
+        }
+    </div>
+    <div class="col-6">
+        @Html.LabelInputFor(model => model.Email, inputType: Dash.Html.InputFieldType.Email)
+        @Html.LabelDropDownListFor(model => model.LanguageId, Html.GetSelectList<Language>())
+    </div>
+}

@@ -1,0 +1,9 @@
+﻿@using Dash.I18n
+@model Table
+
+<div data-title="@Datasets.ViewAll" data-basic-dialog="true" data-close-event="dashboardReload">
+    @using (Html.BeginToolbar()) {
+        @Html.AuthorizedButton(Datasets.CreateDataset, "Dataset", "Create", RngnClasses.BtnPrimary, RngnClasses.RngnDialog)
+    }
+    <div class="col-12 rngn-table" data-json="@Model.ToJson"></div>
+</div>

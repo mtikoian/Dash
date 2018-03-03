@@ -1,0 +1,15 @@
+﻿CREATE PROCEDURE ChartShareGet
+	@Id INT = NULL,
+	@ChartId INT = NULL
+AS
+	SET NOCOUNT ON
+	
+	DECLARE @Ids TABLE (Id INT NOT NULL PRIMARY KEY)
+	IF (@Id IS NOT NULL)
+		INSERT INTO @Ids SELECT @Id
+	ELSE IF (@ChartId IS NOT NULL)
+		INSERT INTO @Ids SELECT Id FROM ChartShare WHERE ChartId = @ChartId
+
+	SELECT cs.Id, ChartId, UserId, RoleId 
+	FROM @Ids i
+	INNER JOIN ChartShare cs ON cs.Id = i.Id

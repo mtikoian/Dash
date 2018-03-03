@@ -1,0 +1,10 @@
+﻿@model Dash.Models.CreateChart
+@using Dash.I18n
+
+@using (Html.BeginBootForm("CreateChart", "Chart", null, Charts.CreateChart)) {
+
+    <div class="col-6">
+        @Html.LabelInputFor(model => model.Name)
+        @Html.LabelDropDownListFor(model => model.ChartTypeId, Dash.Models.Chart.ChartTypeSelectList)
+    </div>
+}

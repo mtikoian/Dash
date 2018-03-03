@@ -1,0 +1,216 @@
+@import "bootstrap/functions";
+@import "bootstrap/variables";
+
+$box-shadow: 0 2px 5px 0 rgba(0, 0, 0, .2);
+$padding-base: 12px;
+$success-color: $success;
+$danger-color: $danger;
+$text-color: $body-color;
+$border-radius: 1px;
+$black: #fff;
+$log-background: rgba(0, 0, 0, .8);
+$message-background: rgba(0, 0, 0, .3);
+
+.alertify-logs {
+    position: fixed;
+    z-index: 999999;
+
+    > * {
+        backface-visibility: hidden;
+        border-radius: $border-radius;
+        box-shadow: $box-shadow;
+        box-sizing: border-box;
+        clear: both;
+        color: $black;
+        display: block;
+        padding: $padding-base $padding-base * 2;
+        position: relative;
+        transition: .4s cubic-bezier(.25, .8, .25, 1);
+        cursor: pointer;
+
+        &,
+        &.default {
+            background: $log-background;
+        }
+
+        &.error {
+            background: $danger-color;
+        }
+
+        &.success {
+            background: $success-color;
+        }
+
+        & {
+            margin: 0;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            padding: 0;
+            pointer-events: none;
+        }
+
+        &.show {
+            margin-top: $padding-base;
+            max-height: 1000px;
+            opacity: 1;
+            padding: $padding-base;
+            pointer-events: auto;
+        }
+    }
+
+    &.bottom,
+    &:not(.top) {
+        bottom: 16px;
+    }
+    // All left positions.
+    &.left,
+    &:not(.right) {
+        left: 16px;
+
+        > * {
+            float: left;
+            height: auto;
+            transform: translate3d(0, 0, 0);
+
+            &.show {
+                left: 0;
+            }
+
+            &,
+            &.hidden {
+                left: -110%;
+            }
+        }
+    }
+
+    &.right {
+        right: 16px;
+
+        > * {
+            float: right;
+            transform: translate3d(0, 0, 0);
+
+            &.show {
+                opacity: 1;
+                right: 0;
+            }
+
+            &,
+            &.hidden {
+                opacity: 0;
+                right: -110%;
+            }
+        }
+    }
+
+    &.top {
+        top: 0;
+    }
+}
+
+.alertify {
+    background-color: $message-background;
+    bottom: 0;
+    height: 100%;
+    left: 0;
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: 100%;
+    z-index: 999999;
+
+    &,
+    &.show {
+        box-sizing: border-box;
+        transition: .33s cubic-bezier(.25, .8, .25, 1);
+    }
+
+    &,
+    * {
+        box-sizing: border-box;
+        max-height: 100%;
+    }
+
+    .dialog {
+        padding: 12px;
+    }
+
+    .dialog,
+    .alert {
+        margin: 0 auto;
+        position: relative;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 100%;
+        height: 100%;
+
+        .dialog-content {
+            overflow-y: auto;
+            text-align: left;
+        }
+
+        > * {
+            background: $black;
+            box-shadow: 0 2px 4px -1px rgba(0, 0, 0, .14), 0 4px 5px 0 rgba(0, 0, 0, .098), 0 1px 10px 0 rgba(0, 0, 0, .084);
+            margin: 0 auto;
+            max-width: 95%;
+            padding: $padding-base;
+            text-align: center;
+            width: 500px;
+        }
+
+        .msg {
+            margin: 0;
+            margin-bottom: $padding-base;
+            padding: $padding-base;
+            text-align: left;
+        }
+
+        input {
+            margin-bottom: 1rem;
+        }
+
+        nav {
+            text-align: right;
+
+            button {
+                &:not(.btn) {
+                    align-items: center;
+                    background: transparent;
+                    border: 1px solid transparent;
+                    border-radius: 2px;
+                    box-sizing: border-box;
+                    color: rgba(0, 0, 0, .87);
+                    cursor: pointer;
+                    display: inline-block;
+                    font-size: 14px;
+                    line-height: 36px;
+                    margin: 6px 8px;
+                    min-height: 36px;
+                    min-width: 88px;
+                    outline: 0;
+                    padding: 0 6px;
+                    position: relative;
+                    text-align: center;
+                    text-decoration: none;
+                    text-transform: uppercase;
+                    white-space: nowrap;
+
+                    &:hover,
+                    &:active {
+                        background-color: rgba(0, 0, 0, .05);
+                    }
+
+                    &:focus {
+                        border: 1px solid rgba(0, 0, 0, .1);
+                    }
+                }
+
+                &.btn {
+                    margin: 6px 4px;
+                }
+            }
+        }
+    }
+}

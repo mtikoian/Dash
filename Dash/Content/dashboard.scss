@@ -1,0 +1,232 @@
+﻿@import "bootstrap/functions";
+@import "bootstrap/variables";
+
+html, body{
+  height: 100%;
+  width: 100%;
+}
+
+#sidebarWrapper {
+    height: 100%;
+    background: #000;
+    width: 4rem;
+    overflow: hidden;
+    float: left;
+}
+
+#contentWrapper {
+    padding-left: 4rem;
+    width: auto;
+}
+
+body.toggled {
+    #sidebarWrapper {
+        width: 16rem;
+        z-index: 1000;
+
+        li {
+            a {
+                span {
+                    display: inline;
+                }
+            }
+        }
+    }
+
+    #contentWrapper {
+        padding-left: 16rem;
+    }
+}
+
+#dashboard {
+    position: relative;
+    height: 100%;
+
+    .widget-data {
+        .container-fluid {
+            padding-left: 0;
+            padding-right: 0;
+
+            .row {
+                margin-left: 0;
+                margin-right: 0;
+            }
+        }
+    }
+
+    .widget-chart {
+        width: 100%;
+        height: 100%;
+    }
+
+    .chart-spinner {
+        position: absolute;
+        z-index: 999;
+        width: 100%;
+        height: 100%;
+        background: #ffffff;
+    }
+
+    .table-area {
+        min-height: 5rem;
+    }
+
+    .table-spinner {
+        width: 100px;
+        position: absolute;
+        top: 3rem;
+        left: 50%;
+        margin: 0 -50px 0 -50px;
+    }
+
+    .chart-error {
+        position: absolute;
+        z-index: 999;
+        width: 100%;
+        height: 100%;
+        background: #ffffff;
+
+        p {
+            color: #FF0039;
+            padding-left: 20px;
+            padding-top: 20px;
+        }
+    }
+    /* clear fix */
+    &:after {
+        content: '';
+        display: block;
+        clear: both;
+    }
+
+    .is-dragging, .is-positioning-post-drag {
+        z-index: 2;
+    }
+
+    .grid-item {
+        float: left;
+        background: #efefef;
+        border: 1px solid hsla(0, 0%, 0%, 0.5);
+        font-size: .9rem;
+        position: absolute;
+
+        .grid-header {
+            width: 100%;
+            padding: .2rem .4rem 0 .4rem;
+            border-bottom: 1px solid hsla(0, 0%, 0%, 0.5);
+            height: 1.8rem;
+            font-weight: 700;
+            margin-left: 0;
+            margin-right: 0;
+
+            .grid-title {
+                padding: 0 0 .1rem 0;
+            }
+
+            .grid-buttons {
+                padding-right: 0;
+
+                .dropdown-toggle {
+                    &:after {
+                        content: none;
+                    }
+                }
+
+                .dropdown-menu {
+                    margin-left: -9rem;
+                }
+
+                .dropdown-item {
+                    cursor: pointer;
+                    padding: .2rem .4rem;
+
+                    .rn {
+                        color: $info;
+                        margin-left: 0;
+                    }
+                }
+            }
+
+            .btn {
+                padding: .1rem;
+            }
+        }
+
+        .grid-body {
+            position: absolute;
+            bottom: 2rem;
+            top: 1.8rem;
+            width: 100%;
+            overflow: auto;
+            background-color: white;
+
+            button {
+                font-size: .9rem;
+                padding-top: 0;
+                padding-bottom: 0;
+            }
+        }
+
+        .grid-footer {
+            border-top: 1px solid hsla(0, 0%, 0%, 0.5);
+            height: 2rem;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            font-size: 1rem;
+            padding: .3rem 0 0 0;
+
+            .grid-updated-time {
+                padding-left: .2rem;
+            }
+
+            .resizable-handle, .drag-handle {
+                cursor: pointer;
+                margin-right: .7rem;
+
+                i.rn-move {
+                    font-size: 1.2rem;
+                }
+            }
+
+            .rn {
+                font-size: 1.5rem;
+            }
+        }
+
+        &.full-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+
+            .grid-footer {
+                .resizable-handle, .drag-handle {
+                    display: none;
+                }
+            }
+        }
+    }
+
+    @for $i from 1 through 20 {
+        .grid-item-width-#{$i} {
+            width: round(percentage($i / 20));
+        }
+
+        .grid-item-height-#{$i} {
+            height: round(percentage($i / 20));
+        }
+
+        .grid-item-x-#{$i} {
+            left: round(percentage($i / 20));
+        }
+    }
+
+    @for $i from 1 through 40 {
+        .grid-item-y-#{$i} {
+            top: round(percentage($i / 20));
+        }
+    }
+}

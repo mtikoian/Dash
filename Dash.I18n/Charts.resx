@@ -1,0 +1,258 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="ViewChart" xml:space="preserve">
+    <value>View Chart</value>
+  </data>
+  <data name="SuccessDeletingChart" xml:space="preserve">
+    <value>Chart deleted successfully.</value>
+  </data>
+  <data name="SuccessSavingChart" xml:space="preserve">
+    <value>Chart saved successfully.</value>
+  </data>
+  <data name="CreateChart" xml:space="preserve">
+    <value>Create New Chart</value>
+  </data>
+  <data name="ViewAll" xml:space="preserve">
+    <value>View All Charts</value>
+  </data>
+  <data name="ShareChart" xml:space="preserve">
+    <value>Share Chart</value>
+  </data>
+  <data name="Rename" xml:space="preserve">
+    <value>Rename Chart</value>
+  </data>
+  <data name="SuccessCopyingChart" xml:space="preserve">
+    <value>Chart copied successfully.</value>
+  </data>
+  <data name="LabelAggregator_Avg" xml:space="preserve">
+    <value>Average</value>
+  </data>
+  <data name="LabelAggregator_Count" xml:space="preserve">
+    <value>Count</value>
+  </data>
+  <data name="LabelAggregator_Max" xml:space="preserve">
+    <value>Max</value>
+  </data>
+  <data name="LabelAggregator_Min" xml:space="preserve">
+    <value>Min</value>
+  </data>
+  <data name="LabelAggregator_Sum" xml:space="preserve">
+    <value>Sum</value>
+  </data>
+  <data name="LabelType_Bar" xml:space="preserve">
+    <value>Bar</value>
+  </data>
+  <data name="LabelType_Doughnut" xml:space="preserve">
+    <value>Doughnut</value>
+  </data>
+  <data name="LabelType_Line" xml:space="preserve">
+    <value>Line</value>
+  </data>
+  <data name="LabelType_Pie" xml:space="preserve">
+    <value>Pie</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Chart Type</value>
+  </data>
+  <data name="XAxisColumn" xml:space="preserve">
+    <value>X-Axis</value>
+  </data>
+  <data name="DateInterval" xml:space="preserve">
+    <value>Date Interval</value>
+  </data>
+  <data name="Aggregator" xml:space="preserve">
+    <value>Aggregator</value>
+  </data>
+  <data name="YAxisColumn" xml:space="preserve">
+    <value>Y-Axis</value>
+  </data>
+  <data name="MenuItem" xml:space="preserve">
+    <value>Charts</value>
+  </data>
+  <data name="ExportChartData" xml:space="preserve">
+    <value>Chart Data</value>
+  </data>
+  <data name="ExportChartName" xml:space="preserve">
+    <value>Chart Name</value>
+  </data>
+  <data name="ExportChartWidth" xml:space="preserve">
+    <value>Chart Width</value>
+  </data>
+  <data name="Report" xml:space="preserve">
+    <value>Report</value>
+  </data>
+  <data name="CopyChart" xml:space="preserve">
+    <value>Copy Chart</value>
+  </data>
+  <data name="NewName" xml:space="preserve">
+    <value>Enter the name for the chart.</value>
+  </data>
+  <data name="Ranges" xml:space="preserve">
+    <value>Ranges</value>
+  </data>
+  <data name="ShareExplain" xml:space="preserve">
+    <value>Add users or roles to share this chart with. These users can view the chart, but only the chart owner can make changes. If you share a chart with a user, they will also be able to see the reports the chart uses.</value>
+  </data>
+  <data name="ErrorNameRequired" xml:space="preserve">
+    <value>Name is required.</value>
+  </data>
+  <data name="ErrorOwnerOnly" xml:space="preserve">
+    <value>Only the owner of the chart is allowed to do this.</value>
+  </data>
+  <data name="ErrorPermissionDenied" xml:space="preserve">
+    <value>You do not have permission to view the requested chart.</value>
+  </data>
+  <data name="NameSaved" xml:space="preserve">
+    <value>The chart name was updated.</value>
+  </data>
+  <data name="ErrorTypeRequired" xml:space="preserve">
+    <value>Chart type is required.</value>
+  </data>
+  <data name="ChangeType" xml:space="preserve">
+    <value>Change Chart Type</value>
+  </data>
+  <data name="Color" xml:space="preserve">
+    <value>Color</value>
+  </data>
+  <data name="ErrorChartModified" xml:space="preserve">
+    <value>The chart was modified by the owner. You should close the chart and re-open it to see the latest version.</value>
+  </data>
+  <data name="ErrorNoRanges" xml:space="preserve">
+    <value>You have to add at least one range before you can view the chart.</value>
+  </data>
+  <data name="ErrorGettingData" xml:space="preserve">
+    <value>An error occurred querying the database. Check your reports. Or, try reloading the page.</value>
+  </data>
+  <data name="SelectColor" xml:space="preserve">
+    <value>Select Color</value>
+  </data>
+  <data name="LabelType_HorizontalBar" xml:space="preserve">
+    <value>Horizontal Bar</value>
+  </data>
+  <data name="ConfirmDelete" xml:space="preserve">
+    <value>Are you sure you want to delete this chart? This will also delete any widgets using this chart.</value>
+  </data>
+  <data name="ErrorNoData" xml:space="preserve">
+    <value>None of the chart ranges returned any data. Try modifying the ranges or the underlying reports.</value>
+  </data>
+</root>

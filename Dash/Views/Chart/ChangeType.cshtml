@@ -1,0 +1,9 @@
+﻿@model Dash.Models.Chart
+@using Dash.I18n
+
+@using (Html.BeginBootForm("ChangeTypeSave", "Chart", new { id = Model.Id }, Charts.ChangeType)) {
+    <div class="col-6">
+        @Html.LabelInputFor(model => model.Name, new { disabled = true })
+        @Html.LabelDropDownListFor(model => model.ChartTypeId, Dash.Models.Chart.ChartTypeSelectList)
+    </div>
+}

@@ -1,0 +1,9 @@
+﻿@using Dash.I18n
+@model Table
+
+<div data-title="@Users.ViewAll" data-basic-dialog="true">
+    @using (Html.BeginToolbar()) {
+        @Html.AuthorizedButton(Users.CreateUser, "User", "Create", RngnClasses.BtnPrimary, RngnClasses.RngnDialog)
+    }
+    <div class="col-12 rngn-table" data-json="@Model.ToJson"></div>
+</div>

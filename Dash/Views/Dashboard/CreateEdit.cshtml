@@ -1,0 +1,18 @@
+﻿@using Dash.I18n
+@model Dash.Models.Widget
+
+@using (Html.BeginBootForm(Model.FormAction, "Dashboard", null, Model.IsCreate ? Widgets.CreateWidget : Widgets.EditWidget, 
+    htmlAttributes: new { @data_close_event = "dashboardReload" }, method: Model.FormMethod)) {
+    @Html.HiddenFor(model => model.Id)
+    @Html.HiddenFor(model => model.X)
+    @Html.HiddenFor(model => model.Y)
+    @Html.HiddenFor(model => model.Width)
+    @Html.HiddenFor(model => model.Height)
+
+    <div class="col-6">
+        @Html.LabelInputFor(model => model.Title)
+        @Html.LabelDropDownListFor(model => model.ReportId, Model.GetReportSelectList())
+        @Html.LabelDropDownListFor(model => model.ChartId, Model.GetChartSelectList())
+        @Html.LabelDropDownListFor(model => model.RefreshRate, Model.GetWidgetRefreshRateSelectList())
+    </div>
+}

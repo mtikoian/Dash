@@ -1,0 +1,80 @@
+.rd-dialog {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    padding: 0;
+    overflow-y: auto;
+    z-index: 1981;
+    min-height: 110px;
+    outline: 0;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
+    margin: 0 auto !important;
+    background-color: white;
+    box-shadow: 0px 15px 20px 0px rgba(0, 0, 0, 0.25);
+
+    .rd-commands {
+        position: absolute;
+        right: 4px;
+        margin: 4px 24px 0 0;
+        z-index: 2;
+    }
+
+    .rd-header {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        margin: 0;
+        padding: .75rem 1.5rem;
+        color: black;
+        font-weight: bold;
+        background: #fafafa;
+        border-bottom: #eee 1px solid;
+        border-radius: 2px 2px 0 0;
+
+        .rd-commands {
+            font-size: 1em;
+        }
+    }
+
+    .rd-content {
+        min-height: 224px;
+        display: inline-block;
+        position: absolute;
+        top: 50px;
+        right: 1px;
+        bottom: 50px;
+        left: 1px;
+        overflow: auto;
+        padding: 12px 0;
+        
+        &.rd-no-footer {
+            bottom: 0;
+        }
+    }
+
+    .rd-footer {
+        padding: 4px;
+        min-height: 43px;
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        margin: 0;
+        background: #fbfbfb;
+        border-top: #eee 1px solid;
+        border-radius: 0 0 2px 2px;
+
+        .rd-buttons {
+            text-align: right;
+
+            .rd-button {
+                margin: 4px;
+            }
+        }
+    }
+}

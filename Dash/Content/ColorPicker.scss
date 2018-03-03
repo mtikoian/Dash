@@ -1,0 +1,56 @@
+﻿@import "bootstrap/functions";
+@import "bootstrap/variables";
+
+.mithril-colorpicker {
+    width: 100%;
+
+    > .btn {
+        width: 100%;
+    }
+
+    .colorpicker-indicator {
+        cursor: pointer;
+        position: absolute;
+        right: 1rem;
+        top: .5rem;
+    }
+
+    &.active {
+        .colorpicker-indicator {
+            top: .7rem;
+        }
+    }
+
+
+    .editor {
+        position: absolute;
+        margin: 0;
+        width: 100%;
+        height: auto;
+        transition: height 0.2s;
+        z-index: 2000;
+        background: #fff;
+        border: 1px solid rgba(0,0,0,0.2);
+        box-shadow: 0 3px 12px rgba(0,0,0,0.15);
+        border-radius: 4px;
+
+        .swatches {
+            display: flex;
+            flex-wrap: wrap;
+            flex-direction: row-reverse;
+
+            .swatch {
+                display: inline-block;
+                flex: 1 1 3rem;
+                height: 3rem;
+
+                &:hover, &.active {
+                    position: relative;
+                    z-index: 2;
+                    outline: 2px solid #fff;
+                    box-shadow: 0 0 5px 2px rgba(0,0,0,0.25);
+                }
+            }
+        }
+    }
+}

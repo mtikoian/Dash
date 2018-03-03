@@ -1,0 +1,23 @@
+@using Dash.I18n
+@model Dash.Models.Database
+
+@using (Html.BeginBootForm(Model.FormAction, "Database", null, Model.IsCreate ? Databases.CreateDatabase : Databases.EditDatabase, method: Model.FormMethod)) {
+    @Html.HiddenFor(model => model.Id)
+
+    <div class="col">
+        @Html.LabelInputFor(model => model.Name)
+        @Html.LabelDropDownListFor(model => model.TypeId, Dash.Models.Database.DatabaseTypeSelectList)
+        @Html.LabelInputFor(model => model.Host)
+        @Html.LabelInputFor(model => model.Port, inputType: Dash.Html.InputFieldType.Number)
+        @Html.LabelInputFor(model => model.DatabaseName)
+        @Html.LabelCheckBoxFor(model => model.AllowPaging)
+    </div>
+
+    <div class="col">
+        @Html.LabelInputFor(model => model.User)
+        @Html.LabelPasswordFor(model => model.Password, new { data_match = "ConfirmPassword" })
+        @Html.LabelPasswordFor(model => model.ConfirmPassword)
+        @Html.LabelCheckBoxFor(model => model.IsEmptyPassword)
+        @Html.LabelTextAreaFor(model => model.ConnectionString, new { rows = 4 })
+    </div>
+}

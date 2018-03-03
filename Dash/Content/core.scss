@@ -1,0 +1,236 @@
+@import "bootstrap/functions";
+@import "bootstrap/variables";
+
+.tab-nav-content {
+    border-bottom: 1px solid #ddd;
+}
+
+/*
+* Context help styling
+*/
+.help-active {
+    color: $teal !important;
+}
+
+.context-help {
+    cursor: pointer;
+    font-size: 1.3333rem !important;
+
+    &.context-help-pad {
+        padding-right: .6rem;
+    }
+}
+
+.form-group {
+    .context-help-pad {
+        right: 15px;
+        float: right;
+        position: absolute;
+        top: 0;
+    }
+
+    .checkbox-block .context-help-pad {
+        right: 30px;
+    }
+}
+
+.rngn-context-help {
+    i, &.rn-help {
+        color: $teal;
+    }
+}
+
+.input-group {
+    .input-group-prepend {
+        margin-right: 0;
+    }
+
+    .input-group-append {
+        margin-left: 0;
+    }
+
+    .input-group-btn {
+        .dropdown-toggle {
+            border: $input-border-width solid $input-border-color;
+        }
+
+        .dropdown-menu-right {
+            right: 0;
+            left: auto; // Reset the default from `.dropdown-menu`
+        }
+    }
+}
+
+.dropdown-menu {
+    .dropdown-item {
+        &.active {
+            color: inherit;
+            text-decoration: none;
+        }
+    }
+}
+
+.card {
+    .card-body {
+        padding: .75rem;
+    }
+}
+
+.btn-toolbar {
+    .btn {
+        margin-right: .1rem;
+    }
+}
+
+@media screen\0 {
+    // pad input group elements correctly in IE
+    .input-group-prepend, .input-group-append, .input-group-btn {
+        button, span {
+            padding-top: .8rem;
+            padding-bottom: .7rem;
+        }
+    }
+}
+
+/*
+* Form validation
+*/
+.col-form-label {
+    text-align: right;
+
+    &.required {
+        color: $danger;
+    }
+}
+
+.help-block.with-errors {
+    width: 100%;
+    color: $danger;
+    text-align: left;
+    font-weight: normal;
+    font-style: italic;
+    display: block;
+    padding-top: 3px;
+}
+
+.form-control-error, .mform-control-error {
+    border-color: $danger;
+}
+
+.tab-validation-error {
+    color: $danger !important;
+}
+
+.form-buttons .btn {
+    margin-right: 1rem;
+}
+
+.collapsible-list li {
+    list-style-type: none;
+
+    .custom-control {
+        display: inline;
+    }
+
+    &.collapsible-list-open:before {
+        content: "\e808"; /* Dash Unicode */
+        font-family: "rengn";
+        font-size: 1.1em;
+        display: inline-block;
+        margin-left: -1.1em; /* same as padding-left set on li */
+        width: 1.1em; /* same as padding-left set on li */
+        cursor: pointer;
+    }
+
+    &.collapsible-list-closed:before {
+        content: "\e807"; /* Dash Unicode */
+        font-family: "rengn";
+        font-size: 1.1em;
+        display: inline-block;
+        margin-left: -1.1em; /* same as padding-left set on li */
+        width: 1.1em; /* same as padding-left set on li */
+        cursor: pointer;
+    }
+}
+
+.rn {
+    display: inline-block;
+
+    font-family: "rengn";
+    font-style: normal;
+    font-weight: normal;
+    speak: none;
+
+    text-decoration: none;
+    text-align: center;
+    /* opacity: .8; */
+
+    /* For safety - reset parent styles, that can break glyph codes*/
+    font-variant: normal;
+    text-transform: none;
+
+    /* fix buttons height, for twitter bootstrap */
+    line-height: 1em;
+
+    /* You can be more comfortable with increased icons size */
+    /* font-size: 120%; */
+
+    /* Font smoothing. That was taken from TWBS */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    /* Uncomment for 3D effect */
+    /* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
+
+    &.rn-lg {
+        font-size: 1.33333333em;
+        line-height: 0.75em;
+    }
+
+    &.rn-xl {
+        font-size: 2em !important;
+    }
+
+    &.rn-fw {
+        width: 1.3em;
+        text-align: center;
+    }
+
+    &.rn-pad {
+        margin-left: 1em;
+    }
+}
+
+.hidden {
+    display: none;
+}
+
+.dialog-loading {
+    position: fixed;
+    z-index: 99999;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 0;
+    margin: 0;
+    background-color: #252525;
+    opacity: .9;
+
+    .table-spinner {
+        width: 100px;
+        position: fixed;
+        top: 50%;
+        transform: translateY(-50%);
+        left: 50%;
+        margin: 0 -50px 0 -50px;
+    }
+}
+
+select [disabled] {
+    color: #808080;
+}
+
+.rngn-input-replace {
+    cursor: pointer;
+}

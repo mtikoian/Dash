@@ -1,0 +1,192 @@
+﻿@import "bootstrap/functions";
+@import "bootstrap/variables";
+
+$calendar-head-background: $primary;
+$calendar-head-foreground: white;
+$calendar-body-background: $secondary;
+$calendar-body-foreground: #555555;
+$chosen-day-stroke: #222222;
+$chosen-day-fill: white;
+$other-months-foreground: #999999;
+
+.mithril-date-picker-container {
+    width: 100%;
+
+    &.col {
+        margin-left: -15px;
+        margin-right: -15px;
+    }
+
+    * {
+        box-sizing: border-box;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    .current-date {
+        cursor: pointer;
+    }
+
+    .current-date-indicator {
+        cursor: pointer;
+        position: absolute;
+        right: 2rem;
+        top: .5rem;
+    }
+
+    &.active {
+        .current-date-indicator {
+            top: .7rem;
+        }
+    }
+
+    .editor {
+        position: absolute;
+        margin: 0 15px 0 0;
+        height: auto;
+        transition: height 0.2s;
+        z-index: 2000;
+        overflow: hidden;
+    }
+
+    .header {
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        background: $info;
+
+        .header-button {
+            position: relative;
+            padding: 0;
+            margin: 0;
+            height: 45px;
+            background: none;
+            border: 0;
+            cursor: pointer;
+        }
+
+        button.prev, button.next {
+            color: white;
+            white-space: nowrap;
+        }
+
+        button.prev {
+            text-align: left;
+            margin-right: auto;
+        }
+
+        button.next {
+            text-align: right;
+            margin-left: auto;
+        }
+
+        .segment {
+            position: relative;
+            width: 20%;
+            color: white;
+        }
+    }
+
+    .sled {
+        position: relative;
+        display: flex;
+        width: 300%;
+        transition: margin-left 0.2s;
+
+        &.p0 {
+            margin-left: 0
+        }
+
+        &.p1 {
+            margin-left: -100%
+        }
+
+        &.p2 {
+            margin-left: -200%
+        }
+    }
+
+    .calendar {
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+        z-index: 0;
+    }
+
+    .weekdays, .months, .time {
+        display: flex;
+        flex-wrap: wrap;
+
+        .form-control {
+            width: 50%;
+        }
+    }
+
+    .day, .month, .year {
+        position: relative;
+        background: $calendar-body-background;
+        border: 0;
+        color: $calendar-body-foreground;
+        cursor: pointer;
+        z-index: 0;
+
+        &:focus {
+            z-index: 1;
+        }
+
+        &:hover {
+            background: darken($calendar-body-background, 10);
+        }
+
+        &.dummy {
+            background: $calendar-head-background;
+            color: $calendar-head-foreground;
+            border: 0;
+            cursor: default;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            &:hover {
+                background: $calendar-head-background;
+            }
+        }
+
+        .number {
+            position: relative;
+            z-index: 1;
+        }
+
+        &.chosen {
+            background: $chosen-day-fill;
+            border: 2px solid $calendar-head-background;
+            font-weight: 700;
+        }
+    }
+
+    .day {
+        flex-basis: 14%;
+        -webkit-box-flex: 1;
+        flex-grow: 1;
+        max-width: 100%;
+        min-height: 45px;
+    }
+
+    .month {
+        width: 25%;
+        height: 25%;
+        min-height: 45px;
+    }
+
+    .year {
+        width: 20%;
+        height: 20%;
+        min-height: 45px;
+    }
+
+    .other-scope {
+        color: $other-months-foreground;
+    }
+}
