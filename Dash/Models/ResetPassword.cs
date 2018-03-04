@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Dash.Models
 {
-    public class ResetPassword : IValidatableObject
+    public class ResetPassword : BaseModel, IValidatableObject
     {
         private IHttpContextAccessor _HttpContextAccessor;
 
@@ -53,7 +53,7 @@ namespace Dash.Models
                 var membershipService = new AccountMembershipService();
                 if (membershipService.ChangePassword(User.UID, membershipService.ResetPassword(User.UID, ""), Password))
                 {
-                    DbContext.Execute("UserResetSave", new { Id = User.Id });
+                    DbContext.Execute("UserResetSave", new { User.Id });
                     return true;
                 }
                 else
@@ -89,7 +89,7 @@ namespace Dash.Models
                 {
                     yield return new ValidationResult(Account.ErrorPasswordMatch, new[] { "ConfirmPassword" });
                 }
-                else if ((Password.Length < Membership.MinRequiredPasswordLength) || Password.ToCharArray().Count(c => !Char.IsLetterOrDigit(c)) < Membership.MinRequiredNonAlphanumericCharacters)
+                else if ((Password.Length < AppConfig.Membership.MinRequiredPasswordLength) || Password.ToCharArray().Count(c => !Char.IsLetterOrDigit(c)) < AppConfig.Membership.MinRequiredNonAlphanumericCharacters)
                 {
                     yield return new ValidationResult(Account.ErrorInvalidPassword, new[] { "Password" });
                 }

@@ -91,25 +91,16 @@ namespace Dash.Models
         public string User { get; set; }
 
         /// <summary>
-        /// Get a database by ID.
-        /// </summary>
-        /// <param name="id">Database id</param>
-        /// <returns>Returns a database object or null.</returns>
-        public Database FromId(int id)
-        {
-            return DbContext.Get<Database>(id);
-        }
-
-        /// <summary>
         /// Build a connection object for this database.
         /// </summary>
         /// <returns>Returns a SQL connection.</returns>
         public DbConnection GetOpenConnection()
         {
+            var crypt = new Crypt(AppConfig);
             string connectionString = null;
             if (!ConnectionString.IsEmpty())
             {
-                connectionString = Crypt.Decrypt(ConnectionString);
+                connectionString = crypt.Decrypt(ConnectionString);
             }
             else
             {
@@ -119,7 +110,7 @@ namespace Dash.Models
                     connBuilder.DataSource = Host + (Port.IsEmpty() ? "" : "," + Port);
                     connBuilder.InitialCatalog = DatabaseName;
                     connBuilder.UserID = User;
-                    connBuilder.Password = Crypt.Decrypt(Password);
+                    connBuilder.Password = crypt.Decrypt(Password);
                     connectionString = connBuilder.ToString();
                 }
                 else
@@ -132,13 +123,12 @@ namespace Dash.Models
                     }
                     connBuilder.Database = DatabaseName;
                     connBuilder.UserID = User;
-                    connBuilder.Password = Crypt.Decrypt(Password);
+                    connBuilder.Password = crypt.Decrypt(Password);
                     connectionString = connBuilder.ToString();
                 }
             }
 
-            var factory = DbProviderFactories.GetFactory(IsSqlServer ? "System.Data.SqlClient" : "MySql.Data.MySqlClient");
-            var cnn = factory.CreateConnection();
+            var cnn = IsSqlServer ? SqlClientFactory.Instance.CreateConnection() : MySql.Data.MySqlClient.MySqlClientFactory.Instance.CreateConnection();
             cnn.ConnectionString = connectionString;
             cnn.Open();
             return cnn;
@@ -234,20 +224,21 @@ namespace Dash.Models
         /// <returns>True if successful, else false.</returns>
         public bool Save()
         {
+            var crypt = new Crypt(AppConfig);
             // Set password from db or encrypt new one
             if (Id > 0 && Password.IsEmpty() && !IsEmptyPassword)
             {
-                var myDatabase = FromId(Id);
+                var myDatabase = DbContext.Get<Database>(Id);
                 if (myDatabase != null)
                 {
-                    Password = Password.IsEmpty() ? myDatabase.Password : Crypt.Encrypt(Password);
+                    Password = Password.IsEmpty() ? myDatabase.Password : crypt.Encrypt(Password);
                 }
             }
             else
             {
-                Password = Password.IsEmpty() ? null : Crypt.Encrypt(Password);
+                Password = Password.IsEmpty() ? null : crypt.Encrypt(Password);
             }
-            ConnectionString = ConnectionString.IsEmpty() ? null : Crypt.Encrypt(ConnectionString);
+            ConnectionString = ConnectionString.IsEmpty() ? null : crypt.Encrypt(ConnectionString);
 
             DbContext.Save(this);
             return true;

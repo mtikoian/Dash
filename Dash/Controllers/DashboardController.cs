@@ -1,23 +1,29 @@
 ﻿using Dash.Configuration;
 using Dash.I18n;
 using Dash.Models;
+using Dash.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Caching.Memory;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 
 namespace Dash.Controllers
 {
     /// <summary>
     /// Basic controller that handles displaying/modifying user dashboards.
     /// </summary>
-    [Authorize]
+    [Authorize(Policy = "HasPermission")]
     public class DashboardController : BaseController
     {
-        public DashboardController(IHttpContextAccessor httpContextAccessor, IDbContext dbContext, IMemoryCache cache, IAppConfiguration appConfig) : base(httpContextAccessor, dbContext, cache, appConfig)
+        private IActionContextAccessor ActionContextAccessor;
+
+        public DashboardController(IHttpContextAccessor httpContextAccessor, IDbContext dbContext, IMemoryCache cache, IAppConfiguration appConfig, IActionContextAccessor actionContextAccessor) : base(httpContextAccessor, dbContext, cache, appConfig)
         {
+            ActionContextAccessor = actionContextAccessor;
         }
 
         /// <summary>
@@ -27,7 +33,7 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly]
         public IActionResult Create()
         {
-            return CreateEditView(new Widget());
+            return CreateEditView(new Widget(ActionContextAccessor));
         }
 
         /// <summary>
@@ -48,7 +54,7 @@ namespace Dash.Controllers
         [HttpDelete, AjaxRequestOnly]
         public IActionResult Delete(int id)
         {
-            var model = Widget.FromId(id);
+            var model = DbContext.Get<Widget>(id);
             if (model == null)
             {
                 return JsonError(Core.ErrorInvalidId);
@@ -70,7 +76,7 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly]
         public IActionResult Edit(int id)
         {
-            var model = Widget.FromId(id);
+            var model = DbContext.Get<Widget>(id);
             if (model == null)
             {
                 return JsonError(Core.ErrorInvalidId);
@@ -121,7 +127,8 @@ namespace Dash.Controllers
         [HttpPost, AjaxRequestOnly]
         public IActionResult SaveDashboard(List<Widget> widgets)
         {
-            var myWidgets = DbContext.GetAll<Widget>(new { UserId = Authorization.User.Id });
+            var userId = HttpContextAccessor.HttpContext.User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt();
+            var myWidgets = DbContext.GetAll<Widget>(new { UserId = userId });
             widgets.ForEach(x => {
                 myWidgets.Where(w => w.Id == x.Id).FirstOrDefault()?.SavePosition(x.Width, x.Height, x.X, x.Y);
             });
@@ -147,7 +154,7 @@ namespace Dash.Controllers
         [HttpGet, ParentAction("Index"), AjaxRequestOnly]
         public IActionResult WidgetOptions(int id)
         {
-            var model = Widget.FromId(id);
+            var model = DbContext.Get<Widget>(id);
             if (model == null)
             {
                 return JsonError(Core.ErrorInvalidId);

@@ -23,16 +23,6 @@ namespace Dash.Models
         public string FullName { get { return ControllerName?.Trim() + "." + ActionName?.Trim(); } }
 
         /// <summary>
-        /// Load a permission by ID.
-        /// </summary>
-        /// <param name="id">Permission ID</param>
-        /// <returns>Permission object or null.</returns>
-        public static Permission FromId(int id)
-        {
-            return DbContext.Get<Permission>(id);
-        }
-
-        /// <summary>
         /// Validate permission object. Check that controller/action is unique.
         /// </summary>
         /// <param name="validationContext"></param>

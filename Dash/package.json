@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "name": "rengn",
+  "name": "dash",
   "private": true,
   "devDependencies": {
     "autoprefixer": "^7.2.1",

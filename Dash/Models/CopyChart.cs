@@ -10,7 +10,7 @@ namespace Dash.Models
     {
         private Chart _Chart;
 
-        public Chart Chart { get { return _Chart ?? (_Chart = Chart.FromId(Id)); } }
+        public Chart Chart { get { return _Chart ?? (_Chart = DbContext.Get<Chart>(Id)); } }
 
         public Chart NewChart { get; set; }
 
@@ -24,7 +24,7 @@ namespace Dash.Models
         public void Save()
         {
             NewChart = Chart.Copy(Prompt);
-            NewChart.Save();
+            DbContext.Save(NewChart);
         }
 
         /// <summary>

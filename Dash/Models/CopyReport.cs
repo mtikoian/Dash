@@ -14,7 +14,7 @@ namespace Dash.Models
         [StringLength(100, ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string Prompt { get; set; }
 
-        public Report Report { get { return _Report ?? (_Report = Report.FromId(Id)); } }
+        public Report Report { get { return _Report ?? (_Report = DbContext.Get<Report>(Id)); } }
         public Report NewReport { get; set; }
 
         /// <summary>
@@ -23,7 +23,7 @@ namespace Dash.Models
         public void Save()
         {
             NewReport = Report.Copy(Prompt);
-            NewReport.Save();
+            DbContext.Save(NewReport);
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace Dash.Models
             {
                 yield return new ValidationResult(I18n.Core.ErrorInvalidId);
             }
-            if (!Authorization.HasDatasetAccess(Report.DatasetId))
+            if (!new Authorization().HasDatasetAccess(Report.DatasetId))
             {
                 yield return new ValidationResult(I18n.Reports.ErrorReportDatasetAccess);
             }

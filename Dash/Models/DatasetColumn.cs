@@ -24,7 +24,7 @@ namespace Dash.Models
         [JilDirective(true)]
         public DataType DataType
         {
-            get { return _DataType ?? (_DataType = DataType.FromId(DataTypeId)); }
+            get { return _DataType ?? (_DataType = DbContext.Get<DataType>(DataTypeId)); }
             set { _DataType = value; }
         }
 

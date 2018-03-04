@@ -60,7 +60,7 @@ namespace Dash.Models
         [JilDirective(true)]
         public Dataset Dataset
         {
-            get { return _Dataset ?? (_Dataset = Dataset.FromId(DatasetId)); }
+            get { return _Dataset ?? (_Dataset = DbContext.Get<Dataset>(DatasetId)); }
             set { _Dataset = value; }
         }
 
@@ -111,7 +111,7 @@ namespace Dash.Models
         /// Get the user object of the report owner.
         /// </summary>
         [Ignore, JilDirective(true)]
-        public User Owner { get { return _Owner ?? (_Owner = User.FromId(OwnerId)); } }
+        public User Owner { get { return _Owner ?? (_Owner = DbContext.Get<User>(OwnerId)); } }
 
         [Required(ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorRequired")]
         [JilDirective(true)]
@@ -158,34 +158,14 @@ namespace Dash.Models
             {
                 return JSON.SerializeDynamic(new {
                     reportId = Id,
-                    userList = User.ActiveUserList(),
-                    roleList = Role.ActiveRoleList(),
+                    userList = DbContext.GetAll<User>(new { IsActive = 1 }).OrderBy(x => x.LastName).ThenBy(x => x.FirstName)
+                        .Select(x => new { x.Id, x.FullName }).Prepend(new { Id = 0, FullName = Core.SelectUser }),
+                    roleList = DbContext.GetAll<Role>().OrderBy(x => x.Name).Select(x => new { x.Id, x.Name })
+                        .Prepend(new { Id = 0, Name = Core.SelectRole }),
                     shares = ReportShare
                 }, JilOutputFormatter.Options);
             }
 
-        }
-
-        /// <summary>
-        /// Create a new report object from a createReport object.
-        /// </summary>
-        /// <param name="report">Setting for new report.</param>
-        /// <returns>Returns a new report object.</returns>
-        public static Report Create(CreateReport report)
-        {
-            var newReport = new Report { DatasetId = report.DatasetId, Name = report.Name, Width = 0 };
-            DbContext.Save(newReport);
-            return newReport;
-        }
-
-        /// <summary>
-        /// Load a report by ID.
-        /// </summary>
-        /// <param name="id">ID of the report to load.</param>
-        /// <returns>Returns the requested report or null.</returns>
-        public static Report FromId(int id)
-        {
-            return DbContext.Get<Report>(id);
         }
 
         /// <summary>

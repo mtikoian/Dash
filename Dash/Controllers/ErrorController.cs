@@ -20,7 +20,6 @@ namespace Dash.Controllers
         /// Displays error message.
         /// </summary>
         /// <returns>Returns the dashboard page.</returns>
-        [SkipActivityLog]
         public IActionResult Index()
         {
             return View("Error");
@@ -30,7 +29,6 @@ namespace Dash.Controllers
         /// Log javascript errors to elmah.
         /// </summary>
         /// <param name="message"></param>
-        [SkipActivityLog]
         public void LogJavascriptError(string message)
         {
             new Exception(message).Log(HttpContextAccessor);

@@ -27,7 +27,7 @@ namespace Dash.Models
         public void Save()
         {
             ControllerActions.Select(x => new Permission() { ActionName = x, ControllerName = ControllerName })
-                .Each(x => x.Save());
+                .Each(x => DbContext.Save(x));
         }
 
         /// <summary>

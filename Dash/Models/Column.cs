@@ -14,7 +14,7 @@
         public string Alias { get { return "column" + ColumnId; } }
 
         public int ColumnId { get; set; }
-        public DataType DataType { get { return _DataType ?? (_DataType = DataType.FromId(DataTypeId)); } }
+        public DataType DataType { get { return _DataType ?? (_DataType = DbContext.Get<DataType>(DataTypeId)); } }
         public int DataTypeId { get; set; }
         public int DisplayOrder { get; set; }
 

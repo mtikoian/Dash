@@ -1,11 +1,11 @@
-﻿using Jil;
-using Dash.I18n;
+﻿using Dash.I18n;
+using Jil;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Dash.Models
 {
@@ -82,7 +82,7 @@ namespace Dash.Models
         /// Get the user object of the report owner.
         /// </summary>
         [Ignore, JilDirective(true)]
-        public User Owner { get { return _Owner ?? (_Owner = User.FromId(OwnerId)); } }
+        public User Owner { get { return _Owner ?? (_Owner = DbContext.Get<User>(OwnerId)); } }
 
         [Required(ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorRequired")]
         [JilDirective(true)]
@@ -95,8 +95,10 @@ namespace Dash.Models
             {
                 return JSON.SerializeDynamic(new {
                     reportId = Id,
-                    userList = User.ActiveUserList(),
-                    roleList = Role.ActiveRoleList(),
+                    userList = DbContext.GetAll<User>(new { IsActive = 1 }).OrderBy(x => x.LastName).ThenBy(x => x.FirstName)
+                        .Select(x => new { x.Id, x.FullName }).Prepend(new { Id = 0, FullName = Core.SelectUser }),
+                    roleList = DbContext.GetAll<Role>().OrderBy(x => x.Name).Select(x => new { x.Id, x.Name })
+                        .Prepend(new { Id = 0, Name = Core.SelectRole }),
                     shares = ChartShare
                 }, JilOutputFormatter.Options);
             }
@@ -110,16 +112,6 @@ namespace Dash.Models
         public static Chart Create(CreateChart chart)
         {
             return new Chart() { Name = chart.Name, ChartTypeId = chart.ChartTypeId };
-        }
-
-        /// <summary>
-        /// Load a chart by ID.
-        /// </summary>
-        /// <param name="id">ID of the chart to load.</param>
-        /// <returns>Returns the requested chart or null.</returns>
-        public static Chart FromId(int id)
-        {
-            return DbContext.Get<Chart>(id);
         }
 
         /// <summary>
@@ -177,7 +169,7 @@ namespace Dash.Models
             {
                 if (!reports.ContainsKey(range.ReportId))
                 {
-                    reports.Add(range.ReportId, Report.FromId(range.ReportId));
+                    reports.Add(range.ReportId, DbContext.Get<Report>(range.ReportId));
                 }
 
                 var report = reports[range.ReportId];

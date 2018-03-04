@@ -45,7 +45,7 @@ namespace Dash.Models
         [JilDirective(true)]
         public Database Database
         {
-            get { return _Database ?? (_Database = Database.FromId(DatabaseId)); }
+            get { return _Database ?? (_Database = DbContext.Get<Database>(DatabaseId)); }
             set { _Database = value; }
         }
 
@@ -153,16 +153,6 @@ namespace Dash.Models
         }
 
         /// <summary>
-        /// Load a dataset by ID.
-        /// </summary>
-        /// <param name="id">ID of dataset to load.</param>
-        /// <returns>Returns a dataset object or null.</returns>
-        public Dataset FromId(int id)
-        {
-            return DbContext.Get<Dataset>(id);
-        }
-
-        /// <summary>
         /// Get all datasets a user can access.
         /// </summary>
         /// <returns>Returns a dictionary of <RoleId, DatasetRole>.</returns>
@@ -177,7 +167,7 @@ namespace Dash.Models
         /// <returns>Returns the status message to display.</returns>
         public List<DatasetColumn> ImportSchema(int databaseId, List<string> sources)
         {
-            var database = new Database().FromId(databaseId);
+            var database = DbContext.Get<Database>(databaseId);
             var existingColumns = new Dictionary<string, DatasetColumn>();
             if (sources.Count > 0 && database != null && database.TestConnection(out var error))
             {
@@ -267,14 +257,13 @@ namespace Dash.Models
                 tableList.AddRange(DatasetJoin?.Select(x => x.TableName).Distinct().Where(x => !tableList.Contains(x)));
             }
 
-            var database = Database ?? Database.FromId(DatabaseId);
-            if (database != null && database.TestConnection(out var error))
+            if (Database?.TestConnection(out var error) == true)
             {
                 tableList.Each(table => {
-                    database.GetTableSchema(table).Rows.OfType<DataRow>().Each(row => {
+                    Database.GetTableSchema(table).Rows.OfType<DataRow>().Each(row => {
                         columns.Add(new {
-                            table = row.ToTableName(database.IsSqlServer),
-                            column = row.ToColumnName(database.IsSqlServer, false)
+                            table = row.ToTableName(Database.IsSqlServer),
+                            column = row.ToColumnName(Database.IsSqlServer, false)
                         });
                     });
                 });
@@ -323,13 +312,12 @@ namespace Dash.Models
         public Dictionary<int, Dictionary<string, LookupItem>> GetSelectFilters(bool prependEmpty = false)
         {
             var selectColumns = new Dictionary<int, Dictionary<string, LookupItem>>();
-            var database = this.Database ?? Database.FromId(DatabaseId);
-            if (database != null && DatasetColumn?.Count > 0)
+            if (Database != null && DatasetColumn?.Count > 0)
             {
                 DatasetColumn.Where(x => x.IsSelect && !x.FilterQuery.IsEmpty()).ToList().ForEach(x => {
                     try
                     {
-                        selectColumns.Add(x.Id, database.Query<LookupItem>(x.FilterQuery)
+                        selectColumns.Add(x.Id, Database.Query<LookupItem>(x.FilterQuery)
                             .Prepend(new LookupItem { Value = "", Text = Reports.FilterCriteria }, prependEmpty)
                             .ToDictionary(y => y.Value, y => y));
                     }

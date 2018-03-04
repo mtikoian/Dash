@@ -17,7 +17,7 @@ namespace Dash.Models
         public Role Role
         {
             get {
-                return _Role ?? (_Role = Role.FromId(Id));
+                return _Role ?? (_Role = DbContext.Get<Role>(Id));
             }
         }
 

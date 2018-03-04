@@ -1,24 +1,20 @@
-﻿using Dash.Models;
-using Dash.I18n;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc;
-using System.Linq;
-using Dash.Configuration;
+﻿using Dash.Configuration;
 using Dash.I18n;
 using Dash.Models;
+using Dash.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
-using System;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Authorization;
+using System.Linq;
 
 namespace Dash.Controllers
 {
     /// <summary>
     /// Handles CRUD for datasets.
     /// </summary>
-    [Authorize]
+    [Authorize(Policy = "HasPermission")]
     public class DatasetController : BaseController
     {
         public DatasetController(IHttpContextAccessor httpContextAccessor, IDbContext dbContext, IMemoryCache cache, IAppConfiguration appConfig) : base(httpContextAccessor, dbContext, cache, appConfig)
@@ -34,7 +30,7 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly, ParentAction("Create")]
         public IActionResult Columns(int id, string tables)
         {
-            return Json(new { columns = Dataset.FromId(id)?.AvailableColumns(tables.Split(',')) ?? new List<object>() });
+            return Json(new { columns = DbContext.Get<Dataset>(id)?.AvailableColumns(tables.Split(',')) ?? new List<object>() });
         }
 
         /// <summary>
@@ -83,7 +79,7 @@ namespace Dash.Controllers
         [HttpDelete, AjaxRequestOnly]
         public IActionResult Delete(int id)
         {
-            var model = Dataset.FromId(id);
+            var model = DbContext.Get<Dataset>(id);
             if (model == null)
             {
                 return JsonError(Core.ErrorInvalidId);
@@ -100,7 +96,7 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly]
         public IActionResult Edit(int id)
         {
-            var model = Dataset.FromId(id);
+            var model = DbContext.Get<Dataset>(id);
             if (model == null)
             {
                 return JsonError(Core.ErrorInvalidId);
@@ -128,11 +124,13 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly, ParentAction("Edit")]
         public IActionResult FormOptions(int? id)
         {
-            var model = id.HasPositiveValue() ? Dataset.FromId(id.Value) : null;
-            return Json(new {
+            var model = id.HasPositiveValue() ? DbContext.Get<Dataset>(id.Value) : null;
+            return Json(new
+            {
                 joinTypes = typeof(JoinTypes).TranslatedList().Prepend(new { Id = 0, Name = Datasets.JoinType }),
                 joins = model?.DatasetJoin,
-                dataTypes = DataType.DataTypes,
+                dataTypes = DbContext.GetAll<DataType>().OrderBy(d => d.Name).Select(x => new { x.Id, x.Name }).ToList()
+                    .Prepend(new { Id = 0, Name = Datasets.ColumnDataType }),
                 filterTypes = FilterType.FilterTypeList,
                 columns = model?.DatasetColumn,
                 wantsHelp = Authorization.WantsHelp
@@ -178,7 +176,7 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly]
         public IActionResult ReadSchema(int databaseId, List<string> sources)
         {
-            return Json(new { columns = Dataset.ImportSchema(databaseId, sources) });
+            return Json(new { columns = new Dataset().ImportSchema(databaseId, sources) });
         }
 
         /// <summary>
@@ -189,7 +187,7 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly, ParentAction("Create")]
         public IActionResult Sources(int databaseId, int typeId)
         {
-            return Json(Database.FromId(databaseId)?.GetSourceList(true, typeId == (int)DatasetTypes.Proc));
+            return Json(DbContext.Get<Database>(databaseId)?.GetSourceList(true, typeId == (int)DatasetTypes.Proc));
         }
 
         /// <summary>
@@ -202,14 +200,15 @@ namespace Dash.Controllers
         public IActionResult TableColumns(int databaseId, List<string> tables)
         {
             // find table list
-            var database = Database.FromId(databaseId);
+            var database = DbContext.Get<Database>(databaseId);
             if (database == null || tables == null || tables.Count == 0)
             {
                 return Json("");
             }
 
             var list = new List<string>();
-            tables.ForEach(x => {
+            tables.ForEach(x =>
+            {
                 var schema = database.GetTableSchema(x);
                 if (schema.Rows.Count > 0)
                 {
@@ -231,7 +230,7 @@ namespace Dash.Controllers
         {
             if (model.Database == null && model.DatabaseId > 0)
             {
-                model.Database = Database.FromId(model.DatabaseId);
+                model.Database = DbContext.Get<Database>(model.DatabaseId);
             }
             return PartialView("CreateEdit", model);
         }

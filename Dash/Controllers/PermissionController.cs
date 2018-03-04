@@ -1,6 +1,7 @@
 ﻿using Dash.Configuration;
 using Dash.I18n;
 using Dash.Models;
+using Dash.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +14,7 @@ namespace Dash.Controllers
     /// <summary>
     /// Handles CRUD for authorization permissions.
     /// </summary>
-    [Authorize]
+    [Authorize(Policy = "HasPermission")]
     public class PermissionController : BaseController
     {
         public PermissionController(IHttpContextAccessor httpContextAccessor, IDbContext dbContext, IMemoryCache cache, IAppConfiguration appConfig) : base(httpContextAccessor, dbContext, cache, appConfig)
@@ -76,7 +77,7 @@ namespace Dash.Controllers
         [HttpDelete, AjaxRequestOnly]
         public IActionResult Delete(int id)
         {
-            var model = Permission.FromId(id);
+            var model = DbContext.Get<Permission>(id);
             if (model == null)
             {
                 return JsonError(Core.ErrorInvalidId);
@@ -93,7 +94,7 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly]
         public IActionResult Edit(int id)
         {
-            var model = Permission.FromId(id);
+            var model = DbContext.Get<Permission>(id);
             if (model == null)
             {
                 return JsonError(Core.ErrorInvalidId);

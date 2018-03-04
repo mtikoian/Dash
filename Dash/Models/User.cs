@@ -1,10 +1,21 @@
 ﻿using Dash.I18n;
+using Dash.Utils;
 using Jil;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Security.Claims;
+using Dash.Models;
+using Dash.I18n;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Globalization;
+using System.Linq;
+using System.Threading;
+using System.Web;
 
 namespace Dash.Models
 {
@@ -16,6 +27,12 @@ namespace Dash.Models
     {
         private List<Role> _AllRoles;
         private List<UserRole> _UserRole;
+        private IHttpContextAccessor HttpContextAccessor;
+
+        public User(IHttpContextAccessor httpContextAccessor)
+        {
+            HttpContextAccessor = httpContextAccessor;
+        }
 
         /// <summary>
         /// Make a keyed list of all roles.
@@ -104,26 +121,6 @@ namespace Dash.Models
         }
 
         /// <summary>
-        /// Get a list of all active users to use with mithril.
-        /// </summary>
-        /// <returns>List of users with id and fullName for each.</returns>
-        public IEnumerable<object> ActiveUserList()
-        {
-            return DbContext.GetAll<User>(new { IsActive = 1 }).OrderBy(x => x.LastName).ThenBy(x => x.FirstName)
-                .Select(x => new { x.Id, x.FullName }).Prepend(new { Id = 0, FullName = Core.SelectUser });
-        }
-
-        /// <summary>
-        /// Load user by ID.
-        /// </summary>
-        /// <param name="id">User ID</param>
-        /// <returns>User object or null</returns>
-        public User FromId(int id)
-        {
-            return DbContext.Get<User>(id);
-        }
-
-        /// <summary>
         /// Save a user, including updating the userRoles and password if provided.
         /// </summary>
         /// <param name="lazySave">Lazy save children if true.</param>
@@ -139,40 +136,15 @@ namespace Dash.Models
                     ?? new List<UserRole>();
             }
 
-            var membershipService = new AccountMembershipService();
-            if (Id == 0)
+            // try saving
+            DbContext.Save(this);
+
+            if (!Password.IsEmpty())
             {
-                var createStatus = membershipService.CreateUser(UID, Password, Email);
-                if (createStatus == MembershipCreateStatus.Success)
-                {
-                    // find requested user
-                    var res = DbContext.GetAll<User>(new { UID }).FirstOrDefault();
-                    if (res != null)
-                    {
-                        Id = res.Id;
-                    }
-                    else
-                    {
-                        Error = I18n.Core.ErrorInvalidId;
-                        return false;
-                    }
-                }
-                else
-                {
-                    Error = AccountMembershipService.ErrorCodeToString(createStatus);
-                    return false;
-                }
-            }
-            else if (!Password.IsEmpty())
-            {
-                if (!membershipService.ChangePassword(UID, membershipService.ResetPassword(UID, ""), Password))
-                {
-                    Error = I18n.Account.ErrorSavingPassword;
-                    return false;
-                }
+                Salt = Hasher.GenerateSalt();
+                DbContext.Execute("UserPasswordSave", new { Id = Id, Password = Hasher.HashPassword(Password, Salt), Salt = Salt, RequestUserId = RequestUserId });
             }
 
-            DbContext.Save(this, lazySave);
             return true;
         }
 
@@ -185,7 +157,8 @@ namespace Dash.Models
         public bool UpdateProfile(IHttpContextAccessor httpContextAccessor, out string errorMsg)
         {
             // load user object and copy settings the user is allowed to change
-            var user = FromId(Authorization.User.Id);
+            var userId = HttpContextAccessor.HttpContext.User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt();
+            var user = DbContext.Get<User>(userId);
             user.FirstName = FirstName;
             user.LastName = LastName;
             user.LanguageId = LanguageId;
@@ -208,7 +181,9 @@ namespace Dash.Models
                 var language = DbContext.Get<Language>(user.LanguageId);
                 if (language != null)
                 {
-                    Authorization.SetCulture(language.LanguageCode);
+                    var cultureInfo = new CultureInfo(language.LanguageCode);
+                    CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+                    CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
                 }
                 return true;
             }
@@ -227,11 +202,6 @@ namespace Dash.Models
             if (DbContext.GetAll<User>(new { UID }).Any(x => x.Id != Id))
             {
                 yield return new ValidationResult(I18n.Users.ErrorDuplicateName, new[] { "UID" });
-            }
-            // check for password if needed
-            if (!Authorization.UsingDashAuth)
-            {
-                yield break;
             }
 
             if (Id == 0)

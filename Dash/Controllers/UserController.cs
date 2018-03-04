@@ -1,6 +1,7 @@
 ﻿using Dash.Configuration;
 using Dash.I18n;
 using Dash.Models;
+using Dash.Utils;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
@@ -13,7 +14,7 @@ namespace Dash.Controllers
     /// <summary>
     /// Handles CRUD for users.
     /// </summary>
-    [Authorize]
+    [Authorize(Policy = "HasPermission")]
     public class UserController : BaseController
     {
         public UserController(IHttpContextAccessor httpContextAccessor, IDbContext dbContext, IMemoryCache cache, IAppConfiguration appConfig) : base(httpContextAccessor, dbContext, cache, appConfig)
@@ -49,7 +50,7 @@ namespace Dash.Controllers
         [HttpDelete, AjaxRequestOnly]
         public IActionResult Delete(int id)
         {
-            var model = new User().FromId(id);
+            var model = DbContext.Get<User>(id);
             if (model == null)
             {
                 return JsonError(Core.ErrorInvalidId);
@@ -66,7 +67,7 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly]
         public IActionResult Edit(int id)
         {
-            var model = new User().FromId(id);
+            var model = DbContext.Get<User>(id);
             if (model == null)
             {
                 return JsonError(Core.ErrorInvalidId);

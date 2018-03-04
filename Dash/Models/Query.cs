@@ -38,8 +38,7 @@ namespace Dash.Models
             Report = report;
             ChartRange = range;
             IsChart = range != null;
-
-            Database = Report.Dataset.Database ?? Database.FromId(Report.Dataset.DatabaseId);
+            Database = Report.Dataset.Database;
 
             // make a dictionary of joins for this dataset
             if (report.Dataset.DatasetJoin != null)

@@ -78,33 +78,14 @@ namespace Dash.Models
         }
 
         /// <summary>
-        /// Load a role by ID.
-        /// </summary>
-        /// <param name="id">ID of the role to load.</param>
-        /// <returns>Role object or null.</returns>
-        public static Role FromId(int id)
-        {
-            return DbContext.Get<Role>(id);
-        }
-
-        /// <summary>
         /// Make sure no other roles have the same name.
         /// </summary>
         /// <param name="name">Name to check for.</param>
         /// <param name="id">ID of current role.</param>
         /// <returns>True</returns>
-        public static bool IsUniqueName(string name, int id)
+        public bool IsUniqueName(string name, int id)
         {
             return !DbContext.GetAll<Role>(new { Name = name }).Any(x => x.Id != id);
-        }
-
-        /// <summary>
-        /// List of roles to use with mithril.
-        /// </summary>
-        /// <returns>List of roles with just the ID and name for each.</returns>
-        public static IEnumerable<object> ActiveRoleList()
-        {
-            return DbContext.GetAll<Role>().OrderBy(x => x.Name).Select(x => new { x.Id, x.Name }).Prepend(new { Id = 0, Name = Core.SelectRole });
         }
 
         /// <summary>

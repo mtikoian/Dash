@@ -1,18 +1,23 @@
 ﻿using Dash.I18n;
+using Dash.Utils;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
 namespace Dash.Models
 {
     public class LogOn : BaseModel
     {
-        private IHttpContextAccessor _HttpContextAccessor;
+        private IHttpContextAccessor HttpContextAccessor;
 
         public LogOn(IHttpContextAccessor httpContextAccessor)
         {
-            _HttpContextAccessor = httpContextAccessor;
+            HttpContextAccessor = httpContextAccessor;
         }
 
         [Display(Name = "Password", ResourceType = typeof(I18n.Users))]
@@ -36,20 +41,31 @@ namespace Dash.Models
             error = "";
             try
             {
-                var membershipService = new AccountMembershipService();
-                if (membershipService.ValidateUser(UserName, Password))
+                var myUser = DbContext.GetAll<User>(new { UID = UserName, IsActive = true }).FirstOrDefault();
+                if (myUser?.IsActive != true)
                 {
-                    var myUser = DbContext.GetAll<User>(new { UID = UserName, IsActive = true }).FirstOrDefault();
-                    if (myUser != null && myUser.IsActive)
-                    {
-                        var formsService = new FormsAuthenticationService();
-                        formsService.SignIn(UserName, false);
-                        return true;
-                    }
-                    else
-                    {
-                        error = Account.ErrorCannotMatchMembership;
-                    }
+                    error = Account.ErrorCannotValidate;
+                }
+
+                if (Hasher.VerifyPassword(myUser.Password, Password, myUser.Salt))
+                {
+                    var claims = new List<Claim> {
+                        new Claim(ClaimTypes.Name, myUser.UID),
+                        new Claim(ClaimTypes.PrimarySid, myUser.Id.ToString()),
+                        new Claim("FullName", myUser.FullName)
+                    };
+                    claims.AddRange(DbContext.GetAll<UserClaim>(new { myUser.Id })
+                        .Select(x => new Claim(ClaimTypes.Role, $"{x.ControllerName}.{x.ActionName}".ToLower())));
+
+                    var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    var authProperties = new AuthenticationProperties {
+                        IsPersistent = true
+                    };
+
+                    HttpContextAccessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                        new ClaimsPrincipal(claimsIdentity), authProperties);
+
+                    return true;
                 }
                 else
                 {
@@ -58,7 +74,7 @@ namespace Dash.Models
             }
             catch (Exception ex)
             {
-                ex.Log(_HttpContextAccessor);
+                ex.Log(HttpContextAccessor);
                 error = Account.ErrorCannotValidate;
             }
             return false;

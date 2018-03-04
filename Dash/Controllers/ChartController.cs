@@ -1,25 +1,20 @@
-using Dash.Models;
-using Dash.I18n;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc;
 using Dash.Configuration;
 using Dash.I18n;
 using Dash.Models;
+using Dash.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
-using System;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Authorization;
+using System.Linq;
 
 namespace Dash.Controllers
 {
     /// <summary>
     /// Handles CRUD for charts.
     /// </summary>
-    [Authorize]
+    [Authorize(Policy = "HasPermission")]
     public class ChartController : BaseController
     {
         public ChartController(IHttpContextAccessor httpContextAccessor, IDbContext dbContext, IMemoryCache cache, IAppConfiguration appConfig) : base(httpContextAccessor, dbContext, cache, appConfig)
@@ -34,7 +29,7 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly]
         public IActionResult ChangeType(int id)
         {
-            var model = Chart.FromId(id);
+            var model = DbContext.Get<Chart>(id);
             if (model == null)
             {
                 return JsonError(Core.ErrorInvalidId);
@@ -55,7 +50,7 @@ namespace Dash.Controllers
         [HttpPost, ParentAction("ChangeType"), AjaxRequestOnly]
         public IActionResult ChangeTypeSave(int id, int chartTypeId)
         {
-            var model = Chart.FromId(id);
+            var model = DbContext.Get<Chart>(id);
             if (model == null)
             {
                 return JsonError(Core.ErrorInvalidId);
@@ -129,10 +124,10 @@ namespace Dash.Controllers
         /// </summary>
         /// <param name="id">Chart Id</param>
         /// <returns>Object with the queries run, execution time, retrieved data, and any errors.</returns>
-        [HttpPost, AjaxRequestOnly, SkipActivityLog]
+        [HttpPost, AjaxRequestOnly]
         public IActionResult Data(int id)
         {
-            var model = Chart.FromId(id);
+            var model = DbContext.Get<Chart>(id);
             if (model == null)
             {
                 return JsonError(Core.ErrorInvalidId);
@@ -159,7 +154,7 @@ namespace Dash.Controllers
         [HttpDelete, AjaxRequestOnly]
         public IActionResult Delete(int id)
         {
-            var model = Chart.FromId(id);
+            var model = DbContext.Get<Chart>(id);
             if (model == null)
             {
                 return JsonError(Core.ErrorInvalidId);
@@ -181,7 +176,7 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly]
         public IActionResult Details(int id)
         {
-            var model = Chart.FromId(id);
+            var model = DbContext.Get<Chart>(id);
             if (model == null)
             {
                 return JsonError(Core.ErrorInvalidId);
@@ -203,7 +198,7 @@ namespace Dash.Controllers
         [HttpGet, ParentAction("Details"), AjaxRequestOnly]
         public IActionResult DetailsOptions(int id)
         {
-            var model = Chart.FromId(id);
+            var model = DbContext.Get<Chart>(id);
             if (model == null)
             {
                 return JsonError(Core.ErrorInvalidId);
@@ -296,7 +291,7 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly]
         public IActionResult Rename(int id, string prompt)
         {
-            var model = Chart.FromId(id);
+            var model = DbContext.Get<Chart>(id);
             if (model == null)
             {
                 return JsonError(Core.ErrorInvalidId);
@@ -324,7 +319,7 @@ namespace Dash.Controllers
         [HttpPost, AjaxRequestOnly]
         public IActionResult SaveRanges(int id, List<ChartRange> ranges = null)
         {
-            var model = Chart.FromId(id);
+            var model = DbContext.Get<Chart>(id);
             if (model == null)
             {
                 return JsonError(Core.ErrorInvalidId);
@@ -345,7 +340,7 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly]
         public IActionResult Share(int id)
         {
-            var model = Chart.FromId(id);
+            var model = DbContext.Get<Chart>(id);
             if (model == null)
             {
                 return JsonError(Core.ErrorInvalidId);
@@ -366,7 +361,7 @@ namespace Dash.Controllers
         [HttpPut, ActionName("Share"), AjaxRequestOnly]
         public IActionResult ShareSave(int id, List<ChartShare> chartShare)
         {
-            var model = Chart.FromId(id);
+            var model = DbContext.Get<Chart>(id);
             if (model == null)
             {
                 return JsonError(Core.ErrorInvalidId);

@@ -1,6 +1,7 @@
 ﻿using Dash.Configuration;
 using Dash.I18n;
 using Dash.Models;
+using Dash.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +14,7 @@ namespace Dash.Controllers
     /// <summary>
     /// Handles CRUD for databases.
     /// </summary>
-    [Authorize]
+    [Authorize(Policy = "HasPermission")]
     public class DatabaseController : BaseController
     {
         public DatabaseController(IHttpContextAccessor httpContextAccessor, IDbContext dbContext, IMemoryCache cache, IAppConfiguration appConfig) : base(httpContextAccessor, dbContext, cache, appConfig)
@@ -49,7 +50,7 @@ namespace Dash.Controllers
         [HttpDelete, AjaxRequestOnly]
         public IActionResult Delete(int id)
         {
-            var model = Database.FromId(id);
+            var model = DbContext.Get<Database>(id);
             if (model == null)
             {
                 return JsonError(Core.ErrorInvalidId);
@@ -66,12 +67,12 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly]
         public IActionResult Edit(int id)
         {
-            var model = Database.FromId(id);
+            var model = DbContext.Get<Database>(id);
             if (model == null)
             {
                 return JsonError(Core.ErrorInvalidId);
             }
-            model.ConnectionString = model.ConnectionString.IsEmpty() ? null : Crypt.Decrypt(model.ConnectionString);
+            model.ConnectionString = model.ConnectionString.IsEmpty() ? null : new Crypt(AppConfig).Decrypt(model.ConnectionString);
             return CreateEditView(model);
         }
 
@@ -125,7 +126,7 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly]
         public IActionResult TestConnection(int id)
         {
-            var model = Database.FromId(id);
+            var model = DbContext.Get<Database>(id);
             if (model == null)
             {
                 return JsonError(Core.ErrorInvalidId);

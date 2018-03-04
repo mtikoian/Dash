@@ -1,6 +1,7 @@
 using Dash.Configuration;
 using Dash.I18n;
 using Dash.Models;
+using Dash.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +14,7 @@ namespace Dash.Controllers
     /// <summary>
     /// Handles CRUD for reports.
     /// </summary>
-    [Authorize]
+    [Authorize(Policy = "HasPermission")]
     public class ReportController : BaseController
     {
         public ReportController(IHttpContextAccessor httpContextAccessor, IDbContext dbContext, IMemoryCache cache, IAppConfiguration appConfig) : base(httpContextAccessor, dbContext, cache, appConfig)
@@ -59,7 +60,8 @@ namespace Dash.Controllers
                 return JsonError(ModelState.ToErrorString());
             }
 
-            var newReport = Report.Create(model);
+            var newReport = new Report { DatasetId = model.DatasetId, Name = model.Name, Width = 0 };
+            DbContext.Save(newReport);
             return Json(new { message = Reports.SuccessSavingReport, dialogUrl = Url.Action("SelectColumns", new { @id = newReport.Id, @closeParent = false }) });
         }
 
@@ -72,10 +74,10 @@ namespace Dash.Controllers
         /// <param name="sorting">JSON object of sorting settings.</param>
         /// <param name="save">Save the changes if value=1.</param>
         /// <returns>Object with the queries run, retrieved data, and any errors.</returns>
-        [HttpPost, AjaxRequestOnly, SkipActivityLog]
+        [HttpPost, AjaxRequestOnly]
         public IActionResult Data(int id, int? startItem, int? items, IEnumerable<TableSorting> sort = null, bool? save = false)
         {
-            var model = Report.FromId(id);
+            var model = DbContext.Get<Report>(id);
             if (model == null)
             {
                 return JsonError(Core.ErrorInvalidId);
@@ -107,7 +109,7 @@ namespace Dash.Controllers
         [HttpDelete, AjaxRequestOnly]
         public IActionResult Delete(int id)
         {
-            var model = Report.FromId(id);
+            var model = DbContext.Get<Report>(id);
             if (model == null)
             {
                 return JsonError(Core.ErrorInvalidId);
@@ -128,7 +130,7 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly]
         public IActionResult Details(int id)
         {
-            var model = Report.FromId(id);
+            var model = DbContext.Get<Report>(id);
             if (model == null)
             {
                 return JsonError(Core.ErrorInvalidId);
@@ -160,7 +162,7 @@ namespace Dash.Controllers
         [HttpGet, ParentAction("Details"), AjaxRequestOnly]
         public IActionResult DetailsOptions(int id)
         {
-            var model = Report.FromId(id);
+            var model = DbContext.Get<Report>(id);
             if (model == null)
             {
                 return JsonError(Core.ErrorInvalidId);
@@ -218,7 +220,7 @@ namespace Dash.Controllers
         [HttpGet]
         public IActionResult Export(int id)
         {
-            var model = Report.FromId(id);
+            var model = DbContext.Get<Report>(id);
             if (model == null)
             {
                 return JsonError(Core.ErrorInvalidId);
@@ -273,7 +275,7 @@ namespace Dash.Controllers
         [HttpPut, AjaxRequestOnly]
         public IActionResult Rename(int id, string prompt)
         {
-            var model = Report.FromId(id);
+            var model = DbContext.Get<Report>(id);
             if (model == null)
             {
                 return JsonError(Core.ErrorInvalidId);
@@ -301,7 +303,7 @@ namespace Dash.Controllers
         [HttpPut, AjaxRequestOnly]
         public IActionResult SaveFilters(int id, List<ReportFilter> filters = null)
         {
-            var model = Report.FromId(id);
+            var model = DbContext.Get<Report>(id);
             if (model == null)
             {
                 return JsonError(Core.ErrorInvalidId);
@@ -324,7 +326,7 @@ namespace Dash.Controllers
         [HttpPut, AjaxRequestOnly]
         public IActionResult SaveGroups(int id, int groupAggregator, List<ReportGroup> groups = null)
         {
-            var model = Report.FromId(id);
+            var model = DbContext.Get<Report>(id);
             if (model == null)
             {
                 return JsonError(Core.ErrorInvalidId);
@@ -346,7 +348,7 @@ namespace Dash.Controllers
         [HttpGet, ParentAction("Create"), AjaxRequestOnly]
         public IActionResult SelectColumns(int id, bool closeParent = true)
         {
-            var model = Report.FromId(id);
+            var model = DbContext.Get<Report>(id);
             if (model == null)
             {
                 return JsonError(Core.ErrorInvalidId);
@@ -371,7 +373,7 @@ namespace Dash.Controllers
         [HttpPut, ParentAction("Create"), AjaxRequestOnly]
         public IActionResult SelectColumns(int id, List<ReportColumn> columns, bool closeParent = true)
         {
-            var model = Report.FromId(id);
+            var model = DbContext.Get<Report>(id);
             if (model == null)
             {
                 return JsonError(Core.ErrorInvalidId);
@@ -389,7 +391,7 @@ namespace Dash.Controllers
                 return JsonError(Reports.ErrorSelectColumn);
             }
 
-            var myReport = Report.FromId(model.Id);
+            var myReport = DbContext.Get<Report>(model.Id);
             myReport.UpdateColumns(columns.Where(x => x.DisplayOrder > 0).ToList());
             return Json(new {
                 message = Reports.SuccessSavingReport,
@@ -407,7 +409,7 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly]
         public IActionResult Share(int id)
         {
-            var model = Report.FromId(id);
+            var model = DbContext.Get<Report>(id);
             if (model == null)
             {
                 return JsonError(Core.ErrorInvalidId);
@@ -429,7 +431,7 @@ namespace Dash.Controllers
         [HttpPut, ActionName("Share"), AjaxRequestOnly]
         public IActionResult ShareSave(int id, List<ReportShare> reportShare)
         {
-            var model = Report.FromId(id);
+            var model = DbContext.Get<Report>(id);
             if (model == null)
             {
                 return JsonError(Core.ErrorInvalidId);
@@ -455,7 +457,7 @@ namespace Dash.Controllers
         [HttpPut, AjaxRequestOnly]
         public IActionResult UpdateColumnWidths(int id, List<TableColumnWidth> columnWidths, decimal reportWidth)
         {
-            var model = Report.FromId(id);
+            var model = DbContext.Get<Report>(id);
             if (model == null)
             {
                 return JsonError(Core.ErrorInvalidId);

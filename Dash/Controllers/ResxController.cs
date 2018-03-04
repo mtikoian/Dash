@@ -7,6 +7,7 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace Dash.Controllers
 {
+    [Authorize]
     public class ResxController : BaseController
     {
         public ResxController(IHttpContextAccessor httpContextAccessor, IDbContext dbContext, IMemoryCache cache, IAppConfiguration appConfig) : base(httpContextAccessor, dbContext, cache, appConfig)

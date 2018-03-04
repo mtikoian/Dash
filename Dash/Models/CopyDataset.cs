@@ -14,7 +14,7 @@ namespace Dash.Models
         [StringLength(100, ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string Prompt { get; set; }
 
-        public Dataset Dataset { get { return _Dataset ?? (_Dataset = Dataset.FromId(Id)); } }
+        public Dataset Dataset { get { return _Dataset ?? (_Dataset = DbContext.Get<Dataset>(Id)); } }
 
         /// <summary>
         /// Save the dataset.

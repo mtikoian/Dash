@@ -1,11 +1,14 @@
-﻿using Jil;
-using Dash.I18n;
+﻿using Dash.I18n;
+using Jil;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Routing;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace Dash.Models
 {
@@ -28,6 +31,12 @@ namespace Dash.Models
     {
         private List<Column> _Columns;
         private List<DatasetColumn> _DatasetColumns;
+        private IActionContextAccessor ActionContextAccessor;
+
+        public Widget(IActionContextAccessor actionContextAccessor)
+        {
+            ActionContextAccessor = actionContextAccessor;
+        }
 
         [Ignore, JilDirective(true)]
         public bool AllowEdit { get { return UserId == Authorization.User?.Id; } }
@@ -64,7 +73,7 @@ namespace Dash.Models
                         Width = c.Width,
                         Links = new List<TableLink>().AddLink(link, Html.Classes().Append("target", "_blank"), render: !link.IsEmpty())
                     };
-                }) : null ;
+                }) : null;
             }
         }
 
@@ -96,18 +105,25 @@ namespace Dash.Models
                 {
                     case WidgetRefreshRates.ThirtySeconds:
                         return 30;
+
                     case WidgetRefreshRates.OneMinute:
                         return 60;
+
                     case WidgetRefreshRates.FiveMinutes:
                         return 300;
+
                     case WidgetRefreshRates.TenMinutes:
                         return 600;
+
                     case WidgetRefreshRates.FifteenMinutes:
                         return 900;
+
                     case WidgetRefreshRates.ThirtyMinutes:
                         return 1800;
+
                     case WidgetRefreshRates.OneHour:
                         return 3600;
+
                     default:
                         return 0;
                 }
@@ -151,8 +167,8 @@ namespace Dash.Models
         {
             get
             {
-                return UrlHelper.GenerateUrl(null, "Data", IsData ? "Report" : "Chart", new RouteValueDictionary(new { @id = IsData ? ReportId : ChartId }),
-                    RouteTable.Routes, HttpContext.Current.Request.RequestContext, false);
+                return new UrlHelper(ActionContextAccessor.ActionContext)
+                    .Action("Data", IsData ? "Report" : "Chart", new RouteValueDictionary(new { @id = IsData ? ReportId : ChartId }));
             }
         }
 
@@ -169,16 +185,6 @@ namespace Dash.Models
         public int X { get; set; } = -1;
 
         public int Y { get; set; } = -1;
-
-        /// <summary>
-        /// Load a widget from the db by ID.
-        /// </summary>
-        /// <param name="id">ID of the widget.</param>
-        /// <returns>New widget object.</returns>
-        public Widget FromId(int id)
-        {
-            return DbContext.Get<Widget>(id);
-        }
 
         /// <summary>
         /// Get all the charts available to the user as a select list.
