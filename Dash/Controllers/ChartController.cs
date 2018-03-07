@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 
 namespace Dash.Controllers
 {
@@ -132,7 +133,8 @@ namespace Dash.Controllers
             {
                 return JsonError(Core.ErrorInvalidId);
             }
-            if (!model.AllowView)
+            var user = DbContext.Get<User>(HttpContextAccessor.HttpContext.User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt());
+            if (!user.CanViewChart(model))
             {
                 return JsonError(Charts.ErrorPermissionDenied);
             }
@@ -181,7 +183,8 @@ namespace Dash.Controllers
             {
                 return JsonError(Core.ErrorInvalidId);
             }
-            if (!model.AllowView)
+            var user = DbContext.Get<User>(HttpContextAccessor.HttpContext.User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt());
+            if (!user.CanViewChart(model))
             {
                 return JsonError(Charts.ErrorPermissionDenied);
             }
@@ -203,13 +206,14 @@ namespace Dash.Controllers
             {
                 return JsonError(Core.ErrorInvalidId);
             }
-            if (!model.AllowView)
+            var user = DbContext.Get<User>(HttpContextAccessor.HttpContext.User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt());
+            if (!user.CanViewChart(model))
             {
                 return JsonError(Charts.ErrorPermissionDenied);
             }
 
             var columns = new Dictionary<int, List<RangeColumn>>();
-            DbContext.GetAll<RangeColumn>(new { UserId = Authorization.User.Id }).ToList().ForEach(x => {
+            DbContext.GetAll<RangeColumn>(new { UserId = user.Id }).ToList().ForEach(x => {
                 if (!columns.ContainsKey(x.ReportId))
                 {
                     columns.Add(x.ReportId, new List<RangeColumn>());
@@ -221,7 +225,7 @@ namespace Dash.Controllers
                 dateIntervals = model.DateIntervalList.Prepend(new { Id = 0, Name = Charts.DateInterval }),
                 aggregators = model.AggregatorList.Prepend(new { Id = 0, Name = Charts.Aggregator }),
                 ranges = model.ChartRange,
-                reports = DbContext.GetAll<Report>(new { UserId = Authorization.User.Id })
+                reports = DbContext.GetAll<Report>(new { UserId = user.Id })
                     .Select(x => new { id = x.Id, name = x.Name }).Prepend(new { id = 0, name = Charts.Report }),
                 columns = columns.Select(x => new { reportId = x.Key, columns = x.Value }),
                 filterTypes = new {
@@ -231,7 +235,7 @@ namespace Dash.Controllers
                     numeric = (int)FilterTypes.Numeric
                 },
                 allowEdit = model.IsOwner,
-                wantsHelp = Authorization.WantsHelp,
+                wantsHelp = HttpContextAccessor.HttpContext.Session.GetString("ContextHelp").ToBool(),
                 saveRangesUrl = Url.Action("SaveRanges", "Chart", new { model.Id })
             });
         }
@@ -279,7 +283,7 @@ namespace Dash.Controllers
         [HttpGet, ParentAction("Index"), AjaxRequestOnly]
         public IActionResult List()
         {
-            return JsonRows(DbContext.GetAll<Chart>(new { UserId = Authorization.User.Id }));
+            return JsonRows(DbContext.GetAll<Chart>(new { UserId = HttpContextAccessor.HttpContext.User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt() }));
         }
 
         /// <summary>

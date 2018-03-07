@@ -1,5 +1,6 @@
-﻿using Jil;
-using Dash.I18n;
+﻿using Dash.I18n;
+using Jil;
+using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -27,10 +28,15 @@ namespace Dash
     /// </summary>
     public class Table
     {
+        private IHttpContextAccessor HttpContextAccessor;
+
         /// <summary>
         /// Default constructor.
         /// </summary>
-        public Table() { }
+        public Table(IHttpContextAccessor httpContextAccessor)
+        {
+            HttpContextAccessor = httpContextAccessor;
+        }
 
         /// <summary>
         /// Table constructor.
@@ -68,7 +74,7 @@ namespace Dash
         /// <returns>Returns new button link.</returns>
         public static TableLink CopyButton(string url, string controller, string body)
         {
-            if (!Authorization.HasAccess(controller, "Copy"))
+            if (!HttpContextAccessor.HttpContext.User.IsInRole($"{controller}.copy".ToLower()))
             {
                 return null;
             }
@@ -85,7 +91,7 @@ namespace Dash
         /// <returns>Returns new button link.</returns>
         public static TableLink DeleteButton(string url, string controller, string message)
         {
-            if (!Authorization.HasAccess(controller, "Delete"))
+            if (!HttpContextAccessor.HttpContext.User.IsInRole($"{controller}.delete".ToLower()))
             {
                 return null;
             }
@@ -103,7 +109,7 @@ namespace Dash
         /// <returns>Returns new button link.</returns>
         public static TableLink EditButton(string url, string controller, string action = "Edit")
         {
-            if (!Authorization.HasAccess(controller, action))
+            if (!HttpContextAccessor.HttpContext.User.IsInRole($"{controller}.action".ToLower()))
             {
                 return null;
             }
@@ -119,7 +125,7 @@ namespace Dash
         /// <returns>Returns new link.</returns>
         public static TableLink EditLink(string url, string controller, string action = "Edit")
         {
-            if (!Authorization.HasAccess(controller, action))
+            if (!HttpContextAccessor.HttpContext.User.IsInRole($"{controller}.action".ToLower()))
             {
                 return null;
             }

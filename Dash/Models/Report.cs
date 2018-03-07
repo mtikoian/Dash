@@ -46,15 +46,6 @@ namespace Dash.Models
         }
 
         [Ignore, JilDirective(true)]
-        public bool AllowView
-        {
-            get
-            {
-                return Authorization.CanViewReport(this) && Authorization.HasDatasetAccess(DatasetId);
-            }
-        }
-
-        [Ignore, JilDirective(true)]
         public bool CloseParent { get; set; }
 
         [JilDirective(true)]

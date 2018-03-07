@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Security.Claims;
 
 namespace Dash.Models
 {
@@ -10,12 +13,19 @@ namespace Dash.Models
     {
         private Report _Report;
 
+        private IHttpContextAccessor HttpContextAccessor;
+
+        public CopyReport(IHttpContextAccessor httpContextAccessor)
+        {
+            HttpContextAccessor = httpContextAccessor;
+        }
+
+        public Report NewReport { get; set; }
         [Required(ErrorMessageResourceType = typeof(I18n.Reports), ErrorMessageResourceName = "ErrorNameRequired")]
         [StringLength(100, ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string Prompt { get; set; }
 
         public Report Report { get { return _Report ?? (_Report = DbContext.Get<Report>(Id)); } }
-        public Report NewReport { get; set; }
 
         /// <summary>
         /// Save the report.
@@ -37,7 +47,8 @@ namespace Dash.Models
             {
                 yield return new ValidationResult(I18n.Core.ErrorInvalidId);
             }
-            if (!new Authorization().HasDatasetAccess(Report.DatasetId))
+            var user = DbContext.Get<User>(HttpContextAccessor.HttpContext.User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt());
+            if (!user.CanAccessDataset(Report.DatasetId))
             {
                 yield return new ValidationResult(I18n.Reports.ErrorReportDatasetAccess);
             }

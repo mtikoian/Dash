@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 
 namespace Dash.Controllers
 {
@@ -82,7 +83,8 @@ namespace Dash.Controllers
             {
                 return JsonError(Core.ErrorInvalidId);
             }
-            if (!model.AllowView)
+            var user = DbContext.Get<User>(HttpContextAccessor.HttpContext.User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt());
+            if (!user.CanViewReport(model))
             {
                 return JsonError(Reports.ErrorPermissionDenied);
             }
@@ -135,12 +137,13 @@ namespace Dash.Controllers
             {
                 return JsonError(Core.ErrorInvalidId);
             }
-            if (!model.AllowView)
+            var user = DbContext.Get<User>(HttpContextAccessor.HttpContext.User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt());
+            if (!user.CanViewReport(model))
             {
                 return JsonError(Reports.ErrorPermissionDenied);
             }
 
-            if ((model.Dataset?.DatasetColumn?.Count ?? 0) == 0 || !Authorization.HasDatasetAccess(model.Dataset))
+            if ((model.Dataset?.DatasetColumn?.Count ?? 0) == 0 || !user.CanAccessDataset(model.Dataset.Id))
             {
                 return JsonError(Reports.ErrorGeneric);
             }
@@ -167,7 +170,8 @@ namespace Dash.Controllers
             {
                 return JsonError(Core.ErrorInvalidId);
             }
-            if (!model.AllowView)
+            var user = DbContext.Get<User>(HttpContextAccessor.HttpContext.User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt());
+            if (!user.CanViewReport(model))
             {
                 return JsonError(Reports.ErrorPermissionDenied);
             }
@@ -176,7 +180,7 @@ namespace Dash.Controllers
                 reportId = model.Id,
                 allowEdit = model.IsOwner,
                 loadAllData = model.Dataset.IsProc,
-                wantsHelp = Authorization.WantsHelp,
+                wantsHelp = HttpContextAccessor.HttpContext.Session.GetString("ContextHelp").ToBool(),
                 columns = model.Dataset.DatasetColumn.Select(x => new { x.Id, x.Title, x.FilterTypeId, x.IsParam })
                     .Prepend(new { Id = 0, Title = Reports.FilterColumn, FilterTypeId = 0, IsParam = true }),
                 filterOperators = FilterType.FilterOperators,
@@ -225,7 +229,8 @@ namespace Dash.Controllers
             {
                 return JsonError(Core.ErrorInvalidId);
             }
-            if (!model.AllowView)
+            var user = DbContext.Get<User>(HttpContextAccessor.HttpContext.User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt());
+            if (!user.CanViewReport(model))
             {
                 return JsonError(Reports.ErrorPermissionDenied);
             }
@@ -263,7 +268,7 @@ namespace Dash.Controllers
         [HttpGet, ParentAction("Index"), AjaxRequestOnly]
         public IActionResult List()
         {
-            return JsonRows(DbContext.GetAll<Report>(new { UserId = Authorization.User.Id }));
+            return JsonRows(DbContext.GetAll<Report>(new { UserId = HttpContextAccessor.HttpContext.User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt() }));
         }
 
         /// <summary>
@@ -357,7 +362,8 @@ namespace Dash.Controllers
             {
                 return JsonError(Reports.ErrorOwnerOnly);
             }
-            if (!Authorization.HasDatasetAccess(model.DatasetId))
+            var user = DbContext.Get<User>(HttpContextAccessor.HttpContext.User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt());
+            if (!user.CanAccessDataset(model.DatasetId))
             {
                 return JsonError(Reports.ErrorInvalidDatasetId);
             }
@@ -382,7 +388,8 @@ namespace Dash.Controllers
             {
                 return JsonError(Reports.ErrorOwnerOnly);
             }
-            if (!Authorization.HasDatasetAccess(model.DatasetId))
+            var user = DbContext.Get<User>(HttpContextAccessor.HttpContext.User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt());
+            if (!user.CanAccessDataset(model.DatasetId))
             {
                 return JsonError(Reports.ErrorInvalidDatasetId);
             }

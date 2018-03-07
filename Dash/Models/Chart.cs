@@ -38,9 +38,6 @@ namespace Dash.Models
             }
         }
 
-        [Ignore, JilDirective(true)]
-        public bool AllowView { get { return Authorization.CanViewChart(this); } }
-
         [JilDirective(true)]
         public List<ChartRange> ChartRange
         {

@@ -133,7 +133,7 @@ namespace Dash.Controllers
                     .Prepend(new { Id = 0, Name = Datasets.ColumnDataType }),
                 filterTypes = FilterType.FilterTypeList,
                 columns = model?.DatasetColumn,
-                wantsHelp = Authorization.WantsHelp
+                wantsHelp = HttpContextAccessor.HttpContext.Session.GetString("ContextHelp").ToBool()
             });
         }
 

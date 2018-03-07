@@ -153,15 +153,6 @@ namespace Dash.Models
         }
 
         /// <summary>
-        /// Get all datasets a user can access.
-        /// </summary>
-        /// <returns>Returns a dictionary of <RoleId, DatasetRole>.</returns>
-        public IEnumerable<Dataset> GetDatasetsForUser()
-        {
-            return DbContext.GetAll<Dataset>(new { UserId = Authorization.User.Id });
-        }
-
-        /// <summary>
         /// Import columns for the tables in the dataset.
         /// </summary>
         /// <returns>Returns the status message to display.</returns>

@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using System.Globalization;
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -8,7 +10,7 @@
     <link rel="stylesheet" href="~/Dist/core.css" />
     <link rel="icon" href="~/favicon.ico">
 </head>
-<body data-base-url="@Url.Content("~")" data-resx="@Url.Action("Index", "Resx", null)" data-lang="@Dash.Authorization.LanguageCode">
+<body data-base-url="@Url.Content("~")" data-resx="@Url.Action("Index", "Resx", null)" data-lang="@CultureInfo.DefaultThreadCurrentCulture.TwoLetterISOLanguageName">
     @{ Html.RenderPartial("_NavBar"); }
 
     <div id="contentWrapper">

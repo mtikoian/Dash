@@ -5,17 +5,9 @@ using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Security.Claims;
-using Dash.Models;
-using Dash.I18n;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
 using System.Globalization;
 using System.Linq;
-using System.Threading;
-using System.Web;
+using System.Security.Claims;
 
 namespace Dash.Models
 {
@@ -118,6 +110,46 @@ namespace Dash.Models
         {
             get { return _UserRole ?? (_UserRole ?? DbContext.GetAll<UserRole>(new { UserId = Id }).ToList()); }
             set { _UserRole = value; }
+        }
+
+        /// <summary>
+        /// Check the user has permissions to access the requested dataset.
+        /// </summary>
+        /// <param name="dataSet">DatasetId to check permissions for.</param>
+        /// <returns>Returns true if the user has access, else false.</returns>
+        public bool CanAccessDataset(int datasetId)
+        {
+            return Id == DbContext.Query<int>("UserHasDatasetAccess", new { UserId = Id, DatasetId = datasetId }).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Check if the user can view a chart.
+        /// </summary>
+        /// <param name="report">Chart to check access for.</param>
+        /// <returns>Returns true if the user has access, else false.</returns>
+        public bool CanViewChart(Chart chart)
+        {
+            if (chart.OwnerId == Id)
+            {
+                return true;
+            }
+            var res = DbContext.Query<bool>("ChartCheckUserAccess", new { UserId = Id, ChartId = chart.Id });
+            return res?.Any() == true && res.First();
+        }
+
+        /// <summary>
+        /// Check if a user can view a report.
+        /// </summary>
+        /// <param name="report">Report to check access for.</param>
+        /// <returns>Returns true if the user has access, else false.</returns>
+        public bool CanViewReport(Report report)
+        {
+            if (report.OwnerId == Id)
+            {
+                return true;
+            }
+            var res = DbContext.Query<bool>("ReportCheckUserAccess", new { UserId = Id, ReportId = report.Id });
+            return res?.Any() == true && res.First();
         }
 
         /// <summary>

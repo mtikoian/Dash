@@ -170,8 +170,10 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly, Authorize]
         public ActionResult ToggleContextHelp()
         {
-            Authorization.ToggleContextHelp();
-            return Json(new { message = Authorization.WantsHelp ? Core.HelpEnabled : Core.HelpDisabled, enabled = Authorization.WantsHelp });
+            var wantsHelp = HttpContextAccessor.HttpContext.Session.GetString("ContextHelp").ToBool();
+            wantsHelp = !wantsHelp;
+            HttpContextAccessor.HttpContext.Session.SetString("ContextHelp", wantsHelp.ToString());
+            return Json(new { message = wantsHelp ? Core.HelpEnabled : Core.HelpDisabled, enabled = wantsHelp });
         }
 
         /// <summary>

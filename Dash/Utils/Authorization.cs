@@ -16,29 +16,6 @@ namespace Dash
     public class Authorization
     {
         /// <summary>
-        /// Check if a user if currently logged in.
-        /// </summary>
-        /// <returns>Returns true if a user is logged in, else false.</returns>
-        public bool IsLoggedIn
-        {
-            get
-            {
-                return !UserName.IsEmpty();
-            }
-        }
-
-        /// <summary>
-        /// Get the two character language code for the current thread.
-        /// </summary>
-        public string LanguageCode
-        {
-            get
-            {
-                return Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName.ToLower();
-            }
-        }
-
-        /// <summary>
         /// Get the currently logged in user.
         /// </summary>
         /// <returns>Returns a user object if one can be found, else null.</returns>
@@ -84,58 +61,7 @@ namespace Dash
                 return user;
             }
         }
-
-        /// <summary>
-        /// Get the currently logged in username.
-        /// </summary>
-        /// <returns>Returns username if logged in, else empty string.</returns>
-        public string UserName
-        {
-            get
-            {
-                return HttpContext.Current.User != null && HttpContext.Current.User.Identity.Name.Length > 0
-                    ? HttpContext.Current.User.Identity.Name
-                    : "";
-            }
-        }
         
-
-        /// <summary>
-        /// Check if the user has context sensitive help enabled.
-        /// </summary>
-        /// <returns>Returns true if the user has help enabled, else false.</returns>
-        public bool WantsHelp
-        {
-            get
-            {
-                if (HttpContext.Current.Session["ContextHelp"] == null)
-                {
-                    return false;
-                }
-                return (bool)HttpContext.Current.Session["ContextHelp"];
-            }
-        }
-
-        /// <summary>
-        /// Check the user has permissions to view the chart.
-        /// </summary>
-        /// <param name="report">Chart to check access for.</param>
-        /// <returns>Returns true if the user has access to view, else false.</returns>
-        public bool CanViewChart(Chart chart)
-        {
-            return ChartCheckUserAccess(chart);
-        }
-
-        /// <summary>
-        /// Check the user has permissions to view the report.
-        /// </summary>
-        /// <param name="report">Report to check access for.</param>
-        /// <returns>Returns true if the user has access to view, else false.</returns>
-        public bool CanViewReport(Report report)
-        {
-            return ReportCheckUserAccess(report);
-        }
-
         /// <summary>
         /// Check the user has permissions to access the requested controller and action.
         /// </summary>
@@ -169,90 +95,6 @@ namespace Dash
             }
 
             return false;
-        }
-
-        /// <summary>
-        /// Check the user has permissions to access the requested dataset.
-        /// </summary>
-        /// <param name="dataSet">Dataset object to check permissions for.</param>
-        /// <returns>Returns true if the user has access, else false.</returns>
-        public bool HasDatasetAccess(Dataset dataset)
-        {
-            return HasDatasetAccess(dataset.Id);
-        }
-
-        /// <summary>
-        /// Check the user has permissions to access the requested dataset.
-        /// </summary>
-        /// <param name="dataSet">DatasetId to check permissions for.</param>
-        /// <returns>Returns true if the user has access, else false.</returns>
-        public bool HasDatasetAccess(int datasetId)
-        {
-            var myUser = User;
-            if (myUser == null)
-            {
-                return false;
-            }
-            return myUser.Id == DbContext.Query<int>("UserHasDatasetAccess", new { UserId = myUser.Id, DatasetId = datasetId }).FirstOrDefault();
-        }
-
-        /// <summary>
-        /// Enable/disable help for the session.
-        /// </summary>
-        /// <param name="status">Status of help.</param>
-        public void ToggleContextHelp(bool? status = null)
-        {
-            if (HttpContext.Current.Session != null)
-            {
-                if (status.HasValue)
-                {
-                    HttpContext.Current.Session["ContextHelp"] = status;
-                }
-                else
-                {
-                    HttpContext.Current.Session["ContextHelp"] = HttpContext.Current.Session["ContextHelp"] == null ? true : !(bool)HttpContext.Current.Session["ContextHelp"];
-                }
-            }
-        }
-
-        /// <summary>
-        /// Check if a user can view a chart.
-        /// </summary>
-        /// <param name="report">Chart to check access for.</param>
-        /// <returns>Returns true if the user has access, else false.</returns>
-        private bool ChartCheckUserAccess(Chart chart)
-        {
-            var myUser = User;
-            if (myUser == null)
-            {
-                return false;
-            }
-            if (chart.OwnerId == myUser.Id)
-            {
-                return true;
-            }
-            var res = DbContext.Query<bool>("ChartCheckUserAccess", new { UserId = myUser.Id, ChartId = chart.Id });
-            return res?.Any() == true && res.First();
-        }
-
-        /// <summary>
-        /// Check if a user can view a report.
-        /// </summary>
-        /// <param name="report">Report to check access for.</param>
-        /// <returns>Returns true if the user has access, else false.</returns>
-        private bool ReportCheckUserAccess(Report report)
-        {
-            var myUser = User;
-            if (myUser == null)
-            {
-                return false;
-            }
-            if (report.OwnerId == myUser.Id)
-            {
-                return true;
-            }
-            var res = DbContext.Query<bool>("ReportCheckUserAccess", new { UserId = myUser.Id, ReportId = report.Id });
-            return res?.Any() == true && res.First();
         }
     }
 }

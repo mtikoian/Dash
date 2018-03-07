@@ -1,21 +1,22 @@
-using Dash.Models;
 using Dash.I18n;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Linq.Expressions;
-using Microsoft.Extensions.Options;
+using Dash.Models;
 using Microsoft.AspNetCore.Html;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.Internal;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Mvc.ViewFeatures.Internal;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Options;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
+using System.Linq;
+using System.Linq.Expressions;
 
 namespace Dash
 {
@@ -26,6 +27,14 @@ namespace Dash
         Info,
         Danger,
         Primary
+    }
+
+    public enum HttpVerbs
+    {
+        Get,
+        Put,
+        Post,
+        Delete
     }
 
     public enum RngnClasses
@@ -43,14 +52,6 @@ namespace Dash
         RngnConfirm,
         RngnDialog,
         RngnPrompt
-    }
-
-    public enum HttpVerbs
-    {
-        Get,
-        Put,
-        Post,
-        Delete
     }
 
     /// <summary>
@@ -113,7 +114,6 @@ namespace Dash
             return AuthorizedButton(helper, text, controller, action, null, btnType, ajaxType, htmlAttributes);
         }
 
-
         /// <summary>
         /// Create a button if the user is authorized.
         /// </summary>
@@ -164,10 +164,11 @@ namespace Dash
         /// <param name="action">Action</param>
         /// <param name="controller">Controller</param>
         /// <param name="icon">Icon for the menu item</param>
+        /// <param name="authorized">True if user is authorized</param>
         /// <returns>Returns the HTML for the menu link.</returns>
-        public static HtmlString AuthorizedMenu(this IHtmlHelper helper, string linkText, string action, string controller, string icon)
+        public static HtmlString AuthorizedMenu(this IHtmlHelper helper, string linkText, string action, string controller, string icon, bool authorized)
         {
-            if (!Authorization.HasAccess(controller, action))
+            if (!authorized)
             {
                 return HtmlString.Empty;
             }
@@ -369,12 +370,11 @@ namespace Dash
         /// <returns>Returns HTML if help is found for the model/field, else returns an empty string.</returns>
         public static HtmlString Help<TModel>(this IHtmlHelper<TModel> helper, string modelName, string fieldName, bool useInputGroup = true, bool rightPad = false)
         {
-            if (!Authorization.WantsHelp)
+            if (!helper.ViewContext.HttpContext.Session.GetString("ContextHelp").ToBool())
             {
                 return HtmlString.Empty;
             }
 
-            
             var key = (modelName != null ? modelName.Split(new[] { '.' }).Last() : typeof(TModel).Name) + "_" + fieldName;
             var resourceLib = new ResourceDictionary("ContextHelp");
             if (resourceLib.ContainsKey($"{key}") != true)

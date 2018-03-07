@@ -107,24 +107,6 @@ namespace Dash.Controllers
         }
 
         /// <summary>
-        /// Set the culture for the user.
-        /// </summary>
-        /// <param name="requestConcontexttext">Current ActionExecutingContext.</param>
-        public override void OnActionExecuting(ActionExecutingContext context)
-        {
-            var language = context.HttpContext.Session.GetString("LanguageCode");
-            if (!language.IsEmpty() && Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName.ToLower() != language.ToLower())
-            {
-                var culture = CultureInfo.CreateSpecificCulture(language);
-                if (culture != null)
-                {
-                    Thread.CurrentThread.CurrentCulture = culture;
-                    Thread.CurrentThread.CurrentUICulture = culture;
-                }
-            }
-        }
-
-        /// <summary>
         ///
         /// </summary>
         /// <param name="action"></param>

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
 
@@ -41,26 +42,34 @@ namespace Dash.Models
             error = "";
             try
             {
-                var myUser = DbContext.GetAll<User>(new { UID = UserName, IsActive = true }).FirstOrDefault();
-                if (myUser?.IsActive != true)
+                var user = DbContext.GetAll<User>(new { UID = UserName, IsActive = true }).FirstOrDefault();
+                if (user?.IsActive != true)
                 {
                     error = Account.ErrorCannotValidate;
                 }
 
-                if (Hasher.VerifyPassword(myUser.Password, Password, myUser.Salt))
+                if (Hasher.VerifyPassword(user.Password, Password, user.Salt))
                 {
                     var claims = new List<Claim> {
-                        new Claim(ClaimTypes.Name, myUser.UID),
-                        new Claim(ClaimTypes.PrimarySid, myUser.Id.ToString()),
-                        new Claim("FullName", myUser.FullName)
+                        new Claim(ClaimTypes.Name, user.UID),
+                        new Claim(ClaimTypes.PrimarySid, user.Id.ToString()),
+                        new Claim("FullName", user.FullName)
                     };
-                    claims.AddRange(DbContext.GetAll<UserClaim>(new { myUser.Id })
+                    claims.AddRange(DbContext.GetAll<UserClaim>(new { user.Id })
                         .Select(x => new Claim(ClaimTypes.Role, $"{x.ControllerName}.{x.ActionName}".ToLower())));
 
                     var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                     var authProperties = new AuthenticationProperties {
                         IsPersistent = true
                     };
+
+                    var language = DbContext.Get<Language>(user.LanguageId);
+                    if (language != null)
+                    {
+                        var cultureInfo = new CultureInfo(language.LanguageCode);
+                        CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+                        CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+                    }
 
                     HttpContextAccessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                         new ClaimsPrincipal(claimsIdentity), authProperties);
