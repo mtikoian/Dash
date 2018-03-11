@@ -9,6 +9,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Linq;
+using System.Security.Claims;
 
 namespace Dash.Controllers
 {
@@ -29,7 +30,7 @@ namespace Dash.Controllers
         public ActionResult ForgotPassword()
         {
             // @todo does this verify the user is logged in?
-            if (HttpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
+            if (User.Identity.IsAuthenticated)
             {
                 return RedirectWithMessage("Dashboard", "Index", Core.ErrorAlreadyLoggedIn);
             }
@@ -44,14 +45,13 @@ namespace Dash.Controllers
         [HttpPost, AjaxRequestOnly]
         public ActionResult ForgotPassword(ForgotPassword model)
         {
-            if (HttpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
+            if (User.Identity.IsAuthenticated)
             {
                 return RedirectWithMessage("Dashboard", "Index", Core.ErrorAlreadyLoggedIn);
             }
             if (ModelState.IsValid)
             {
-                var error = "";
-                if (model.Send(out error))
+                if (model.Send(out string error))
                 {
                     return JsonSuccess(Account.ForgotPasswordEmailSentText);
                 }
@@ -77,9 +77,9 @@ namespace Dash.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public ActionResult LogOn()
+        public ActionResult Login()
         {
-            if (HttpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
+            if (User.Identity.IsAuthenticated)
             {
                 return RedirectWithMessage("Dashboard", "Index", Core.ErrorAlreadyLoggedIn);
             }
@@ -92,9 +92,9 @@ namespace Dash.Controllers
         /// <param name="model">LogOn object</param>
         /// <returns>LogOn view on error, else redirects to index.</returns>
         [HttpPost, ValidateAntiForgeryToken]
-        public ActionResult LogOn(LogOn model)
+        public ActionResult Login(LogOn model)
         {
-            if (HttpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
+            if (User.Identity.IsAuthenticated)
             {
                 return RedirectWithMessage("Dashboard", "Index", Core.ErrorAlreadyLoggedIn);
             }
@@ -104,8 +104,7 @@ namespace Dash.Controllers
                 return View(model);
             }
 
-            var error = "";
-            if (!model.DoLogOn(out error))
+            if (!model.DoLogOn(out string error))
             {
                 ViewBag.Error = error;
                 return View(model);
@@ -123,7 +122,7 @@ namespace Dash.Controllers
         [HttpGet]
         public ActionResult ResetPassword(ResetPassword model)
         {
-            if (HttpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
+            if (User.Identity.IsAuthenticated)
             {
                 return RedirectWithMessage("Dashboard", "Index", Core.ErrorAlreadyLoggedIn);
             }
@@ -142,14 +141,13 @@ namespace Dash.Controllers
         [HttpPost]
         public ActionResult ResetPassword(ResetPassword model, bool resetting = false)
         {
-            if (HttpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
+            if (User.Identity.IsAuthenticated)
             {
                 return RedirectWithMessage("Dashboard", "Index", Core.ErrorAlreadyLoggedIn);
             }
             if (ModelState.IsValid)
             {
-                var error = "";
-                if (model.Reset(out error))
+                if (model.Reset(out string error, User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt()))
                 {
                     return RedirectWithMessage("Account", "LogOn", Account.PasswordChangedText);
                 }
@@ -183,7 +181,7 @@ namespace Dash.Controllers
         [HttpGet, Authorize]
         public ActionResult Update()
         {
-            return PartialView(DbContext.GetAll<User>(new { UID = HttpContextAccessor.HttpContext.User.Identity.Name }).First());
+            return PartialView(DbContext.GetAll<User>(new { UID = User.Identity.Name }).First());
         }
 
         /// <summary>
@@ -194,8 +192,7 @@ namespace Dash.Controllers
         [HttpPost, Authorize]
         public ActionResult Update(User model)
         {
-            var errorMsg = "";
-            if (model.UpdateProfile(HttpContextAccessor, out errorMsg))
+            if (model.UpdateProfile(out string errorMsg))
             {
                 return JsonSuccess(Account.AccountUpdated);
             }

@@ -6,7 +6,7 @@
      data-url="@Url.Action("DetailsOptions", "Report", new { id = Model.Id })" data-title="@Model.Name" data-basic-dialog="true">
 
     <div class="hidden">
-        @if (Dash.Authorization.HasAccess("Dataset", "Create"))
+        @if (this.User.IsInRole("dataset.create"))
         {
             <div class="p-1 modal-sql" data-title="@Core.ViewSql" data-basic-dialog="true">
                 <div class="col-12">
@@ -31,7 +31,8 @@
             <div class="card text-white m-2 bg-warning">
                 <div class="card-body">
                     <p class="card-text">@Reports.ErrorNoColumnsSelected</p>
-                    @Html.AuthorizedButton(Reports.SelectColumns, "Report", "SelectColumns", new { id = Model.Id }, RngnClasses.BtnPrimary, RngnClasses.RngnDialog)
+                    @Html.AuthorizedButton(Reports.SelectColumns, "Report", "SelectColumns", new { id = Model.Id }, RngnClasses.BtnPrimary, RngnClasses.RngnDialog,
+                        this.User.IsInRole("report.selectcolumns"))
                 </div>
             </div>
         </div>
@@ -53,23 +54,24 @@
                         <div class="dropdown-menu" role="menu">
                             @if (Model.IsOwner)
                             {
-                                @Html.AuthorizedActionLink(Reports.SelectColumns, "SelectColumns", "Report", new { id = Model.Id }, new { @class = "dropdown-item rngn-ajax rngn-dialog" })
+                                @Html.AuthorizedActionLink(Reports.SelectColumns, "SelectColumns", "Report", new { id = Model.Id }, new { @class = "dropdown-item rngn-ajax rngn-dialog" },
+                                    hasAccess: this.User.IsInRole("report.selectcolumns"))
                                 @Html.AuthorizedActionLink(Core.Rename, "Rename", "Report", new { id = Model.Id }, new {
                                     @class = "dropdown-item rngn-ajax rngn-prompt",
                                     @data_method = "PUT",
                                     @data_update_target = ".dialog-header",
                                     @data_message = Reports.NewName
-                                })
+                                }, hasAccess: this.User.IsInRole("report.rename"))
                                 @Html.AuthorizedActionLink(Reports.ShareReport, "Share", "Report", new { id = Model.Id }, new {
                                     @class = "dropdown-item rngn-ajax rngn-dialog",
                                     @data_title = Reports.ShareReport
-                                })
+                                }, hasAccess: this.User.IsInRole("report.share"))
                             }
                             @Html.AuthorizedActionLink(Reports.CopyReport, "Copy", "Report", new { id = Model.Id }, new {
                                 @class = "dropdown-item rngn-ajax rngn-prompt",
                                 @data_message = Reports.NewName
-                            })
-                            @if (Dash.Authorization.HasAccess("Dataset", "Create"))
+                            }, hasAccess: this.User.IsInRole("report.copy"))
+                            @if (this.User.IsInRole("dataset.create"))
                             {
                                 <a href="#" class="dropdown-item view-sql">@Html.Raw(Core.ViewSql)</a>
                             }

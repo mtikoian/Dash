@@ -121,12 +121,12 @@ namespace Dash.Controllers
         public IActionResult Index()
         {
             return PartialView(new Table("tablePermissions", Url.Action("List"), new List<TableColumn>() {
-                new TableColumn("fullName", Permissions.Name, Table.EditLink($"{Url.Action("Edit")}/{{id}}", "Permission")),
+                new TableColumn("fullName", Permissions.Name, Table.EditLink($"{Url.Action("Edit")}/{{id}}", "Permission", hasAccess: User.IsInRole("permission.edit"))),
                 new TableColumn("controllerName", Permissions.Controller),
                 new TableColumn("actionName", Permissions.Action),
                 new TableColumn("actions", Core.Actions, sortable: false, links: new List<TableLink> {
-                    Table.EditButton($"{Url.Action("Edit")}/{{id}}", "Permission"),
-                    Table.DeleteButton($"{Url.Action("Delete")}/{{id}}", "Permission", String.Format(Core.ConfirmDeleteBody, Permissions.PermissionLower))
+                    Table.EditButton($"{Url.Action("Edit")}/{{id}}", "Permission", hasAccess: User.IsInRole("permission.edit")),
+                    Table.DeleteButton($"{Url.Action("Delete")}/{{id}}", "Permission", String.Format(Core.ConfirmDeleteBody, Permissions.PermissionLower), User.IsInRole("permission.delete"))
                 })
             }));
         }

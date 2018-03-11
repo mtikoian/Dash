@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Security.Claims;
 
 namespace Dash.Models
 {
@@ -36,10 +37,11 @@ namespace Dash.Models
         public Widget(IActionContextAccessor actionContextAccessor)
         {
             ActionContextAccessor = actionContextAccessor;
+            UserId = ActionContextAccessor.ActionContext.HttpContext.User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt();
         }
 
         [Ignore, JilDirective(true)]
-        public bool AllowEdit { get { return UserId == Authorization.User?.Id; } }
+        public bool AllowEdit { get { return UserId == ActionContextAccessor.ActionContext.HttpContext.User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt(); } }
 
         [Display(Name = "Chart", ResourceType = typeof(I18n.Widgets))]
         public int? ChartId { get; set; }
@@ -175,7 +177,7 @@ namespace Dash.Models
         [Display(Name = "User", ResourceType = typeof(I18n.Widgets))]
         [Required]
         [JilDirective(true)]
-        public int UserId { get; set; } = Authorization.User.Id;
+        public int UserId { get; set; }
 
         [Ignore]
         public DateTimeOffset WidgetDateUpdated { get; set; }
@@ -192,7 +194,7 @@ namespace Dash.Models
         /// <returns>Returns a IEnumerable of list items.</returns>
         public IEnumerable<SelectListItem> GetChartSelectList()
         {
-            return DbContext.GetAll<Chart>(new { UserId = Authorization.User.Id }).ToSelectList(r => r.Name, r => r.Id.ToString());
+            return DbContext.GetAll<Chart>(new { UserId = ActionContextAccessor.ActionContext.HttpContext.User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt() }).ToSelectList(r => r.Name, r => r.Id.ToString());
         }
 
         /// <summary>
@@ -201,7 +203,7 @@ namespace Dash.Models
         /// <returns>Returns a IEnumerable of list items.</returns>
         public IEnumerable<SelectListItem> GetReportSelectList()
         {
-            return DbContext.GetAll<Report>(new { UserId = Authorization.User.Id }).ToSelectList(r => r.Name, r => r.Id.ToString());
+            return DbContext.GetAll<Report>(new { UserId = ActionContextAccessor.ActionContext.HttpContext.User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt() }).ToSelectList(r => r.Name, r => r.Id.ToString());
         }
 
         /// <summary>
@@ -223,7 +225,7 @@ namespace Dash.Models
             {
                 // new widget - find the correct position
                 var gridBottom = 0;
-                DbContext.GetAll<Widget>(new { UserId = Authorization.User.Id }).ToList().ForEach(x => gridBottom = Math.Max(x.Y + x.Height, gridBottom));
+                DbContext.GetAll<Widget>(new { UserId = ActionContextAccessor.ActionContext.HttpContext.User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt() }).ToList().ForEach(x => gridBottom = Math.Max(x.Y + x.Height, gridBottom));
                 X = 0;
                 Y = gridBottom;
             }

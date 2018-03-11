@@ -94,13 +94,13 @@ namespace Dash.Controllers
         public IActionResult Index()
         {
             return PartialView(new Table("tableUsers", Url.Action("List"), new List<TableColumn> {
-                new TableColumn("UID", Users.UID, Table.EditLink($"{Url.Action("Edit")}/{{id}}", "User")),
+                new TableColumn("UID", Users.UID, Table.EditLink($"{Url.Action("Edit")}/{{id}}", "User", hasAccess: User.IsInRole("user.edit"))),
                 new TableColumn("firstName", Users.FirstName),
                 new TableColumn("lastName", Users.LastName),
                 new TableColumn("email", Users.Email),
                 new TableColumn("actions", Core.Actions, sortable: false, links: new List<TableLink> {
-                    Table.EditButton($"{Url.Action("Edit")}/{{id}}", "User"),
-                    Table.DeleteButton($"{Url.Action("Delete")}/{{id}}", "User", String.Format(Core.ConfirmDeleteBody, Users.UserLower))
+                    Table.EditButton($"{Url.Action("Edit")}/{{id}}", "User", hasAccess: User.IsInRole("user.edit")),
+                    Table.DeleteButton($"{Url.Action("Delete")}/{{id}}", "User", String.Format(Core.ConfirmDeleteBody, Users.UserLower), User.IsInRole("user.delete"))
                 })
             }));
         }

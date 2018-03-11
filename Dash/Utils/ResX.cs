@@ -1,5 +1,6 @@
 ﻿using Dash.I18n;
 using System.Collections.Generic;
+using System.Security.Claims;
 
 namespace Dash
 {
@@ -8,7 +9,7 @@ namespace Dash
     /// </summary>
     public static class ResX
     {
-        public static Dictionary<string, string> Build()
+        public static Dictionary<string, string> Build(ClaimsPrincipal user)
         {
             var resources = new Dictionary<string, string> {
                 { "firstPage", Core.FirstPage },
@@ -62,7 +63,7 @@ namespace Dash
                 { "errorNameRequired", Core.ErrorNameRequired }
             };
 
-            if (Authorization.HasAccess("Dashboard", "Index") || Authorization.HasAccess("Chart", "Index"))
+            if (user.IsInRole("dashboard.index") || user.IsInRole("chart.index"))
             {
                 resources.AddRange(new Dictionary<string, string> {
                     { "chart.report", Charts.Report },
@@ -86,7 +87,7 @@ namespace Dash
                 });
             }
 
-            if (Authorization.HasAccess("Dashboard", "Index") || Authorization.HasAccess("Report", "Index"))
+            if (user.IsInRole("dashboard.index") || user.IsInRole("report.index"))
             {
                 resources.AddRange(new Dictionary<string, string> {
                     { "report.selectDate", Reports.SelectDate },
@@ -110,7 +111,7 @@ namespace Dash
                 });
             }
 
-            if (Authorization.HasAccess("Dataset", "Index"))
+            if (user.IsInRole("dataset.index"))
             {
                 resources.AddRange(new Dictionary<string, string> {
                     { "dataset.joinTableName", Datasets.JoinTableName },

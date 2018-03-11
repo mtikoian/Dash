@@ -9,11 +9,11 @@ namespace Dash.Models
 {
     public class CreateReport : BaseModel, IValidatableObject
     {
-        private IHttpContextAccessor HttpContextAccessor;
+        private int UserId;
 
-        public CreateReport(IHttpContextAccessor httpContextAccessor)
+        public CreateReport(int userId)
         {
-            HttpContextAccessor = httpContextAccessor;
+            UserId = userId;
         }
 
         [Display(Name = "Dataset", ResourceType = typeof(Reports))]
@@ -41,7 +41,7 @@ namespace Dash.Models
         /// <returns></returns>
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            var user = DbContext.Get<User>(HttpContextAccessor.HttpContext.User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt());
+            var user = DbContext.Get<User>(UserId);
             if (!user.CanAccessDataset(DatasetId))
             {
                 yield return new ValidationResult(Reports.ErrorReportDatasetAccess);

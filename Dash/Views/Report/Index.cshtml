@@ -3,7 +3,8 @@
 
 <div data-title="@Reports.ViewAll" data-basic-dialog="true" data-close-event="dashboardReload">
     @using (Html.BeginToolbar()) {
-        @Html.AuthorizedButton(Reports.CreateReport, "Report", "Create", RngnClasses.BtnPrimary, RngnClasses.RngnDialog)
+        @Html.AuthorizedButton(Reports.CreateReport, "Report", "Create", RngnClasses.BtnPrimary, RngnClasses.RngnDialog,
+            hasAccess: this.User.IsInRole("report.create"))
     }
     <div class="col-12 rngn-table" data-json="@Model.ToJson"></div>
 </div>

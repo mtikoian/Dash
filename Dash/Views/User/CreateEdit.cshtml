@@ -10,17 +10,13 @@
         @Html.LabelInputFor(model => model.FirstName)
         @Html.LabelInputFor(model => model.LastName)
         @Html.LabelCheckBoxFor(model => model.IsActive)
-
-        @if (Dash.Authorization.UsingDashAuth)
-        {
-            @Html.LabelPasswordFor(model => model.Password, new { data_match = "ConfirmPassword", required = Model.Id == 0 })
-            @Html.LabelPasswordFor(model => model.ConfirmPassword, new { required = Model.Id == 0 })
-        }
+        @Html.LabelPasswordFor(model => model.Password, new { data_match = "ConfirmPassword", required = Model.Id == 0 })
+        @Html.LabelPasswordFor(model => model.ConfirmPassword, new { required = Model.Id == 0 })
     </div>
 
     <div class="col">
         @Html.LabelInputFor(model => model.Email, inputType: Dash.Html.InputFieldType.Email)
-        @Html.LabelDropDownListFor(model => model.LanguageId, Html.GetSelectList<Language>())
+        @Html.LabelDropDownListFor(model => model.LanguageId, new SelectList(Model.DbContext.GetAll<Language>(), "Id", "Name"))
 
         <div class="form-group row">
             @Html.ControlLabel("roleIds", Users.Roles)

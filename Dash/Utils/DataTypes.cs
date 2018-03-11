@@ -301,23 +301,12 @@ namespace Dash
         }
 
         /// <summary>
-        /// Manually log an exception to ELMAH.
+        /// Manually log an exception.
         /// </summary>
         /// <param name="ex">Exception to log.</param>
         public static void Log(this Exception ex, IHttpContextAccessor httpContextAccessor)
         {
-            new ErrorLog {
-                Namespace = ex.GetType().Namespace,
-                Host = Environment.MachineName,
-                Type = ex.GetType().FullName,
-                Source = ex.Source,
-                Path = httpContextAccessor.HttpContext.Request.Path.Value,
-                Method = httpContextAccessor.HttpContext.Request.Method,
-                Message = ex.Message,
-                StackTrace = ex.StackTrace,
-                Timestamp = DateTimeOffset.Now,
-                User = httpContextAccessor.HttpContext.User.Identity?.Name
-            }.Save();
+            Serilog.Log.Error(ex, ex.Message);
         }
 
         /// <summary>
@@ -502,8 +491,7 @@ namespace Dash
         /// <returns>Integer value.</returns>
         public static double ToDouble(this string val)
         {
-            var res = 0.0;
-            double.TryParse(val, out res);
+            double.TryParse(val, out double res);
             return res;
         }
 
@@ -556,8 +544,7 @@ namespace Dash
             {
                 return 0;
             }
-            var res = 0;
-            int.TryParse(val, out res);
+            int.TryParse(val, out int res);
             return res;
         }
 

@@ -1,31 +1,31 @@
 ﻿@using Dash.I18n
 
 <div data-title="@Core.GetStarted" data-basic-dialog="true">
-    @if (Dash.Authorization.HasAccess("User", "Index")) {
+    @if (this.User.IsInRole("user.create")) {
         <div class="row pb-5">
             <div class="col-3"><div class="float-right">@Html.AuthorizedButton(Core.CreateUser, "User", "Create", RngnClasses.BtnWarning, RngnClasses.RngnDialog)</div></div>
             <div class="col-9">@Html.Raw(Core.TextUser)</div>
         </div>
     }
-    @if (Dash.Authorization.HasAccess("Database", "Index")) {
+    @if (this.User.IsInRole("database.create")) {
         <div class="row pb-5">
             <div class="col-3"><div class="float-right">@Html.AuthorizedButton(Core.CreateDatabase, "Database", "Create", RngnClasses.BtnPrimary, RngnClasses.RngnDialog)</div></div>
             <div class="col-9">@Html.Raw(Core.TextDatabase)</div>
         </div>
     }
-    @if (Dash.Authorization.HasAccess("Dataset", "Index")) {
+    @if (this.User.IsInRole("dataset.create")) {
         <div class="row pb-5">
             <div class="col-3"><div class="float-right">@Html.AuthorizedButton(Core.CreateDataset, "Dataset", "Create", RngnClasses.BtnInfo, RngnClasses.RngnDialog)</div></div>
             <div class="col-9">@Html.Raw(Core.TextDataset)</div>
         </div>
     }
-    @if (Dash.Authorization.HasAccess("Report", "Index")) {
+    @if (this.User.IsInRole("report.create")) {
         <div class="row pb-5">
             <div class="col-3"><div class="float-right">@Html.AuthorizedButton(Core.CreateReport, "Report", "Create", RngnClasses.BtnSuccess, RngnClasses.RngnDialog)</div></div>
             <div class="col-9">@Html.Raw(Core.TextReport)</div>
         </div>
     }
-    @if (Dash.Authorization.HasAccess("Chart", "Index")) {
+    @if (this.User.IsInRole("chart.create")) {
         <div class="row pb-5">
             <div class="col-3"><div class="float-right">@Html.AuthorizedButton(Core.CreateChart, "Chart", "Create", RngnClasses.BtnSecondary, RngnClasses.RngnDialog)</div></div>
             <div class="col-9">@Html.Raw(Core.TextChart)</div>

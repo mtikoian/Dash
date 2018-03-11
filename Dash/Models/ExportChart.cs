@@ -33,6 +33,8 @@ namespace Dash.Models
         /// </summary>
         public void Stream()
         {
+            throw new NotImplementedException("Stream needs work still.");
+            /*
             byte[] bytes = Convert.FromBase64String(Data.Replace("data:image/png;base64,", ""));
             Image image;
             using (MemoryStream ms = new MemoryStream(bytes))
@@ -58,6 +60,7 @@ namespace Dash.Models
                 HttpContext.Current.ApplicationInstance.CompleteRequest();
                 HttpContext.Current.Response.End();
             }
+            */
         }
     }
 }

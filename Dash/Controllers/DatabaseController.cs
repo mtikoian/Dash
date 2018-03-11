@@ -95,15 +95,15 @@ namespace Dash.Controllers
         public IActionResult Index()
         {
             return PartialView(new Table("tableDatabases", Url.Action("List"), new List<TableColumn> {
-                new TableColumn("name", Databases.Name, Table.EditLink($"{Url.Action("Edit")}/{{id}}", "Database")),
+                new TableColumn("name", Databases.Name, Table.EditLink($"{Url.Action("Edit")}/{{id}}", "Database", hasAccess: User.IsInRole("database.edit"))),
                 new TableColumn("databaseName", Databases.DatabaseName),
                 new TableColumn("host", Databases.Host),
                 new TableColumn("user", Databases.User),
                 new TableColumn("actions", Core.Actions, sortable: false, links: new List<TableLink> {
-                        Table.EditButton($"{Url.Action("Edit")}/{{id}}", "Database"),
-                        Table.DeleteButton($"{Url.Action("Delete")}/{{id}}", "Database", String.Format(Core.ConfirmDeleteBody, Databases.DatabaseLower)),
+                        Table.EditButton($"{Url.Action("Edit")}/{{id}}", "Database", hasAccess: User.IsInRole("database.edit")),
+                        Table.DeleteButton($"{Url.Action("Delete")}/{{id}}", "Database", String.Format(Core.ConfirmDeleteBody, Databases.DatabaseLower), User.IsInRole("database.delete")),
                     }.AddLink($"{Url.Action("TestConnection")}/{{id}}", Html.Classes(RngnClasses.RngnDialog, RngnClasses.BtnInfo),
-                        Authorization.HasAccess("Database", "TestConnection"), Databases.TestConnection, TableIcon.HeartBeat)
+                        User.IsInRole("database.testconnection"), Databases.TestConnection, TableIcon.HeartBeat)
                 )}
             ));
         }

@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
 namespace Dash.Models
 {
@@ -24,6 +26,16 @@ namespace Dash.Models
     [HasMany(typeof(ReportShare))]
     public class Report : BaseModel
     {
+        private int CurrentUserId;
+
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
+        public Report(int userId)
+        {
+            CurrentUserId = userId;
+        }
+
         private Dataset _Dataset;
         private List<DatasetColumn> _DatasetColumns { get; set; }
         private List<DatasetColumn> _DatasetColumnsByDisplay { get; set; }
@@ -91,7 +103,7 @@ namespace Dash.Models
         public string DatasetName { get; set; }
 
         [Ignore, JilDirective(true)]
-        public bool IsOwner { get { return Authorization.User?.Id == OwnerId; } }
+        public bool IsOwner { get { return CurrentUserId == OwnerId; } }
 
         [Display(Name = "Name", ResourceType = typeof(I18n.Reports))]
         [Required(ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorRequired")]
@@ -106,7 +118,7 @@ namespace Dash.Models
 
         [Required(ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorRequired")]
         [JilDirective(true)]
-        public int OwnerId { get; set; } = Authorization.User?.Id ?? -1;
+        public int OwnerId { get; set; }
 
         [JilDirective(true)]
         public List<ReportColumn> ReportColumn
@@ -167,7 +179,7 @@ namespace Dash.Models
         {
             var newReport = this.Clone();
             newReport.Id = 0;
-            newReport.OwnerId = Authorization.User.Id;
+            newReport.OwnerId = CurrentUserId;
             newReport.Name = name.IsEmpty() ? String.Format(Core.CopyOf, Name) : name;
 
             // duplicate the report columns
@@ -278,8 +290,9 @@ namespace Dash.Models
         /// </summary>
         /// <param name="start">Row number to start at.</param>
         /// <param name="rows">Number of rows to return.</param>
+        /// <param name="hasDatasetAccess">User has access to dataset.</param>
         /// <returns>Returns the data for the report.</returns>
-        public ReportResult GetData(int start, int rows)
+        public ReportResult GetData(int start, int rows, bool hasDatasetAccess)
         {
             // build a obj to store our results
             var response = new ReportResult() { UpdatedDate = DateUpdated };
@@ -310,7 +323,7 @@ namespace Dash.Models
             {
                 // build the final sql for getting the record count
                 var countSql = sqlQuery.CountStatement(true);
-                if (Authorization.HasAccess("Dataset", "Create"))
+                if (hasDatasetAccess)
                 {
                     response.CountSql = countSql;
                 }
@@ -350,7 +363,7 @@ namespace Dash.Models
             response.Total = totalRecords;
             response.FilteredTotal = totalRecords;
             response.Rows = new List<object>();
-            if (Authorization.HasAccess("Dataset", "Create"))
+            if (hasDatasetAccess)
             {
                 response.DataSql = Dataset.IsProc ? sqlQuery.ExecStatement(true) : sqlQuery.SelectStatement(start, rows, true);
             }

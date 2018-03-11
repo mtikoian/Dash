@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -35,6 +36,7 @@ namespace Dash
         }
 
         public IConfiguration Configuration { get; }
+        public IAppConfiguration AppConfig { get; set; }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
@@ -69,9 +71,8 @@ namespace Dash
             // force all requests to https
             app.UseRewriter(new RewriteOptions().AddRedirectToHttps());
 
-            var appConfig = new AppConfiguration();
-            ConfigurationBinder.Bind(Configuration, appConfig);
-            appConfig.IsDevelopment = env.IsDevelopment();
+            AppConfig = new AppConfiguration();
+            ConfigurationBinder.Bind(Configuration, AppConfig);
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -83,7 +84,7 @@ namespace Dash
                         var error = context.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerFeature>();
                         if (error != null)
                         {
-                            LogException(appConfig, error.Error, context);
+                            LogException(error.Error, context);
                         }
 
                         if (context.Request.ContentType.ToLower().Contains("json"))
@@ -119,32 +120,35 @@ namespace Dash
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
+            //services.AddSingleton<IAppConfiguration>((IAppConfiguration)Configuration.GetSection("AppConfig"));
+            //services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
             services.AddMvc(options => {
                 options.InputFormatters.Insert(0, new JilInputFormatter());
                 options.OutputFormatters.Insert(0, new JilOutputFormatter());
                 options.Filters.Add(new RequireHttpsAttribute());
             });
+
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("HasPermission", policy => policy.Requirements.Add(new PermissionRequirement()));
             });
             services.AddDataProtection();
             services.AddAntiforgery(options => options.HeaderName = "X-XSRF-Token");
-            services.AddMemoryCache();
+            var cache = new MemoryCache(new MemoryCacheOptions());
+            services.AddSingleton(cache);
             services.AddSession(options => {
                 options.Cookie.HttpOnly = true;
             });
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
-            
+            services.AddScoped<IDbContext, DbContext>();
         }
 
-        private void LogException(AppConfiguration config, Exception error, HttpContext context)
+        private void LogException(Exception error, HttpContext context)
         {
             try
             {
-                var dbContext = new DbContext(config);
+                var dbContext = new DbContext(AppConfig);
                 dbContext.Save(new ErrorLog {
                     Namespace = this.GetType().Namespace,
                     Host = Environment.MachineName,

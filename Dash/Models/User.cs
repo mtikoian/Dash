@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
-using System.Security.Claims;
 
 namespace Dash.Models
 {
@@ -19,12 +18,6 @@ namespace Dash.Models
     {
         private List<Role> _AllRoles;
         private List<UserRole> _UserRole;
-        private IHttpContextAccessor HttpContextAccessor;
-
-        public User(IHttpContextAccessor httpContextAccessor)
-        {
-            HttpContextAccessor = httpContextAccessor;
-        }
 
         /// <summary>
         /// Make a keyed list of all roles.
@@ -183,14 +176,12 @@ namespace Dash.Models
         /// <summary>
         /// Update a user object using values from the model. Used by the user when updating their own profile.
         /// </summary>
-        /// <param name="httpContextAccessor"></param>
         /// <param name="errorMsg">Error message from validation if any.</param>
         /// <returns>True if update successful, else false.</returns>
-        public bool UpdateProfile(IHttpContextAccessor httpContextAccessor, out string errorMsg)
+        public bool UpdateProfile(out string errorMsg)
         {
             // load user object and copy settings the user is allowed to change
-            var userId = HttpContextAccessor.HttpContext.User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt();
-            var user = DbContext.Get<User>(userId);
+            var user = DbContext.Get<User>(Id);
             user.FirstName = FirstName;
             user.LastName = LastName;
             user.LanguageId = LanguageId;

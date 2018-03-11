@@ -21,7 +21,7 @@ namespace Dash.Controllers
         [HttpGet, AllowAnonymous]
         public IActionResult Index()
         {
-            return Json(ResX.Build());
+            return Json(ResX.Build(User));
         }
     }
 }

@@ -115,7 +115,7 @@ namespace Dash.Controllers
                 return JsonError(ModelState.ToErrorString());
             }
 
-            var newChart = Chart.Create(model);
+            var newChart = Chart.Create(model, User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt());
             DbContext.Save(newChart);
             return Json(new { message = Charts.SuccessSavingChart, dialogUrl = Url.Action("Details", new { @id = newChart.Id }) });
         }
@@ -133,7 +133,7 @@ namespace Dash.Controllers
             {
                 return JsonError(Core.ErrorInvalidId);
             }
-            var user = DbContext.Get<User>(HttpContextAccessor.HttpContext.User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt());
+            var user = DbContext.Get<User>(User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt());
             if (!user.CanViewChart(model))
             {
                 return JsonError(Charts.ErrorPermissionDenied);
@@ -143,7 +143,7 @@ namespace Dash.Controllers
                 return JsonError(Charts.ErrorNoRanges);
             }
 
-            var result = model.GetData();
+            var result = model.GetData(User.IsInRole("dataset.create"));
             return Json(result);
         }
 
@@ -183,7 +183,7 @@ namespace Dash.Controllers
             {
                 return JsonError(Core.ErrorInvalidId);
             }
-            var user = DbContext.Get<User>(HttpContextAccessor.HttpContext.User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt());
+            var user = DbContext.Get<User>(User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt());
             if (!user.CanViewChart(model))
             {
                 return JsonError(Charts.ErrorPermissionDenied);
@@ -206,7 +206,7 @@ namespace Dash.Controllers
             {
                 return JsonError(Core.ErrorInvalidId);
             }
-            var user = DbContext.Get<User>(HttpContextAccessor.HttpContext.User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt());
+            var user = DbContext.Get<User>(User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt());
             if (!user.CanViewChart(model))
             {
                 return JsonError(Charts.ErrorPermissionDenied);
@@ -267,11 +267,11 @@ namespace Dash.Controllers
         public IActionResult Index()
         {
             return PartialView(new Table("tableCharts", Url.Action("List"), new List<TableColumn>() {
-                new TableColumn("name", Charts.Name, Table.EditLink($"{Url.Action("Details")}/{{id}}", "Chart", "Details")),
+                new TableColumn("name", Charts.Name, Table.EditLink($"{Url.Action("Details")}/{{id}}", "Chart", "Details", User.IsInRole("chart.details"))),
                 new TableColumn("actions", Core.Actions, sortable: false, links: new List<TableLink> {
-                    Table.EditButton($"{Url.Action("Details")}/{{id}}", "Chart", "Details"),
-                    Table.DeleteButton($"{Url.Action("Delete")}/{{id}}", "Chart", Charts.ConfirmDelete),
-                    Table.CopyButton($"{Url.Action("Copy")}/{{id}}", "Chart", Charts.NewName)
+                    Table.EditButton($"{Url.Action("Details")}/{{id}}", "Chart", "Details", User.IsInRole("chart.details")),
+                    Table.DeleteButton($"{Url.Action("Delete")}/{{id}}", "Chart", Charts.ConfirmDelete, User.IsInRole("chart.delete")),
+                    Table.CopyButton($"{Url.Action("Copy")}/{{id}}", "Chart", Charts.NewName, User.IsInRole("chart.copy"))
                 })
             }));
         }
@@ -283,7 +283,7 @@ namespace Dash.Controllers
         [HttpGet, ParentAction("Index"), AjaxRequestOnly]
         public IActionResult List()
         {
-            return JsonRows(DbContext.GetAll<Chart>(new { UserId = HttpContextAccessor.HttpContext.User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt() }));
+            return JsonRows(DbContext.GetAll<Chart>(new { UserId = User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt() }));
         }
 
         /// <summary>

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using Dash.Utils;
 
 namespace Dash.Models
 {
@@ -44,22 +45,17 @@ namespace Dash.Models
         /// Reset a user's password.
         /// </summary>
         /// <param name="error">Error message if any.</param>
+        /// <param name="userId">Requesting user ID.</param>
         /// <returns>True on success, else false.</returns>
-        public bool Reset(out string error)
+        public bool Reset(out string error, int userId)
         {
             error = "";
             try
             {
-                var membershipService = new AccountMembershipService();
-                if (membershipService.ChangePassword(User.UID, membershipService.ResetPassword(User.UID, ""), Password))
-                {
-                    DbContext.Execute("UserResetSave", new { User.Id });
-                    return true;
-                }
-                else
-                {
-                    error = Account.ErrorSavingPassword;
-                }
+                var salt = Hasher.GenerateSalt();
+                DbContext.Execute("UserPasswordSave", new { Id = User.Id, Password = Hasher.HashPassword(Password, salt), Salt = salt, RequestUserId = userId });
+                DbContext.Execute("UserResetSave", new { User.Id });
+                return true;
             }
             catch (Exception ex)
             {

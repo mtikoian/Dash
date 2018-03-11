@@ -71,10 +71,11 @@ namespace Dash
         /// <param name="url">URL for the new link.</param>
         /// <param name="controller">Name of controller used for copy.</param>
         /// <param name="body">Body text for copy dialog.</param>
+        /// <param name="hasAccess">User has access.</param>
         /// <returns>Returns new button link.</returns>
-        public static TableLink CopyButton(string url, string controller, string body)
+        public static TableLink CopyButton(string url, string controller, string body, bool hasAccess = true)
         {
-            if (!HttpContextAccessor.HttpContext.User.IsInRole($"{controller}.copy".ToLower()))
+            if (!hasAccess)
             {
                 return null;
             }
@@ -88,10 +89,11 @@ namespace Dash
         /// <param name="url">URL for the new link.</param>
         /// <param name="controller">Name of controller used for edit.</param>
         /// <param name="message">Delete confirmation message.</param>
+        /// <param name="hasAccess">User has access.</param>
         /// <returns>Returns new button link.</returns>
-        public static TableLink DeleteButton(string url, string controller, string message)
+        public static TableLink DeleteButton(string url, string controller, string message, bool hasAccess = true)
         {
-            if (!HttpContextAccessor.HttpContext.User.IsInRole($"{controller}.delete".ToLower()))
+            if (!hasAccess)
             {
                 return null;
             }
@@ -106,10 +108,11 @@ namespace Dash
         /// <param name="url">URL for the new link.</param>
         /// <param name="controller">Name of controller used for edit.</param>
         /// <param name="controller">Name of action used for edit. Defaults to `Edit`.</param>
+        /// <param name="hasAccess">User has access.</param>
         /// <returns>Returns new button link.</returns>
-        public static TableLink EditButton(string url, string controller, string action = "Edit")
+        public static TableLink EditButton(string url, string controller, string action = "Edit", bool hasAccess = true)
         {
-            if (!HttpContextAccessor.HttpContext.User.IsInRole($"{controller}.action".ToLower()))
+            if (!hasAccess)
             {
                 return null;
             }
@@ -122,10 +125,11 @@ namespace Dash
         /// <param name="url">URL for the new link.</param>
         /// <param name="controller">Name of controller used for edit.</param>
         /// <param name="controller">Name of action used for edit. Defaults to `Edit`.</param>
+        /// <param name="hasAccess">User has access.</param>
         /// <returns>Returns new link.</returns>
-        public static TableLink EditLink(string url, string controller, string action = "Edit")
+        public static TableLink EditLink(string url, string controller, string action = "Edit", bool hasAccess = true)
         {
-            if (!HttpContextAccessor.HttpContext.User.IsInRole($"{controller}.action".ToLower()))
+            if (!hasAccess)
             {
                 return null;
             }

@@ -20,6 +20,15 @@ namespace Dash.Models
         private List<ChartRange> _ChartRange;
         private List<ChartShare> _ChartShare;
         private User _Owner;
+        private int CurrentUserId;
+
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
+        public Chart(int userId)
+        {
+            CurrentUserId = userId;
+        }
 
         public static IEnumerable<SelectListItem> ChartTypeSelectList
         {
@@ -68,7 +77,7 @@ namespace Dash.Models
         }
 
         [Ignore, JilDirective(true)]
-        public bool IsOwner { get { return Authorization.User?.Id == OwnerId; } }
+        public bool IsOwner { get { return CurrentUserId == OwnerId; } }
 
         [Display(Name = "Name", ResourceType = typeof(I18n.Charts))]
         [Required(ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorRequired")]
@@ -83,7 +92,7 @@ namespace Dash.Models
 
         [Required(ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorRequired")]
         [JilDirective(true)]
-        public int OwnerId { get; set; } = Authorization.User?.Id ?? -1;
+        public int OwnerId { get; set; }
 
         [Ignore, JilDirective(true)]
         public string ShareOptionsJson
@@ -106,9 +115,9 @@ namespace Dash.Models
         /// </summary>
         /// <param name="chart">Setting for new chart.</param>
         /// <returns>Returns a new chart object.</returns>
-        public static Chart Create(CreateChart chart)
+        public static Chart Create(CreateChart chart, int userId)
         {
-            return new Chart() { Name = chart.Name, ChartTypeId = chart.ChartTypeId };
+            return new Chart(userId) { Name = chart.Name, ChartTypeId = chart.ChartTypeId };
         }
 
         /// <summary>
@@ -119,7 +128,7 @@ namespace Dash.Models
         {
             var newChart = this.Clone();
             newChart.Id = 0;
-            newChart.OwnerId = Authorization.User.Id;
+            newChart.OwnerId = CurrentUserId;
             newChart.Name = name.IsEmpty() ? String.Format(Core.CopyOf, Name) : name;
 
             // duplicate the chart ranges
@@ -142,8 +151,9 @@ namespace Dash.Models
         /// <summary>
         /// Get the data for a chart.
         /// </summary>
+        /// <param name="hasDatasetAccess">User has dataset access.</param>
         /// <returns>Returns the data for the chart as a dynamic object.</returns>
-        public ChartResult GetData()
+        public ChartResult GetData(bool hasDatasetAccess)
         {
             // build a obj to store our results
             var response = new ChartResult() { UpdatedDate = DateUpdated };
@@ -190,8 +200,7 @@ namespace Dash.Models
                     Title = $"{report.Name} ({xColumn.Title})",
                     XType = xColumn.TableDataType,
                     YType = yColumn.TableDataType,
-                    Sql = Authorization.HasAccess("Dataset", "Create") ?
-                        (report.Dataset.IsProc ? sqlQuery.ExecStatement(true) : sqlQuery.SelectStatement(prepare: true)) : null
+                    Sql = hasDatasetAccess ? (report.Dataset.IsProc ? sqlQuery.ExecStatement(true) : sqlQuery.SelectStatement(prepare: true)) : null
                 };
 
                 if (range.AggregatorId == 0)

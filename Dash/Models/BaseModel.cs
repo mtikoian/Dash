@@ -36,7 +36,16 @@ namespace Dash.Models
         [JilDirective(true)]
         public IDbContext DbContext { get; set; }
 
+        [Ignore, JilDirective(true)]
+        public string FormAction { get { return IsCreate ? "Create" : "Edit"; } }
+
+        [Ignore, JilDirective(true)]
+        public HttpVerbs FormMethod { get { return IsCreate ? HttpVerbs.Post : HttpVerbs.Put; } }
+
         public int Id { get; set; }
+
+        [Ignore, JilDirective(true)]
+        public bool IsCreate { get { return Id == 0; } }
 
         public int? RequestUserId { get; set; }
 

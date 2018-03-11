@@ -106,7 +106,7 @@ namespace Dash.Controllers
         /// <returns>Returns the dashboard page.</returns>
         public IActionResult Index()
         {
-            return View(new WidgetList());
+            return View(new WidgetList(HttpContextAccessor));
         }
 
         /// <summary>
@@ -116,7 +116,7 @@ namespace Dash.Controllers
         [HttpGet, ParentAction("Index")]
         public IActionResult IndexOptions()
         {
-            return Json(new WidgetList().Widgets);
+            return Json(new WidgetList(HttpContextAccessor).Widgets);
         }
 
         /// <summary>

@@ -3,7 +3,7 @@
 
 <div data-title="@Charts.ViewAll" data-basic-dialog="true" data-close-event="dashboardReload">
     @using (Html.BeginToolbar()) {
-        @Html.AuthorizedButton(Charts.CreateChart, "Chart", "Create", RngnClasses.BtnPrimary, RngnClasses.RngnDialog)
+        @Html.AuthorizedButton(Charts.CreateChart, "Chart", "Create", RngnClasses.BtnPrimary, RngnClasses.RngnDialog, hasAccess: this.User.IsInRole("chart.create"))
     }
     <div class="col-12 rngn-table" data-json="@Model.ToJson"></div>
 </div>

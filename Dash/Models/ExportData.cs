@@ -18,6 +18,8 @@ namespace Dash.Models
         /// </summary>
         public void Stream()
         {
+            throw new NotImplementedException("Stream needs work still.");
+            /*
             if (!Report.ReportColumn.Any(c => c.SortDirection != null))
             {
                 // make sure at least one column is sorted
@@ -34,7 +36,7 @@ namespace Dash.Models
                 DataTable table = new DataTable();
                 Report.ReportColumn.ForEach(x => table.Columns.Add(columns[x.ColumnId]?.Title ?? "", typeof(string)));
 
-                dynamic result = Report.GetData(0, Int32.MaxValue);
+                dynamic result = Report.GetData(0, Int32.MaxValue, false);
                 foreach (IDictionary<string, object> row in result.Rows)
                 {
                     var dataRow = table.NewRow();
@@ -66,6 +68,7 @@ namespace Dash.Models
                 HttpContext.Current.ApplicationInstance.CompleteRequest();
                 HttpContext.Current.Response.End();
             }
+            */
         }
     }
 }

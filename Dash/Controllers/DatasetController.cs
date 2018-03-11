@@ -145,14 +145,14 @@ namespace Dash.Controllers
         public IActionResult Index()
         {
             return PartialView(new Table("tableDatasets", Url.Action("List"), new List<TableColumn> {
-                new TableColumn("name", Datasets.Name, Table.EditLink($"{Url.Action("Edit")}/{{id}}", "Dataset")),
-                new TableColumn("databaseName", Datasets.Database, Table.EditLink($"{Url.Action("Edit", "Database")}/{{databaseId}}", "Database")),
+                new TableColumn("name", Datasets.Name, Table.EditLink($"{Url.Action("Edit")}/{{id}}", "Dataset", hasAccess: User.IsInRole("dataset.edit"))),
+                new TableColumn("databaseName", Datasets.Database, Table.EditLink($"{Url.Action("Edit", "Database")}/{{databaseId}}", "Database", hasAccess: User.IsInRole("dataset.edit"))),
                 new TableColumn("databaseHost", Datasets.Host),
                 new TableColumn("primarySource", Datasets.PrimarySource),
                 new TableColumn("actions", Core.Actions, sortable: false, links: new List<TableLink> {
-                    Table.EditButton($"{Url.Action("Edit")}/{{id}}", "Dataset"),
-                    Table.DeleteButton($"{Url.Action("Delete")}/{{id}}", "Dataset", Datasets.ConfirmDelete),
-                    Table.CopyButton($"{Url.Action("Copy")}/{{id}}", "Dataset", Datasets.NewName)
+                    Table.EditButton($"{Url.Action("Edit")}/{{id}}", "Dataset", hasAccess: User.IsInRole("dataset.edit")),
+                    Table.DeleteButton($"{Url.Action("Delete")}/{{id}}", "Dataset", Datasets.ConfirmDelete, hasAccess: User.IsInRole("dataset.delete")),
+                    Table.CopyButton($"{Url.Action("Copy")}/{{id}}", "Dataset", Datasets.NewName, User.IsInRole("dataset.copy"))
                 }),
             }));
         }

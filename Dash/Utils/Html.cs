@@ -74,10 +74,12 @@ namespace Dash
         /// <param name="controller">Controller</param>
         /// <param name="routeValues">Route values</param>
         /// <param name="htmlAttributes">HTML attributes</param>
+        /// <param name="hasAccess">Does user have access</param>
         /// <returns></returns>
-        public static IHtmlContent AuthorizedActionLink(this IHtmlHelper helper, string linkText, string action, string controller, object routeValues = null, object htmlAttributes = null, bool returnEmpty = true)
+        public static IHtmlContent AuthorizedActionLink(this IHtmlHelper helper, string linkText, string action, string controller, object routeValues = null, object htmlAttributes = null, 
+            bool returnEmpty = true, bool hasAccess = true)
         {
-            if (Authorization.HasAccess(controller, action))
+            if (hasAccess)
             {
                 return helper.ActionLink(linkText, action, controller, routeValues, htmlAttributes);
             }
@@ -108,10 +110,12 @@ namespace Dash
         /// <param name="btnType">Bootstrap button type</param>
         /// <param name="ajaxType">If ajax, dialog type</param>
         /// <param name="htmlAttributes">Attributes for button.</param>
+        /// <param name="hasAccess">User has access</param>
         /// <returns>Returns the HTML for the button if authorized, else an empty string.</returns>
-        public static HtmlString AuthorizedButton(this IHtmlHelper helper, string text, string controller, string action, RngnClasses? btnType = null, RngnClasses? ajaxType = null, object htmlAttributes = null)
+        public static HtmlString AuthorizedButton(this IHtmlHelper helper, string text, string controller, string action, RngnClasses? btnType = null, 
+            RngnClasses? ajaxType = null, object htmlAttributes = null, bool hasAccess = true)
         {
-            return AuthorizedButton(helper, text, controller, action, null, btnType, ajaxType, htmlAttributes);
+            return AuthorizedButton(helper, text, controller, action, null, btnType, ajaxType, htmlAttributes, hasAccess);
         }
 
         /// <summary>
@@ -126,9 +130,10 @@ namespace Dash
         /// <param name="ajaxType">If ajax, dialog type</param>
         /// <param name="htmlAttributes">Attributes for button.</param>
         /// <returns>Returns the HTML for the button if authorized, else an empty string.</returns>
-        public static HtmlString AuthorizedButton(this IHtmlHelper helper, string text, string controller, string action, object routeValues, RngnClasses? btnType = null, RngnClasses? ajaxType = null, object htmlAttributes = null)
+        public static HtmlString AuthorizedButton(this IHtmlHelper helper, string text, string controller, string action, object routeValues, RngnClasses? btnType = null, 
+            RngnClasses? ajaxType = null, object htmlAttributes = null, bool hasAccess = true)
         {
-            if (!Authorization.HasAccess(controller, action))
+            if (!hasAccess)
             {
                 return HtmlString.Empty;
             }
@@ -343,19 +348,6 @@ namespace Dash
         public static HtmlString EscapeForJs(this IHtmlHelper helper, string value)
         {
             return new HtmlString($"'{value.Replace("'", "\'")}'");
-        }
-
-        /// <summary>
-        /// Build a select list from the result of a db query.
-        /// </summary>
-        /// <typeparam name="T">Type of data to get from the db.</typeparam>
-        /// <param name="helper">IHtmlHelper object this method extends.</param>
-        /// <param name="valueName">Name of the column for the option value.</param>
-        /// <param name="textName">Name of the column for the option text.</param>
-        /// <returns>Returns a new select list.</returns>
-        public static SelectList GetSelectList<T>(this IHtmlHelper helper, string valueName = "Id", string textName = "Name") where T : BaseModel
-        {
-            return new SelectList(Willow.GetAll<T>(), valueName, textName);
         }
 
         /// <summary>

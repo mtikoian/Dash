@@ -31,7 +31,7 @@
                 <div class="row">
                     <div class="col-6">
                         @Html.LabelInputFor(model => model.Name)
-                        @Html.LabelDropDownListFor(model => model.DatabaseId, Html.GetSelectList<Database>(), new { @class = "dataset-database" })
+                        @Html.LabelDropDownListFor(model => model.DatabaseId, new SelectList(Model.DbContext.GetAll<Database>(), "Id", "Name"), new { @class = "dataset-database" })
                         @Html.LabelDropDownListFor(model => model.TypeId, Model.TypeList, new { @class = "dataset-type" })
                         <div class="form-group row">
                             <label class="col-form-label col-4 required" for="PrimarySource">@Datasets.PrimarySource</label>
