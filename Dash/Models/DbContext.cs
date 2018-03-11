@@ -24,7 +24,7 @@ namespace Dash.Models
         private IMemoryCache _Cache;
         private DatabaseConfiguration _Database;
 
-        public DbContext(IAppConfiguration config, IMemoryCache cache = null)
+        public DbContext(AppConfiguration config, IMemoryCache cache = null)
         {
             _Database = config.Database;
             _Cache = cache;

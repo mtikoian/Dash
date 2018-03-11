@@ -3,6 +3,7 @@ using Dash.Models;
 using HardHat;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Rewrite;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -21,22 +22,13 @@ namespace Dash
 {
     public class Startup
     {
-        public Startup(IHostingEnvironment env)
-        {
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
-                .AddEnvironmentVariables();
-            Configuration = builder.Build();
 
-            Log.Logger = new LoggerConfiguration()
-                .ReadFrom.Configuration(Configuration)
-                .CreateLogger();
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
         }
 
         public IConfiguration Configuration { get; }
-        public IAppConfiguration AppConfig { get; set; }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
@@ -71,8 +63,6 @@ namespace Dash
             // force all requests to https
             app.UseRewriter(new RewriteOptions().AddRedirectToHttps());
 
-            AppConfig = new AppConfiguration();
-            ConfigurationBinder.Bind(Configuration, AppConfig);
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -84,7 +74,24 @@ namespace Dash
                         var error = context.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerFeature>();
                         if (error != null)
                         {
-                            LogException(error.Error, context);
+                            try
+                            {
+                                var appConfig = Configuration.GetValue<AppConfiguration>("App");
+                                var dbContext = new DbContext(appConfig);
+                                dbContext.Save(new ErrorLog {
+                                    Namespace = this.GetType().Namespace,
+                                    Host = Environment.MachineName,
+                                    Type = error.GetType().FullName,
+                                    Source = error.Error.Source,
+                                    Path = context.Request.Path.Value,
+                                    Method = context.Request.Method,
+                                    Message = error.Error.Message,
+                                    StackTrace = error.Error.StackTrace,
+                                    Timestamp = DateTimeOffset.Now,
+                                    User = context.User.Identity?.Name
+                                });
+                            }
+                            catch { }
                         }
 
                         if (context.Request.ContentType.ToLower().Contains("json"))
@@ -120,8 +127,18 @@ namespace Dash
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //services.AddConfiguration();
+            var appConfig = new AppConfiguration();
+            Configuration.Bind("App", appConfig);
+            services.AddSingleton(appConfig);
+
+
             //services.AddSingleton<IAppConfiguration>((IAppConfiguration)Configuration.GetSection("AppConfig"));
-            //services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
+            services.AddAuthentication(x => {
+                x.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            }).AddCookie(x => {
+                x.Cookie.HttpOnly = true;
+            });
             services.AddMvc(options => {
                 options.InputFormatters.Insert(0, new JilInputFormatter());
                 options.OutputFormatters.Insert(0, new JilOutputFormatter());
@@ -142,27 +159,6 @@ namespace Dash
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddScoped<IDbContext, DbContext>();
-        }
-
-        private void LogException(Exception error, HttpContext context)
-        {
-            try
-            {
-                var dbContext = new DbContext(AppConfig);
-                dbContext.Save(new ErrorLog {
-                    Namespace = this.GetType().Namespace,
-                    Host = Environment.MachineName,
-                    Type = error.GetType().FullName,
-                    Source = error.Source,
-                    Path = context.Request.Path.Value,
-                    Method = context.Request.Method,
-                    Message = error.Message,
-                    StackTrace = error.StackTrace,
-                    Timestamp = DateTimeOffset.Now,
-                    User = context.User.Identity?.Name
-                });
-            }
-            catch { }
         }
     }
 }

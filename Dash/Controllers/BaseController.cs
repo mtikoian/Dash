@@ -19,7 +19,7 @@ namespace Dash.Controllers
         /// <param name="dbContext">Database context.</param>
         /// <param name="cache">App memory cache.</param>
         /// <param name="appConfig">App settings.</param>
-        public BaseController(IHttpContextAccessor httpContextAccessor, IDbContext dbContext, IMemoryCache cache, IAppConfiguration appConfig)
+        public BaseController(IHttpContextAccessor httpContextAccessor, IDbContext dbContext, IMemoryCache cache, AppConfiguration appConfig)
         {
             HttpContextAccessor = httpContextAccessor;
             DbContext = dbContext;

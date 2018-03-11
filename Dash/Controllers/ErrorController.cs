@@ -12,7 +12,7 @@ namespace Dash.Controllers
     /// </summary>
     public class ErrorController : BaseController
     {
-        public ErrorController(IHttpContextAccessor httpContextAccessor, IDbContext dbContext, IMemoryCache cache, IAppConfiguration appConfig) : base(httpContextAccessor, dbContext, cache, appConfig)
+        public ErrorController(IHttpContextAccessor httpContextAccessor, IDbContext dbContext, IMemoryCache cache, AppConfiguration appConfig) : base(httpContextAccessor, dbContext, cache, appConfig)
         {
         }
 

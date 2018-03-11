@@ -171,11 +171,11 @@ namespace Dash
         /// <param name="icon">Icon for the menu item</param>
         /// <param name="authorized">True if user is authorized</param>
         /// <returns>Returns the HTML for the menu link.</returns>
-        public static HtmlString AuthorizedMenu(this IHtmlHelper helper, string linkText, string action, string controller, string icon, bool authorized)
+        public static TagBuilder AuthorizedMenu(this IHtmlHelper helper, string linkText, string action, string controller, string icon, bool authorized)
         {
             if (!authorized)
             {
-                return HtmlString.Empty;
+                return null;
             }
 
             var a = new TagBuilder("a");
@@ -191,7 +191,7 @@ namespace Dash
             a.InnerHtml.AppendHtml(span);
             var li = new TagBuilder("li");
             li.InnerHtml.AppendHtml(a);
-            return new HtmlString(li.ToString());
+            return li;
         }
 
         /// <summary>
@@ -210,6 +210,14 @@ namespace Dash
         public static MvcForm BeginBootForm(this IHtmlHelper helper, string action, string controller, object routeValues = null, string title = null, string dataEvent = null, string dataUrl = null, object htmlAttributes = null, bool ajaxForm = true, HttpVerbs method = HttpVerbs.Post)
         {
             var htmlAttr = HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes);
+            if (!htmlAttr.ContainsKey("class"))
+            {
+                htmlAttr["class"] = "";
+            }
+            if (!htmlAttr.ContainsKey("data-toggle"))
+            {
+                htmlAttr["data-toggle"] = "";
+            }
             htmlAttr["class"] = MergedList(htmlAttr["class"], new string[] { (ajaxForm ? "rngn-form" : ""), "pt-1 mx-1 row" }).Combine();
             htmlAttr["data-toggle"] = MergedList(htmlAttr["data-toggle"], new[] { "validator" }).Combine();
             if (!title.IsEmpty())
@@ -589,7 +597,7 @@ namespace Dash
         /// <param name="inputWidth">Bootstrap col width for input</param>
         /// <param name="inputType">HTML5 input type</param>
         /// <returns>Returns HTML if help is found for the model/field, else returns an empty string.</returns>
-        public static HtmlString LabelInputFor<TModel, TValue>(this IHtmlHelper<TModel> helper, Expression<Func<TModel, TValue>> expression,
+        public static TagBuilder LabelInputFor<TModel, TValue>(this IHtmlHelper<TModel> helper, Expression<Func<TModel, TValue>> expression,
             object inputAttributes = null, int labelWidth = 4, int inputWidth = 8, InputFieldType inputType = InputFieldType.Text, HtmlString groupAddOn = null)
         {
             var attrs = helper.InputAttributesFor(expression, inputAttributes);
@@ -602,7 +610,7 @@ namespace Dash
             var formGroup = FormGroup();
             formGroup.InnerHtml.AppendHtml(helper.StyledLabelFor(expression, attrs, labelWidth));
             formGroup.InnerHtml.AppendHtml(innerDiv);
-            return new HtmlString(formGroup.ToString());
+            return formGroup;
         }
 
         /// <summary>
@@ -616,7 +624,7 @@ namespace Dash
         /// <param name="labelWidth">Bootstrap col width for label</param>
         /// <param name="inputWidth">Bootstrap col width for input</param>
         /// <returns>Returns HTML if help is found for the model/field, else returns an empty string.</returns>
-        public static HtmlString LabelPasswordFor<TModel, TProperty>(this IHtmlHelper<TModel> helper, Expression<Func<TModel, TProperty>> expression, object inputAttributes = null, int labelWidth = 4, int inputWidth = 8)
+        public static TagBuilder LabelPasswordFor<TModel, TProperty>(this IHtmlHelper<TModel> helper, Expression<Func<TModel, TProperty>> expression, object inputAttributes = null, int labelWidth = 4, int inputWidth = 8)
         {
             var attrs = helper.InputAttributesFor(expression, inputAttributes);
             var input = helper.PasswordFor(expression, attrs);
@@ -624,7 +632,7 @@ namespace Dash
             var formGroup = FormGroup();
             formGroup.InnerHtml.AppendHtml(helper.StyledLabelFor(expression, attrs, labelWidth));
             formGroup.InnerHtml.AppendHtml(innerDiv);
-            return new HtmlString(formGroup.ToString());
+            return formGroup;
         }
 
         /// <summary>

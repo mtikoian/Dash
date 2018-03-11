@@ -10,7 +10,7 @@ namespace Dash.Controllers
     [Authorize]
     public class ResxController : BaseController
     {
-        public ResxController(IHttpContextAccessor httpContextAccessor, IDbContext dbContext, IMemoryCache cache, IAppConfiguration appConfig) : base(httpContextAccessor, dbContext, cache, appConfig)
+        public ResxController(IHttpContextAccessor httpContextAccessor, IDbContext dbContext, IMemoryCache cache, AppConfiguration appConfig) : base(httpContextAccessor, dbContext, cache, appConfig)
         {
         }
 

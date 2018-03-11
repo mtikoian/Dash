@@ -17,7 +17,7 @@ namespace Dash.Controllers
     {
         private IActionContextAccessor ActionContextAccessor;
 
-        public AccountController(IHttpContextAccessor httpContextAccessor, IDbContext dbContext, IMemoryCache cache, IAppConfiguration appConfig, IActionContextAccessor actionContextAccessor) : base(httpContextAccessor, dbContext, cache, appConfig)
+        public AccountController(IHttpContextAccessor httpContextAccessor, IDbContext dbContext, IMemoryCache cache, AppConfiguration appConfig, IActionContextAccessor actionContextAccessor) : base(httpContextAccessor, dbContext, cache, appConfig)
         {
             ActionContextAccessor = actionContextAccessor;
         }

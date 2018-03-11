@@ -17,7 +17,7 @@ namespace Dash.Controllers
     [Authorize(Policy = "HasPermission")]
     public class DatabaseController : BaseController
     {
-        public DatabaseController(IHttpContextAccessor httpContextAccessor, IDbContext dbContext, IMemoryCache cache, IAppConfiguration appConfig) : base(httpContextAccessor, dbContext, cache, appConfig)
+        public DatabaseController(IHttpContextAccessor httpContextAccessor, IDbContext dbContext, IMemoryCache cache, AppConfiguration appConfig) : base(httpContextAccessor, dbContext, cache, appConfig)
         {
         }
 

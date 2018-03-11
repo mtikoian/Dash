@@ -76,7 +76,7 @@ gulp.task('sass', function () {
         .pipe(sass().on('error', sass.logError))
         .pipe(postcss([autoprefixer()]))
         .pipe(addsrc.append(paths.css + 'fontello/css/rengn.css'))
-        .pipe(replace('../font/rengn', 'font/rengn'))
+        //.pipe(replace('../font/rengn', 'font/rengn'))
         .pipe(concat('core.css'))
         .pipe(cleancss())
         .pipe(sourcemaps.write('.'))

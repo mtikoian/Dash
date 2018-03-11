@@ -7,10 +7,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>@Dash.I18n.Core.Dashboard</title>
-    <link rel="stylesheet" href="~/Dist/core.css" />
+    <link rel="stylesheet" href="~/css/core.css" />
     <link rel="icon" href="~/favicon.ico">
 </head>
-<body data-base-url="@Url.Content("~")" data-resx="@Url.Action("Index", "Resx", null)" data-lang="@CultureInfo.DefaultThreadCurrentCulture.TwoLetterISOLanguageName">
+<body data-base-url="@Url.Content("~")" data-resx="@Url.Action("Index", "Resx", null)" data-lang="@(CultureInfo.DefaultThreadCurrentCulture?.TwoLetterISOLanguageName ?? "en")">
     @{ Html.RenderPartial("_NavBar"); }
 
     <div id="contentWrapper">
@@ -20,8 +20,8 @@
             @Html.Partial("_Spinner")
         </div>
 
-        <script type="text/javascript" src="~/Dist/core.js"></script>
-        <script type="text/javascript" src="~/Dist/modules.js"></script>
+        <script type="text/javascript" src="~/js/core.js"></script>
+        <script type="text/javascript" src="~/js/modules.js"></script>
 
         @if (ViewBag.Error != null || TempData.ContainsKey("Error"))
         {

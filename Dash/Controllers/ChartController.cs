@@ -18,7 +18,7 @@ namespace Dash.Controllers
     [Authorize(Policy = "HasPermission")]
     public class ChartController : BaseController
     {
-        public ChartController(IHttpContextAccessor httpContextAccessor, IDbContext dbContext, IMemoryCache cache, IAppConfiguration appConfig) : base(httpContextAccessor, dbContext, cache, appConfig)
+        public ChartController(IHttpContextAccessor httpContextAccessor, IDbContext dbContext, IMemoryCache cache, AppConfiguration appConfig) : base(httpContextAccessor, dbContext, cache, appConfig)
         {
         }
 
