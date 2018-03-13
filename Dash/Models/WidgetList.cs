@@ -1,34 +1,32 @@
-﻿using Jil;
-using Microsoft.AspNetCore.Http;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
+using Jil;
 
 namespace Dash.Models
 {
     public class WidgetList : BaseModel
     {
-        private IHttpContextAccessor HttpContextAccessor;
+        private IEnumerable<Widget> _Widgets { get; set; }
 
-        public WidgetList(IHttpContextAccessor httpContextAccessor)
+        public WidgetList(IDbContext dbContext, int userId)
         {
-            HttpContextAccessor = httpContextAccessor;
+            DbContext = dbContext;
+            RequestUserId = userId;
         }
 
         public string ToJson { get { return JSON.SerializeDynamic(Widgets, JilOutputFormatter.Options); } }
+
         public IEnumerable<Widget> Widgets
         {
             get
             {
-                var userId = HttpContextAccessor.HttpContext.User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt();
-                if (_Widgets == null && userId > 0)
+                if (_Widgets == null && RequestUserId.HasPositiveValue())
                 {
-                    _Widgets = DbContext.GetAll<Widget>(new { UserId = userId })
+                    _Widgets = DbContext.GetAll<Widget>(new { UserId = RequestUserId })
                         .OrderBy(x => x.X < 0 ? int.MaxValue : x.X).ThenBy(x => x.Y < 0 ? int.MaxValue : x.Y);
                 }
                 return _Widgets;
             }
         }
-        private IEnumerable<Widget> _Widgets { get; set; }
     }
 }

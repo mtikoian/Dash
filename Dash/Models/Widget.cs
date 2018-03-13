@@ -34,6 +34,8 @@ namespace Dash.Models
         private List<DatasetColumn> _DatasetColumns;
         private IActionContextAccessor ActionContextAccessor;
 
+        public Widget() { }
+
         public Widget(IActionContextAccessor actionContextAccessor)
         {
             ActionContextAccessor = actionContextAccessor;
