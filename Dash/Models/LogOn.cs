@@ -1,24 +1,22 @@
-﻿using Dash.I18n;
-using Dash.Utils;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Http;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
+using Dash.I18n;
+using Dash.Utils;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 namespace Dash.Models
 {
     public class LogOn : BaseModel
     {
-        private IHttpContextAccessor HttpContextAccessor;
-
-        public LogOn(IHttpContextAccessor httpContextAccessor)
+        public LogOn()
         {
-            HttpContextAccessor = httpContextAccessor;
         }
 
         [Display(Name = "Password", ResourceType = typeof(I18n.Users))]
@@ -37,12 +35,12 @@ namespace Dash.Models
         /// </summary>
         /// <param name="error">Error message if any.</param>
         /// <returns>True on success, else false.</returns>
-        public bool DoLogOn(out string error)
+        public bool DoLogOn(out string error, IDbContext dbContext, HttpContext httpContext, ILogger<LogOn> logger)
         {
             error = "";
             try
             {
-                var user = DbContext.GetAll<User>(new { UID = UserName, IsActive = true }).FirstOrDefault();
+                var user = dbContext.GetAll<User>(new { UID = UserName, IsActive = true }).FirstOrDefault();
                 if (user?.IsActive != true)
                 {
                     error = Account.ErrorCannotValidate;
@@ -55,7 +53,7 @@ namespace Dash.Models
                         new Claim(ClaimTypes.PrimarySid, user.Id.ToString()),
                         new Claim("FullName", user.FullName)
                     };
-                    claims.AddRange(DbContext.GetAll<UserClaim>(new { user.Id })
+                    claims.AddRange(dbContext.GetAll<UserClaim>(new { user.Id })
                         .Select(x => new Claim(ClaimTypes.Role, $"{x.ControllerName}.{x.ActionName}".ToLower())));
 
                     var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -63,7 +61,7 @@ namespace Dash.Models
                         IsPersistent = true
                     };
 
-                    var language = DbContext.Get<Language>(user.LanguageId);
+                    var language = dbContext.Get<Language>(user.LanguageId);
                     if (language != null)
                     {
                         var cultureInfo = new CultureInfo(language.LanguageCode);
@@ -71,7 +69,7 @@ namespace Dash.Models
                         CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
                     }
 
-                    HttpContextAccessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                    httpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                         new ClaimsPrincipal(claimsIdentity), authProperties);
 
                     return true;
@@ -83,7 +81,7 @@ namespace Dash.Models
             }
             catch (Exception ex)
             {
-                ex.Log(HttpContextAccessor);
+                logger.LogError(ex, Account.ErrorCannotValidate);
                 error = Account.ErrorCannotValidate;
             }
             return false;

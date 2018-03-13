@@ -27,12 +27,12 @@ namespace Dash.Controllers
             AppConfig = appConfig;
         }
 
-        public IAppConfiguration AppConfig { get; set; }
-        public IMemoryCache Cache { get; set; }
-        public IDbContext DbContext { get; set; }
-        public IHttpContextAccessor HttpContextAccessor { get; set; }
-        public int ID { get; set; }
-        public BaseModel Model { get; set; }
+        protected IAppConfiguration AppConfig { get; set; }
+        protected IMemoryCache Cache { get; set; }
+        protected IDbContext DbContext { get; set; }
+        protected IHttpContextAccessor HttpContextAccessor { get; set; }
+        protected int ID { get; set; }
+        protected BaseModel Model { get; set; }
 
         /// <summary>
         /// Gets an object from the cache. Cache persists for the lifetime of the app pool.

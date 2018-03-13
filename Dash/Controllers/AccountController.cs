@@ -10,16 +10,15 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Linq;
 using System.Security.Claims;
+using Microsoft.Extensions.Logging;
 
 namespace Dash.Controllers
 {
     public class AccountController : BaseController
     {
-        private IActionContextAccessor ActionContextAccessor;
-
-        public AccountController(IHttpContextAccessor httpContextAccessor, IDbContext dbContext, IMemoryCache cache, AppConfiguration appConfig, IActionContextAccessor actionContextAccessor) : base(httpContextAccessor, dbContext, cache, appConfig)
+        public AccountController(IHttpContextAccessor httpContextAccessor, IDbContext dbContext, IMemoryCache cache, AppConfiguration appConfig) :
+            base(httpContextAccessor, dbContext, cache, appConfig)
         {
-            ActionContextAccessor = actionContextAccessor;
         }
 
         /// <summary>
@@ -27,14 +26,14 @@ namespace Dash.Controllers
         /// </summary>
         /// <returns>Returns forgot password form.</returns>
         [HttpGet, AjaxRequestOnly]
-        public ActionResult ForgotPassword()
+        public ActionResult ForgotPassword([FromServices] IActionContextAccessor actionContextAccessor)
         {
             // @todo does this verify the user is logged in?
             if (User.Identity.IsAuthenticated)
             {
                 return RedirectWithMessage("Dashboard", "Index", Core.ErrorAlreadyLoggedIn);
             }
-            return PartialView(new ForgotPassword(HttpContextAccessor, ActionContextAccessor));
+            return PartialView(new ForgotPassword(actionContextAccessor));
         }
 
         /// <summary>
@@ -83,7 +82,7 @@ namespace Dash.Controllers
             {
                 return RedirectWithMessage("Dashboard", "Index", Core.ErrorAlreadyLoggedIn);
             }
-            return View(new LogOn(HttpContextAccessor));
+            return View(new LogOn());
         }
 
         /// <summary>
@@ -92,7 +91,7 @@ namespace Dash.Controllers
         /// <param name="model">LogOn object</param>
         /// <returns>LogOn view on error, else redirects to index.</returns>
         [HttpPost, ValidateAntiForgeryToken]
-        public ActionResult Login(LogOn model)
+        public ActionResult Login(LogOn model, [FromServices] ILogger<LogOn> logger)
         {
             if (User.Identity.IsAuthenticated)
             {
@@ -104,7 +103,7 @@ namespace Dash.Controllers
                 return View(model);
             }
 
-            if (!model.DoLogOn(out string error))
+            if (!model.DoLogOn(out string error, DbContext, HttpContext, logger))
             {
                 ViewBag.Error = error;
                 return View(model);
@@ -168,9 +167,10 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly, Authorize]
         public ActionResult ToggleContextHelp()
         {
-            var wantsHelp = HttpContextAccessor.HttpContext.Session.GetString("ContextHelp").ToBool();
+
+            var wantsHelp = HttpContext.Session.GetString("ContextHelp").ToBool();
             wantsHelp = !wantsHelp;
-            HttpContextAccessor.HttpContext.Session.SetString("ContextHelp", wantsHelp.ToString());
+            HttpContext.Session.SetString("ContextHelp", wantsHelp.ToString());
             return Json(new { message = wantsHelp ? Core.HelpEnabled : Core.HelpDisabled, enabled = wantsHelp });
         }
 

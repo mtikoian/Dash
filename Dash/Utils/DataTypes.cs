@@ -304,7 +304,7 @@ namespace Dash
         /// Manually log an exception.
         /// </summary>
         /// <param name="ex">Exception to log.</param>
-        public static void Log(this Exception ex, IHttpContextAccessor httpContextAccessor)
+        public static void Log(this Exception ex)
         {
             Serilog.Log.Error(ex, ex.Message);
         }

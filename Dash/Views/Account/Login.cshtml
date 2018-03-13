@@ -3,11 +3,16 @@
 
 @using (Html.BeginBootForm("Login", "Account", ajaxForm: false))
 {
-    <div class="col-12 pb-5">
+    <div class="col-12 pb-3">
         <h4>@Account.Login</h4>
     </div>
 
-    <div class="col-12">
+    @if (!((string)ViewBag.Error).IsEmpty())
+    {
+        @Html.ToCard((string)ViewBag.Error, BootstrapTypes.Warning)
+    }
+
+    <div class="col-12 pt-2">
         <div class="col-6">
             @Html.LabelInputFor(m => m.UserName)
             @Html.LabelPasswordFor(m => m.Password, new { })

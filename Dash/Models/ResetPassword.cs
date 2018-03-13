@@ -10,13 +10,6 @@ namespace Dash.Models
 {
     public class ResetPassword : BaseModel, IValidatableObject
     {
-        private IHttpContextAccessor _HttpContextAccessor;
-
-        public ResetPassword(IHttpContextAccessor httpContextAccessor)
-        {
-            _HttpContextAccessor = httpContextAccessor;
-        }
-
         [Display(Name = "ConfirmPassword", ResourceType = typeof(Users))]
         [StringLength(250, MinimumLength = 6, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMinMaxLength")]
         [Ignore]
@@ -59,7 +52,7 @@ namespace Dash.Models
             }
             catch (Exception ex)
             {
-                ex.Log(_HttpContextAccessor);
+                ex.Log();
                 error = Account.ErrorSavingPassword;
             }
             return false;
