@@ -37,7 +37,7 @@ namespace Dash.Controllers
         /// <param name="model">Permission object to create.</param>
         /// <returns>Success or error message.</returns>
         [HttpPost, AjaxRequestOnly]
-        public IActionResult Create(Permission model)
+        public IActionResult Create([FromBody]Permission model)
         {
             return Save(model);
         }
@@ -108,7 +108,7 @@ namespace Dash.Controllers
         /// <param name="permission">Permission object</param>
         /// <returns>Success or error message.</returns>
         [HttpPut, AjaxRequestOnly]
-        public IActionResult Edit(Permission model)
+        public IActionResult Edit([FromBody]Permission model)
         {
             return Save(model);
         }

@@ -29,7 +29,8 @@ namespace Dash.Models
         /// <returns>Returns a list of validation errors if any.</returns>
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if (DbContext.GetAll<Permission>().Any(x => x.ControllerName.ToUpper() == ControllerName.ToUpper() && x.ActionName.ToUpper() == ActionName.ToUpper() && x.Id != Id))
+            var dbContext = (IDbContext)validationContext.GetService(typeof(IDbContext));
+            if (dbContext.GetAll<Permission>().Any(x => x.ControllerName.ToUpper() == ControllerName.ToUpper() && x.ActionName.ToUpper() == ActionName.ToUpper() && x.Id != Id))
             {
                 yield return new ValidationResult(I18n.Permissions.ErrorDuplicateName, new[] { "ControllerName" });
             }
