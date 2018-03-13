@@ -1,19 +1,20 @@
-﻿using Dash.Models;
-using Dash.I18n;
-using FastMember;
-using Jil;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using System.Security.Claims;
 using System.Text;
 using System.Text.RegularExpressions;
+using Dash.I18n;
+using Dash.Models;
+using FastMember;
+using Jil;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Dash
 {
@@ -675,6 +676,11 @@ namespace Dash
                 return String.Empty;
             }
             return char.ToUpper(value[0]) + value.Substring(1);
+        }
+
+        public static int UserId(this ClaimsPrincipal claimsPrincipal)
+        {
+            return claimsPrincipal?.Claims.First(x => x.Type == ClaimTypes.PrimarySid)?.Value.ToInt() ?? 0;
         }
 
         /// <summary>

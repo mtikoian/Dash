@@ -68,7 +68,7 @@ namespace Dash.Controllers
                 return false;
             }
             Model = DbContext.Get<T>(ID);
-            Model.RequestUserId = HttpContextAccessor.HttpContext.User?.Identity?.Name.ToInt();
+            Model.RequestUserId = HttpContextAccessor.HttpContext.User.UserId();
             return Model != null;
         }
 
