@@ -76,7 +76,7 @@ namespace Dash
         /// <param name="htmlAttributes">HTML attributes</param>
         /// <param name="hasAccess">Does user have access</param>
         /// <returns></returns>
-        public static IHtmlContent AuthorizedActionLink(this IHtmlHelper helper, string linkText, string action, string controller, object routeValues = null, object htmlAttributes = null, 
+        public static IHtmlContent AuthorizedActionLink(this IHtmlHelper helper, string linkText, string action, string controller, object routeValues = null, object htmlAttributes = null,
             bool returnEmpty = true, bool hasAccess = true)
         {
             if (hasAccess)
@@ -96,7 +96,7 @@ namespace Dash
                 var span = new TagBuilder("span");
                 span.MergeAttributes(HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes));
                 span.InnerHtml.Append(linkText);
-                return new HtmlString(span.ToString());
+                return span;
             }
         }
 
@@ -112,7 +112,7 @@ namespace Dash
         /// <param name="htmlAttributes">Attributes for button.</param>
         /// <param name="hasAccess">User has access</param>
         /// <returns>Returns the HTML for the button if authorized, else an empty string.</returns>
-        public static HtmlString AuthorizedButton(this IHtmlHelper helper, string text, string controller, string action, RngnClasses? btnType = null, 
+        public static IHtmlContent AuthorizedButton(this IHtmlHelper helper, string text, string controller, string action, RngnClasses? btnType = null,
             RngnClasses? ajaxType = null, object htmlAttributes = null, bool hasAccess = true)
         {
             return AuthorizedButton(helper, text, controller, action, null, btnType, ajaxType, htmlAttributes, hasAccess);
@@ -130,7 +130,7 @@ namespace Dash
         /// <param name="ajaxType">If ajax, dialog type</param>
         /// <param name="htmlAttributes">Attributes for button.</param>
         /// <returns>Returns the HTML for the button if authorized, else an empty string.</returns>
-        public static HtmlString AuthorizedButton(this IHtmlHelper helper, string text, string controller, string action, object routeValues, RngnClasses? btnType = null, 
+        public static IHtmlContent AuthorizedButton(this IHtmlHelper helper, string text, string controller, string action, object routeValues, RngnClasses? btnType = null,
             RngnClasses? ajaxType = null, object htmlAttributes = null, bool hasAccess = true)
         {
             if (!hasAccess)
@@ -158,7 +158,7 @@ namespace Dash
             var btn = new TagBuilder("button");
             btn.MergeAttributes(htmlAttr);
             btn.InnerHtml.Append(text);
-            return new HtmlString(btn.ToString());
+            return btn;
         }
 
         /// <summary>
@@ -305,7 +305,7 @@ namespace Dash
         /// <param name="inputId">ID of the input tag</param>
         /// <param name="isFullWidth">Wrap the checkbox in a col-12 div if true.</param>
         /// <returns>Returns the HTML snippet for the checkbox.</returns>
-        public static HtmlString CustomCheckbox(this IHtmlHelper helper, string inputName, bool isChecked, string value, string display, string inputId = null, bool isFullWidth = true, bool isMultiple = false)
+        public static IHtmlContent CustomCheckbox(this IHtmlHelper helper, string inputName, bool isChecked, string value, string display, string inputId = null, bool isFullWidth = true, bool isMultiple = false)
         {
             inputId = inputId ?? $"{inputName}_{value}";
             var input = new TagBuilder("input");
@@ -338,13 +338,13 @@ namespace Dash
 
             if (!isFullWidth)
             {
-                return new HtmlString(div.ToString());
+                return div;
             }
 
             var outerDiv = new TagBuilder("div");
             outerDiv.AddCssClass("col-12");
             outerDiv.InnerHtml.AppendHtml(div);
-            return new HtmlString(outerDiv.ToString());
+            return outerDiv;
         }
 
         /// <summary>
@@ -368,7 +368,7 @@ namespace Dash
         /// <param name="useInputGroup">Wrap icon in an input-group.</param>
         /// <param name="rightPad">Add right padding to icon.</param>
         /// <returns>Returns HTML if help is found for the model/field, else returns an empty string.</returns>
-        public static HtmlString Help<TModel>(this IHtmlHelper<TModel> helper, string modelName, string fieldName, bool useInputGroup = true, bool rightPad = false)
+        public static IHtmlContent Help<TModel>(this IHtmlHelper<TModel> helper, string modelName, string fieldName, bool useInputGroup = true, bool rightPad = false)
         {
             if (!helper.ViewContext.HttpContext.Session.GetString("ContextHelp").ToBool())
             {
@@ -398,9 +398,9 @@ namespace Dash
                 var span = new TagBuilder("span");
                 span.AddCssClass("input-group-append");
                 span.InnerHtml.AppendHtml(button);
-                return new HtmlString(span.ToString());
+                return span;
             }
-            return new HtmlString(button.ToString());
+            return button;
         }
 
         /// <summary>
@@ -412,7 +412,7 @@ namespace Dash
         /// <param name="expression">Model object</param>
         /// <param name="htmlAttributes">Any html attributes to add.</param>
         /// <returns>Returns HTML if help is found for the model/field, else returns an empty string.</returns>
-        public static HtmlString HelpFor<TModel, TValue>(this IHtmlHelper<TModel> helper, Expression<Func<TModel, TValue>> expression, bool useInputGroup = true, bool rightPad = false)
+        public static IHtmlContent HelpFor<TModel, TValue>(this IHtmlHelper<TModel> helper, Expression<Func<TModel, TValue>> expression, bool useInputGroup = true, bool rightPad = false)
         {
             var explorer = ExpressionMetadataProvider.FromLambdaExpression(expression, helper.ViewData, helper.MetadataProvider);
             return Help(helper, explorer.Metadata.ContainerType.Name, explorer.Metadata.PropertyName, useInputGroup, rightPad);
@@ -446,7 +446,7 @@ namespace Dash
         /// <param name="buttonLabel">Label for the button - can be text or an html string.</param>
         /// <param name="itemList">List of items for the dropdown.</param>
         /// <returns>Returns an input group button with a dropdown.</returns>
-        public static HtmlString InputGroupButton<TModel>(this IHtmlHelper<TModel> helper, string targetId, string buttonLabel, List<string> itemList)
+        public static IHtmlContent InputGroupButton<TModel>(this IHtmlHelper<TModel> helper, string targetId, string buttonLabel, List<string> itemList)
         {
             var button = new TagBuilder("button");
             button.AddCssClass("btn btn-secondary dropdown-toggle");
@@ -475,7 +475,7 @@ namespace Dash
             var groupDiv = new TagBuilder("div");
             groupDiv.AddCssClass("input-group-btn input-group-append");
             groupDiv.InnerHtml.AppendHtml(dropdownDiv);
-            return new HtmlString(groupDiv.ToString());
+            return groupDiv;
         }
 
         /// <summary>
@@ -504,7 +504,7 @@ namespace Dash
         /// <param name="labelWidth">Width of the control label.</param>
         /// <param name="inputWidth">Width of the input.</param>
         /// <returns>Returns HTML for the label and checkbox.</returns>
-        public static HtmlString LabelCheckBoxFor<TModel>(this IHtmlHelper<TModel> helper, Expression<Func<TModel, bool>> expression, object htmlAttributes = null, int labelWidth = 4, int inputWidth = 8)
+        public static IHtmlContent LabelCheckBoxFor<TModel>(this IHtmlHelper<TModel> helper, Expression<Func<TModel, bool>> expression, object htmlAttributes = null, int labelWidth = 4, int inputWidth = 8)
         {
             // load up the metadata we need
             var explorer = ExpressionMetadataProvider.FromLambdaExpression(expression, helper.ViewData, helper.MetadataProvider);
@@ -549,7 +549,7 @@ namespace Dash
             formGroup.InnerHtml.AppendHtml(label);
             formGroup.InnerHtml.AppendHtml(innerDiv);
 
-            return new HtmlString(formGroup.ToString());
+            return formGroup;
         }
 
         /// <summary>
@@ -566,7 +566,7 @@ namespace Dash
         /// <param name="disabled">Dropdown is disabled.</param>
         /// <param name="includeEmptyItem">Include an empty option at the top of the dropdown.</param>
         /// <returns>Returns HTML if help is found for the model/field, else returns an empty string.</returns>
-        public static HtmlString LabelDropDownListFor<TModel, TValue>(this IHtmlHelper<TModel> helper, Expression<Func<TModel, TValue>> expression, IEnumerable<SelectListItem> listItems,
+        public static IHtmlContent LabelDropDownListFor<TModel, TValue>(this IHtmlHelper<TModel> helper, Expression<Func<TModel, TValue>> expression, IEnumerable<SelectListItem> listItems,
             object htmlAttributes = null, int labelWidth = 4, int inputWidth = 8, bool disabled = false, bool includeEmptyItem = true)
         {
             // build input
@@ -582,7 +582,7 @@ namespace Dash
             var formGroup = FormGroup();
             formGroup.InnerHtml.AppendHtml(helper.StyledLabelFor(expression, attrs, labelWidth));
             formGroup.InnerHtml.AppendHtml(innerDiv);
-            return new HtmlString(formGroup.ToString());
+            return formGroup;
         }
 
         /// <summary>
@@ -644,7 +644,7 @@ namespace Dash
         /// <param name="expression">Model object</param>
         /// <param name="inputAttributes">Any html attributes to add.</param>
         /// <returns>Returns HTML if help is found for the model/field, else returns an empty string.</returns>
-        public static HtmlString LabelTextAreaFor<TModel, TProperty>(this IHtmlHelper<TModel> helper, Expression<Func<TModel, TProperty>> expression, object inputAttributes = null, int labelWidth = 4, int inputWidth = 8)
+        public static IHtmlContent LabelTextAreaFor<TModel, TProperty>(this IHtmlHelper<TModel> helper, Expression<Func<TModel, TProperty>> expression, object inputAttributes = null, int labelWidth = 4, int inputWidth = 8)
         {
             var attrs = helper.InputAttributesFor(expression, inputAttributes);
             var input = helper.TextAreaFor(expression, attrs);
@@ -652,7 +652,7 @@ namespace Dash
             var formGroup = FormGroup();
             formGroup.InnerHtml.AppendHtml(helper.StyledLabelFor(expression, attrs, labelWidth));
             formGroup.InnerHtml.AppendHtml(innerDiv);
-            return new HtmlString(formGroup.ToString());
+            return formGroup;
         }
 
         /// <summary>
@@ -662,7 +662,7 @@ namespace Dash
         /// <param name="cardText">Text of the card.</param>
         /// <param name="cardType">Bootstrap type for the card.</param>
         /// <returns>Returns HTML for the card.</returns>
-        public static HtmlString ToCard(this IHtmlHelper helper, string cardText, BootstrapTypes cardType = BootstrapTypes.Primary)
+        public static IHtmlContent ToCard(this IHtmlHelper helper, string cardText, BootstrapTypes cardType = BootstrapTypes.Primary)
         {
             var inner = new TagBuilder("div");
             inner.AddCssClass("card-body");
@@ -675,7 +675,7 @@ namespace Dash
             var outerDiv = new TagBuilder("div");
             outerDiv.AddCssClass("col-12");
             outerDiv.InnerHtml.AppendHtml(div);
-            return new HtmlString(outerDiv.ToString());
+            return outerDiv;
         }
 
         /// <summary>
@@ -706,11 +706,11 @@ namespace Dash
         /// Build the div to contain error messages for an input.
         /// </summary>
         /// <returns>HTML snippet.</returns>
-        private static string ErrorDiv()
+        private static TagBuilder ErrorDiv()
         {
             var errorDiv = new TagBuilder("div");
             errorDiv.AddCssClass("help-block with-errors");
-            return errorDiv.ToString();
+            return errorDiv;
         }
 
         /// <summary>
@@ -856,11 +856,11 @@ namespace Dash
         /// <param name="htmlAttributes">Any html attributes to add.</param>
         /// <param name="labelWidth">Width of the label.</param>
         /// <returns></returns>
-        private static string StyledLabelFor<TModel, TProperty>(this IHtmlHelper<TModel> helper, Expression<Func<TModel, TProperty>> expression, IDictionary<string, object> htmlAttributes = null, int labelWidth = 4)
+        private static IHtmlContent StyledLabelFor<TModel, TProperty>(this IHtmlHelper<TModel> helper, Expression<Func<TModel, TProperty>> expression, IDictionary<string, object> htmlAttributes = null, int labelWidth = 4)
         {
             var metadata = ExpressionMetadataProvider.FromLambdaExpression(expression, helper.ViewData, helper.MetadataProvider);
             var label = helper.LabelFor(expression, new { @class = "col-form-label col-" + labelWidth + (IsRequired(metadata, htmlAttributes) ? " required" : "") });
-            return label.ToString();
+            return label;
         }
 
         /// <summary>
