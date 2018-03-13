@@ -14,10 +14,4 @@
     ELSE IF EXISTS (SELECT 1 FROM ChartShare cs INNER JOIN ChartRange cr ON cs.ChartId = cr.ChartId INNER JOIN UserRole ur on ur.RoleId = cs.RoleId WHERE cr.ReportId = @ReportId AND ur.UserId = @UserId)
         SET @MatchedUser = 1
 
-    DECLARE @DatasetId INT = (SELECT TOP 1 DatasetId FROM Report r WHERE r.Id = @ReportId)
-    DECLARE @Ids TABLE (Id INT NOT NULL PRIMARY KEY)
-    INSERT INTO @Ids EXEC UserHasDatasetAccess @UserId = @UserId, @DatasetId = @DatasetId
-    IF NOT EXISTS (SELECT 1 FROM @Ids)
-        SET @MatchedUser = 0
-
     SELECT @MatchedUser
