@@ -1,8 +1,9 @@
-﻿using System;
-using Dash.Configuration;
+﻿using Dash.Configuration;
 using Dash.Models;
+using Dash.Utils;
 using HardHat;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -27,7 +28,7 @@ namespace Dash
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IDbContext dbContext)
         {
             loggerFactory.AddSerilog();
 
@@ -96,6 +97,7 @@ namespace Dash
             app.UseSession();
             app.UseStaticFiles();
             app.UseAuthentication();
+
             app.UseRequestLocalization();
             app.UseMvc(routes => {
                 routes.MapRoute(
@@ -117,6 +119,7 @@ namespace Dash
                 x.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             }).AddCookie(x => {
                 x.Cookie.HttpOnly = true;
+                x.SessionStore = new MemoryCacheTicketStore();
             });
             services.AddMvc(options => {
                 options.InputFormatters.Insert(0, new JilInputFormatter());
@@ -127,6 +130,8 @@ namespace Dash
             services.AddAuthorization(options => {
                 options.AddPolicy("HasPermission", policy => policy.Requirements.Add(new PermissionRequirement()));
             });
+            services.AddSingleton<IAuthorizationHandler, PermissionRequirementHandler>();
+
             services.AddDataProtection();
             services.AddAntiforgery(options => options.HeaderName = "X-XSRF-Token");
             var cache = new MemoryCache(new MemoryCacheOptions());
