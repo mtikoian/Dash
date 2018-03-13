@@ -156,8 +156,8 @@ gulp.task('fonts', function () {
 
 gulp.task('build', ['clean', 'min:js:core', 'min:js:modules', 'sass', 'fonts', 'favicon']);
 
-gulp.task('clean', function() {
-    return del.sync(paths.dist);
+gulp.task('clean', function () {
+    return del.sync(paths.dist + 'css', paths.dist + 'js', paths.dist + 'font');
 });
 
 gulp.task('favicon', function() {
