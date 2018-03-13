@@ -101,15 +101,15 @@
                             classes.push('btn');
                             classes.push('btn-link');
                         }
-                        if (classes.indexOf('rngn-ajax') === -1) {
-                            classes.push('rngn-ajax');
+                        if (classes.indexOf('dash-ajax') === -1) {
+                            classes.push('dash-ajax');
                         }
                         attr['class'] = classes.filter(function(x) { return x && x.length; }).join(' ');
                         attr['data-method'] = link.method ? link.method.toUpperCase() : 'GET';
                         attr['data-href'] = href;
                         attr['title'] = label;
                         attr['type'] = attr['role'] = 'button';
-                        return m('button', attr, $.isNull(link.icon) ? label : m('i', { class: 'rn rn-' + link.icon.toLowerCase() }));
+                        return m('button', attr, $.isNull(link.icon) ? label : m('i', { class: 'dash dash-' + link.icon.toLowerCase() }));
                     });
                 };
 
@@ -808,7 +808,7 @@
             var divContent = [obj.label || field];
             if ($.isUndefined(obj.sortable) || obj.sortable === true) {
                 var val = $.findByKey(this.sorting, 'field', field);
-                divContent.push(m('i.float-right.rn', { class: val ? (val.dir === 'ASC' ? 'rn-sort-up' : 'rn-sort-down') : this.opts.editable ? 'rn-sort' : '' }));
+                divContent.push(m('i.float-right.dash', { class: val ? (val.dir === 'ASC' ? 'dash-sort-up' : 'dash-sort-down') : this.opts.editable ? 'dash-sort' : '' }));
                 if (this.opts.editable) {
                     divAttrs = { onclick: this.changeSort.bind(this, field, obj.dataType.toLowerCase()) };
                 }
@@ -831,7 +831,7 @@
                     m('.form-inline.pb-2', [
                         m('.col-4',
                             this.opts.searchable ? m('.input-group', [
-                                m('span.input-group-prepend', m('i.rn.rn-search.input-group-text')),
+                                m('span.input-group-prepend', m('i.dash.dash-search.input-group-text')),
                                 m('input.form-control', { type: 'text', oninput: this.setSearchQuery.bind(this), value: this.searchQuery, disabled: this.loading })
                             ]) : null
                         ),
@@ -927,16 +927,16 @@
                 m('.col.btn-toolbar', { class: this.filteredTotal > this.itemsPerPage ? '' : ' invisible' }, [
                     m('button.btn.btn-secondary', {
                         type: 'button', role: 'button', title: res.firstPage, onclick: this.moveToPage.bind(this, -1, true)
-                    }, m('i.rn.rn-to-start-alt')),
+                    }, m('i.dash.dash-to-start-alt')),
                     m('button.btn.btn-secondary', {
                         type: 'button', role: 'button', title: res.previousPage, onclick: this.moveToPage.bind(this, -1, false)
-                    }, m('i.rn.rn-to-start')),
+                    }, m('i.dash.dash-to-start')),
                     m('button.btn.btn-secondary', {
                         type: 'button', role: 'button', title: res.nextPage, onclick: this.moveToPage.bind(this, 1, false)
-                    }, m('i.rn.rn-to-end')),
+                    }, m('i.dash.dash-to-end')),
                     m('button.btn.btn-secondary', {
                         type: 'button', role: 'button', title: res.lastPage, onclick: this.moveToPage.bind(this, 1, true)
-                    }, m('i.rn.rn-to-end-alt'))
+                    }, m('i.dash.dash-to-end-alt'))
                 ]),
                 m('.col', { class: this.filteredTotal > this.itemsPerPage ? '' : ' invisible' },
                     !this.opts.pageDropdown ? null : m('.col-8.offset-2',

@@ -3,8 +3,8 @@
  */
 (function (root, factory) {
     // Assume a traditional browser.
-    root.Widget = factory(root.m, root.$, root.Alertify, root.Table, root.RngnChart, root.Draggabilly, root.Rect);
-})(this, function(m, $, Alertify, Table, RngnChart, Draggabilly, Rect) {
+    root.Widget = factory(root.m, root.$, root.Alertify, root.Table, root.DashChart, root.Draggabilly, root.Rect);
+})(this, function (m, $, Alertify, Table, DashChart, Draggabilly, Rect) {
     'use strict';
 
     /**
@@ -82,7 +82,7 @@
             } else {
                 $.hide('#widgetData_' + opts.id);
                 $.show('#widgetChart_' + opts.id);
-                this.chart = new RngnChart(container, false, this.processJson.bind(this), this.onError.bind(this));
+                this.chart = new DashChart(container, false, this.processJson.bind(this), this.onError.bind(this));
             }
             if (opts.refreshSeconds > 0) {
                 this.interval = setInterval(this.refresh.bind(this), opts.refreshSeconds * 1000);
@@ -113,26 +113,26 @@
                     m('span.grid-buttons.col-1', [
                         m('span.dropdown.float-right', [
                             m('a.btn.dropdown-toggle', { id: 'dropdownMenuButton_' + this.opts.id, 'data-toggle': 'dropdown', 'aria-haspopup': true, 'aria-expanded': false },
-                                m('i.rn.rn-menu')
+                                m('i.dash.dash-menu')
                             ),
                             m('span.dropdown-menu', { 'aria-labelledby': 'dropdownMenuButton_' + this.id }, [
                                 m('a.dropdown-item.btn-refresh', { title: $.resx('refresh'), onclick: this.forceRefresh.bind(this) }, [
-                                    m('i.rn.rn-arrows-cw'), m('span', ' ' + $.resx('refresh'))
+                                    m('i.dash.dash-arrows-cw'), m('span', ' ' + $.resx('refresh'))
                                 ]),
                                 m('a.dropdown-item.btn-fullscreen', { title: $.resx('toggleFullScreen'), onclick: this.toggleFullScreen.bind(this) }, [
-                                    m('i.rn.rn-max'), m('span', ' ' + $.resx('toggleFullScreen'))
+                                    m('i.dash.dash-max'), m('span', ' ' + $.resx('toggleFullScreen'))
                                 ]),
-                                m('a.dropdown-item.rngn-ajax.rngn-dialog.fs-disabled', {
+                                m('a.dropdown-item.dash-ajax.dash-dialog.fs-disabled', {
                                     href: this.opts.baseUrl + (this.opts.isData ? 'Report' : 'Chart') + '/Details/' + (this.opts.isData ? this.opts.reportId : this.opts.chartId),
                                     title: $.resx(this.opts.isData ? 'viewReport' : 'viewChart')
                                 }, [
-                                    m('i.rn.rn-info'), ' ' + $.resx(this.opts.isData ? 'viewReport' : 'viewChart')
+                                        m('i.dash.dash-info'), ' ' + $.resx(this.opts.isData ? 'viewReport' : 'viewChart')
                                 ]),
-                                m('a.dropdown-item.rngn-ajax.rngn-dialog.fs-disabled', { href: this.opts.baseUrl + 'Dashboard/Edit/' + this.opts.id, title: $.resx('editWidget') }, [
-                                    m('i.rn.rn-pencil'), ' ' + $.resx('editWidget')
+                                m('a.dropdown-item.dash-ajax.dash-dialog.fs-disabled', { href: this.opts.baseUrl + 'Dashboard/Edit/' + this.opts.id, title: $.resx('editWidget') }, [
+                                    m('i.dash.dash-pencil'), ' ' + $.resx('editWidget')
                                 ]),
-                                m('a.dropdown-item.rngn-ajax.rngn-dialog.fs-disabled', { title: $.resx('deleteWidget'), onclick: this.deleteWidget.bind(this) }, [
-                                    m('i.rn.rn-cancel.text-danger'), ' ' + $.resx('deleteWidget')
+                                m('a.dropdown-item.dash-ajax.dash-dialog.fs-disabled', { title: $.resx('deleteWidget'), onclick: this.deleteWidget.bind(this) }, [
+                                    m('i.dash.dash-cancel.text-danger'), ' ' + $.resx('deleteWidget')
                                 ])
                             ])
                         ])
@@ -155,8 +155,8 @@
                 ]),
                 m('.grid-footer', [
                     m('span.grid-updated-time', new Date().toLocaleTimeString()),
-                    m('span.resizable-handle.float-right', m('i.rn.rn-corner')),
-                    m('span.drag-handle.float-right', m('i.rn.rn-move'))
+                    m('span.resizable-handle.float-right', m('i.dash.dash-corner')),
+                    m('span.drag-handle.float-right', m('i.dash.dash-move'))
                 ])
             ]);
 
@@ -420,14 +420,14 @@
             if (this.isFullscreen) {
                 this.isFullscreen = false;
                 $.removeClass(container, 'full-screen');
-                $.removeClass(fullScreenIcon, 'rn-min');
-                $.addClass(fullScreenIcon, 'rn-max');
+                $.removeClass(fullScreenIcon, 'dash-min');
+                $.addClass(fullScreenIcon, 'dash-max');
                 headerHideBtns.forEach(function(x) { $.removeClass(x, 'disabled'); });
             } else {
                 this.isFullscreen = true;
                 $.addClass(container, 'full-screen');
-                $.addClass(fullScreenIcon, 'rn-min');
-                $.removeClass(fullScreenIcon, 'rn-max');
+                $.addClass(fullScreenIcon, 'dash-min');
+                $.removeClass(fullScreenIcon, 'dash-max');
                 headerHideBtns.forEach(function(x) { $.addClass(x, 'disabled'); });
             }
 

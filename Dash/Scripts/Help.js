@@ -37,14 +37,14 @@
                 return $.isArray(vnode.children) ? m('.input-group', vnode.children) : vnode.children;
             }
             if (!(vnode.children && vnode.children.length)) {
-                return m('span', m('button.btn.btn-secondary.rngn-context-help', {
+                return m('span', m('button.btn.btn-secondary.dash-context-help', {
                     type: 'button', role: 'button', onclick: this.showHelp.bind(this)
-                }, m('i.rn.rn-help')));
+                }, m('i.dash.dash-help')));
             }
             return m('.input-group',
-                vnode.children.concat(m('span.input-group-append', m('button.btn.btn-secondary.rngn-context-help', {
+                vnode.children.concat(m('span.input-group-append', m('button.btn.btn-secondary.dash-context-help', {
                     type: 'button', role: 'button', onclick: this.showHelp.bind(this)
-                }, m('i.rn.rn-help'))))
+                }, m('i.dash.dash-help'))))
             );
         }
     };

@@ -2,8 +2,8 @@
  * Wraps chart range form functionality.
  */
 (function(root, factory) {
-    root.RangeForm = factory(root.m, root.$, root.Form, root.Help, root.Alertify, root.RngnChart, root.ColorPicker);
-})(this, function(m, $, Form, Help, Alertify, RngnChart, ColorPicker) {
+    root.RangeForm = factory(root.m, root.$, root.Form, root.Help, root.Alertify, root.DashChart, root.ColorPicker);
+})(this, function(m, $, Form, Help, Alertify, DashChart, ColorPicker) {
     'use strict';
 
     /**
@@ -88,11 +88,11 @@
             return;
         }
 
-        if (this.rngnChart && this.rngnChart.chart) {
-            this.rngnChart.chart.destroy();
+        if (this.dashChart && this.dashChart.chart) {
+            this.dashChart.chart.destroy();
         }
 
-        this.rngnChart = new RngnChart(chartContent, true, this.processJsonFn, null, this.toggleExportFn);
+        this.dashChart = new DashChart(chartContent, true, this.processJsonFn, null, this.toggleExportFn);
     };
 
     /**
@@ -105,7 +105,7 @@
         var chartContainer = $.get('.chart-container', this.content);
         if (chartContainer) {
             $.get('.export-width', this.content).value = chartContainer.offsetWidth;
-            $.get('.export-data', this.content).value = this.rngnChart.chart.toBase64Image();
+            $.get('.export-data', this.content).value = this.dashChart.chart.toBase64Image();
             $.get('.export-form', this.content).submit();
         }
     };
@@ -168,7 +168,7 @@
                     m('.col-4',
                         self.withHelp($.resx('chart.reportText'), [
                             m('span.input-group-prepend', m('button.btn.btn-secondary', { onclick: self.toggleExpanded.bind(self, record) },
-                                m('i.rn', { class: record.isExpanded ? 'rn-minus' : 'rn-plus' })
+                                m('i.dash', { class: record.isExpanded ? 'dash-minus' : 'dash-plus' })
                             )),
                             m('select.form-control.custom-select.required', self.withDisabled({
                                 name: 'ChartRange[' + index + '].ReportId', class: self.withError(record.reportId, true),

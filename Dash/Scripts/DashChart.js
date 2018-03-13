@@ -2,12 +2,12 @@
  * Wraps functionality needed for creating charts using Chart.js.
  */
 (function(root, factory) {
-    root.RngnChart = factory(root.$, root.Alertify, root.Chart);
+    root.DashChart = factory(root.$, root.Alertify, root.Chart);
 })(this, function($, Alertify, Chart) {
     'use strict';
 
     /**
-     * Declare RngnChart class.
+     * Declare DashChart class.
      * @param {Node} content - DOM node that contains the chart.
      * @param {Node} canvas - Canvas element to display the chart in.
      * @param {bool} showLegend - Show or hide the chart legend.
@@ -15,7 +15,7 @@
      * @param {Function} errorFn - Function to call if an error occurs loading data.
      * @param {Function} toggleExportFn - Function to enable/disable export.
      */
-    var RngnChart = function(content, showLegend, dataFn, errorFn, toggleExportFn) {
+    var DashChart = function(content, showLegend, dataFn, errorFn, toggleExportFn) {
         this.content = content;
         this.url = content.getAttribute('data-url');
         this.canvas = $.get('.chart-canvas', content);
@@ -28,9 +28,9 @@
     };
 
     /**
-     * Declare RngnChart class methods.
+     * Declare DashChart class methods.
      */
-    RngnChart.prototype = {
+    DashChart.prototype = {
         /**
          * Generate a random number within range.
          * @param {number[]} range - Min and max value.
@@ -262,5 +262,5 @@
         }
     };
 
-    return RngnChart;
+    return DashChart;
 });

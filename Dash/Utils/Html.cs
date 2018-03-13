@@ -37,7 +37,7 @@ namespace Dash
         Delete
     }
 
-    public enum RngnClasses
+    public enum DashClasses
     {
         Btn,
         BtnSm,
@@ -48,10 +48,10 @@ namespace Dash
         BtnPrimary,
         BtnLink,
         BtnSecondary,
-        RngnAjax,
-        RngnConfirm,
-        RngnDialog,
-        RngnPrompt
+        DashAjax,
+        DashConfirm,
+        DashDialog,
+        DashPrompt
     }
 
     /// <summary>
@@ -59,9 +59,9 @@ namespace Dash
     /// </summary>
     public static class Html
     {
-        private static List<RngnClasses> Buttons = new List<RngnClasses> { RngnClasses.BtnDanger, RngnClasses.BtnInfo, RngnClasses.BtnPrimary,
-            RngnClasses.BtnSuccess, RngnClasses.BtnWarning, RngnClasses.BtnLink };
-        private static List<RngnClasses> Dialogs = new List<RngnClasses> { RngnClasses.RngnConfirm, RngnClasses.RngnDialog, RngnClasses.RngnPrompt };
+        private static List<DashClasses> Buttons = new List<DashClasses> { DashClasses.BtnDanger, DashClasses.BtnInfo, DashClasses.BtnPrimary,
+            DashClasses.BtnSuccess, DashClasses.BtnWarning, DashClasses.BtnLink };
+        private static List<DashClasses> Dialogs = new List<DashClasses> { DashClasses.DashConfirm, DashClasses.DashDialog, DashClasses.DashPrompt };
 
         public enum InputFieldType { Text, Email, Number, DateTime, Date, Tel, Password }
 
@@ -112,8 +112,8 @@ namespace Dash
         /// <param name="htmlAttributes">Attributes for button.</param>
         /// <param name="hasAccess">User has access</param>
         /// <returns>Returns the HTML for the button if authorized, else an empty string.</returns>
-        public static IHtmlContent AuthorizedButton(this IHtmlHelper helper, string text, string controller, string action, RngnClasses? btnType = null,
-            RngnClasses? ajaxType = null, object htmlAttributes = null, bool hasAccess = true)
+        public static IHtmlContent AuthorizedButton(this IHtmlHelper helper, string text, string controller, string action, DashClasses? btnType = null,
+            DashClasses? ajaxType = null, object htmlAttributes = null, bool hasAccess = true)
         {
             return AuthorizedButton(helper, text, controller, action, null, btnType, ajaxType, htmlAttributes, hasAccess);
         }
@@ -130,8 +130,8 @@ namespace Dash
         /// <param name="ajaxType">If ajax, dialog type</param>
         /// <param name="htmlAttributes">Attributes for button.</param>
         /// <returns>Returns the HTML for the button if authorized, else an empty string.</returns>
-        public static IHtmlContent AuthorizedButton(this IHtmlHelper helper, string text, string controller, string action, object routeValues, RngnClasses? btnType = null,
-            RngnClasses? ajaxType = null, object htmlAttributes = null, bool hasAccess = true)
+        public static IHtmlContent AuthorizedButton(this IHtmlHelper helper, string text, string controller, string action, object routeValues, DashClasses? btnType = null,
+            DashClasses? ajaxType = null, object htmlAttributes = null, bool hasAccess = true)
         {
             if (!hasAccess)
             {
@@ -142,10 +142,10 @@ namespace Dash
             var classList = new List<string>();
             classList.Merge("btn");
             classList.Merge("mr-1");
-            classList.Merge((btnType ?? RngnClasses.BtnPrimary).ToCssClass());
+            classList.Merge((btnType ?? DashClasses.BtnPrimary).ToCssClass());
             if (ajaxType.HasValue)
             {
-                classList.Merge(RngnClasses.RngnAjax.ToCssClass());
+                classList.Merge(DashClasses.DashAjax.ToCssClass());
                 classList.Merge(ajaxType.Value.ToCssClass());
             }
             htmlAttr["class"] = classList.Combine();
@@ -179,7 +179,7 @@ namespace Dash
             }
 
             var a = new TagBuilder("a");
-            a.AddCssClass(Classes(RngnClasses.RngnDialog)["class"].ToString());
+            a.AddCssClass(Classes(DashClasses.DashDialog)["class"].ToString());
 
             var urlHelper = new UrlHelper(helper.ViewContext);
             a.Attributes.Add("href", urlHelper.Action(action, controller));
@@ -218,7 +218,7 @@ namespace Dash
             {
                 htmlAttr["data-toggle"] = "";
             }
-            htmlAttr["class"] = MergedList(htmlAttr["class"], new string[] { (ajaxForm ? "rngn-form" : ""), "pt-1 mx-1 row" }).Combine();
+            htmlAttr["class"] = MergedList(htmlAttr["class"], new string[] { (ajaxForm ? "dash-form" : ""), "pt-1 mx-1 row" }).Combine();
             htmlAttr["data-toggle"] = MergedList(htmlAttr["data-toggle"], new[] { "validator" }).Combine();
             if (!title.IsEmpty())
             {
@@ -261,19 +261,19 @@ namespace Dash
         /// <summary>
         /// Make a dictionary of attributes using a class list to start.
         /// </summary>
-        /// <param name="classes">List of RngnClasses.</param>
+        /// <param name="classes">List of DashClasses.</param>
         /// <returns>Returns a dictionary with one element named class.</returns>
-        public static Dictionary<string, object> Classes(params RngnClasses[] classList)
+        public static Dictionary<string, object> Classes(params DashClasses[] classList)
         {
             var dict = new Dictionary<string, object>();
             var list = classList.ToList();
             if (Buttons.Any(x => list.Contains(x)))
             {
-                list.Add(RngnClasses.Btn);
+                list.Add(DashClasses.Btn);
             }
             if (Dialogs.Any(x => list.Contains(x)))
             {
-                list.Add(RngnClasses.RngnAjax);
+                list.Add(DashClasses.DashAjax);
             }
             dict.Add("class", list.ToCssClassList());
             return dict;
@@ -384,7 +384,7 @@ namespace Dash
 
             var icon = helper.Icon("help", false);
             var button = new TagBuilder("button");
-            button.AddCssClass("btn btn-secondary rngn-context-help");
+            button.AddCssClass("btn btn-secondary dash-context-help");
             button.Attributes.Add("type", "button");
             button.Attributes.Add("role", "button");
             button.Attributes["data-message"] = resourceLib[$"{key}"].Replace("\"", "&quot;");
@@ -428,12 +428,12 @@ namespace Dash
         public static TagBuilder Icon(this IHtmlHelper helper, string icon, bool large = true)
         {
             var i = new TagBuilder("i");
-            i.AddCssClass("rn");
+            i.AddCssClass("dash");
             if (large)
             {
-                i.AddCssClass("rn-lg");
+                i.AddCssClass("dash-lg");
             }
-            i.AddCssClass("rn-" + icon);
+            i.AddCssClass("dash-" + icon);
             return i;
         }
 
@@ -463,7 +463,7 @@ namespace Dash
             foreach (var item in itemList)
             {
                 var itemTag = new TagBuilder("a");
-                itemTag.AddCssClass("dropdown-item rngn-input-replace");
+                itemTag.AddCssClass("dropdown-item dash-input-replace");
                 itemTag.Attributes["data-target"] = targetId;
                 itemTag.Attributes["data-value"] = item;
                 itemTag.InnerHtml.AppendHtml(item);

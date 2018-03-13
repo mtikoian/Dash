@@ -20,23 +20,23 @@
     var _contentActions = [
         { selector: '[data-toggle="dropdown"]', action: function() { new Dropdown(this); } },
         { selector: '[data-toggle="tab"], [data-toggle="pill"]', action: function() { new Tab(this); } },
-        { selector: '.rngn-table', action: function() { tableLoad(this); } },
-        { selector: '.rngn-ajax', action: function() { $.on(this, 'click', handleAjaxRequest); } },
-        { selector: '.rngn-form', action: function() { $.on(this, 'submit', function(e) { e.preventDefault(); }, true); } },
+        { selector: '.dash-table', action: function() { tableLoad(this); } },
+        { selector: '.dash-ajax', action: function() { $.on(this, 'click', handleAjaxRequest); } },
+        { selector: '.dash-form', action: function() { $.on(this, 'submit', function(e) { e.preventDefault(); }, true); } },
         {
-            selector: '.rngn-context-help', action: function() {
+            selector: '.dash-context-help', action: function() {
                 $.on(this, 'click', function(e) {
                     Alertify.alert(this.getAttribute('data-message').replace(/&quot;/g, '"'), focusOnClose.bind(e), focusOnClose.bind(e));
                 });
             }
         },
-        { selector: '.rngn-collapsible-list', action: function() { new CollapsibleList(this); } },
+        { selector: '.dash-collapsible-list', action: function() { new CollapsibleList(this); } },
         {
             selector: '[data-toggle="validator"]', action: function() {
                 new Validator(this, { match: $.resx('errorMatch'), minlength: $.resx('errorMinLength') });
             }
         },
-        { selector: '.rngn-input-replace', action: function() { $.on(this, 'click', inputReplace); } }
+        { selector: '.dash-input-replace', action: function() { $.on(this, 'click', inputReplace); } }
     ];
 
     /**
@@ -111,7 +111,7 @@
         e.target.blur();
 
         var obj = e.target;
-        while (obj !== document.body && obj.parentNode && !$.hasClass(obj, 'rngn-ajax')) {
+        while (obj !== document.body && obj.parentNode && !$.hasClass(obj, 'dash-ajax')) {
             obj = obj.parentNode;
         }
         if (!obj || !(obj.hasAttribute('href') || obj.hasAttribute('data-href')) || $.hasClass(obj, 'disabled')) {
@@ -123,10 +123,10 @@
         var message = obj.getAttribute('data-message');
         var target = obj.getAttribute('target');
 
-        if ($.hasClass(obj, 'rngn-confirm')) {
+        if ($.hasClass(obj, 'dash-confirm')) {
             Alertify.dismissAll();
             Alertify.confirm(message, sendAjaxRequest.bind(this, url, method, obj), function() { e.target.focus(); });
-        } else if ($.hasClass(obj, 'rngn-prompt')) {
+        } else if ($.hasClass(obj, 'dash-prompt')) {
             Alertify.dismissAll();
             Alertify.prompt(message, checkPrompt.bind(this, url, method, obj));
         } else if (target) {
@@ -246,7 +246,7 @@
      * Refresh data for the table instance in the active dialog.
      */
     var refreshTable = function() {
-        var node = $.get('.rngn-table', getActiveContent());
+        var node = $.get('.dash-table', getActiveContent());
         if (node && node.table) {
             node.table.refresh();
         }

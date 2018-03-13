@@ -252,17 +252,17 @@
                 btns.push(m('button.btn.btn-sm.btn-secondary', {
                     type: 'button', role: 'button', disabled: index < 1,
                     onclick: this.moveUp.bind(this, index), title: this.opts.resx.moveUp
-                }, m('i.rn.rn-up-big.rn-lg.rn-fw'))
+                }, m('i.dash.dash-up-big.dash-lg.dash-fw'))
                 );
                 btns.push(m('button.btn.btn-sm.btn-secondary', {
                     type: 'button', role: 'button', disabled: index === this.records.length - 1,
                     onclick: this.moveDown.bind(this, index), title: this.opts.resx.moveDown
-                }, m('i.rn.rn-down-big.rn-lg.rn-fw'))
+                }, m('i.dash.dash-down-big.dash-lg.dash-fw'))
                 );
             }
             btns.push(m('button.btn.btn-sm.btn-secondary.confirm-delete-row-button', {
                 type: 'button', role: 'button', onclick: this.deleteRecord.bind(this, index), title: this.opts.resx.deleteRecord
-            }, m('i.rn.rn-cancel.rn-lg.text-danger')));
+            }, m('i.dash.dash-cancel.dash-lg.text-danger')));
             return m('.btn-toolbar.float-right', btns);
         },
 

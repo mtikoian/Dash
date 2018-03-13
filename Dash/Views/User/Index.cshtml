@@ -3,7 +3,7 @@
 
 <div data-title="@Users.ViewAll" data-basic-dialog="true">
     @using (Html.BeginToolbar()) {
-        @Html.AuthorizedButton(Users.CreateUser, "User", "Create", RngnClasses.BtnPrimary, RngnClasses.RngnDialog, hasAccess: this.User.IsInRole("user.create"))
+        @Html.AuthorizedButton(Users.CreateUser, "User", "Create", DashClasses.BtnPrimary, DashClasses.DashDialog, hasAccess: this.User.IsInRole("user.create"))
     }
-    <div class="col-12 rngn-table" data-json="@Model.ToJson"></div>
+    <div class="col-12 dash-table" data-json="@Model.ToJson"></div>
 </div>

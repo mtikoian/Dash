@@ -61,7 +61,7 @@ function sortXml(file, encoding, callback) {
 
 gulp.task('watch', function() {
     gulp.watch(paths.css + '**/*.scss', ['sass']);
-    gulp.watch(paths.css + 'fontello/font/rengn.*', ['fonts']);
+    gulp.watch(paths.css + 'fontello/font/dash.*', ['fonts']);
     gulp.watch(paths.js + '**/*.js', ['min:js:core', 'min:js:modules']);
     gulp.watch('*.csproj', ['webFixer']);
     gulp.watch('../Dash.Database/*.sqlproj', ['dbFixer']);
@@ -75,8 +75,7 @@ gulp.task('sass', function () {
         .pipe(sourcemaps.init())
         .pipe(sass().on('error', sass.logError))
         .pipe(postcss([autoprefixer()]))
-        .pipe(addsrc.append(paths.css + 'fontello/css/rengn.css'))
-        //.pipe(replace('../font/rengn', 'font/rengn'))
+        .pipe(addsrc.append(paths.css + 'fontello/css/dash.css'))
         .pipe(concat('core.css'))
         .pipe(cleancss())
         .pipe(sourcemaps.write('.'))
@@ -116,10 +115,10 @@ gulp.task('min:js:modules', function () {
         paths.js + 'Prism.js',             // syntax highlighting for sql
         paths.js + 'CollapsibleList.js',   // lightweight library for treeviews
         paths.js + 'Validator.js',         // form validation using html5 and bootstrap
-        paths.js + 'colors.js',             // color library
+        paths.js + 'colors.js',            // color library
         paths.js + 'ColorPicker.js',       // custom color picker
         paths.js + 'Table.js',             // custom table component using mithril
-        paths.js + 'RngnChart.js',         // chart wrapper
+        paths.js + 'DashChart.js',         // chart wrapper
         paths.js + 'Form.js',              // custom form component using mithril
         paths.js + 'JoinForm.js',          // dataset joins form functionality
         paths.js + 'ColumnForm.js',        // dataset columns form functionality
@@ -149,7 +148,7 @@ gulp.task('min:js:modules', function () {
 // Fonts
 gulp.task('fonts', function () {
     return gulp.src([
-        paths.css + 'fontello/font/rengn.*'
+        paths.css + 'fontello/font/dash.*'
     ])
         .pipe(gulp.dest(paths.dist + 'font/'));
 });

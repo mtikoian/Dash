@@ -102,7 +102,7 @@ namespace Dash.Controllers
                 new TableColumn("actions", Core.Actions, sortable: false, links: new List<TableLink> {
                         Table.EditButton($"{Url.Action("Edit")}/{{id}}", "Database", hasAccess: User.IsInRole("database.edit")),
                         Table.DeleteButton($"{Url.Action("Delete")}/{{id}}", "Database", String.Format(Core.ConfirmDeleteBody, Databases.DatabaseLower), User.IsInRole("database.delete")),
-                    }.AddLink($"{Url.Action("TestConnection")}/{{id}}", Html.Classes(RngnClasses.RngnDialog, RngnClasses.BtnInfo),
+                    }.AddLink($"{Url.Action("TestConnection")}/{{id}}", Html.Classes(DashClasses.DashDialog, DashClasses.BtnInfo),
                         User.IsInRole("database.testconnection"), Databases.TestConnection, TableIcon.HeartBeat)
                 )}
             ));

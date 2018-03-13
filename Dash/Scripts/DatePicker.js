@@ -213,7 +213,7 @@
             var theseMonths = props.months || months;
             return m('.header',
                 m('button.header-button.prev', { onclick: prevNext.bind(null, props, -1) }, [
-                    m('i.rn.rn-to-start'),
+                    m('i.dash.dash-to-start'),
                     prevNextTitles[props.view]
                 ]),
                 m('button.header-button.segment', { onclick: function() { props.view = 0; } }, date.getDate()),
@@ -221,9 +221,9 @@
                 m('button.header-button.segment', { onclick: function() { props.view = 2; } }, date.getFullYear()),
                 m('button.header-button.next', { onclick: prevNext.bind(null, props, 1) }, [
                     prevNextTitles[props.view],
-                    m('i.rn.rn-to-end')
+                    m('i.dash.dash-to-end')
                 ]),
-                m('button.btn.btn-secondary.btn-sm', { onclick: dismissAndCommit.bind(null, props) }, m('i.rn.rn-cancel'))
+                m('button.btn.btn-secondary.btn-sm', { onclick: dismissAndCommit.bind(null, props) }, m('i.dash.dash-cancel'))
             );
         }
     };
@@ -427,7 +427,7 @@
                     onkeydown: this.showEditor.bind(null, props),
                     value: $.fecha.format(props.date, props.format || defaultFormat)
                 }),
-                m('i.rn.current-date-indicator', { class: props.active ? 'rn-sort-up' : 'rn-sort-down' }),
+                m('i.dash.current-date-indicator', { class: props.active ? 'dash-sort-up' : 'dash-sort-down' }),
                 props.active && m(Editor, { props: props })
             );
         }

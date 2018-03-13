@@ -173,7 +173,7 @@
                             m('span.input-group-prepend', m('button.btn.btn-secondary', {
                                 type: 'button', role: 'button',
                                 onclick: self.toggleExpanded.bind(self, record)
-                            },  m('i.rn', { class: record.isExpanded ? 'rn-minus' : 'rn-plus' }))),
+                            }, m('i.rn', { class: record.isExpanded ? 'dash-minus' : 'dash-plus' }))),
                             m('input.form-control.required', {
                                 type: 'text', name: 'DatasetColumn[' + index + '].Title', class: self.withError(record.title),
                                 placeholder: $.resx('dataset.columnTitle'), oninput: self.set.bind(self, index, 'title'), value: record.title

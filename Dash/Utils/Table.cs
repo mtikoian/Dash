@@ -79,7 +79,7 @@ namespace Dash
             {
                 return null;
             }
-            return new TableLink(url, Html.Classes(RngnClasses.RngnPrompt, RngnClasses.BtnInfo)
+            return new TableLink(url, Html.Classes(DashClasses.DashPrompt, DashClasses.BtnInfo)
                 .Merge("data-message", body), Core.Copy, TableIcon.Clone);
         }
 
@@ -98,7 +98,7 @@ namespace Dash
                 return null;
             }
             return new TableLink(url,
-                Html.Classes(RngnClasses.RngnConfirm, RngnClasses.BtnDanger).Merge("data-title", Core.ConfirmDelete).Merge("data-message", message),
+                Html.Classes(DashClasses.DashConfirm, DashClasses.BtnDanger).Merge("data-title", Core.ConfirmDelete).Merge("data-message", message),
                 Core.Delete, TableIcon.Cancel, HttpVerbs.Delete);
         }
 
@@ -116,7 +116,7 @@ namespace Dash
             {
                 return null;
             }
-            return new TableLink(url, Html.Classes(RngnClasses.RngnDialog, RngnClasses.BtnWarning), Core.Edit, TableIcon.Edit);
+            return new TableLink(url, Html.Classes(DashClasses.DashDialog, DashClasses.BtnWarning), Core.Edit, TableIcon.Edit);
         }
 
         /// <summary>
@@ -133,7 +133,7 @@ namespace Dash
             {
                 return null;
             }
-            return new TableLink(url, Html.Classes(RngnClasses.RngnDialog, RngnClasses.BtnLink));
+            return new TableLink(url, Html.Classes(DashClasses.DashDialog, DashClasses.BtnLink));
         }
     }
 

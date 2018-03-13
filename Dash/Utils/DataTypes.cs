@@ -457,7 +457,7 @@ namespace Dash
         /// </summary>
         /// <param name="val">String value to convert.</param>
         /// <returns>Css class name string.</returns>
-        public static string ToCssClass(this RngnClasses val)
+        public static string ToCssClass(this DashClasses val)
         {
             return Regex.Replace(val.ToString(), @"(?<!_)([A-Z])", "-$1").Trim('-').ToLower();
         }
@@ -467,7 +467,7 @@ namespace Dash
         /// </summary>
         /// <param name="val">String value to convert.</param>
         /// <returns>Css class name string.</returns>
-        public static string ToCssClassList(this IEnumerable<RngnClasses> classes)
+        public static string ToCssClassList(this IEnumerable<DashClasses> classes)
         {
             return String.Join(" ", classes.Select(x => x.ToCssClass()));
         }

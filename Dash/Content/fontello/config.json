@@ -1,6 +1,6 @@
 {
-  "name": "rengn",
-  "css_prefix_text": "rn-",
+  "name": "dash",
+  "css_prefix_text": "dash-",
   "css_use_suffix": false,
   "hinting": true,
   "units_per_em": 1000,

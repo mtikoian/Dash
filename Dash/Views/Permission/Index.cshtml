@@ -3,10 +3,10 @@
 
 <div data-title="@Permissions.ViewAll" data-basic-dialog="true">
     @using (Html.BeginToolbar()) {
-        @Html.AuthorizedButton(Permissions.CreatePermission, "Permission", "Create", RngnClasses.BtnPrimary, RngnClasses.RngnDialog,
+        @Html.AuthorizedButton(Permissions.CreatePermission, "Permission", "Create", DashClasses.BtnPrimary, DashClasses.DashDialog,
             hasAccess: this.User.IsInRole("permission.create"))
-        @Html.AuthorizedButton(Permissions.CreateController, "Permission", "CreateController", RngnClasses.BtnInfo, RngnClasses.RngnDialog,
+        @Html.AuthorizedButton(Permissions.CreateController, "Permission", "CreateController", DashClasses.BtnInfo, DashClasses.DashDialog,
             hasAccess: this.User.IsInRole("permission.createcontroller"))
     }
-    <div class="col-12 rngn-table" data-json="@Model.ToJson"></div>
+    <div class="col-12 dash-table" data-json="@Model.ToJson"></div>
 </div>

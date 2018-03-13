@@ -4,7 +4,7 @@
 <div id="sidebarWrapper">
     <ul class="nav-side" id="menu">
         <li id="menuBtn">
-            <a><i class="rn rn-menu rn-lg"></i></a>
+            <a><i class="dash dash-menu rn-lg"></i></a>
         </li>
 
         @if (User.Identity.IsAuthenticated)
@@ -22,7 +22,7 @@
             @Html.AuthorizedMenu(Core.GetStarted, "Start", "Dashboard", "lightbulb", User.IsInRole("dashboard.start"))
             <li>
                 <a href="@Url.Action("ToggleContextHelp","Account")" id="toggleContextHelpBtn" class="@Html.Raw(Context.Session.GetString("ContextHelp").ToBool() ? "help-active" : "")" title="@Core.ToggleHelp">
-                    <i class="rn rn-help rn-lg"></i> <span>@Html.Raw(Core.ToggleHelp)</span>
+                    <i class="dash dash-help dash-lg"></i> <span>@Html.Raw(Core.ToggleHelp)</span>
                 </a>
             </li>
             <li class="dropdown-divider"></li>

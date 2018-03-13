@@ -51,7 +51,7 @@
             return m('.rd-dialog', { onkeydown: this.checkKey.bind(this), tabindex: 0 }, [
                 m('.rd-commands', [
                     m('button.btn.btn-secondary.rd-close', { type: 'button', role: 'button', onclick: this.onCancel.bind(this) },
-                        m('i.rn.rn-cancel', { title: this.opts.buttons.close })
+                        m('i.dash.dash-cancel', { title: this.opts.buttons.close })
                     )
                 ]),
                 m('.rd-header.dialog-header', this.opts.title),
@@ -148,7 +148,7 @@
          * @returns {Node} Form node if exists else null.
          */
         findForm: function() {
-            return $.matches(this.elements.content, 'form.rngn-form') ? this.elements.content : $.get('form.rngn-form', this.elements.content);
+            return $.matches(this.elements.content, 'form.dash-form') ? this.elements.content : $.get('form.dash-form', this.elements.content);
         },
 
         /**
@@ -351,7 +351,7 @@
         destroy: function() {
             this.checkEvent(this.elements.content, 'data-close-event');
 
-            var tableNode = $.get('.rngn-table', this.elements.content);
+            var tableNode = $.get('.dash-table', this.elements.content);
             if (tableNode) {
                 tableNode.table.destroy();
             }

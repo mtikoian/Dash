@@ -140,7 +140,7 @@ body.toggled {
                     cursor: pointer;
                     padding: .2rem .4rem;
 
-                    .rn {
+                    .dash {
                         color: $info;
                         margin-left: 0;
                     }
@@ -184,12 +184,12 @@ body.toggled {
                 cursor: pointer;
                 margin-right: .7rem;
 
-                i.rn-move {
+                i.dash-move {
                     font-size: 1.2rem;
                 }
             }
 
-            .rn {
+            .dash {
                 font-size: 1.5rem;
             }
         }
