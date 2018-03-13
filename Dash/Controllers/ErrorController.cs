@@ -12,7 +12,8 @@ namespace Dash.Controllers
     /// </summary>
     public class ErrorController : BaseController
     {
-        public ErrorController(IHttpContextAccessor httpContextAccessor, IDbContext dbContext, IMemoryCache cache, AppConfiguration appConfig) : base(httpContextAccessor, dbContext, cache, appConfig)
+        public ErrorController(IHttpContextAccessor httpContextAccessor, IDbContext dbContext, IMemoryCache cache, AppConfiguration appConfig) :
+            base(httpContextAccessor, dbContext, cache, appConfig)
         {
         }
 
@@ -31,7 +32,7 @@ namespace Dash.Controllers
         /// <param name="message"></param>
         public void LogJavascriptError(string message)
         {
-            new Exception(message).Log(HttpContextAccessor);
+            new JavaScriptException(message).Log();
         }
     }
 

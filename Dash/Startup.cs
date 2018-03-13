@@ -1,28 +1,24 @@
-﻿using Dash.Configuration;
+﻿using System;
+using Dash.Configuration;
 using Dash.Models;
 using HardHat;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Rewrite;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
+using Microsoft.Extensions.Logging;
 using Serilog;
-using Serilog.Events;
-using Serilog.Configuration;
 
 namespace Dash
 {
     public class Startup
     {
-
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -76,20 +72,7 @@ namespace Dash
                         {
                             try
                             {
-                                var appConfig = Configuration.GetValue<AppConfiguration>("App");
-                                var dbContext = new DbContext(appConfig);
-                                dbContext.Save(new ErrorLog {
-                                    Namespace = this.GetType().Namespace,
-                                    Host = Environment.MachineName,
-                                    Type = error.GetType().FullName,
-                                    Source = error.Error.Source,
-                                    Path = context.Request.Path.Value,
-                                    Method = context.Request.Method,
-                                    Message = error.Error.Message,
-                                    StackTrace = error.Error.StackTrace,
-                                    Timestamp = DateTimeOffset.Now,
-                                    User = context.User.Identity?.Name
-                                });
+                                loggerFactory.CreateLogger("Application").LogError(error.Error, "Application Error");
                             }
                             catch { }
                         }
@@ -102,13 +85,10 @@ namespace Dash
                         }
                         else
                         {
-                            context.Response.StatusCode = (int)System.Net.HttpStatusCode.InternalServerError;
-                            context.Response.ContentType = "text/html";
-                            await context.Response.WriteAsync("<h2>An error has occured in the website.</h2>").ConfigureAwait(false);
+                            context.Response.Redirect("/Error/Index");
                         }
                     });
                 });
-                // app.UseExceptionHandler("/Error/Index");
             }
 
             app.UseMiddleware<SerilogMiddleware>();
@@ -132,7 +112,6 @@ namespace Dash
             Configuration.Bind("App", appConfig);
             services.AddSingleton(appConfig);
 
-
             //services.AddSingleton<IAppConfiguration>((IAppConfiguration)Configuration.GetSection("AppConfig"));
             services.AddAuthentication(x => {
                 x.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -145,8 +124,7 @@ namespace Dash
                 options.Filters.Add(new RequireHttpsAttribute());
             });
 
-            services.AddAuthorization(options =>
-            {
+            services.AddAuthorization(options => {
                 options.AddPolicy("HasPermission", policy => policy.Requirements.Add(new PermissionRequirement()));
             });
             services.AddDataProtection();
