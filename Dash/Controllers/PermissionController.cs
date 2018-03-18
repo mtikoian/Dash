@@ -59,7 +59,7 @@ namespace Dash.Controllers
         /// <param name="controllerActions">List of action names to add.</param>
         /// <returns>Success or error message.</returns>
         [HttpPost, AjaxRequestOnly]
-        public IActionResult CreateController(CreateController model)
+        public IActionResult CreateController([FromBody]CreateController model)
         {
             if (!ModelState.IsValid)
             {
