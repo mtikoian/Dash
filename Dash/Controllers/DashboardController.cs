@@ -58,7 +58,7 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly]
         public IActionResult Create()
         {
-            return CreateEditView(new Widget(ActionContextAccessor));
+            return CreateEditView(new Widget(DbContext, ActionContextAccessor));
         }
 
         /// <summary>
@@ -131,7 +131,7 @@ namespace Dash.Controllers
         /// <returns>Returns the dashboard page.</returns>
         public IActionResult Index()
         {
-            return View(new WidgetList(DbContext, User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt()));
+            return View(new WidgetList(DbContext, ActionContextAccessor, User.UserId()));
         }
 
         /// <summary>
@@ -141,7 +141,7 @@ namespace Dash.Controllers
         [HttpGet, ParentAction("Index")]
         public IActionResult IndexOptions()
         {
-            return Json(new WidgetList(DbContext, User.UserId()).Widgets);
+            return Json(new WidgetList(DbContext, ActionContextAccessor, User.UserId()).Widgets);
         }
 
         /// <summary>

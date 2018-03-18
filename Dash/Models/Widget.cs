@@ -1,15 +1,14 @@
-﻿using Dash.I18n;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using Dash.I18n;
 using Jil;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Routing;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Security.Claims;
 
 namespace Dash.Models
 {
@@ -32,18 +31,23 @@ namespace Dash.Models
     {
         private List<Column> _Columns;
         private List<DatasetColumn> _DatasetColumns;
-        private IActionContextAccessor ActionContextAccessor;
 
-        public Widget() { }
-
-        public Widget(IActionContextAccessor actionContextAccessor)
+        public Widget()
         {
-            ActionContextAccessor = actionContextAccessor;
-            UserId = ActionContextAccessor.ActionContext.HttpContext.User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt();
         }
 
+        public Widget(IDbContext dbContext, IActionContextAccessor actionContextAccessor)
+        {
+            DbContext = dbContext;
+            ActionContextAccessor = actionContextAccessor;
+            UserId = ActionContextAccessor.ActionContext.HttpContext.User.UserId();
+        }
+
+        [JilDirective(true)]
+        public IActionContextAccessor ActionContextAccessor { get; set; }
+
         [Ignore, JilDirective(true)]
-        public bool AllowEdit { get { return UserId == ActionContextAccessor.ActionContext.HttpContext.User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt(); } }
+        public bool AllowEdit { get { return UserId == ActionContextAccessor.ActionContext.HttpContext.User.UserId(); } }
 
         [Display(Name = "Chart", ResourceType = typeof(I18n.Widgets))]
         public int? ChartId { get; set; }
@@ -55,7 +59,8 @@ namespace Dash.Models
             {
                 if (_Columns == null && ReportId.HasPositiveValue())
                 {
-                    _Columns = DbContext.Query<Column>("ColumnGetForReport", new { ReportId }).ToList();
+                    _Columns = DbContext.Query<Column>("ColumnGetForReport", new { ReportId })
+                        .Each(x => x.DbContext = DbContext).ToList();
                 }
                 // may want to rework how i query columns since i have to make another query for datasetcolumns anyway
                 if (_DatasetColumns == null && DatasetId > 0)
@@ -196,7 +201,7 @@ namespace Dash.Models
         /// <returns>Returns a IEnumerable of list items.</returns>
         public IEnumerable<SelectListItem> GetChartSelectList()
         {
-            return DbContext.GetAll<Chart>(new { UserId = ActionContextAccessor.ActionContext.HttpContext.User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt() }).ToSelectList(r => r.Name, r => r.Id.ToString());
+            return DbContext.GetAll<Chart>(new { UserId = ActionContextAccessor.ActionContext.HttpContext.User.UserId() }).ToSelectList(r => r.Name, r => r.Id.ToString());
         }
 
         /// <summary>
@@ -205,7 +210,7 @@ namespace Dash.Models
         /// <returns>Returns a IEnumerable of list items.</returns>
         public IEnumerable<SelectListItem> GetReportSelectList()
         {
-            return DbContext.GetAll<Report>(new { UserId = ActionContextAccessor.ActionContext.HttpContext.User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt() }).ToSelectList(r => r.Name, r => r.Id.ToString());
+            return DbContext.GetAll<Report>(new { UserId = ActionContextAccessor.ActionContext.HttpContext.User.UserId() }).ToSelectList(r => r.Name, r => r.Id.ToString());
         }
 
         /// <summary>
@@ -227,7 +232,7 @@ namespace Dash.Models
             {
                 // new widget - find the correct position
                 var gridBottom = 0;
-                DbContext.GetAll<Widget>(new { UserId = ActionContextAccessor.ActionContext.HttpContext.User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt() }).ToList().ForEach(x => gridBottom = Math.Max(x.Y + x.Height, gridBottom));
+                DbContext.GetAll<Widget>(new { UserId = ActionContextAccessor.ActionContext.HttpContext.User.UserId() }).ToList().ForEach(x => gridBottom = Math.Max(x.Y + x.Height, gridBottom));
                 X = 0;
                 Y = gridBottom;
             }

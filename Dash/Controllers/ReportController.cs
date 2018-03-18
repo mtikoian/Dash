@@ -100,7 +100,7 @@ namespace Dash.Controllers
             }
 
             // return our results as json
-            return Json(model.GetData(startItem ?? 0, totalItems, User.IsInRole("dataset.create")));
+            return Json(model.GetData(AppConfig, startItem ?? 0, totalItems, User.IsInRole("dataset.create")));
         }
 
         /// <summary>

@@ -1,16 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Jil;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace Dash.Models
 {
     public class WidgetList : BaseModel
     {
-        private IEnumerable<Widget> _Widgets { get; set; }
+        private IActionContextAccessor _ActionContextAccessor;
+        private IEnumerable<Widget> _Widgets;
 
-        public WidgetList(IDbContext dbContext, int userId)
+        public WidgetList(IDbContext dbContext, IActionContextAccessor actionContextAccessor, int userId)
         {
             DbContext = dbContext;
+            _ActionContextAccessor = actionContextAccessor;
             RequestUserId = userId;
         }
 
@@ -23,6 +26,7 @@ namespace Dash.Models
                 if (_Widgets == null && RequestUserId.HasPositiveValue())
                 {
                     _Widgets = DbContext.GetAll<Widget>(new { UserId = RequestUserId })
+                        .Each(x => x.ActionContextAccessor = _ActionContextAccessor)
                         .OrderBy(x => x.X < 0 ? int.MaxValue : x.X).ThenBy(x => x.Y < 0 ? int.MaxValue : x.Y);
                 }
                 return _Widgets;

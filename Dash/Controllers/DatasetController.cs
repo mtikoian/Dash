@@ -125,8 +125,7 @@ namespace Dash.Controllers
         public IActionResult FormOptions(int? id)
         {
             var model = id.HasPositiveValue() ? DbContext.Get<Dataset>(id.Value) : null;
-            return Json(new
-            {
+            return Json(new {
                 joinTypes = typeof(JoinTypes).TranslatedList().Prepend(new { Id = 0, Name = Datasets.JoinType }),
                 joins = model?.DatasetJoin,
                 dataTypes = DbContext.GetAll<DataType>().OrderBy(d => d.Name).Select(x => new { x.Id, x.Name }).ToList()
@@ -187,7 +186,7 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly, ParentAction("Create")]
         public IActionResult Sources(int databaseId, int typeId)
         {
-            return Json(DbContext.Get<Database>(databaseId)?.GetSourceList(true, typeId == (int)DatasetTypes.Proc));
+            return Json(DbContext.Get<Database>(databaseId)?.GetSourceList(AppConfig, true, typeId == (int)DatasetTypes.Proc));
         }
 
         /// <summary>
@@ -207,9 +206,8 @@ namespace Dash.Controllers
             }
 
             var list = new List<string>();
-            tables.ForEach(x =>
-            {
-                var schema = database.GetTableSchema(x);
+            tables.ForEach(x => {
+                var schema = database.GetTableSchema(AppConfig, x);
                 if (schema.Rows.Count > 0)
                 {
                     foreach (System.Data.DataRow row in schema.Rows)

@@ -1,11 +1,10 @@
-﻿using Jil;
-using Dash.I18n;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using Microsoft.AspNetCore.Http;
-using System.Security.Claims;
+using Dash.Configuration;
+using Dash.I18n;
+using Jil;
 
 namespace Dash.Models
 {
@@ -26,24 +25,21 @@ namespace Dash.Models
     [HasMany(typeof(ReportShare))]
     public class Report : BaseModel
     {
-        private int CurrentUserId;
-
-        /// <summary>
-        /// Default constructor.
-        /// </summary>
-        public Report(int userId)
-        {
-            CurrentUserId = userId;
-        }
-
+        private int _CurrentUserId;
         private Dataset _Dataset;
-        private List<DatasetColumn> _DatasetColumns { get; set; }
-        private List<DatasetColumn> _DatasetColumnsByDisplay { get; set; }
         private List<ReportColumn> _ReportColumn;
         private List<ReportFilter> _ReportFilter;
         private List<ReportGroup> _ReportGroup;
         private List<ReportShare> _ReportShare;
-        private User _Owner { get; set; }
+
+        public Report()
+        {
+        }
+
+        public Report(int userId)
+        {
+            _CurrentUserId = userId;
+        }
 
         [JilDirective(true)]
         public int AggregatorId { get; set; }
@@ -103,7 +99,7 @@ namespace Dash.Models
         public string DatasetName { get; set; }
 
         [Ignore, JilDirective(true)]
-        public bool IsOwner { get { return CurrentUserId == OwnerId; } }
+        public bool IsOwner { get { return _CurrentUserId == OwnerId; } }
 
         [Display(Name = "Name", ResourceType = typeof(I18n.Reports))]
         [Required(ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorRequired")]
@@ -151,9 +147,6 @@ namespace Dash.Models
         [JilDirective(true)]
         public int RowLimit { get; set; } = 10;
 
-        [JilDirective(true)]
-        public decimal Width { get; set; } = 100;
-
         [Ignore, JilDirective(true)]
         public string ShareOptionsJson
         {
@@ -168,8 +161,13 @@ namespace Dash.Models
                     shares = ReportShare
                 }, JilOutputFormatter.Options);
             }
-
         }
+
+        [JilDirective(true)]
+        public decimal Width { get; set; } = 100;
+        private List<DatasetColumn> _DatasetColumns { get; set; }
+        private List<DatasetColumn> _DatasetColumnsByDisplay { get; set; }
+        private User _Owner { get; set; }
 
         /// <summary>
         /// Copy a report.
@@ -179,7 +177,7 @@ namespace Dash.Models
         {
             var newReport = this.Clone();
             newReport.Id = 0;
-            newReport.OwnerId = CurrentUserId;
+            newReport.OwnerId = _CurrentUserId;
             newReport.Name = name.IsEmpty() ? String.Format(Core.CopyOf, Name) : name;
 
             // duplicate the report columns
@@ -292,7 +290,7 @@ namespace Dash.Models
         /// <param name="rows">Number of rows to return.</param>
         /// <param name="hasDatasetAccess">User has access to dataset.</param>
         /// <returns>Returns the data for the report.</returns>
-        public ReportResult GetData(int start, int rows, bool hasDatasetAccess)
+        public ReportResult GetData(IAppConfiguration appConfig, int start, int rows, bool hasDatasetAccess)
         {
             // build a obj to store our results
             var response = new ReportResult() { UpdatedDate = DateUpdated };
@@ -316,7 +314,7 @@ namespace Dash.Models
             IEnumerable<dynamic> dataRes = new List<dynamic>();
             if (Dataset.IsProc)
             {
-                dataRes = Dataset.Database.Query(sqlQuery.ExecStatement(), sqlQuery.Params);
+                dataRes = Dataset.Database.Query(appConfig, sqlQuery.ExecStatement(), sqlQuery.Params);
                 totalRecords = dataRes.Count();
             }
             else
@@ -331,7 +329,7 @@ namespace Dash.Models
                 // get the total record count
                 try
                 {
-                    IEnumerable<dynamic> countRes = Dataset.Database.Query(countSql, sqlQuery.Params);
+                    IEnumerable<dynamic> countRes = Dataset.Database.Query(appConfig, countSql, sqlQuery.Params);
                     if (countRes.Any())
                     {
                         totalRecords = ((IDictionary<string, object>)countRes.First())["cnt"].ToString().ToInt();
@@ -373,7 +371,7 @@ namespace Dash.Models
             {
                 if (!Dataset.IsProc)
                 {
-                    dataRes = Dataset.Database.Query(sqlQuery.SelectStatement(start, rows), sqlQuery.Params);
+                    dataRes = Dataset.Database.Query(appConfig, sqlQuery.SelectStatement(start, rows), sqlQuery.Params);
                 }
                 if (dataRes.Any())
                 {

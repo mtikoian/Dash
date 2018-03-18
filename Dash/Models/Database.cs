@@ -1,5 +1,6 @@
 using Dapper;
 using Jil;
+using Dash.Configuration;
 using Dash.I18n;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Dash.Models
@@ -31,7 +33,8 @@ namespace Dash.Models
         /// </summary>
         public static IEnumerable<SelectListItem> DatabaseTypeSelectList
         {
-            get {
+            get
+            {
                 return typeof(DatabaseTypes).TranslatedSelect(new ResourceDictionary("Databases"), "LabelType_");
             }
         }
@@ -94,9 +97,9 @@ namespace Dash.Models
         /// Build a connection object for this database.
         /// </summary>
         /// <returns>Returns a SQL connection.</returns>
-        public DbConnection GetOpenConnection()
+        public DbConnection GetOpenConnection(IAppConfiguration appConfig)
         {
-            var crypt = new Crypt(AppConfig);
+            var crypt = new Crypt(appConfig);
             string connectionString = null;
             if (!ConnectionString.IsEmpty())
             {
@@ -139,9 +142,9 @@ namespace Dash.Models
         /// </summary>
         /// <param name="includeEmpty">Include an empty entry at start of list.</param>
         /// <returns>True if successful, else false.</returns>
-        public IEnumerable<string> GetSourceList(bool includeEmpty = false, bool isProc = false)
+        public IEnumerable<string> GetSourceList(IAppConfiguration appConfig, bool includeEmpty = false, bool isProc = false)
         {
-            using (var conn = GetOpenConnection())
+            using (var conn = GetOpenConnection(appConfig))
             {
                 var res = new List<string>();
                 if (includeEmpty)
@@ -169,9 +172,9 @@ namespace Dash.Models
         /// </summary>
         /// <param name="tableName">Table name</param>
         /// <returns>List of fields, else false.</returns>
-        public DataTable GetTableSchema(string tableName)
+        public DataTable GetTableSchema(IAppConfiguration appConfig, string tableName)
         {
-            using (var conn = GetOpenConnection())
+            using (var conn = GetOpenConnection(appConfig))
             {
                 var parts = tableName.Split('.');
                 if (parts.Any())
@@ -192,9 +195,9 @@ namespace Dash.Models
         /// </summary>
         /// <param name="sql">SQL statement to execute</param>
         /// <returns>IEnumerable results.</returns>
-        public IEnumerable<dynamic> Query(string sql, Dictionary<string, object> parameters = null)
+        public IEnumerable<dynamic> Query(IAppConfiguration appConfig, string sql, Dictionary<string, object> parameters = null)
         {
-            using (var conn = GetOpenConnection())
+            using (var conn = GetOpenConnection(appConfig))
             {
                 var obj = conn.Query(sql, parameters);
                 conn.Close();
@@ -208,9 +211,9 @@ namespace Dash.Models
         /// <typeparam name="T">Type to return results as</typeparam>
         /// <param name="sql">SQL statement to execute</param>
         /// <returns>IEnumerable results.</returns>
-        public IEnumerable<T> Query<T>(string sql)
+        public IEnumerable<T> Query<T>(IAppConfiguration appConfig, string sql)
         {
-            using (var conn = GetOpenConnection())
+            using (var conn = GetOpenConnection(appConfig))
             {
                 var obj = conn.Query<T>(sql);
                 conn.Close();
@@ -249,11 +252,11 @@ namespace Dash.Models
         /// </summary>
         /// <param name="errorMessage">Pass an error message back.</param>
         /// <returns>True on success, else false.</returns>
-        public bool TestConnection(out string errorMessage)
+        public bool TestConnection(IAppConfiguration appConfig, out string errorMessage)
         {
             try
             {
-                using (var conn = GetOpenConnection())
+                using (var conn = GetOpenConnection(appConfig))
                 {
                     conn.Query("SELECT 1");
                     conn.Close();

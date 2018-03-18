@@ -131,7 +131,7 @@ namespace Dash.Controllers
             {
                 return JsonError(Core.ErrorInvalidId);
             }
-            return model.TestConnection(out string errorMsg) ? JsonSuccess(Databases.SuccessTestingConnection) : JsonError(errorMsg);
+            return model.TestConnection(AppConfig, out string errorMsg) ? JsonSuccess(Databases.SuccessTestingConnection) : JsonError(errorMsg);
         }
 
         /// <summary>

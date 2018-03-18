@@ -160,12 +160,12 @@ namespace Dash.Models
         {
             var database = DbContext.Get<Database>(databaseId);
             var existingColumns = new Dictionary<string, DatasetColumn>();
-            if (sources.Count > 0 && database != null && database.TestConnection(out var error))
+            if (sources.Count > 0 && database != null && database.TestConnection(AppConfig, out var error))
             {
                 // first build a dictionary of all datatypes
                 var dataTypes = DbContext.GetAll<DataType>().ToDictionary(t => t.Name, t => t);
                 sources.Each(source => {
-                    database.GetTableSchema(source).Rows.OfType<DataRow>().Each(row => {
+                    database.GetTableSchema(AppConfig, source).Rows.OfType<DataRow>().Each(row => {
                         var columnName = row.ToColumnName(database.IsSqlServer);
                         if (!existingColumns.ContainsKey(columnName.ToLower()))
                         {
@@ -248,10 +248,10 @@ namespace Dash.Models
                 tableList.AddRange(DatasetJoin?.Select(x => x.TableName).Distinct().Where(x => !tableList.Contains(x)));
             }
 
-            if (Database?.TestConnection(out var error) == true)
+            if (Database?.TestConnection(AppConfig, out var error) == true)
             {
                 tableList.Each(table => {
-                    Database.GetTableSchema(table).Rows.OfType<DataRow>().Each(row => {
+                    Database.GetTableSchema(AppConfig, table).Rows.OfType<DataRow>().Each(row => {
                         columns.Add(new {
                             table = row.ToTableName(Database.IsSqlServer),
                             column = row.ToColumnName(Database.IsSqlServer, false)
@@ -308,7 +308,7 @@ namespace Dash.Models
                 DatasetColumn.Where(x => x.IsSelect && !x.FilterQuery.IsEmpty()).ToList().ForEach(x => {
                     try
                     {
-                        selectColumns.Add(x.Id, Database.Query<LookupItem>(x.FilterQuery)
+                        selectColumns.Add(x.Id, Database.Query<LookupItem>(AppConfig, x.FilterQuery)
                             .Prepend(new LookupItem { Value = "", Text = Reports.FilterCriteria }, prependEmpty)
                             .ToDictionary(y => y.Value, y => y));
                     }

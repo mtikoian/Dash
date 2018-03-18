@@ -56,13 +56,16 @@ namespace Dash.Models
         /// <param name="key">Unique key to identify the object.</param>
         /// <param name="onCreate">If object doesn't exist in cache, use return value from this function to create the object.</param>
         /// <returns>Returns the matched object.</returns>
-        public T Cached<T>(string key, Func<T> onCreate) where T : class {
-            if (Cache == null) {
+        public T Cached<T>(string key, Func<T> onCreate) where T : class
+        {
+            if (Cache == null)
+            {
                 return onCreate();
             }
 
             T result;
-            if (!Cache.TryGetValue<T>(key, out result)) {
+            if (!Cache.TryGetValue<T>(key, out result))
+            {
                 result = onCreate();
                 Cache.Set(key, result);
             }

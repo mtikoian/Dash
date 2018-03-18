@@ -1,8 +1,8 @@
-﻿using Dash.Configuration;
-using System;
+﻿using System;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using Dash.Configuration;
 
 namespace Dash
 {
@@ -18,20 +18,15 @@ namespace Dash
 
         private IAppConfiguration AppConfiguration { get; set; }
 
-        /// <summary>
-        /// Decrypt a string.
-        /// </summary>
-        /// <param name="cipher">String to decrypt.</param>
-        /// <returns>Decrypted string.</returns>
-        public string Decrypt(string cipher)
+        public string Decrypt(string cipherText)
         {
-            var fullCipher = Convert.FromBase64String(cipher);
+            var fullCipher = Convert.FromBase64String(cipherText);
 
             var iv = new byte[16];
-            var byteCipher = new byte[16];
+            var cipher = new byte[fullCipher.Length - iv.Length];
 
             Buffer.BlockCopy(fullCipher, 0, iv, 0, iv.Length);
-            Buffer.BlockCopy(fullCipher, iv.Length, byteCipher, 0, iv.Length);
+            Buffer.BlockCopy(fullCipher, iv.Length, cipher, 0, fullCipher.Length - iv.Length);
             var key = Encoding.UTF8.GetBytes(AppConfiguration.CryptKey);
 
             using (var aesAlg = Aes.Create())
@@ -39,7 +34,7 @@ namespace Dash
                 using (var decryptor = aesAlg.CreateDecryptor(key, iv))
                 {
                     string result;
-                    using (var msDecrypt = new MemoryStream(byteCipher))
+                    using (var msDecrypt = new MemoryStream(cipher))
                     {
                         using (var csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
                         {
@@ -55,11 +50,6 @@ namespace Dash
             }
         }
 
-        /// <summary>
-        /// Encrypt a string.
-        /// </summary>
-        /// <param name="text">String to encrypt.</param>
-        /// <returns>Encrypted string.</returns>
         public string Encrypt(string text)
         {
             var key = Encoding.UTF8.GetBytes(AppConfiguration.CryptKey);

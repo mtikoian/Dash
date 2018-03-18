@@ -101,7 +101,8 @@ namespace Dash.Models
         {
             using (var conn = GetOpenConnection())
             {
-                return conn.Query<T>($"{typeof(T).Name}Get", parameters, commandType: CommandType.StoredProcedure).ToArray();
+                return conn.Query<T>($"{typeof(T).Name}Get", parameters, commandType: CommandType.StoredProcedure)
+                    .Each(x => x.DbContext = this).ToArray();
             }
         }
 
