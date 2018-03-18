@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
 using Dash.Configuration;
 using Dash.I18n;
 using Dash.Models;
@@ -6,9 +9,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
 
 namespace Dash.Controllers
 {
@@ -18,7 +18,8 @@ namespace Dash.Controllers
     [Authorize(Policy = "HasPermission")]
     public class ChartController : BaseController
     {
-        public ChartController(IHttpContextAccessor httpContextAccessor, IDbContext dbContext, IMemoryCache cache, AppConfiguration appConfig) : base(httpContextAccessor, dbContext, cache, appConfig)
+        public ChartController(IDbContext dbContext, IMemoryCache cache, AppConfiguration appConfig) :
+            base(dbContext, cache, appConfig)
         {
         }
 
@@ -235,7 +236,7 @@ namespace Dash.Controllers
                     numeric = (int)FilterTypes.Numeric
                 },
                 allowEdit = model.IsOwner,
-                wantsHelp = HttpContextAccessor.HttpContext.Session.GetString("ContextHelp").ToBool(),
+                wantsHelp = HttpContext.Session.GetString("ContextHelp").ToBool(),
                 saveRangesUrl = Url.Action("SaveRanges", "Chart", new { model.Id })
             });
         }

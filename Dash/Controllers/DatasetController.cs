@@ -1,4 +1,6 @@
-﻿using Dash.Configuration;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Dash.Configuration;
 using Dash.I18n;
 using Dash.Models;
 using Dash.Utils;
@@ -6,8 +8,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Dash.Controllers
 {
@@ -17,7 +17,8 @@ namespace Dash.Controllers
     [Authorize(Policy = "HasPermission")]
     public class DatasetController : BaseController
     {
-        public DatasetController(IHttpContextAccessor httpContextAccessor, IDbContext dbContext, IMemoryCache cache, AppConfiguration appConfig) : base(httpContextAccessor, dbContext, cache, appConfig)
+        public DatasetController(IDbContext dbContext, IMemoryCache cache, AppConfiguration appConfig) :
+            base(dbContext, cache, appConfig)
         {
         }
 
@@ -132,7 +133,7 @@ namespace Dash.Controllers
                     .Prepend(new { Id = 0, Name = Datasets.ColumnDataType }),
                 filterTypes = FilterType.FilterTypeList,
                 columns = model?.DatasetColumn,
-                wantsHelp = HttpContextAccessor.HttpContext.Session.GetString("ContextHelp").ToBool()
+                wantsHelp = HttpContext.Session.GetString("ContextHelp").ToBool()
             });
         }
 

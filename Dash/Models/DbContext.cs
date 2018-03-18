@@ -252,8 +252,7 @@ namespace Dash.Models
                 return onCreate();
             }
 
-            T result;
-            if (!_Cache.TryGetValue<T>(key, out result))
+            if (!_Cache.TryGetValue<T>(key, out T result))
             {
                 result = onCreate();
                 _Cache.Set(key, result);

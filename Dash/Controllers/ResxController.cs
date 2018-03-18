@@ -1,8 +1,7 @@
 ﻿using Dash.Configuration;
 using Dash.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Dash.Controllers
@@ -10,7 +9,8 @@ namespace Dash.Controllers
     [Authorize]
     public class ResxController : BaseController
     {
-        public ResxController(IHttpContextAccessor httpContextAccessor, IDbContext dbContext, IMemoryCache cache, AppConfiguration appConfig) : base(httpContextAccessor, dbContext, cache, appConfig)
+        public ResxController(IDbContext dbContext, IMemoryCache cache, AppConfiguration appConfig) :
+            base(dbContext, cache, appConfig)
         {
         }
 

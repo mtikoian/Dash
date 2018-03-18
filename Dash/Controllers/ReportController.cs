@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
 using Dash.Configuration;
 using Dash.I18n;
 using Dash.Models;
@@ -6,9 +9,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
 
 namespace Dash.Controllers
 {
@@ -18,7 +18,8 @@ namespace Dash.Controllers
     [Authorize(Policy = "HasPermission")]
     public class ReportController : BaseController
     {
-        public ReportController(IHttpContextAccessor httpContextAccessor, IDbContext dbContext, IMemoryCache cache, AppConfiguration appConfig) : base(httpContextAccessor, dbContext, cache, appConfig)
+        public ReportController(IDbContext dbContext, IMemoryCache cache, AppConfiguration appConfig) :
+            base(dbContext, cache, appConfig)
         {
         }
 
@@ -180,7 +181,7 @@ namespace Dash.Controllers
                 reportId = model.Id,
                 allowEdit = model.IsOwner,
                 loadAllData = model.Dataset.IsProc,
-                wantsHelp = HttpContextAccessor.HttpContext.Session.GetString("ContextHelp").ToBool(),
+                wantsHelp = HttpContext.Session.GetString("ContextHelp").ToBool(),
                 columns = model.Dataset.DatasetColumn.Select(x => new { x.Id, x.Title, x.FilterTypeId, x.IsParam })
                     .Prepend(new { Id = 0, Title = Reports.FilterColumn, FilterTypeId = 0, IsParam = true }),
                 filterOperators = FilterType.FilterOperators,

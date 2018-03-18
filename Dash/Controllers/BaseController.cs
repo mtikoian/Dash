@@ -19,9 +19,8 @@ namespace Dash.Controllers
         /// <param name="dbContext">Database context.</param>
         /// <param name="cache">App memory cache.</param>
         /// <param name="appConfig">App settings.</param>
-        public BaseController(IHttpContextAccessor httpContextAccessor, IDbContext dbContext, IMemoryCache cache, AppConfiguration appConfig)
+        public BaseController(IDbContext dbContext, IMemoryCache cache, AppConfiguration appConfig)
         {
-            HttpContextAccessor = httpContextAccessor;
             DbContext = dbContext;
             Cache = cache;
             AppConfig = appConfig;
@@ -30,9 +29,7 @@ namespace Dash.Controllers
         protected IAppConfiguration AppConfig { get; set; }
         protected IMemoryCache Cache { get; set; }
         protected IDbContext DbContext { get; set; }
-        protected IHttpContextAccessor HttpContextAccessor { get; set; }
         protected int ID { get; set; }
-        protected BaseModel Model { get; set; }
 
         /// <summary>
         /// Gets an object from the cache. Cache persists for the lifetime of the app pool.
@@ -48,28 +45,12 @@ namespace Dash.Controllers
                 return onCreate();
             }
 
-            T result;
-            if (!Cache.TryGetValue<T>(key, out result))
+            if (!Cache.TryGetValue<T>(key, out T result))
             {
                 result = onCreate();
                 Cache.Set(key, result);
             }
             return result;
-        }
-
-        /// <summary>
-        /// Fetch model from db using ID.
-        /// </summary>
-        /// <returns>Returns true if model was found, else false.</returns>
-        public bool HasValidDbModel<T>() where T : BaseModel
-        {
-            if (ID == 0)
-            {
-                return false;
-            }
-            Model = DbContext.Get<T>(ID);
-            Model.RequestUserId = HttpContextAccessor.HttpContext.User.UserId();
-            return Model != null;
         }
 
         /// <summary>

@@ -1,9 +1,8 @@
-﻿using Dash.Configuration;
+﻿using System;
+using Dash.Configuration;
 using Dash.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
-using System;
 
 namespace Dash.Controllers
 {
@@ -12,8 +11,8 @@ namespace Dash.Controllers
     /// </summary>
     public class ErrorController : BaseController
     {
-        public ErrorController(IHttpContextAccessor httpContextAccessor, IDbContext dbContext, IMemoryCache cache, AppConfiguration appConfig) :
-            base(httpContextAccessor, dbContext, cache, appConfig)
+        public ErrorController(IDbContext dbContext, IMemoryCache cache, AppConfiguration appConfig) :
+            base(dbContext, cache, appConfig)
         {
         }
 

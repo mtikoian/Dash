@@ -1,13 +1,12 @@
-﻿using Dash.Configuration;
+﻿using System;
+using System.Collections.Generic;
+using Dash.Configuration;
 using Dash.I18n;
 using Dash.Models;
 using Dash.Utils;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
-using System;
-using System.Collections.Generic;
 
 namespace Dash.Controllers
 {
@@ -17,7 +16,8 @@ namespace Dash.Controllers
     [Authorize(Policy = "HasPermission")]
     public class PermissionController : BaseController
     {
-        public PermissionController(IHttpContextAccessor httpContextAccessor, IDbContext dbContext, IMemoryCache cache, AppConfiguration appConfig) : base(httpContextAccessor, dbContext, cache, appConfig)
+        public PermissionController(IDbContext dbContext, IMemoryCache cache, AppConfiguration appConfig) :
+            base(dbContext, cache, appConfig)
         {
         }
 

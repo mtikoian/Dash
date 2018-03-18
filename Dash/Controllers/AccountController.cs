@@ -1,23 +1,23 @@
-﻿using Dash.Configuration;
+﻿using System.Linq;
+using System.Security.Claims;
+using Dash.Configuration;
 using Dash.I18n;
 using Dash.Models;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using System.Linq;
-using System.Security.Claims;
 using Microsoft.Extensions.Logging;
 
 namespace Dash.Controllers
 {
     public class AccountController : BaseController
     {
-        public AccountController(IHttpContextAccessor httpContextAccessor, IDbContext dbContext, IMemoryCache cache, AppConfiguration appConfig) :
-            base(httpContextAccessor, dbContext, cache, appConfig)
+        public AccountController(IDbContext dbContext, IMemoryCache cache, AppConfiguration appConfig) :
+            base(dbContext, cache, appConfig)
         {
         }
 
@@ -57,18 +57,6 @@ namespace Dash.Controllers
                 return JsonError(error);
             }
             return JsonError(ModelState.ToErrorString());
-        }
-
-        /// <summary>
-        /// Log the user off and redirect to the login page.
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        public ActionResult LogOff()
-        {
-            HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            HttpContext.Session.Clear();
-            return Json(new { Reload = true });
         }
 
         /// <summary>
@@ -112,6 +100,18 @@ namespace Dash.Controllers
             ViewBag.Error = null;
             TempData.Remove("Error");
             return RedirectToAction("Index", "Dashboard");
+        }
+
+        /// <summary>
+        /// Log the user off and redirect to the login page.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public ActionResult LogOff()
+        {
+            HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            HttpContext.Session.Clear();
+            return Json(new { Reload = true });
         }
 
         /// <summary>
@@ -167,7 +167,6 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly, Authorize]
         public ActionResult ToggleContextHelp()
         {
-
             var wantsHelp = HttpContext.Session.GetString("ContextHelp").ToBool();
             wantsHelp = !wantsHelp;
             HttpContext.Session.SetString("ContextHelp", wantsHelp.ToString());
