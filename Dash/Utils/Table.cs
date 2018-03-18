@@ -1,8 +1,7 @@
-﻿using Dash.I18n;
-using Jil;
-using Microsoft.AspNetCore.Http;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Dash.I18n;
+using Jil;
 
 namespace Dash
 {
@@ -28,14 +27,8 @@ namespace Dash
     /// </summary>
     public class Table
     {
-        private IHttpContextAccessor HttpContextAccessor;
-
-        /// <summary>
-        /// Default constructor.
-        /// </summary>
-        public Table(IHttpContextAccessor httpContextAccessor)
+        public Table()
         {
-            HttpContextAccessor = httpContextAccessor;
         }
 
         /// <summary>
