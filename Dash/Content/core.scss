@@ -134,7 +134,7 @@
 
     &.collapsible-list-open:before {
         content: "\e808"; /* Dash Unicode */
-        font-family: "rengn";
+        font-family: "dash";
         font-size: 1.1em;
         display: inline-block;
         margin-left: -1.1em; /* same as padding-left set on li */
@@ -144,7 +144,7 @@
 
     &.collapsible-list-closed:before {
         content: "\e807"; /* Dash Unicode */
-        font-family: "rengn";
+        font-family: "dash";
         font-size: 1.1em;
         display: inline-block;
         margin-left: -1.1em; /* same as padding-left set on li */
@@ -155,7 +155,7 @@
 
 .dash {
     display: inline-block;
-    font-family: "rengn";
+    font-family: "dash";
     font-style: normal;
     font-weight: normal;
     speak: none;
