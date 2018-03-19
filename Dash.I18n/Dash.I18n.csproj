@@ -1,9 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
-
   <ItemGroup>
     <Compile Update="Account.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -100,11 +99,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Filters.es.resx</DependentUpon>
     </Compile>
-    <Compile Update="Permissions.es.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Permissions.es.resx</DependentUpon>
-    </Compile>
     <Compile Update="Reports.es.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -126,7 +120,6 @@
       <DependentUpon>Widgets.es.resx</DependentUpon>
     </Compile>
   </ItemGroup>
-
   <ItemGroup>
     <EmbeddedResource Update="Account.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
@@ -204,10 +197,6 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Filters.es.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Update="Permissions.es.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Permissions.es.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <EmbeddedResource Update="Reports.es.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Reports.es.Designer.cs</LastGenOutput>
@@ -225,5 +214,4 @@
       <LastGenOutput>Widgets.es.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-
 </Project>

@@ -46,9 +46,6 @@
     <None Include="Views\Database\Index.cshtml"/>
     <None Include="Views\Dataset\CreateEdit.cshtml"/>
     <None Include="Views\Dataset\Index.cshtml"/>
-    <None Include="Views\Permission\CreateController.cshtml"/>
-    <None Include="Views\Permission\CreateEdit.cshtml"/>
-    <None Include="Views\Permission\Index.cshtml"/>
     <None Include="Views\Report\Create.cshtml"/>
     <None Include="Views\Report\Details.cshtml"/>
     <None Include="Views\Report\Index.cshtml"/>
