@@ -436,9 +436,10 @@ namespace Dash.Controllers
         /// <param name="id">ID of report to update.</param>
         /// <param name="reportShare">List of shares.</param>
         /// <returns>Success or error message.</returns>
-        [HttpPut, ActionName("Share"), AjaxRequestOnly]
-        public IActionResult ShareSave(int id, List<ReportShare> reportShare)
+        [HttpPut, AjaxRequestOnly]
+        public IActionResult Share(int id, List<ReportShare> reportShare)
         {
+            // @todo renamed this from `ShareSave`, when testing make sure it still routes correctly
             var model = DbContext.Get<Report>(id);
             if (model == null)
             {

@@ -363,9 +363,10 @@ namespace Dash.Controllers
         /// <param name="id">ID of chart to update.</param>
         /// <param name="chartShare">List of shares.</param>
         /// <returns>Success or error message.</returns>
-        [HttpPut, ActionName("Share"), AjaxRequestOnly]
-        public IActionResult ShareSave(int id, List<ChartShare> chartShare)
+        [HttpPut, AjaxRequestOnly]
+        public IActionResult Share(int id, List<ChartShare> chartShare)
         {
+            // @todo renamed this from `ShareSave`, when testing make sure it still routes correctly
             var model = DbContext.Get<Chart>(id);
             if (model == null)
             {
