@@ -104,6 +104,9 @@ namespace Dash
                     name: "default",
                     template: "{controller=Dashboard}/{action=Index}/{id?}");
             });
+
+            // use reflection to check for added/removed permissions and update db accordingly
+            UpdatePermissions(dbContext);
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -139,6 +142,35 @@ namespace Dash
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddScoped<IDbContext, DbContext>();
+        }
+
+        /// <summary>
+        /// Scans the assembly for all controllers and updates the permissions table to match the list of available actions.
+        /// </summary>
+        /// <param name="dbContext"></param>
+        private void UpdatePermissions(IDbContext dbContext)
+        {
+            // build a list of all available actions
+            var actionList = Assembly.GetExecutingAssembly().GetTypes()
+                .Where(x => typeof(Controller).IsAssignableFrom(x)) //filter controllers
+                .SelectMany(x => x.GetMethods())
+                .Where(x => x.IsPublic && !x.IsDefined(typeof(NonActionAttribute)) && !x.IsDefined(typeof(ParentActionAttribute))
+                     && (x.IsDefined(typeof(AuthorizeAttribute)) || (x.DeclaringType.IsDefined(typeof(AuthorizeAttribute)) && !x.IsDefined(typeof(AllowAnonymousAttribute)))))
+                .Select(x => $"{x.DeclaringType.FullName.Split('.').Last().Replace("Controller", "")}.{x.Name}")
+                .Distinct()
+                .ToDictionary(x => x.ToLower(), x => x);
+            // query all permissions from db
+            var permissions = dbContext.GetAll<Permission>().ToDictionary(x => x.FullName.ToLower(), x => x);
+
+            // save any actions not in db
+            actionList.Where(x => !permissions.ContainsKey(x.Key)).Each(x => {
+                var parts = x.Value.Split('.');
+                dbContext.Save(new Permission { ControllerName = parts[0], ActionName = parts[1] });
+            });
+            // delete any permission not in action list
+            permissions.Where(x => !actionList.ContainsKey(x.Key)).Each(x => {
+                dbContext.Delete(x.Value);
+            });
         }
     }
 }
