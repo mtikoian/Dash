@@ -42,7 +42,7 @@ namespace Dash.Controllers
         /// <param name="model"></param>
         /// <returns>Success or error message.</returns>
         [HttpPost, AjaxRequestOnly]
-        public ActionResult ForgotPassword(ForgotPassword model)
+        public IActionResult ForgotPassword(ForgotPassword model)
         {
             if (User.Identity.IsAuthenticated)
             {
@@ -189,7 +189,7 @@ namespace Dash.Controllers
         /// <param name="model">User object</param>
         /// <returns>Success or error message.</returns>
         [HttpPost, Authorize]
-        public ActionResult Update(User model)
+        public IActionResult Update(User model)
         {
             if (model.UpdateProfile(out string errorMsg))
             {
