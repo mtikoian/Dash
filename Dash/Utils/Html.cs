@@ -218,8 +218,8 @@ namespace Dash
             {
                 htmlAttr["data-toggle"] = "";
             }
-            htmlAttr["class"] = MergedList(htmlAttr["class"], new string[] { (ajaxForm ? "dash-form" : ""), "pt-1 mx-1 row" }).Combine();
-            htmlAttr["data-toggle"] = MergedList(htmlAttr["data-toggle"], new[] { "validator" }).Combine();
+            htmlAttr["class"] = MergedList(htmlAttr.ContainsKey("class") ? htmlAttr["class"] : "", new string[] { (ajaxForm ? "dash-form" : ""), "pt-1 mx-1 row" }).Combine();
+            htmlAttr["data-toggle"] = MergedList(htmlAttr.ContainsKey("data-toggle") ? htmlAttr["data-toggle"] : "", new[] { "validator" }).Combine();
             if (!title.IsEmpty())
             {
                 htmlAttr["data-title"] = title.Trim();
@@ -290,7 +290,7 @@ namespace Dash
         public static IHtmlContent ControlLabel(this IHtmlHelper helper, string forControl, string text, object htmlAttributes = null)
         {
             var htmlAttr = HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes);
-            htmlAttr["class"] = MergedList(htmlAttr["class"], new[] { "col-4", "col-form-label" }).Combine();
+            htmlAttr["class"] = MergedList(htmlAttr.ContainsKey("class") ? htmlAttr["class"] : "", new[] { "col-4", "col-form-label" }).Combine();
             return helper.Label(forControl, text, htmlAttr);
         }
 
@@ -575,7 +575,7 @@ namespace Dash
             {
                 attrs.Add("disabled", "disabled");
             }
-            attrs["class"] = MergedList(attrs["class"], new[] { "custom-select" }).Combine();
+            attrs["class"] = MergedList(attrs.ContainsKey("class") ? attrs["class"] : "", new[] { "custom-select" }).Combine();
 
             var input = helper.DropDownListFor(expression, listItems, includeEmptyItem ? "" : null, attrs);
             var innerDiv = helper.InputDiv(expression, inputWidth, input);
