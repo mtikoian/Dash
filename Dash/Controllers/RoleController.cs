@@ -53,7 +53,7 @@ namespace Dash.Controllers
         /// </summary>
         /// <param name="model">Role object to save</param>
         /// <returns>Success or error message.</returns>
-        [HttpPost, AjaxRequestOnly]
+        [HttpPost, AjaxRequestOnly, ValidateAntiForgeryToken]
         public IActionResult Create(Role model)
         {
             return Save(model);
@@ -97,7 +97,7 @@ namespace Dash.Controllers
         /// </summary>
         /// <param name="model">Role object</param>
         /// <returns>Success or error message.</returns>
-        [HttpPut, AjaxRequestOnly]
+        [HttpPut, AjaxRequestOnly, ValidateAntiForgeryToken]
         public IActionResult Edit(Role model)
         {
             return Save(model);
