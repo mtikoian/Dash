@@ -16,8 +16,7 @@
             @Html.AuthorizedMenu(Reports.MenuItem, "Index", "Report", "list-alt", User.IsInRole("report.index"))
             @Html.AuthorizedMenu(Charts.MenuItem, "Index", "Chart", "chart-bar", User.IsInRole("chart.index"))
             @Html.AuthorizedMenu(Users.MenuItem, "Index", "User", "user", User.IsInRole("user.index"))
-            @Html.AuthorizedMenu(Dash.I18n.Roles.MenuItem, "Index", "Role", "key", User.IsInRole("role.index"))
-            @Html.AuthorizedMenu(Permissions.MenuItem, "Index", "Permission", "lock-open", User.IsInRole("permission.index"))
+            @Html.AuthorizedMenu(Roles.MenuItem, "Index", "Role", "key", User.IsInRole("role.index"))
             <li class="dropdown-divider"></li>
             @Html.AuthorizedMenu(Core.GetStarted, "Start", "Dashboard", "lightbulb", User.IsInRole("dashboard.start"))
             <li>
