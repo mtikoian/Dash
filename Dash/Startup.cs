@@ -1,7 +1,11 @@
-﻿using Dash.Configuration;
+﻿using System.IO;
+using System.Linq;
+using System.Reflection;
+using Dash.Configuration;
 using Dash.Models;
 using Dash.Utils;
 using HardHat;
+using Jil;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -30,8 +34,6 @@ namespace Dash
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IDbContext dbContext)
         {
-            loggerFactory.AddSerilog();
-
             // harden headers using HardHat - https://github.com/TerribleDev/HardHat
             // pretty locked down by default, will open up later if needed
             // Turn off dns prefetch to protect the privacy of users
@@ -60,37 +62,35 @@ namespace Dash
             // force all requests to https
             app.UseRewriter(new RewriteOptions().AddRedirectToHttps());
 
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseExceptionHandler(builder => {
-                    builder.Run(async context => {
-                        var error = context.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerFeature>();
-                        if (error != null)
+            app.UseExceptionHandler(builder => {
+                builder.Run(async context => {
+                    var error = context.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerFeature>();
+                    if (error != null)
+                    {
+                        try
                         {
-                            try
-                            {
-                                loggerFactory.CreateLogger("Application").LogError(error.Error, "Application Error");
-                            }
-                            catch { }
+                            Log.Error(error.Error, error.Error.Message);
                         }
+                        catch { }
+                    }
 
-                        if (context.Request.ContentType.ToLower().Contains("json"))
+                    if (context.Request.ContentType.ToLower().Contains("jil"))
+                    {
+                        context.Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
+                        context.Response.ContentType = "application/json";
+
+                        using (var writer = new StreamWriter(context.Response.Body))
                         {
-                            context.Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
-                            context.Response.ContentType = "application/json";
-                            await context.Response.WriteAsync("{ message: 'An unexpected error occurred.' }").ConfigureAwait(false);
+                            writer.Write(JSON.SerializeDynamic(new { Error = "An unexpected error occurred." }, JilOutputFormatter.Options));
+                            await writer.FlushAsync().ConfigureAwait(false);
                         }
-                        else
-                        {
-                            context.Response.Redirect("/Error/Index");
-                        }
-                    });
+                    }
+                    else
+                    {
+                        context.Response.Redirect("/Error/Index");
+                    }
                 });
-            }
+            });
 
             app.UseMiddleware<SerilogMiddleware>();
 
@@ -109,12 +109,10 @@ namespace Dash
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddConfiguration();
             var appConfig = new AppConfiguration();
             Configuration.Bind("App", appConfig);
             services.AddSingleton(appConfig);
 
-            //services.AddSingleton<IAppConfiguration>((IAppConfiguration)Configuration.GetSection("AppConfig"));
             services.AddAuthentication(x => {
                 x.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             }).AddCookie(x => {

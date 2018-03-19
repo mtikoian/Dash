@@ -302,15 +302,6 @@ namespace Dash
         }
 
         /// <summary>
-        /// Manually log an exception.
-        /// </summary>
-        /// <param name="ex">Exception to log.</param>
-        public static void Log(this Exception ex)
-        {
-            Serilog.Log.Error(ex, ex.Message);
-        }
-
-        /// <summary>
         /// Add a value to a dictionary, overwriting if it exists. This method lets me add to dictionary in a chainable way.
         /// </summary>
         /// <typeparam name="TKey">Type of the key for the item.</typeparam>

@@ -1,21 +1,18 @@
-﻿using Microsoft.AspNetCore.Http;
-using Serilog;
-using Serilog.Events;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Serilog;
+using Serilog.Events;
+
 namespace Dash
 {
-    class SerilogMiddleware
+    internal class SerilogMiddleware
     {
-        const string MessageTemplate =
-            "HTTP {RequestMethod} {RequestPath} responded {StatusCode} in {Elapsed:0.0000} ms";
-
-        static readonly ILogger Log = Serilog.Log.ForContext<SerilogMiddleware>();
-
-        readonly RequestDelegate _next;
+        private const string MessageTemplate = "HTTP {RequestMethod} {RequestPath} responded {StatusCode} in {Elapsed:0.0000} ms";
+        private static readonly ILogger Log = Serilog.Log.ForContext<SerilogMiddleware>();
+        private readonly RequestDelegate _next;
 
         public SerilogMiddleware(RequestDelegate next)
         {
@@ -35,7 +32,6 @@ namespace Dash
 
                 var statusCode = httpContext.Response?.StatusCode;
                 var level = statusCode > 499 ? LogEventLevel.Error : LogEventLevel.Information;
-
                 var log = level == LogEventLevel.Error ? LogForErrorContext(httpContext) : Log;
                 log.Write(level, MessageTemplate, httpContext.Request.Method, httpContext.Request.Path, statusCode, sw.Elapsed.TotalMilliseconds);
             }
@@ -43,28 +39,23 @@ namespace Dash
             catch (Exception ex) when (LogException(httpContext, sw, ex)) { }
         }
 
-        static bool LogException(HttpContext httpContext, Stopwatch sw, Exception ex)
+        private static bool LogException(HttpContext httpContext, Stopwatch sw, Exception ex)
         {
             sw.Stop();
-
             LogForErrorContext(httpContext)
                 .Error(ex, MessageTemplate, httpContext.Request.Method, httpContext.Request.Path, 500, sw.Elapsed.TotalMilliseconds);
-
             return false;
         }
 
-        static ILogger LogForErrorContext(HttpContext httpContext)
+        private static ILogger LogForErrorContext(HttpContext httpContext)
         {
             var request = httpContext.Request;
-
             var result = Log
                 .ForContext("RequestHeaders", request.Headers.ToDictionary(h => h.Key, h => h.Value.ToString()), destructureObjects: true)
                 .ForContext("RequestHost", request.Host)
                 .ForContext("RequestProtocol", request.Protocol);
-
             if (request.HasFormContentType)
                 result = result.ForContext("RequestForm", request.Form.ToDictionary(v => v.Key, v => v.Value.ToString()));
-
             return result;
         }
     }

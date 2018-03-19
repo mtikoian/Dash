@@ -1,26 +1,32 @@
 ﻿using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
 using Serilog;
 
 namespace Dash
 {
     public class Program
     {
-        public static IWebHost BuildWebHost(string[] args) =>
+        public static void Main(string[] args)
+        {
             WebHost.CreateDefaultBuilder(args)
-                .ConfigureLogging((hostingContext, logging) => {
-                    logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
-                    logging.AddConsole();
-                    logging.AddDebug();
+                .ConfigureAppConfiguration((hostingContext, config) => {
+                    var env = hostingContext.HostingEnvironment;
+                    config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+                    config.AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
+                    config.AddEnvironmentVariables();
+
+                    // @todo Add more enrichers, including a exception stack trace
+                    Log.Logger = new LoggerConfiguration()
+                        .ReadFrom.Configuration(config.Build())
+                        .Enrich.FromLogContext()
+                        .CreateLogger();
                 })
                 .UseStartup<Startup>()
                 .UseSerilog()
-                .Build();
-
-        public static void Main(string[] args)
-        {
-            BuildWebHost(args).Run();
+                .Build()
+                .Run();
         }
     }
 }

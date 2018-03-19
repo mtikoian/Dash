@@ -31,7 +31,7 @@ namespace Dash.Controllers
         /// <param name="message"></param>
         public void LogJavascriptError(string message)
         {
-            new JavaScriptException(message).Log();
+            Serilog.Log.Error(new JavaScriptException(message), "Javascript Exception");
         }
     }
 
