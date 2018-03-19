@@ -1,13 +1,9 @@
-using Dash.Configuration;
-using Dash.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Threading;
+using Dash.Configuration;
+using Dash.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Dash.Controllers
 {
@@ -58,9 +54,9 @@ namespace Dash.Controllers
         /// </summary>
         /// <param name="error">Error message</param>
         /// <returns>Returns object with error message.</returns>
-        public JsonResult JsonError(string error)
+        public IActionResult JsonError(string error)
         {
-            return Json(new { error });
+            return Ok(new { error });
         }
 
         /// <summary>
@@ -68,9 +64,9 @@ namespace Dash.Controllers
         /// </summary>
         /// <param name="rows">List of data to return.</param>
         /// <returns>Returns object with row data.</returns>
-        public JsonResult JsonRows(IEnumerable<object> rows)
+        public IActionResult JsonRows(IEnumerable<object> rows)
         {
-            return Json(new { Rows = rows });
+            return Ok(new { Rows = rows });
         }
 
         /// <summary>
@@ -78,13 +74,13 @@ namespace Dash.Controllers
         /// </summary>
         /// <param name="message">Success message to return.</param>
         /// <returns>Returns object with message=message or result=true.</returns>
-        public JsonResult JsonSuccess(string message = "")
+        public IActionResult JsonSuccess(string message = "")
         {
             if (message.IsEmpty())
             {
-                return Json(new { result = true });
+                return Ok(new { result = true });
             }
-            return Json(new { message });
+            return Ok(new { message });
         }
 
         /// <summary>

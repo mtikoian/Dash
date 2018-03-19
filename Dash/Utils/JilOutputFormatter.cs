@@ -10,12 +10,12 @@ namespace Dash
     public class JilOutputFormatter : TextOutputFormatter
     {
         public static Options Options = new Options(false, true, false, DateTimeFormat.ISO8601, true, UnspecifiedDateTimeKindBehavior.IsLocal, SerializationNameFormat.CamelCase);
-        private static readonly Encoding DefaultEncoding = Encoding.UTF8;
 
         public JilOutputFormatter()
         {
-            SupportedMediaTypes.Add(MediaTypeHeaderValue.Parse("application/json"));
-            SupportedEncodings.Add(DefaultEncoding);
+            SupportedEncodings.Add(Encoding.UTF8);
+            SupportedEncodings.Add(Encoding.Unicode);
+            SupportedMediaTypes.Add(MediaTypeHeaderValue.Parse("application/jil"));
         }
 
         public override Task WriteResponseBodyAsync(OutputFormatterWriteContext context, Encoding selectedEncoding)

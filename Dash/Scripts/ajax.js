@@ -12,12 +12,15 @@
      */
     var _ajax = function(options, onSuccess, onError) {
         options.deserialize = _deserialize;
-        options.config = function(xhr, args) {
+        options.headers = {
+            'Content-Type': 'application/jil; charset=utf-8',
+            'X-Requested-With': 'XMLHttpRequest'
+        };
+        if (options.token) {
+            options.headers['X-XSRF-Token'] = options.token;
+        }
+        options.config = function(xhr) {
             xhr.timeout = 60000;
-            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-            if (args && args.token) {
-                xhr.setRequestHeader('X-XSRF-Token', args.token);
-            }
         };
 
         var canBlock = $.coalesce(options.block, true);
