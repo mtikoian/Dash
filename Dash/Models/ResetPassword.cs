@@ -52,7 +52,7 @@ namespace Dash.Models
             }
             catch (Exception ex)
             {
-                ex.Log();
+                Serilog.Log.Error(ex, ex.Message);
                 error = Account.ErrorSavingPassword;
             }
             return false;

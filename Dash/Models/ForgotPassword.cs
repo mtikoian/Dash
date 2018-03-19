@@ -59,7 +59,7 @@ namespace Dash.Models
             }
             catch (Exception ex)
             {
-                ex.Log();
+                Serilog.Log.Error(ex, ex.Message);
                 error = Account.ErrorSendingEmail;
             }
             return false;
