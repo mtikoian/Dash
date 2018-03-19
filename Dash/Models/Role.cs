@@ -1,9 +1,8 @@
-﻿using Jil;
-using Dash.I18n;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using Jil;
 
 namespace Dash.Models
 {
@@ -28,6 +27,7 @@ namespace Dash.Models
         {
             get { return _AllUsers ?? (_AllUsers = DbContext.GetAll<User>().ToList()); }
         }
+
         /// <summary>
         /// Make a keyed list of all permissions.
         /// </summary>
@@ -78,17 +78,6 @@ namespace Dash.Models
         }
 
         /// <summary>
-        /// Make sure no other roles have the same name.
-        /// </summary>
-        /// <param name="name">Name to check for.</param>
-        /// <param name="id">ID of current role.</param>
-        /// <returns>True</returns>
-        public bool IsUniqueName(string name, int id)
-        {
-            return !DbContext.GetAll<Role>(new { Name = name }).Any(x => x.Id != id);
-        }
-
-        /// <summary>
         /// Copy a role.
         /// </summary>
         /// <param name="name">New role name.</param>
@@ -100,6 +89,17 @@ namespace Dash.Models
             newRole.RolePermission = (RolePermission ?? DbContext.GetAll<RolePermission>(new { RoleId = Id }))?.Select(x => new RolePermission { PermissionId = x.PermissionId }).ToList();
             newRole.UserRole = (UserRole ?? DbContext.GetAll<UserRole>(new { RoleId = Id }))?.Select(x => new UserRole { UserId = x.UserId }).ToList();
             return newRole;
+        }
+
+        /// <summary>
+        /// Make sure no other roles have the same name.
+        /// </summary>
+        /// <param name="name">Name to check for.</param>
+        /// <param name="id">ID of current role.</param>
+        /// <returns>True</returns>
+        public bool IsUniqueName(string name, int id)
+        {
+            return !DbContext.GetAll<Role>(new { Name = name }).Any(x => x.Id != id);
         }
 
         /// <summary>
