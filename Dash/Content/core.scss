@@ -1,6 +1,10 @@
 @import "bootstrap/functions";
 @import "bootstrap/variables";
 
+.btn-secondary, .btn-secondary:hover, .btn-warning, .btn-warning:hover {
+    color: #fff;
+}
+
 .tab-nav-content {
     border-bottom: 1px solid #ddd;
 }
