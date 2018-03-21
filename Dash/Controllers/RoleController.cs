@@ -124,7 +124,7 @@ namespace Dash.Controllers
         /// Return the role list for table to display.
         /// </summary>
         /// <returns>Array of role objects.</returns>
-        [HttpGet, AjaxRequestOnly, ParentAction("Index")]
+        [HttpGet, AjaxRequestOnly]
         public IActionResult List()
         {
             return JsonRows(DbContext.GetAll<Role>());

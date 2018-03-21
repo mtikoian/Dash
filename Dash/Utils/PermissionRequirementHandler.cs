@@ -14,17 +14,6 @@ namespace Dash.Utils
         {
             var mvcContext = context.Resource as AuthorizationFilterContext;
             var requiredClaim = $"{mvcContext.RouteData.Values["Controller"]}.{mvcContext.RouteData.Values["Action"]}".ToLower();
-            var controllerActionDescriptor = mvcContext.ActionDescriptor as ControllerActionDescriptor;
-            if (controllerActionDescriptor != null)
-            {
-                var actionAttributes = controllerActionDescriptor.MethodInfo.GetCustomAttributes(inherit: true).Cast<Attribute>();
-                var parentAction = actionAttributes.FirstOrDefault(x => x.GetType() == typeof(ParentActionAttribute));
-                if (parentAction != null)
-                {
-                    requiredClaim = $"{mvcContext.RouteData.Values["Controller"]}.{((ParentActionAttribute)parentAction).ActionName}".ToLower();
-                }
-            }
-
             if (context.User.HasClaim(x => x.Type == ClaimTypes.Role && x.Value.ToLower() == requiredClaim))
             {
                 context.Succeed(requirement);

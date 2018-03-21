@@ -112,7 +112,7 @@ namespace Dash.Controllers
         /// Return an object with translations and other data needed to view the dashboard.
         /// </summary>
         /// <returns>Options object for viewing the dashboard.</returns>
-        [HttpGet, ParentAction("Index")]
+        [HttpGet]
         public IActionResult IndexOptions()
         {
             return Json(new WidgetList(DbContext, _ActionContextAccessor, User.UserId()).Widgets);
@@ -149,7 +149,7 @@ namespace Dash.Controllers
         /// </summary>
         /// <param name="id">Widget Id</param>
         /// <returns>Return JSON options for the widget.</returns>
-        [HttpGet, ParentAction("Index"), AjaxRequestOnly]
+        [HttpGet, AjaxRequestOnly]
         public IActionResult WidgetOptions(int id)
         {
             var model = DbContext.Get<Widget>(id);

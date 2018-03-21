@@ -109,7 +109,7 @@ namespace Dash.Controllers
         /// Return the user list for table to display.
         /// </summary>
         /// <returns>JSON array of user objects.</returns>
-        [HttpGet, AjaxRequestOnly, ParentAction("Index")]
+        [HttpGet, AjaxRequestOnly]
         public IActionResult List()
         {
             return JsonRows(DbContext.GetAll<User>());

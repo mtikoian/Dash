@@ -163,7 +163,7 @@ namespace Dash.Controllers
         /// </summary>
         /// <param name="id">Report ID</param>
         /// <returns>Options object for viewing the report, or an error message.</returns>
-        [HttpGet, ParentAction("Details"), AjaxRequestOnly]
+        [HttpGet, AjaxRequestOnly]
         public IActionResult DetailsOptions(int id)
         {
             var model = DbContext.Get<Report>(id);
@@ -266,7 +266,7 @@ namespace Dash.Controllers
         /// Return the report list for table to display.
         /// </summary>
         /// <returns>Array of report objects.</returns>
-        [HttpGet, ParentAction("Index"), AjaxRequestOnly]
+        [HttpGet, AjaxRequestOnly]
         public IActionResult List()
         {
             return JsonRows(DbContext.GetAll<Report>(new { UserId = User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt() }));
@@ -351,7 +351,7 @@ namespace Dash.Controllers
         /// </summary>
         /// <param name="id">Report ID</param>
         /// <returns>Form to select and order columns.</returns>
-        [HttpGet, ParentAction("Create"), AjaxRequestOnly]
+        [HttpGet, AjaxRequestOnly]
         public IActionResult SelectColumns(int id, bool closeParent = true)
         {
             var model = DbContext.Get<Report>(id);
@@ -377,7 +377,7 @@ namespace Dash.Controllers
         /// </summary>
         /// <param name="id">Report object</param>
         /// <returns>Success or error message.</returns>
-        [HttpPut, ParentAction("Create"), AjaxRequestOnly]
+        [HttpPut, AjaxRequestOnly]
         public IActionResult SelectColumns(int id, List<ReportColumn> columns, bool closeParent = true)
         {
             var model = DbContext.Get<Report>(id);

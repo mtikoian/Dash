@@ -112,7 +112,7 @@ namespace Dash.Controllers
         /// Return the database list for table to display.
         /// </summary>
         /// <returns>Array of database objects.</returns>
-        [HttpGet, AjaxRequestOnly, ParentAction("Index")]
+        [HttpGet, AjaxRequestOnly]
         public IActionResult List()
         {
             return JsonRows(DbContext.GetAll<Database>());

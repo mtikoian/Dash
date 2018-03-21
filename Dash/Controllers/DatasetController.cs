@@ -28,7 +28,7 @@ namespace Dash.Controllers
         /// <param name="id">ID of dataset to get tables for</param>
         /// <param name="table">Table name to get columns for</param>
         /// <returns>List of columns.</returns>
-        [HttpGet, AjaxRequestOnly, ParentAction("Create")]
+        [HttpGet, AjaxRequestOnly]
         public IActionResult Columns(int id, string tables)
         {
             return Json(new { columns = DbContext.Get<Dataset>(id)?.AvailableColumns(tables.Split(',')) ?? new List<object>() });
@@ -122,7 +122,7 @@ namespace Dash.Controllers
         /// </summary>
         /// <param name="id">Dataset ID</param>
         /// <returns>Object with all the options for the dataset form.</returns>
-        [HttpGet, AjaxRequestOnly, ParentAction("Edit")]
+        [HttpGet, AjaxRequestOnly]
         public IActionResult FormOptions(int? id)
         {
             var model = id.HasPositiveValue() ? DbContext.Get<Dataset>(id.Value) : null;
@@ -161,7 +161,7 @@ namespace Dash.Controllers
         /// Return the dataset list for table to display.
         /// </summary>
         /// <returns>Array of dataset objects.</returns>
-        [HttpGet, AjaxRequestOnly, ParentAction("Index")]
+        [HttpGet, AjaxRequestOnly]
         public IActionResult List()
         {
             return JsonRows(DbContext.GetAll<Dataset>().Select(x => new { x.Id, x.Name, x.DatabaseName, x.DatabaseHost, x.PrimarySource, x.DatabaseId }));
@@ -184,7 +184,7 @@ namespace Dash.Controllers
         /// </summary>
         /// <param name="id">ID of database to get tables/procs for</param>
         /// <returns>List of tables or procs.</returns>
-        [HttpGet, AjaxRequestOnly, ParentAction("Create")]
+        [HttpGet, AjaxRequestOnly]
         public IActionResult Sources(int databaseId, int typeId)
         {
             return Json(DbContext.Get<Database>(databaseId)?.GetSourceList(AppConfig, true, typeId == (int)DatasetTypes.Proc));
@@ -196,7 +196,7 @@ namespace Dash.Controllers
         /// <param name="id">ID of dataset to get tables for</param>
         /// <param name="table">Table name to get columns for</param>
         /// <returns>List of columns.</returns>
-        [HttpPost, AjaxRequestOnly, ParentAction("Create")]
+        [HttpPost, AjaxRequestOnly]
         public IActionResult TableColumns(int databaseId, List<string> tables)
         {
             // find table list

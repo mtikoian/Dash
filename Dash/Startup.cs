@@ -156,7 +156,7 @@ namespace Dash
             var actionList = Assembly.GetExecutingAssembly().GetTypes()
                 .Where(x => typeof(Controller).IsAssignableFrom(x)) //filter controllers
                 .SelectMany(x => x.GetMethods())
-                .Where(x => x.IsPublic && !x.IsDefined(typeof(NonActionAttribute)) && !x.IsDefined(typeof(ParentActionAttribute))
+                .Where(x => x.IsPublic && !x.IsDefined(typeof(NonActionAttribute))
                      && (x.IsDefined(typeof(AuthorizeAttribute)) || (x.DeclaringType.IsDefined(typeof(AuthorizeAttribute)) && !x.IsDefined(typeof(AllowAnonymousAttribute)))))
                 .Select(x => $"{x.DeclaringType.FullName.Split('.').Last().Replace("Controller", "")}.{x.Name}")
                 .Distinct()

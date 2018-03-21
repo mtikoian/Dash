@@ -49,9 +49,10 @@ namespace Dash.Controllers
         /// <param name="id">ID of chart to display.</param>
         /// <param name="chartTypeId">New chart type.</param>
         /// <returns>Success or error message.</returns>
-        [HttpPost, ParentAction("ChangeType"), AjaxRequestOnly]
-        public IActionResult ChangeTypeSave(int id, int chartTypeId)
+        [HttpPost, AjaxRequestOnly]
+        public IActionResult ChangeType(int id, int chartTypeId)
         {
+            // @todo test that this still works, changed named from ChangeTypeSave to ChangeType
             var model = DbContext.Get<Chart>(id);
             if (model == null)
             {
@@ -108,9 +109,10 @@ namespace Dash.Controllers
         /// </summary>
         /// <param name="model">CreateChart object</param>
         /// <returns>Redirects to index.</returns>
-        [HttpPost, ParentAction("Create"), AjaxRequestOnly]
-        public IActionResult CreateChart(CreateChart model)
+        [HttpPost, AjaxRequestOnly]
+        public IActionResult Create(CreateChart model)
         {
+            // @todo test this, changed name from CreateChart to Create
             if (!ModelState.IsValid)
             {
                 return JsonError(ModelState.ToErrorString());
@@ -199,7 +201,7 @@ namespace Dash.Controllers
         /// <param name="id">Chart ID</param>
         /// <param name="model">Chart object</param>
         /// <returns>Options object for viewing the chart, or an error message.</returns>
-        [HttpGet, ParentAction("Details"), AjaxRequestOnly]
+        [HttpGet, AjaxRequestOnly]
         public IActionResult DetailsOptions(int id)
         {
             var model = DbContext.Get<Chart>(id);
@@ -281,7 +283,7 @@ namespace Dash.Controllers
         /// Return the chart list for table to display.
         /// </summary>
         /// <returns>Array of chart objects.</returns>
-        [HttpGet, ParentAction("Index"), AjaxRequestOnly]
+        [HttpGet, AjaxRequestOnly]
         public IActionResult List()
         {
             return JsonRows(DbContext.GetAll<Chart>(new { UserId = User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt() }));
