@@ -2,15 +2,13 @@
 using Dash.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace Dash.Controllers
 {
     [Authorize]
     public class ResxController : BaseController
     {
-        public ResxController(IDbContext dbContext, IMemoryCache cache, AppConfiguration appConfig) :
-            base(dbContext, cache, appConfig)
+        public ResxController(IDbContext dbContext, AppConfiguration appConfig) : base(dbContext, appConfig)
         {
         }
 

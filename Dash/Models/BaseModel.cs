@@ -14,10 +14,9 @@ namespace Dash.Models
         {
         }
 
-        public BaseModel(IDbContext dbContext, IMemoryCache cache, IAppConfiguration appConfig)
+        public BaseModel(IDbContext dbContext, IAppConfiguration appConfig)
         {
             DbContext = dbContext;
-            Cache = cache;
             AppConfig = appConfig;
         }
 

@@ -9,15 +9,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 
 namespace Dash.Controllers
 {
     public class AccountController : BaseController
     {
-        public AccountController(IDbContext dbContext, IMemoryCache cache, AppConfiguration appConfig) :
-            base(dbContext, cache, appConfig)
+        public AccountController(IDbContext dbContext, AppConfiguration appConfig) : base(dbContext, appConfig)
         {
         }
 

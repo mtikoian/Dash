@@ -1,9 +1,7 @@
-using System;
 using System.Collections.Generic;
 using Dash.Configuration;
 using Dash.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace Dash.Controllers
 {
@@ -13,41 +11,16 @@ namespace Dash.Controllers
         /// Controller constructor.
         /// </summary>
         /// <param name="dbContext">Database context.</param>
-        /// <param name="cache">App memory cache.</param>
         /// <param name="appConfig">App settings.</param>
-        public BaseController(IDbContext dbContext, IMemoryCache cache, AppConfiguration appConfig)
+        public BaseController(IDbContext dbContext, AppConfiguration appConfig)
         {
             DbContext = dbContext;
-            Cache = cache;
             AppConfig = appConfig;
         }
 
         protected IAppConfiguration AppConfig { get; set; }
-        protected IMemoryCache Cache { get; set; }
         protected IDbContext DbContext { get; set; }
         protected int ID { get; set; }
-
-        /// <summary>
-        /// Gets an object from the cache. Cache persists for the lifetime of the app pool.
-        /// </summary>
-        /// <typeparam name="T">Type of the object.</typeparam>
-        /// <param name="key">Unique key to identify the object.</param>
-        /// <param name="onCreate">If object doesn't exist in cache, use return value from this function to create the object.</param>
-        /// <returns>Returns the matched object.</returns>
-        public T Cached<T>(string key, Func<T> onCreate) where T : class
-        {
-            if (Cache == null)
-            {
-                return onCreate();
-            }
-
-            if (!Cache.TryGetValue<T>(key, out T result))
-            {
-                result = onCreate();
-                Cache.Set(key, result);
-            }
-            return result;
-        }
 
         /// <summary>
         /// Return a json error.

@@ -3,11 +3,9 @@ using System.Linq;
 using Dash.Configuration;
 using Dash.I18n;
 using Dash.Models;
-using Dash.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace Dash.Controllers
 {
@@ -19,8 +17,7 @@ namespace Dash.Controllers
     {
         private IActionContextAccessor _ActionContextAccessor;
 
-        public DashboardController(IDbContext dbContext, IMemoryCache cache, AppConfiguration appConfig, IActionContextAccessor actionContextAccessor) :
-                    base(dbContext, cache, appConfig)
+        public DashboardController(IDbContext dbContext, AppConfiguration appConfig, IActionContextAccessor actionContextAccessor) : base(dbContext, appConfig)
         {
             _ActionContextAccessor = actionContextAccessor;
         }

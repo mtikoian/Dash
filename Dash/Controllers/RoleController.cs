@@ -3,21 +3,15 @@ using System.Collections.Generic;
 using Dash.Configuration;
 using Dash.I18n;
 using Dash.Models;
-using Dash.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace Dash.Controllers
 {
-    /// <summary>
-    /// Handles CRUD for authorization roles.
-    /// </summary>
     [Authorize(Policy = "HasPermission")]
     public class RoleController : BaseController
     {
-        public RoleController(IDbContext dbContext, IMemoryCache cache, AppConfiguration appConfig) :
-            base(dbContext, cache, appConfig)
+        public RoleController(IDbContext dbContext, AppConfiguration appConfig) : base(dbContext, appConfig)
         {
         }
 
