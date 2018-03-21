@@ -370,7 +370,7 @@ namespace Dash
         /// <returns>Returns HTML if help is found for the model/field, else returns an empty string.</returns>
         public static IHtmlContent Help<TModel>(this IHtmlHelper<TModel> helper, string modelName, string fieldName, bool useInputGroup = true, bool rightPad = false)
         {
-            if (!helper.ViewContext.HttpContext.Session.GetString("ContextHelp").ToBool())
+            if (!helper.ViewContext.HttpContext.WantsHelp())
             {
                 return HtmlString.Empty;
             }
