@@ -336,4 +336,7 @@
   <data name="Select" xml:space="preserve">
     <value>Select</value>
   </data>
+  <data name="ErrorGeneric" xml:space="preserve">
+    <value>An unhandled error occurred.</value>
+  </data>
 </root>

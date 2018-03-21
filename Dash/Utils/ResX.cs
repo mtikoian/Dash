@@ -60,7 +60,9 @@ namespace Dash
                 { "help", Core.Help },
                 { "confirm", Core.Confirm },
                 { "discardChanges", Core.DiscardChanges },
-                { "errorNameRequired", Core.ErrorNameRequired }
+                { "errorNameRequired", Core.ErrorNameRequired },
+                { "errorAuthorization", Core.ErrorAuthorization },
+                { "errorGeneric", Core.ErrorGeneric }
             };
 
             if (user.IsInRole("dashboard.index") || user.IsInRole("chart.index"))

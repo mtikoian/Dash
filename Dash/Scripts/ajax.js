@@ -11,9 +11,9 @@
      * @param {Function} onError - Function to handle error result.
      */
     var _ajax = function(options, onSuccess, onError) {
-        options.deserialize = _deserialize;
         options.headers = {
             'Content-Type': 'application/jil; charset=utf-8',
+            'Accept': 'application/jil',
             'X-Requested-With': 'XMLHttpRequest'
         };
         if (options.token) {
@@ -21,6 +21,9 @@
         }
         options.config = function(xhr) {
             xhr.timeout = 60000;
+        };
+        options.extract = function(xhr) {
+            return { status: xhr.status, data: _deserialize(xhr.responseText) };
         };
 
         var canBlock = $.coalesce(options.block, true);
@@ -31,41 +34,45 @@
         // keep IE from caching requests by tacking milliseconds to end of url
         options.url += (options.url.indexOf('?') > -1 ? '&' : '?') + '_t=' + Date.now();
 
-        m.request(options).then(function(data) {
-            if (data.reload) {
+        m.request(options).then(function(response) {
+            if (response.data.reload) {
                 location.reload();
                 return;
             }
-            if (data.error) {
+            if (response.data.error) {
                 if (canBlock) {
                     unblock();
                 }
                 if ($.isFunction(onError)) {
-                    onError(data);
+                    onError(response.data);
                 }
-                Alertify.error(data.error);
+                Alertify.error(response.data.error);
             } else {
                 if (canBlock) {
                     unblock();
                 }
                 if ($.isFunction(onSuccess)) {
-                    onSuccess(data);
+                    onSuccess(response.data);
                 }
-                if (data.message) {
-                    Alertify.success(data.message);
+                if (response.data.message) {
+                    Alertify.success(response.data.message);
                 }
             }
-        }).catch(function(e) {
+        }).catch(function(response) {
             if (canBlock) {
                 unblock();
             }
             if (options.url.indexOf('LogJavascriptError') > -1) {
                 return;
             }
-            logError(e);
-            Alertify.error('An unhandled error occurred.');
+            logError(response.data);
+            if ([400, 401, 402, 403].indexOf(response.status) > -1) {
+                Alertify.error(($.resx && $.resx('errorAuthorization')) || 'You do not have permission to access the requested resource.');
+            } else {
+                Alertify.error(($.resx && $.resx('errorGeneric')) || 'An unhandled error occurred.');
+            }
             if ($.isFunction(onError)) {
-                onError(e);
+                onError(response.data);
             }
         });
     };
