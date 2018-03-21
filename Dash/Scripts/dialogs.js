@@ -43,7 +43,7 @@
      * Store list of open dialogs.
      */
     var _dialogs = [];
-    
+
     /**
      * Find a dialog in the internal list by ID.
      * @param {number} id - Dialog ID
@@ -65,7 +65,7 @@
         }
         return findDialogById(Math.max.apply(Math, _dialogs.map(function(x) { return x.getId(); })));
     };
-    
+
     /**
      * Get active dialog content.
      * @param {Object} Return content node of currently open dialog object.
@@ -81,7 +81,7 @@
     var hasOpenDialog = function() {
         return _dialogs.length > 0;
     };
-    
+
     /**
      * Remove a dialog from internal list.
      * @param {number} id - Dialog ID
@@ -152,7 +152,7 @@
         $.ajax({
             method: method || 'GET',
             url: url,
-            data: promptValue ? { prompt: promptValue } : null
+            data: promptValue ? { Prompt: promptValue } : null
         }, function(responseData) {
             if (!responseData.content) {
                 refreshTable();
@@ -204,7 +204,7 @@
             parent: activeDlg ? activeDlg.getId() : null
         }));
     };
-    
+
     /**
      * Check that a prompt value was supplied.
      * @param {string} url - URL to send request for.
