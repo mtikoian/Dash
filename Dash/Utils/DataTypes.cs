@@ -425,7 +425,7 @@ namespace Dash
         /// <returns>Bool value</returns>
         public static bool ToBool(this string val)
         {
-            return val != null && (val == "1" || val == "true");
+            return val != null && (val == "1" || val.ToLower() == "true");
         }
 
         /// <summary>
