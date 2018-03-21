@@ -674,6 +674,11 @@ namespace Dash
             return claimsPrincipal?.Claims.First(x => x.Type == ClaimTypes.PrimarySid)?.Value.ToInt() ?? 0;
         }
 
+        public static bool WantsHelp(this HttpContext httpContext)
+        {
+            return httpContext.Session.GetString("ContextHelp").ToBool();
+        }
+
         /// <summary>
         /// Get the week of the year for a date.
         /// </summary>
