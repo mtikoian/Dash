@@ -18,6 +18,21 @@
     };
 
     /**
+     * Convert a value for a field to the correct data type.
+     * @param {Node} field - Input that we are converting value for.
+     * @param {string} val - Value to convert.
+     * @returns {string|number|bool} Returns correctly casted value.
+     */
+    var tryGetValue = function(field, val) {
+        if (field.name.substring(0, 2) === 'Is' && (field.value === 'true' || field.value === 'false')) {
+            return field.value.toLowerCase() === 'true';
+        } else if (!($.isNull(val) || val.length == 0 || isNaN(val))) {
+            return parseInt(val);
+        }
+        return val;
+    };
+
+    /**
      * Declare Dialog class.
      * @param {Object} opts - Dialog settings
      */
@@ -277,23 +292,23 @@
                         data[field.name] = Array.apply(null, form.elements[i].options).filter(function(x) {
                             return x.selected;
                         }).map(function(x) {
-                            return x.value;
+                            return tryGetValue(field, x.value);
                         });
                     } else if (field.type === 'checkbox') {
                         if (field.checked) {
-                            if (data.hasOwnProperty(field.name)) {
+                            if (data.hasOwnProperty(field.name) || $.hasClass(field, 'custom-control-input-multiple')) {
                                 if (!$.isArray(data[field.name])) {
-                                    data[field.name] = data[field.name] === false ? [] : [data[field.name]];
+                                    data[field.name] = $.isNull(data[field.name]) || data[field.name] === false ? [] : [data[field.name]];
                                 }
-                                data[field.name].push(field.value);
+                                data[field.name].push(tryGetValue(field, field.value));
                             } else {
-                                data[field.name] = field.value;
+                                data[field.name] = tryGetValue(field, field.value);
                             }
                         } else if (!data.hasOwnProperty(field.name)) {
                             data[field.name] = $.hasClass(field, 'custom-control-input-multiple') ? [] : false;
                         }
                     } else if (field.type !== 'radio' || field.checked) {
-                        data[field.name] = field.value;
+                        data[field.name] = tryGetValue(field, field.value);
                     }
                 }
             }
