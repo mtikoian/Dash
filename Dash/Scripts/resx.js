@@ -14,7 +14,7 @@
      * Get/set i18n resource strings.
      * @param {string|Object} key - Key of the resource to get/set, or an object of resource strings.
      * @param {string} value - Set key to this value if provided
-     * @returns {string} Returns the value of key if value is not defined.
+     * @returns {string} Returns the value of key, or null if key is not defined.
      */
     var resx = function(key, value) {
         if (!$.isString(key)) {
@@ -26,33 +26,11 @@
                 // @todo remove once i'm done migrating to the new translation set up
                 console.log('Couldn\'t find translation for key `' + key + '`.');
                 console.trace();
-                // lets try to make the key into something cleaner
-                var result = key.split('.');
-                return separateWords(capitalizeFirstLetter(result[result.length - 1])).trim();
+                return null;
             }
         } else {
             _resx[key] = value;
         }
-    };
-
-    /**
-     * Capitalize the first letter of a string.
-     * @param {string} value - String to capitalize.
-     * @returns {string} Capitalized string.
-     */
-    var capitalizeFirstLetter = function(value) {
-        return value.charAt(0).toUpperCase() + value.slice(1);
-    };
-
-    /**
-     * Split a camelcase string into words.
-     * @param {string} value - Strint to convert to words.
-     * @param {Object} options - Options object with split/separator properties.
-     * @returns {string} String split into words.
-     */
-    var separateWords = function(value, options) {
-        options = options || {};
-        return value.split(options.split || /(?=[A-Z])/).join(options.separator || ' ');
     };
 
     /**
