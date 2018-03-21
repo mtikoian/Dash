@@ -40,8 +40,8 @@ namespace Dash
             app.UseDnsPrefetch(allow: false);
             // Prevent clickjacking, by not allowing your site to be rendered in an iframe
             app.UseFrameGuard(new FrameGuardOptions(FrameGuardOptions.FrameGuard.SAMEORIGIN));
-            // Tell browsers to always use https for the next 5000 seconds
-            app.UseHsts(maxAge: 5000, includeSubDomains: true, preload: false);
+            // Tell browsers to always use https for the next 15 minutes
+            app.UseHsts(maxAge: 900, includeSubDomains: true, preload: false);
             // Do not include the referrer header when linking away from your site to protect your users privacy
             app.UseReferrerPolicy(ReferrerPolicy.NoReferrer);
             // Don't allow old ie to open files in the context of your site
