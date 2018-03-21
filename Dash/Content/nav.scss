@@ -3,7 +3,7 @@
 
 #menuBtn {
     cursor: pointer;
-    color: $success;
+    color: $info;
 
     a {
         padding-left: .3rem;
@@ -34,7 +34,7 @@
             &:hover {
                 color: #fff;
                 background: rgba(255,255,255,0.2);
-                border-left: $success 2px solid;
+                border-left: $info 2px solid;
             }
 
             &:active, &:focus {

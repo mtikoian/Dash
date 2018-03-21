@@ -39,7 +39,7 @@ $colors: () !default;
 $colors: map-merge(( "blue": $blue, "indigo": $indigo, "purple": $purple, "pink": $pink, "red": $red, "orange": $orange, "yellow": $yellow, "green": $green, "teal": $teal, "cyan": $cyan, "white": $white, "gray": $gray-600, "gray-dark": $gray-800 ), $colors);
 
 $primary: $blue !default;
-$secondary: $gray-600 !default;
+$secondary: $gray-400 !default;
 $success: $green !default;
 $info: $cyan !default;
 $warning: $yellow !default;
@@ -119,7 +119,7 @@ $paragraph-margin-bottom: 1rem !default;
 // Define the minimum dimensions at which your layout will change,
 // adapting to different screen sizes, for use in media queries.
 
-$grid-breakpoints: ( xs: 0, sm: 576px, md: 768px, lg: 992px, xl: 1200px ) !default;
+$grid-breakpoints: ( xs: 0 ) !default;
 
 @include _assert-ascending($grid-breakpoints, "$grid-breakpoints");
 @include _assert-starts-at-zero($grid-breakpoints);

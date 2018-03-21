@@ -1,123 +1,120 @@
 ﻿@mixin box-sizing($box-model) {
-  -webkit-box-sizing: $box-model; // Safari <= 5
-     -moz-box-sizing: $box-model; // Firefox <= 19
-          box-sizing: $box-model;
+    -webkit-box-sizing: $box-model; // Safari <= 5
+    -moz-box-sizing: $box-model; // Firefox <= 19
+    box-sizing: $box-model;
 }
 
 .dash-table {
     i.dash-search {
         padding-top: .6rem;
     }
-}
 
-.table-scrollable {
-    display: block;
-    position: relative;
-    @include box-sizing(border-box);
-    overflow: hidden;
-    word-wrap: break-word;
-
-    .odd {
-        background-color: #f9f9f9;
-    }
-
-    .table {
-        td {
-            vertical-align: middle;
-
-            .btn-link {
-                padding-left: 0;
-                padding-right: 0;
-            }
-        }
-    }
-
-    .table-area {
-        height: 100%;
-        overflow: auto;
-
-        table {
-            margin-bottom: 0;
-
-            thead {
-                display: table;
-                position: absolute;
-                top: 0;
-                left: 0;
-                background-color: #eeeeee;
-
-                th {
-                    user-select: none; /* CSS3 (little to no support) */
-                    -ms-user-select: none; /* IE 10+ */
-                    -moz-user-select: none; /* Gecko (Firefox) */
-                    -webkit-user-select: none; /* Webkit (Safari, Chrome) */
-                    border-bottom: none;
-                }
-            }
-
-            &.table-data-table {
-                a.btn, button {
-                    margin-right: .5em;
-                }
-            }
-        }
-    }
-
-    th:last-child, col:last-child {
-        width: auto;
-    }
-
-    table tr {
-        th {
-            padding: 0 .3rem;
-            border-top: none;
-            border-right: 1px gray dotted;
-
-            div {
-                padding: .5rem;
-            }
-        }
-
-        &.table-loading-error {
-            background-color: inherit;
-
-            div {
-                margin: 5px;
-
-                &.table-loading-error-message {
-                    color: #FF0039;
-                }
-            }
-        }
-    }
-
-    th:not(.disabled) div {
-        cursor: pointer;
-    }
-
-    &.table-no-edit table tr th {
-        cursor: default;
-
-        div {
-            cursor: default;
-        }
-    }
-
-    td div {
-        overflow: hidden;
-    }
-
-    .table-splash {
-        position: absolute;
-        left: 0;
-        width: 100%;
+    .table-scrollable {
+        display: block;
+        position: relative;
         @include box-sizing(border-box);
-        display: none;
-        background-color: black;
-        color: white;
-        opacity: .9;
-        padding: 20px;
-        z-index: 9999;
+        overflow: hidden;
+        word-wrap: break-word;
+
+        .table {
+            td {
+                vertical-align: middle;
+
+                .btn-link {
+                    padding-left: 0;
+                    padding-right: 0;
+                    color: black;
+                }
+            }
+        }
+
+        .table-area {
+            height: 100%;
+            overflow: auto;
+
+            table {
+                margin-bottom: 0;
+
+                thead {
+                    display: table;
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    background-color: #eeeeee;
+
+                    th {
+                        user-select: none; /* CSS3 (little to no support) */
+                        -ms-user-select: none; /* IE 10+ */
+                        -moz-user-select: none; /* Gecko (Firefox) */
+                        -webkit-user-select: none; /* Webkit (Safari, Chrome) */
+                        border-bottom: none;
+                    }
+                }
+
+                &.table-data-table {
+                    a.btn, button {
+                        margin-right: .5em;
+                    }
+                }
+            }
+        }
+
+        th:last-child, col:last-child {
+            width: auto;
+        }
+
+        table tr {
+            th {
+                padding: 0 .3rem;
+                border-top: none;
+                border-right: 1px gray dotted;
+
+                div {
+                    padding: .5rem;
+                }
+            }
+
+            &.table-loading-error {
+                background-color: inherit;
+
+                div {
+                    margin: 5px;
+
+                    &.table-loading-error-message {
+                        color: #FF0039;
+                    }
+                }
+            }
+        }
+
+        th:not(.disabled) div {
+            cursor: pointer;
+        }
+
+        &.table-no-edit table tr th {
+            cursor: default;
+
+            div {
+                cursor: default;
+            }
+        }
+
+        td div {
+            overflow: hidden;
+        }
+
+        .table-splash {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            @include box-sizing(border-box);
+            display: none;
+            background-color: black;
+            color: white;
+            opacity: .9;
+            padding: 20px;
+            z-index: 9999;
+        }
     }
 }
 
@@ -134,7 +131,6 @@
         width: 6px;
         display: inline-block;
         margin-left: 5px;
-
         -webkit-animation: sk-stretchdelay 1.2s infinite ease-in-out;
         animation: sk-stretchdelay 1.2s infinite ease-in-out;
     }
@@ -160,8 +156,13 @@
     }
 
     @-webkit-keyframes sk-stretchdelay {
-        0%, 40%, 100% { -webkit-transform: scaleY(0.4) }
-        20% { -webkit-transform: scaleY(1.0) }
+        0%, 40%, 100% {
+            -webkit-transform: scaleY(0.4)
+        }
+
+        20% {
+            -webkit-transform: scaleY(1.0)
+        }
     }
 
     @keyframes sk-stretchdelay {
@@ -169,6 +170,7 @@
             transform: scaleY(0.4);
             -webkit-transform: scaleY(0.4);
         }
+
         20% {
             transform: scaleY(1.0);
             -webkit-transform: scaleY(1.0);
