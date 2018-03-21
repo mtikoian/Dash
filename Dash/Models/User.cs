@@ -1,86 +1,82 @@
-﻿using Dash.I18n;
-using Dash.Utils;
-using Jil;
-using Microsoft.AspNetCore.Http;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
+using Dash.Configuration;
+using Dash.I18n;
+using Dash.Utils;
+using Jil;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace Dash.Models
 {
-    /// <summary>
-    /// User is a single application user. Used for authentication/authorization.
-    /// </summary>
     [HasMany(typeof(UserRole))]
     public class User : BaseModel, IValidatableObject
     {
         private List<Role> _AllRoles;
         private List<UserRole> _UserRole;
 
-        /// <summary>
-        /// Make a keyed list of all roles.
-        /// </summary>
-        /// <returns>Dictionary of roles keyed by roleID.</returns>
+        public User()
+        {
+        }
+
+        public User(IDbContext dbContext)
+        {
+            DbContext = dbContext;
+        }
+
         [JilDirective(true)]
+        [BindNever, ValidateNever]
         public List<Role> AllRoles { get { return _AllRoles ?? (_AllRoles = DbContext.GetAll<Role>().ToList()); } }
 
-        [StringLength(250, MinimumLength = 6, ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorMinMaxLength")]
-        [Display(Name = "ConfirmPassword", ResourceType = typeof(I18n.Users))]
+        [StringLength(250, MinimumLength = 0, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMinMaxLength")]
+        [Display(Name = "ConfirmPassword", ResourceType = typeof(Users))]
         [DataType(System.ComponentModel.DataAnnotations.DataType.Password)]
-        [Ignore, JilDirective(true)]
+        [Ignore]
         public string ConfirmPassword { get; set; }
 
         [Ignore, JilDirective(true)]
         public DateTimeOffset? DateReset { get; set; }
 
-        [Display(Name = "Email", ResourceType = typeof(I18n.Users))]
-        [Required(ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorRequired")]
-        [StringLength(100, ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorMaxLength")]
-        [EmailAddress(ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorEmailAddress")]
-        [DataType(System.ComponentModel.DataAnnotations.DataType.EmailAddress, ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorEmailAddressFormat")]
+        [Display(Name = "Email", ResourceType = typeof(Users))]
+        [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
+        [StringLength(100, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
+        [EmailAddress(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorEmailAddress")]
+        [DataType(System.ComponentModel.DataAnnotations.DataType.EmailAddress, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorEmailAddressFormat")]
         public string Email { get; set; }
 
         [Ignore, JilDirective(true)]
         public string Error { get; set; }
 
-        [Display(Name = "FirstName", ResourceType = typeof(I18n.Users))]
-        [Required(ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorRequired")]
-        [StringLength(100, ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorMaxLength")]
+        [Display(Name = "FirstName", ResourceType = typeof(Users))]
+        [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
+        [StringLength(100, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string FirstName { get; set; }
 
-        /// <summary>
-        /// Get the full name of the user.
-        /// </summary>
-        /// <returns>Returns name as "First Last".</returns>
         [Ignore, JilDirective(true)]
-        public string FullName
-        {
-            get { return $"{FirstName.Trim()} {LastName}".Trim(); }
-        }
+        public string FullName { get { return $"{FirstName.Trim()} {LastName}".Trim(); } }
 
-        [Display(Name = "IsActive", ResourceType = typeof(I18n.Users))]
-        [JilDirective(true)]
+        [Display(Name = "IsActive", ResourceType = typeof(Users))]
         public bool IsActive { get; set; } = false;
 
         [Ignore, JilDirective(true)]
         public string LanguageCode { get; set; }
 
-        [Display(Name = "Language", ResourceType = typeof(I18n.Users))]
-        [Required(ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorRequired")]
-        [JilDirective(true)]
+        [Display(Name = "Language", ResourceType = typeof(Users))]
+        [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int LanguageId { get; set; }
 
-        [Display(Name = "LastName", ResourceType = typeof(I18n.Users))]
-        [Required(ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorRequired")]
-        [StringLength(100, ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorMaxLength")]
+        [Display(Name = "LastName", ResourceType = typeof(Users))]
+        [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
+        [StringLength(100, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string LastName { get; set; }
 
-        [StringLength(250, MinimumLength = 6, ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorMinMaxLength")]
-        [Display(Name = "Password", ResourceType = typeof(I18n.Users))]
+        [StringLength(250, MinimumLength = 0, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMinMaxLength")]
+        [Display(Name = "Password", ResourceType = typeof(Users))]
         [DataType(System.ComponentModel.DataAnnotations.DataType.Password)]
-        [Ignore, JilDirective(true)]
+        [Ignore]
         public string Password { get; set; }
 
         [Ignore, JilDirective(true)]
@@ -92,34 +88,25 @@ namespace Dash.Models
         [Ignore, JilDirective(true)]
         public string Salt { get; set; }
 
-        [Display(Name = "UID", ResourceType = typeof(I18n.Users))]
-        [Required(ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorRequired")]
-        [StringLength(100, ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorMaxLength")]
+        [Display(Name = "UID", ResourceType = typeof(Users))]
+        [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
+        [StringLength(100, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         [JilDirective(Name = "UID")]
         public string UID { get; set; }
 
         [JilDirective(true)]
+        [BindNever, ValidateNever]
         public List<UserRole> UserRole
         {
             get { return _UserRole ?? (_UserRole ?? DbContext.GetAll<UserRole>(new { UserId = Id }).ToList()); }
             set { _UserRole = value; }
         }
 
-        /// <summary>
-        /// Check the user has permissions to access the requested dataset.
-        /// </summary>
-        /// <param name="dataSet">DatasetId to check permissions for.</param>
-        /// <returns>Returns true if the user has access, else false.</returns>
         public bool CanAccessDataset(int datasetId)
         {
             return Id == DbContext.Query<int>("UserHasDatasetAccess", new { UserId = Id, DatasetId = datasetId }).FirstOrDefault();
         }
 
-        /// <summary>
-        /// Check if the user can view a chart.
-        /// </summary>
-        /// <param name="report">Chart to check access for.</param>
-        /// <returns>Returns true if the user has access, else false.</returns>
         public bool CanViewChart(Chart chart)
         {
             if (chart.OwnerId == Id)
@@ -130,11 +117,6 @@ namespace Dash.Models
             return res?.Any() == true && res.First();
         }
 
-        /// <summary>
-        /// Check if a user can view a report.
-        /// </summary>
-        /// <param name="report">Report to check access for.</param>
-        /// <returns>Returns true if the user has access, else false.</returns>
         public bool CanViewReport(Report report)
         {
             if (report.OwnerId == Id)
@@ -145,25 +127,16 @@ namespace Dash.Models
             return res?.Any() == true && res.First();
         }
 
-        /// <summary>
-        /// Save a user, including updating the userRoles and password if provided.
-        /// </summary>
-        /// <param name="lazySave">Lazy save children if true.</param>
-        /// <returns>True if successful, else false.</returns>
         public bool Save(bool lazySave = true)
         {
-            // set the new roles
-            if (RoleIds?.Any() == true)
+            if (RoleIds != null)
             {
-                // make a list of all user roles
                 var keyedUserRoles = DbContext.GetAll<UserRole>(new { UserId = Id }).ToDictionary(x => x.RoleId, x => x);
                 UserRole = RoleIds?.Where(x => x > 0).Select(id => keyedUserRoles.ContainsKey(id) ? keyedUserRoles[id] : new UserRole { UserId = Id, RoleId = id }).ToList()
                     ?? new List<UserRole>();
             }
 
-            // try saving
             DbContext.Save(this);
-
             if (!Password.IsEmpty())
             {
                 Salt = Hasher.GenerateSalt();
@@ -173,11 +146,6 @@ namespace Dash.Models
             return true;
         }
 
-        /// <summary>
-        /// Update a user object using values from the model. Used by the user when updating their own profile.
-        /// </summary>
-        /// <param name="errorMsg">Error message from validation if any.</param>
-        /// <returns>True if update successful, else false.</returns>
         public bool UpdateProfile(out string errorMsg)
         {
             // load user object and copy settings the user is allowed to change
@@ -214,43 +182,38 @@ namespace Dash.Models
             return false;
         }
 
-        /// <summary>
-        /// Validate user object. Check that UID is unique and password meets requirements.
-        /// Don't make this automatic using IValidatableObject - the membershipProvider authorization will run it on every single request.
-        /// </summary>
-        /// <returns>Returns a list of errors if any.</returns>
-        public IEnumerable<ValidationResult> Validate(ValidationContext context)
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            // check for unique UID
+            AppConfig = (AppConfiguration)validationContext.GetService(typeof(AppConfiguration));
             if (DbContext.GetAll<User>(new { UID }).Any(x => x.Id != Id))
             {
-                yield return new ValidationResult(I18n.Users.ErrorDuplicateName, new[] { "UID" });
+                yield return new ValidationResult(Users.ErrorDuplicateName, new[] { "UID" });
             }
 
             if (Id == 0)
             {
                 if (Password.IsEmpty())
                 {
-                    yield return new ValidationResult(I18n.Account.ErrorInvalidPassword, new[] { "Password" });
+                    yield return new ValidationResult(Account.ErrorInvalidPassword, new[] { "Password" });
                 }
                 else if (Password != ConfirmPassword)
                 {
-                    yield return new ValidationResult(I18n.Account.ErrorPasswordMatch, new[] { "ConfirmPassword" });
+                    yield return new ValidationResult(Account.ErrorPasswordMatch, new[] { "ConfirmPassword" });
                 }
                 else if ((Password.Length < AppConfig.Membership.MinRequiredPasswordLength) || Password.ToCharArray().Count(c => !Char.IsLetterOrDigit(c)) < AppConfig.Membership.MinRequiredNonAlphanumericCharacters)
                 {
-                    yield return new ValidationResult(I18n.Account.ErrorInvalidPassword, new[] { "Password" });
+                    yield return new ValidationResult(Account.ErrorInvalidPassword, new[] { "Password" });
                 }
             }
             else if (!Password.IsEmpty())
             {
                 if (Password != ConfirmPassword)
                 {
-                    yield return new ValidationResult(I18n.Account.ErrorPasswordMatch, new[] { "ConfirmPassword" });
+                    yield return new ValidationResult(Account.ErrorPasswordMatch, new[] { "ConfirmPassword" });
                 }
                 else if ((Password.Length < AppConfig.Membership.MinRequiredPasswordLength) || Password.ToCharArray().Count(c => !Char.IsLetterOrDigit(c)) < AppConfig.Membership.MinRequiredNonAlphanumericCharacters)
                 {
-                    yield return new ValidationResult(I18n.Account.ErrorInvalidPassword, new[] { "Password" });
+                    yield return new ValidationResult(Account.ErrorInvalidPassword, new[] { "Password" });
                 }
             }
         }

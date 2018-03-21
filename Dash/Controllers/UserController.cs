@@ -15,32 +15,18 @@ namespace Dash.Controllers
         {
         }
 
-        /// <summary>
-        /// Create a new user. Redirects to the shared CreateEditView.
-        /// </summary>
-        /// <returns>Create user view.</returns>
         [HttpGet, AjaxRequestOnly]
         public IActionResult Create()
         {
-            return CreateEditView(new User());
+            return CreateEditView(new User(DbContext));
         }
 
-        /// <summary>
-        /// Handles the form post to create a new user and save to db.
-        /// </summary>
-        /// <param name="model">User object to create</param>
-        /// <returns>Success or error message.</returns>
-        [HttpPost, AjaxRequestOnly]
-        public IActionResult Create(User model)
+        [HttpPost, AjaxRequestOnly, ValidateAntiForgeryToken]
+        public IActionResult Create([FromBody] User model)
         {
             return Save(model);
         }
 
-        /// <summary>
-        /// Delete a user.
-        /// </summary>
-        /// <param name="id">ID of user to delete</param>
-        /// <returns>Success message.</returns>
         [HttpDelete, AjaxRequestOnly]
         public IActionResult Delete(int id)
         {
@@ -53,11 +39,6 @@ namespace Dash.Controllers
             return JsonSuccess(Users.SuccessDeletingUser);
         }
 
-        /// <summary>
-        /// Edit an existing user. Redirects to the shared CreateEditView.
-        /// </summary>
-        /// <param name="id">User Id</param>
-        /// <returns>Edit user view.</returns>
         [HttpGet, AjaxRequestOnly]
         public IActionResult Edit(int id)
         {
@@ -69,21 +50,12 @@ namespace Dash.Controllers
             return CreateEditView(model);
         }
 
-        /// <summary>
-        /// Handles the form post to update an existing user and save to db.
-        /// </summary>
-        /// <param name="user">User object to edit.</param>
-        /// <returns>Success or error message.</returns>
-        [HttpPut, AjaxRequestOnly]
-        public IActionResult Edit(User user)
+        [HttpPut, AjaxRequestOnly, ValidateAntiForgeryToken]
+        public IActionResult Edit([FromBody] User model)
         {
-            return Save(user);
+            return Save(model);
         }
 
-        /// <summary>
-        /// List of all users.
-        /// </summary>
-        /// <returns>Index view.</returns>
         [HttpGet, AjaxRequestOnly]
         public IActionResult Index()
         {
@@ -99,40 +71,30 @@ namespace Dash.Controllers
             }));
         }
 
-        /// <summary>
-        /// Return the user list for table to display.
-        /// </summary>
-        /// <returns>JSON array of user objects.</returns>
         [HttpGet, AjaxRequestOnly]
         public IActionResult List()
         {
             return JsonRows(DbContext.GetAll<User>());
         }
 
-        /// <summary>
-        /// Display form to create or edit a user.
-        /// </summary>
-        /// <param name="user">User to display. Will be an empty user object for create.</param>
-        /// <returns>Create/edit user view.</returns>
-        private IActionResult CreateEditView(User user)
+        private IActionResult CreateEditView(User model)
         {
-            return PartialView("CreateEdit", user);
+            return PartialView("CreateEdit", model);
         }
 
-        /// <summary>
-        /// Processes a form post to create/edit a user and save to db.
-        /// </summary>
-        /// <param name="user">User object to validate and save.</param>
-        /// <returns>Success or error message.</returns>
-        private IActionResult Save(User user)
+        private IActionResult Save(User model)
         {
+            if (model == null)
+            {
+                return JsonError(Core.ErrorGeneric);
+            }
             if (!ModelState.IsValid)
             {
                 return JsonError(ModelState.ToErrorString());
             }
-            if (!user.Save())
+            if (!model.Save())
             {
-                return JsonError(user.Error);
+                return JsonError(model.Error);
             }
             return JsonSuccess(Users.SuccessSavingUser);
         }
