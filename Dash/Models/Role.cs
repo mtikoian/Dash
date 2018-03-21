@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Jil;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace Dash.Models
 {
-    /// <summary>
-    /// Role is a single authorization role.
-    /// </summary>
     [HasMany(typeof(RolePermission))]
     [HasMany(typeof(UserRole))]
     public class Role : BaseModel, IValidatableObject
@@ -18,21 +17,24 @@ namespace Dash.Models
         private List<RolePermission> _RolePermission;
         private List<UserRole> _UserRole;
 
-        /// <summary>
-        /// Make a keyed list of all users.
-        /// </summary>
-        /// <returns>Dictionary of user keyed by userID.</returns>
+        public Role()
+        {
+        }
+
+        public Role(IDbContext dbContext)
+        {
+            DbContext = dbContext;
+        }
+
         [JilDirective(true)]
+        [BindNever, ValidateNever]
         public List<User> AllUsers
         {
             get { return _AllUsers ?? (_AllUsers = DbContext.GetAll<User>().ToList()); }
         }
 
-        /// <summary>
-        /// Make a keyed list of all permissions.
-        /// </summary>
-        /// <returns>Dictionary of permissions keyed by permissionID.</returns>
         [JilDirective(true)]
+        [BindNever, ValidateNever]
         public Dictionary<string, List<Permission>> ControllerPermissions
         {
             get
@@ -61,6 +63,7 @@ namespace Dash.Models
         public List<int> PermissionIds { get; set; }
 
         [JilDirective(true)]
+        [BindNever, ValidateNever]
         public List<RolePermission> RolePermission
         {
             get { return _RolePermission ?? (_RolePermission = DbContext.GetAll<RolePermission>(new { RoleId = Id }).ToList()); }
@@ -71,16 +74,13 @@ namespace Dash.Models
         public List<int> UserIds { get; set; }
 
         [JilDirective(true)]
+        [BindNever, ValidateNever]
         public List<UserRole> UserRole
         {
             get { return _UserRole ?? (_UserRole = DbContext.GetAll<UserRole>(new { RoleId = Id }).ToList()); }
             set { _UserRole = value; }
         }
 
-        /// <summary>
-        /// Copy a role.
-        /// </summary>
-        /// <param name="name">New role name.</param>
         public Role Copy(string name = null)
         {
             var newRole = this.Clone();
@@ -91,50 +91,31 @@ namespace Dash.Models
             return newRole;
         }
 
-        /// <summary>
-        /// Make sure no other roles have the same name.
-        /// </summary>
-        /// <param name="name">Name to check for.</param>
-        /// <param name="id">ID of current role.</param>
-        /// <returns>True</returns>
         public bool IsUniqueName(string name, int id)
         {
             return !DbContext.GetAll<Role>(new { Name = name }).Any(x => x.Id != id);
         }
 
-        /// <summary>
-        /// Save a role, including updating the rolePermissions and userRoles.
-        /// </summary>
         public void Save()
         {
-            // set the new permissions
-            if (PermissionIds?.Any() == true)
+            if (PermissionIds != null)
             {
-                // make a list of all role permissions
                 var keyedRolePermissions = DbContext.GetAll<RolePermission>(new { RoleId = Id }).ToDictionary(x => x.PermissionId, x => x);
                 RolePermission = PermissionIds?.Where(x => x > 0)
                     .Select(id => keyedRolePermissions.ContainsKey(id) ? keyedRolePermissions[id] : new RolePermission { PermissionId = id, RoleId = Id }).ToList()
                     ?? new List<RolePermission>();
             }
 
-            // set the new users
-            if (UserIds?.Any() == true)
+            if (UserIds != null)
             {
-                // make a list of all user roles
                 var keyedUserRoles = DbContext.GetAll<UserRole>(new { RoleId = Id }).ToDictionary(x => x.UserId, x => x);
                 UserRole = UserIds?.Where(x => x > 0).Select(id => keyedUserRoles.ContainsKey(id) ? keyedUserRoles[id] : new UserRole { UserId = id, RoleId = Id }).ToList()
                     ?? new List<UserRole>();
             }
 
-            // try saving
             DbContext.Save(this);
         }
 
-        /// <summary>
-        /// Validate role object. Check that name is unique.
-        /// </summary>
-        /// <param name="validationContext"></param>
-        /// <returns></returns>
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             if (!IsUniqueName(Name, Id))
