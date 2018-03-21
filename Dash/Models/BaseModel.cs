@@ -8,7 +8,7 @@ namespace Dash.Models
     /// <summary>
     /// Base for all other models.
     /// </summary>
-    public class BaseModel
+    public class BaseModel : IModel
     {
         public BaseModel()
         {
@@ -49,27 +49,14 @@ namespace Dash.Models
 
         public int? RequestUserId { get; set; }
 
-        /// <summary>
-        /// Gets an object from the cache. Cache persists for the lifetime of the app pool.
-        /// </summary>
-        /// <typeparam name="T">Type of the object.</typeparam>
-        /// <param name="key">Unique key to identify the object.</param>
-        /// <param name="onCreate">If object doesn't exist in cache, use return value from this function to create the object.</param>
-        /// <returns>Returns the matched object.</returns>
-        public T Cached<T>(string key, Func<T> onCreate) where T : class
+        public override void SetDbContext(IDbContext dbContext)
         {
-            if (Cache == null)
-            {
-                return onCreate();
-            }
+            DbContext = dbContext;
+        }
 
-            T result;
-            if (!Cache.TryGetValue<T>(key, out result))
-            {
-                result = onCreate();
-                Cache.Set(key, result);
-            }
-            return result;
+        public override void SetRequestUserId(int? userId)
+        {
+            RequestUserId = userId;
         }
     }
 
