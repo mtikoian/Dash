@@ -1,43 +1,37 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Dash.I18n;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace Dash.Models
 {
-    /// <summary>
-    /// CopyDataset is used to copy a dataset.
-    /// </summary>
     public class CopyDataset : BaseModel, IValidatableObject
     {
         private Dataset _Dataset;
 
-        [Required(ErrorMessageResourceType = typeof(I18n.Datasets), ErrorMessageResourceName = "ErrorNameRequired")]
-        [StringLength(100, ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorMaxLength")]
-        public string Prompt { get; set; }
-
+        [BindNever, ValidateNever]
         public Dataset Dataset { get { return _Dataset ?? (_Dataset = DbContext.Get<Dataset>(Id)); } }
 
-        /// <summary>
-        /// Save the dataset.
-        /// </summary>
+        [Required(ErrorMessageResourceType = typeof(Datasets), ErrorMessageResourceName = "ErrorNameRequired")]
+        [StringLength(100, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
+        public string Prompt { get; set; }
+
         public void Save()
         {
             Dataset.Copy(Prompt).Save();
         }
 
-        /// <summary>
-        /// Validate object.
-        /// </summary>
-        /// <param name="validationContext"></param>
-        /// <returns>Returns a list of validation errors if any.</returns>
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
+            DbContext = (IDbContext)validationContext.GetService(typeof(IDbContext));
             if (Dataset == null)
             {
-                yield return new ValidationResult(I18n.Core.ErrorInvalidId);
+                yield return new ValidationResult(Core.ErrorInvalidId);
             }
             if (!Dataset.IsUniqueName(Prompt, 0))
             {
-                yield return new ValidationResult(I18n.Datasets.ErrorDuplicateName);
+                yield return new ValidationResult(Datasets.ErrorDuplicateName);
             }
         }
     }
