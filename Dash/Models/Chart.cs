@@ -214,7 +214,7 @@ namespace Dash.Models
                 // get the actual query data
                 try
                 {
-                    IEnumerable<dynamic> dataRes = report.Dataset.Database.Query(AppConfig, report.Dataset.IsProc ? sqlQuery.ExecStatement() : sqlQuery.SelectStatement(), sqlQuery.Params);
+                    IEnumerable<dynamic> dataRes = report.Dataset.Database.Query(report.Dataset.IsProc ? sqlQuery.ExecStatement() : sqlQuery.SelectStatement(), sqlQuery.Params);
                     if (dataRes.Any())
                     {
                         result.AddData(range, report.ProcessData(dataRes, sqlQuery), xColumn, yColumn);
