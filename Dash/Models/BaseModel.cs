@@ -53,6 +53,11 @@ namespace Dash.Models
             DbContext = dbContext;
         }
 
+        public override void SetAppConfig(IAppConfiguration appConfig)
+        {
+            AppConfig = appConfig;
+        }
+
         public override void SetRequestUserId(int? userId)
         {
             RequestUserId = userId;

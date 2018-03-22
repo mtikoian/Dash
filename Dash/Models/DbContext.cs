@@ -86,6 +86,7 @@ namespace Dash.Models
                 if (res != null)
                 {
                     res.DbContext = this;
+                    res.AppConfig = _AppConfig;
                 }
                 return res;
             }
@@ -102,7 +103,10 @@ namespace Dash.Models
             using (var conn = GetOpenConnection())
             {
                 return conn.Query<T>($"{typeof(T).Name}Get", parameters, commandType: CommandType.StoredProcedure)
-                    .Each(x => x.DbContext = this).ToArray();
+                    .Each(x => {
+                        x.DbContext = this;
+                        x.AppConfig = _AppConfig;
+                    }).ToArray();
             }
         }
 
@@ -112,7 +116,7 @@ namespace Dash.Models
         /// <returns>Returns an open dbConnection object.</returns>
         public override DbConnection GetOpenConnection()
         {
-            var conn = new SqlConnection(_Database.ConnectionString);
+            var conn = new SqlConnection(_AppConfig.Database.ConnectionString);
             conn.Open();
             return conn;
         }
