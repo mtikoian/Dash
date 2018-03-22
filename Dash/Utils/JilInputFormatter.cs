@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.Threading.Tasks;
+using Dash.Configuration;
 using Dash.Models;
 using Jil;
 using Microsoft.AspNetCore.Mvc.Formatters;
@@ -37,12 +38,17 @@ namespace Dash
                 try
                 {
                     var model = JSON.Deserialize(streamReader, context.ModelType, Options) as IModel;
-                    var dbContext = context.HttpContext.RequestServices.GetService(typeof(IDbContext)) as IDbContext;
                     if (model != null)
                     {
+                        var dbContext = context.HttpContext.RequestServices.GetService(typeof(IDbContext)) as IDbContext;
                         if (dbContext != null)
                         {
                             model.SetDbContext(dbContext);
+                        }
+                        var appConfig = context.HttpContext.RequestServices.GetService(typeof(AppConfiguration)) as AppConfiguration;
+                        if (appConfig != null)
+                        {
+                            model.SetAppConfig(appConfig);
                         }
                         model.SetRequestUserId(context.HttpContext.User.UserId());
                     }
