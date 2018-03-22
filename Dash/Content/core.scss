@@ -5,6 +5,10 @@
     color: #fff;
 }
 
+.rd-content .nav-link {
+    color: #000;
+}
+
 .tab-nav-content {
     border-bottom: 1px solid #ddd;
 }
@@ -56,11 +60,16 @@
     .input-group-btn {
         .dropdown-toggle {
             border: $input-border-width solid $input-border-color;
+            border-radius: 0;
         }
 
         .dropdown-menu-right {
             right: 0;
             left: auto; // Reset the default from `.dropdown-menu`
+        }
+
+        .dropdown-item:hover {
+            background-color: $gray-100;
         }
     }
 }
