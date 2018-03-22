@@ -28,3 +28,12 @@ Font license info
    Homepage:  http://www.justbenicestudio.com/
 
 
+## Maki
+
+   Copyright (C) Mapbox, LCC
+
+   Author:    Mapbox
+   License:   BSD (https://github.com/mapbox/maki/blob/gh-pages/LICENSE.txt)
+   Homepage:  http://mapbox.com/maki/
+
+

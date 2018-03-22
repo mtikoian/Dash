@@ -307,16 +307,16 @@
       "src": "fontawesome"
     },
     {
-      "uid": "7432077e6a2d6aa19984ca821bb6bbda",
-      "css": "bug",
-      "code": 61832,
-      "src": "fontawesome"
-    },
-    {
       "uid": "266d5d9adf15a61800477a5acf9a4462",
       "css": "chart-bar",
       "code": 59436,
       "src": "fontawesome"
+    },
+    {
+      "uid": "cad619ef78a5500c1e5b3d021d2fdd65",
+      "css": "trash",
+      "code": 59453,
+      "src": "maki"
     },
     {
       "uid": "3b9b02a1268b66e76f5438dfa52bf238",
