@@ -24,9 +24,9 @@
      * @returns {string|number|bool} Returns correctly casted value.
      */
     var tryGetValue = function(field, val) {
-        if (field.name.substring(0, 2) === 'Is' && (field.value === 'true' || field.value === 'false')) {
+        if ((field.name.substring(0, 2) === 'Is' || field.name.substring(0, 5) === 'Allow') && (field.value === 'true' || field.value === 'false')) {
             return field.value.toLowerCase() === 'true';
-        } else if (!($.isNull(val) || val.length == 0 || isNaN(val))) {
+        } else if (field.type.toLowerCase() === 'number' || !($.isNull(val) || val.length == 0 || isNaN(val))) {
             return parseInt(val);
         }
         return val;
@@ -322,7 +322,7 @@
         setTabStatus: function(el) {
             var tab = $.closest('.tab-pane', el);
             if (tab) {
-                // add error class to tab 
+                // add error class to tab
                 var id = tab.getAttribute('aria-labelledby');
                 if (id) {
                     if ($.hasClass(el, 'mform-control-error')) {
