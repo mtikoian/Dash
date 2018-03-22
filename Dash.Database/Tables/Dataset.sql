@@ -5,7 +5,6 @@
     [TypeId]         TINYINT            NULL,
     [PrimarySource]  NVARCHAR (100)     NULL,
     [Conditions]     NVARCHAR (250)     NULL,
-    [DefaultGroupBy] NVARCHAR (100)     NULL,
     [DatabaseId]     INT                NULL,
     [DateFormat]     NVARCHAR (50)      NULL,
     [CurrencyFormat] NVARCHAR (50)      NULL,

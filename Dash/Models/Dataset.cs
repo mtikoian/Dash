@@ -110,11 +110,6 @@ namespace Dash.Models
             }
         }
 
-        [Display(Name = "DefaultGroupBy", ResourceType = typeof(I18n.Datasets))]
-        [StringLength(100, ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorMaxLength")]
-        [JilDirective(true)]
-        public string DefaultGroupBy { get; set; }
-
         [Display(Name = "Description", ResourceType = typeof(I18n.Datasets))]
         [StringLength(500, ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string Description { get; set; }

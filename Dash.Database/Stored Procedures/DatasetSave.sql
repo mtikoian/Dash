@@ -8,7 +8,6 @@
 	@CurrencyFormat NVARCHAR(50),	
 	@Description NVARCHAR(500) = NULL,	
 	@Conditions NVARCHAR(250) = NULL,	
-	@DefaultGroupBy NVARCHAR(100) = NULL,	
 	@RequestUserId INT = NULL
 AS
 	SET NOCOUNT ON
@@ -16,14 +15,14 @@ AS
 	BEGIN TRY
 		IF ISNULL(@Id, 0) = 0
 			BEGIN
-				INSERT INTO Dataset (DatabaseId, Name, [Description], PrimarySource, TypeId, Conditions, DefaultGroupBy, [DateFormat], CurrencyFormat, UserCreated)
-					VALUES (@DatabaseId, @Name, @Description, @PrimarySource, @TypeId, @Conditions, @DefaultGroupBy, @DateFormat, @CurrencyFormat, @RequestUserId)
+				INSERT INTO Dataset (DatabaseId, Name, [Description], PrimarySource, TypeId, Conditions, [DateFormat], CurrencyFormat, UserCreated)
+					VALUES (@DatabaseId, @Name, @Description, @PrimarySource, @TypeId, @Conditions, @DateFormat, @CurrencyFormat, @RequestUserId)
 				SET @Id = SCOPE_IDENTITY()
 			END
 		ELSE
 			BEGIN
 				UPDATE Dataset SET Name = @Name, DatabaseId = @DatabaseId, [Description] = @Description, PrimarySource = @PrimarySource, TypeId = @TypeId,
-					Conditions = @Conditions, DefaultGroupBy = @DefaultGroupBy, [DateFormat] = @DateFormat, CurrencyFormat = @CurrencyFormat, 
+					Conditions = @Conditions, [DateFormat] = @DateFormat, CurrencyFormat = @CurrencyFormat, 
 					UserUpdated = @RequestUserId, DateUpdated = SYSDATETIMEOFFSET()
 				WHERE Id = @Id
 			END

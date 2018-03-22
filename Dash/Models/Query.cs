@@ -364,11 +364,6 @@ namespace Dash.Models
                 return;
             }
 
-            if (!Report.Dataset.DefaultGroupBy.IsEmpty())
-            {
-                Grouping.Add(Report.Dataset.DefaultGroupBy);
-            }
-
             if (Report.ReportGroup != null && Report.ReportGroup.Count > 0)
             {
                 foreach (var group in Report.ReportGroup)

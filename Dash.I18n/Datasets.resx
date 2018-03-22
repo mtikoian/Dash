@@ -168,9 +168,6 @@
   <data name="DateFormat" xml:space="preserve">
     <value>Date Format</value>
   </data>
-  <data name="DefaultGroupBy" xml:space="preserve">
-    <value>Default Group By</value>
-  </data>
   <data name="Description" xml:space="preserve">
     <value>Description</value>
   </data>

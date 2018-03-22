@@ -205,15 +205,6 @@ namespace Dash.I18n {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Default Group By.
-        /// </summary>
-        public static string DefaultGroupBy {
-            get {
-                return ResourceManager.GetString("DefaultGroupBy", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Description.
         /// </summary>
         public static string Description {

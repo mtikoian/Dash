@@ -168,9 +168,6 @@
   <data name="DateFormat" xml:space="preserve">
     <value>13 mayo 2014</value>
   </data>
-  <data name="DefaultGroupBy" xml:space="preserve">
-    <value>¡Grupo predeterminado por!</value>
-  </data>
   <data name="Description" xml:space="preserve">
     <value>Descripción</value>
   </data>
