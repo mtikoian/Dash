@@ -48,7 +48,7 @@
         delete _charts[dlg.getId()];
         document.dispatchEvent($.events.dashboardReload);
     });
-    
+
     /**
      * Load the settings to display the chart share form.
      */

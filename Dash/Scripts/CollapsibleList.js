@@ -1,21 +1,21 @@
-/*!
+﻿/*!
  * Allowing lists to dynamically expand and collapse.
  * Created by Stephen Morley - http://code.stephenmorley.org/ - and released under the terms of the CC0 1.0 Universal legal code:
  * http://creativecommons.org/publicdomain/zero/1.0/legalcode
  *
  * Modified to work with bootstrap/fontAwesome and incorporate cascading checkboxes.
  */
-(function (root, factory) {
+(function(root, factory) {
     // Assume a traditional browser.
     window.CollapsibleList = factory(root.$);
-})(this, function ($) {
+})(this, function($) {
     'use strict';
 
     /**
      * Declare CollapsibleList class.
      * @param {Node} element - Node to make collapsible.
      */
-    var CollapsibleList = function (element) {
+    var CollapsibleList = function(element) {
         this.container = $.get(element);
         this.init();
     };
@@ -27,13 +27,13 @@
         /**
          * Make the specified list collapsible.
          */
-        init: function () {
+        init: function() {
             var node = this.container;
             // loop over the list items within this node
             var lis = $.getAll('li', node);
             for (var i = 0; i < lis.length; i++) {
                 // prevent text from being selected unintentionally
-                $.on(lis[i], 'mousedown', function (e) { e.preventDefault(); }, false);
+                $.on(lis[i], 'mousedown', function(e) { e.preventDefault(); }, false);
                 // add the click listener
                 $.on(lis[i], 'click', this.createClickListener(lis[i]), false);
                 // close the unordered lists within this list item
@@ -64,9 +64,9 @@
          * @param {Node} node - Node containing the unordered list elements.
          * @returns {Function} Click handler function.
          */
-        createClickListener: function (node) {
+        createClickListener: function(node) {
             var self = this;
-            return function (e) {
+            return function(e) {
                 // ensure the event object is defined
                 e = $.coalesce(e, window.event);
 
@@ -132,7 +132,7 @@
          * @param {Node} node - Node containing the unordered list elements.
          * @param {bool} forceOpen - Set to true to force the node to be open regardless of current status.
          */
-        toggle: function (node, forceOpen) {
+        toggle: function(node, forceOpen) {
             // determine whether to open or close the unordered lists
             var open = $.coalesce(forceOpen, $.hasClass(node, 'collapsible-list-closed'));
 

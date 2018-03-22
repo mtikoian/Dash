@@ -1,15 +1,15 @@
-/*!
+﻿/*!
  * Prism: Lightweight, robust, elegant syntax highlighting
  * MIT license http://www.opensource.org/licenses/mit-license.php/
  * @author Lea Verou http://lea.verou.me
  */
-(function (root) {
+(function(root) {
     // Private helper vars
     var lang = /\blang(?:uage)?-(?!\*)(\w+)\b/i;
 
     var _ = prism = {
         util: {
-            encode: function (tokens) {
+            encode: function(tokens) {
                 if (tokens instanceof Token) {
                     return new Token(tokens.type, _.util.encode(tokens.content), tokens.alias);
                 } else if (_.util.type(tokens) === 'Array') {
@@ -19,12 +19,12 @@
                 }
             },
 
-            type: function (o) {
+            type: function(o) {
                 return Object.prototype.toString.call(o).match(/\[object (\w+)\]/)[1];
             },
 
             // Deep clone a language definition (e.g. to extend it)
-            clone: function (o) {
+            clone: function(o) {
                 var type = _.util.type(o);
 
                 switch (type) {
@@ -41,7 +41,7 @@
 
                     case 'Array':
                         // Check for existence for IE8
-                        return o.map && o.map(function (v) { return _.util.clone(v); });
+                        return o.map && o.map(function(v) { return _.util.clone(v); });
                 }
 
                 return o;
@@ -49,7 +49,7 @@
         },
 
         languages: {
-            extend: function (id, redef) {
+            extend: function(id, redef) {
                 var lang = _.util.clone(_.languages[id]);
 
                 for (var key in redef) {
@@ -68,7 +68,7 @@
              * @param insert Object with the key/value pairs to insert
              * @param root The object that contains `inside`. If equal to Prism.languages, it can be omitted.
              */
-            insertBefore: function (inside, before, insert, root) {
+            insertBefore: function(inside, before, insert, root) {
                 root = root || _.languages;
                 var grammar = root[inside];
 
@@ -101,7 +101,7 @@
                 }
 
                 // Update references in other language definitions
-                _.languages.DFS(_.languages, function (key, value) {
+                _.languages.DFS(_.languages, function(key, value) {
                     if (value === root[inside] && key != inside) {
                         this[key] = ret;
                     }
@@ -111,7 +111,7 @@
             },
 
             // Traverse a language definition with Depth First Search
-            DFS: function (o, callback, type, visited) {
+            DFS: function(o, callback, type, visited) {
                 visited = visited || {};
                 for (var i in o) {
                     if (o.hasOwnProperty(i)) {
@@ -131,7 +131,7 @@
         },
         plugins: {},
 
-        highlightAll: function (async, callback) {
+        highlightAll: function(async, callback) {
             var elements = document.querySelectorAll('code[class*="language-"], [class*="language-"] code, code[class*="lang-"], [class*="lang-"] code');
 
             for (var i = 0, element; element = elements[i++];) {
@@ -139,7 +139,7 @@
             }
         },
 
-        highlightElement: function (element, async, callback) {
+        highlightElement: function(element, async, callback) {
             // Find language
             var language, grammar, parent = element;
 
@@ -181,7 +181,7 @@
             if (async && root.Worker) {
                 var worker = new Worker(_.filename);
 
-                worker.onmessage = function (evt) {
+                worker.onmessage = function(evt) {
                     env.highlightedCode = evt.data;
 
                     _.hooks.run('before-insert', env);
@@ -213,12 +213,12 @@
             }
         },
 
-        highlight: function (text, grammar, language) {
+        highlight: function(text, grammar, language) {
             var tokens = _.tokenize(text, grammar);
             return Token.stringify(_.util.encode(tokens), language);
         },
 
-        tokenize: function (text, grammar, language) {
+        tokenize: function(text, grammar, language) {
             var Token = _.Token;
 
             var strarr = [text];
@@ -304,7 +304,7 @@
         hooks: {
             all: {},
 
-            add: function (name, callback) {
+            add: function(name, callback) {
                 var hooks = _.hooks.all;
 
                 hooks[name] = hooks[name] || [];
@@ -312,7 +312,7 @@
                 hooks[name].push(callback);
             },
 
-            run: function (name, env) {
+            run: function(name, env) {
                 var callbacks = _.hooks.all[name];
 
                 if (!callbacks || !callbacks.length) {
@@ -326,19 +326,19 @@
         }
     };
 
-    var Token = _.Token = function (type, content, alias) {
+    var Token = _.Token = function(type, content, alias) {
         this.type = type;
         this.content = content;
         this.alias = alias;
     };
 
-    Token.stringify = function (o, language, parent) {
+    Token.stringify = function(o, language, parent) {
         if (typeof o == 'string') {
             return o;
         }
 
         if (_.util.type(o) === 'Array') {
-            return o.map(function (element) {
+            return o.map(function(element) {
                 return Token.stringify(element, language, o);
             }).join('');
         }

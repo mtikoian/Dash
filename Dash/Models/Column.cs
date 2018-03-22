@@ -27,6 +27,7 @@
         public string Link { get; set; }
         public string SortDirection { get; set; }
         public int SortOrder { get; set; }
+
         public TableDataType TableDataType
         {
             get

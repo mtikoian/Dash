@@ -1,7 +1,7 @@
-@using Dash.I18n
+﻿@using Dash.I18n
 @model Dash.Models.Report
 
-@using (Html.BeginBootForm("Share", "Report", null, Reports.ShareReport, "reportShareLoad", 
+@using (Html.BeginBootForm("Share", "Report", null, Reports.ShareReport, "reportShareLoad",
     htmlAttributes: new { @class = "report-share-form", @data_close_event = "reportShareUnload" },
     method: HttpVerbs.Put)) {
     @Html.HiddenFor(model => model.Id)

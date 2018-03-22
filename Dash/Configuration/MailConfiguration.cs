@@ -1,4 +1,4 @@
-﻿namespace Dash.Configuration 
+﻿namespace Dash.Configuration
 {
     public class MailConfiguration
     {

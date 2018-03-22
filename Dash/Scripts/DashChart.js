@@ -34,9 +34,9 @@
         /**
          * Generate a random number within range.
          * @param {number[]} range - Min and max value.
-         * @returns {number} Random number. 
+         * @returns {number} Random number.
          */
-        randomWithin: function (range) {
+        randomWithin: function(range) {
             return Math.floor(range[0] + Math.random() * (range[1] + 1 - range[0]));
         },
 
@@ -44,7 +44,7 @@
          * Generates a random color and a lighter partner color.
          * @returns {string[]} Color codes.
          */
-        randomColor: function () {
+        randomColor: function() {
             var hsl = [this.randomWithin([0, 360]), this.randomWithin([50, 100]), this.randomWithin([30, 80])];
             return [
                 'hsla(' + hsl[0] + ',' + hsl[1] + '%,' + hsl[2] + '%, 1)',
@@ -57,7 +57,7 @@
          * @param {number} cnt - Number of colors to generate.
          * @returns {string[]} Array of color codes.
          */
-        randomColors: function (cnt) {
+        randomColors: function(cnt) {
             var result = new Array(cnt);
             for (var i = 0; i < cnt; i++) {
                 result[i] = this.randomColor()[0];
@@ -70,7 +70,7 @@
          * @param {string} hex - Hex color code with leading '#'.
          * @returns {string[]} Color codes.
          */
-        parseColor: function (hex) {
+        parseColor: function(hex) {
             if (!hex) {
                 return this.randomColor();
             }
@@ -84,7 +84,7 @@
         /**
          * Build the chart.
          */
-        run: function () {
+        run: function() {
             var self = this;
 
             $.show($.get('.chart-spinner', self.content));
@@ -98,7 +98,7 @@
                 method: 'POST',
                 url: self.url,
                 block: false
-            }, function (data) {
+            }, function(data) {
                 if ($.isFunction(self.dataFn)) {
                     if (!self.dataFn(data)) {
                         return;
@@ -121,7 +121,7 @@
 
                 if (self.chart) {
                     // this code is used for refreshing dashboard chart data, but won't be used on the chart dialog
-                    ranges.forEach(function (x, i) {
+                    ranges.forEach(function(x, i) {
                         self.chart.data.datasets[i].data = ranges[i].rows;
                         self.chart.data.datasets[i].label = ranges[i].yTitle;
                     });
@@ -134,12 +134,12 @@
                         var currencyFormat = $.accounting.parseFormat(ranges[0].currencyFormat);
                         scales.xAxes = [{
                             ticks: {
-                                callback: function (value) {
+                                callback: function(value) {
                                     return $.accounting.formatMoney(value, currencyFormat);
                                 }
                             }
                         }];
-                        tooltips.callbacks.title = function (tooltipItems, data) {
+                        tooltips.callbacks.title = function(tooltipItems, data) {
                             var title = '';
                             if (tooltipItems.length > 0) {
                                 if (tooltipItems[0].xLabel) {
@@ -155,12 +155,12 @@
                         var dateFormat = ranges[0].dateFormat;
                         scales.xAxes = [{
                             ticks: {
-                                callback: function (value) {
+                                callback: function(value) {
                                     return $.fecha.format(new Date(value), dateFormat);
                                 }
                             }
                         }];
-                        tooltips.callbacks.title = function (tooltipItems, data) {
+                        tooltips.callbacks.title = function(tooltipItems, data) {
                             var title = '';
                             if (tooltipItems.length > 0) {
                                 if (tooltipItems[0].xLabel) {
@@ -178,7 +178,7 @@
                     var isRadial = chartType === 'pie' || chartType === 'doughnut';
                     var datasets = [];
                     scales.yAxes = [];
-                    ranges.forEach(function (x, i) {
+                    ranges.forEach(function(x, i) {
                         var color = self.parseColor(x.color);
                         datasets.push({
                             backgroundColor: color[0],
@@ -192,18 +192,18 @@
                         var ticks = {};
                         if (x.yType === 'currency') {
                             var currencyFormat = $.accounting.parseFormat(x.currencyFormat);
-                            ticks.callback = function (value) {
+                            ticks.callback = function(value) {
                                 return $.accounting.formatMoney(value, currencyFormat);
                             };
-                            tooltips.callbacks.label = function (item) {
+                            tooltips.callbacks.label = function(item) {
                                 return $.accounting.formatMoney(item.yLabel, currencyFormat);
                             };
                         } else if (x.yType === 'date') {
                             var dateFormat = x.dateFormat;
-                            ticks.callback = function (value) {
+                            ticks.callback = function(value) {
                                 return $.fecha.format(new Date(value), dateFormat);
                             };
-                            tooltips.callbacks.label = function (item) {
+                            tooltips.callbacks.label = function(item) {
                                 return $.fecha.format(new Date(item.yLabel), dateFormat);
                             };
                         }
@@ -240,7 +240,7 @@
 
                     self.chart = new Chart(self.canvas.getContext('2d'), chartData);
                 }
-            }, function () {
+            }, function() {
                 if ($.isFunction(self.errorFn)) {
                     if (!self.errorFn()) {
                         return;
@@ -257,7 +257,7 @@
         /**
          * Destroy the chart.
          */
-        destroy: function () {
+        destroy: function() {
             $.destroy(this.chart);
         }
     };

@@ -1,6 +1,6 @@
-﻿using Dash.I18n;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Security.Claims;
+using Dash.I18n;
 
 namespace Dash
 {

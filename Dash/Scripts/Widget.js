@@ -1,10 +1,10 @@
 ﻿/*!
  * Wraps functionality needed to display a dashboard widget.
  */
-(function (root, factory) {
+(function(root, factory) {
     // Assume a traditional browser.
     root.Widget = factory(root.m, root.$, root.Alertify, root.Table, root.DashChart, root.Draggabilly, root.Rect);
-})(this, function (m, $, Alertify, Table, DashChart, Draggabilly, Rect) {
+})(this, function(m, $, Alertify, Table, DashChart, Draggabilly, Rect) {
     'use strict';
 
     /**
@@ -125,14 +125,12 @@
                                 m('a.dropdown-item.dash-ajax.dash-dialog.fs-disabled', {
                                     href: this.opts.baseUrl + (this.opts.isData ? 'Report' : 'Chart') + '/Details/' + (this.opts.isData ? this.opts.reportId : this.opts.chartId),
                                     title: $.resx(this.opts.isData ? 'viewReport' : 'viewChart')
-                                }, [
-                                        m('i.dash.dash-info'), ' ' + $.resx(this.opts.isData ? 'viewReport' : 'viewChart')
-                                ]),
+                                }, [m('i.dash.dash-info'), ' ' + $.resx(this.opts.isData ? 'viewReport' : 'viewChart')]),
                                 m('a.dropdown-item.dash-ajax.dash-dialog.fs-disabled', { href: this.opts.baseUrl + 'Dashboard/Edit/' + this.opts.id, title: $.resx('editWidget') }, [
                                     m('i.dash.dash-pencil'), ' ' + $.resx('editWidget')
                                 ]),
                                 m('a.dropdown-item.dash-ajax.dash-dialog.fs-disabled', { title: $.resx('deleteWidget'), onclick: this.deleteWidget.bind(this) }, [
-                                    m('i.dash.dash-cancel.text-danger'), ' ' + $.resx('deleteWidget')
+                                    m('i.dash.dash-trash.text-danger'), ' ' + $.resx('deleteWidget')
                                 ])
                             ])
                         ])
@@ -396,7 +394,7 @@
             $.destroy(this.chart);
             $.destroy(this.moveDraggie);
             $.destroy(this.resizeDraggie);
-            
+
             if (this.interval) {
                 clearInterval(this.interval);
                 this.interval = null;
@@ -436,6 +434,6 @@
             }
         }
     };
-        
+
     return Widget;
 });

@@ -1,8 +1,4 @@
-﻿using Dapper;
-using Dash.Configuration;
-using FastMember;
-using Microsoft.Extensions.Caching.Memory;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
@@ -10,6 +6,10 @@ using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Reflection;
+using Dapper;
+using Dash.Configuration;
+using FastMember;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Dash.Models
 {
@@ -19,14 +19,14 @@ namespace Dash.Models
         /// Specifies the type of properties that should be including when building sql parameters to save an object.
         /// </summary>
         private static readonly Type[] SavableTypes = { typeof(string), typeof(bool), typeof(int), typeof(long), typeof(DateTime), typeof(DateTimeOffset),
-            typeof(decimal), typeof(int?), typeof(long?), typeof(Byte[]), typeof(Enum), typeof(double) };
+            typeof(decimal), typeof(int?), typeof(long?), typeof(byte[]), typeof(Enum), typeof(double) };
 
         private IMemoryCache _Cache;
-        private DatabaseConfiguration _Database;
+        private AppConfiguration _AppConfig;
 
         public DbContext(AppConfiguration config, IMemoryCache cache = null)
         {
-            _Database = config.Database;
+            _AppConfig = config;
             _Cache = cache;
         }
 
@@ -252,7 +252,7 @@ namespace Dash.Models
                 return onCreate();
             }
 
-            if (!_Cache.TryGetValue<T>(key, out T result))
+            if (!_Cache.TryGetValue<T>(key, out var result))
             {
                 result = onCreate();
                 _Cache.Set(key, result);

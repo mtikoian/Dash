@@ -1,4 +1,4 @@
-/*!
+﻿/*!
  * Chart.js
  * http://chartjs.org/
  * Version: 2.7.1
@@ -225,13 +225,11 @@
                 return (str.length < 2) ? "0" + str : str;
             }
 
-
             //create a list of reverse color names
             var reverseNames = {};
             for (var name in colorNames) {
                 reverseNames[colorNames[name]] = name;
             }
-
         }, { "5": 5 }], 2: [function(require, module, exports) {
             /* MIT license */
             var convert = require(4);
@@ -718,7 +716,6 @@
             }
 
             module.exports = Color;
-
         }, { "1": 1, "4": 4 }], 3: [function(require, module, exports) {
             /* MIT license */
 
@@ -776,7 +773,6 @@
                 lch2xyz: lch2xyz,
                 lch2rgb: lch2rgb
             }
-
 
             function rgb2hsl(rgb) {
                 var r = rgb[0] / 255,
@@ -986,7 +982,6 @@
                 return rgb2keyword(hsl2rgb(args));
             }
 
-
             function hsv2rgb(hsv) {
                 var h = hsv[0] / 60,
                     s = hsv[1] / 100,
@@ -1121,7 +1116,6 @@
             function cmyk2keyword(args) {
                 return rgb2keyword(cmyk2rgb(args));
             }
-
 
             function xyz2rgb(xyz) {
                 var x = xyz[0] / 100,
@@ -1418,7 +1412,6 @@
             for (var key in cssKeywords) {
                 reverseKeywords[JSON.stringify(cssKeywords[key])] = key;
             }
-
         }, {}], 4: [function(require, module, exports) {
             var conversions = require(3);
 
@@ -1459,7 +1452,6 @@
                     }
                 })(func);
             }
-
 
             /* Converter does lazy conversion and caching */
             var Converter = function() {
@@ -1665,7 +1657,6 @@
                 "yellow": [255, 255, 0],
                 "yellowgreen": [154, 205, 50]
             };
-
         }, {}], 6: [function(require, module, exports) {
             /**
              * @namespace Chart
@@ -1732,46 +1723,36 @@
             if (typeof window !== 'undefined') {
                 window.Chart = Chart;
             }
-
         }, { "10": 10, "11": 11, "12": 12, "13": 13, "14": 14, "15": 15, "16": 16, "17": 17, "18": 18, "19": 19, "20": 20, "21": 21, "22": 22, "23": 23, "24": 24, "25": 25, "26": 26, "31": 31, "36": 36, "39": 39, "40": 40, "44": 44, "45": 45, "46": 46, "7": 7, "8": 8, "9": 9 }], 7: [function(require, module, exports) {
             'use strict';
 
             module.exports = function(Chart) {
-
                 Chart.Bar = function(context, config) {
                     config.type = 'bar';
 
                     return new Chart(context, config);
                 };
-
             };
-
         }, {}], 8: [function(require, module, exports) {
             'use strict';
 
             module.exports = function(Chart) {
-
                 Chart.Doughnut = function(context, config) {
                     config.type = 'doughnut';
 
                     return new Chart(context, config);
                 };
-
             };
-
         }, {}], 9: [function(require, module, exports) {
             'use strict';
 
             module.exports = function(Chart) {
-
                 Chart.Line = function(context, config) {
                     config.type = 'line';
 
                     return new Chart(context, config);
                 };
-
             };
-
         }, {}], 10: [function(require, module, exports) {
             'use strict';
 
@@ -1958,9 +1939,7 @@
             }
 
             module.exports = function(Chart) {
-
                 Chart.controllers.bar = Chart.DatasetController.extend({
-
                     dataElementType: elements.Rectangle,
 
                     initialize: function() {
@@ -2172,7 +2151,6 @@
                                     imeta.stack === stack &&
                                     imeta.controller.getValueScaleId() === scale.id &&
                                     chart.isDatasetVisible(i)) {
-
                                     ivalue = scale.getRightValue(datasets[i].data[index]);
                                     if ((value < 0 && ivalue < 0) || (value >= 0 && ivalue > 0)) {
                                         start += ivalue;
@@ -2277,7 +2255,6 @@
                     }
                 });
             };
-
         }, { "16": 16, "31": 31, "36": 36 }], 11: [function(require, module, exports) {
             'use strict';
 
@@ -2405,9 +2382,7 @@
             });
 
             module.exports = function(Chart) {
-
                 Chart.controllers.doughnut = Chart.controllers.pie = Chart.DatasetController.extend({
-
                     dataElementType: elements.Arc,
 
                     linkScales: helpers.noop,
@@ -2578,7 +2553,6 @@
                     }
                 });
             };
-
         }, { "16": 16, "31": 31, "36": 36 }], 12: [function(require, module, exports) {
             'use strict';
 
@@ -2607,13 +2581,11 @@
             });
 
             module.exports = function(Chart) {
-
                 function lineEnabled(dataset, options) {
                     return helpers.valueOrDefault(dataset.showLine, options.showLines);
                 }
 
                 Chart.controllers.line = Chart.DatasetController.extend({
-
                     datasetElementType: elements.Line,
 
                     dataElementType: elements.Point,
@@ -2913,7 +2885,6 @@
                     }
                 });
             };
-
         }, { "16": 16, "31": 31, "36": 36 }], 13: [function(require, module, exports) {
             /* global window: false */
             'use strict';
@@ -2932,7 +2903,6 @@
             });
 
             module.exports = function(Chart) {
-
                 Chart.Animation = Element.extend({
                     chart: null, // the animation associated chart instance
                     currentStep: 0, // the current animation step
@@ -3085,9 +3055,7 @@
                         this.chart = value;
                     }
                 });
-
             };
-
         }, { "16": 16, "17": 17, "36": 36 }], 14: [function(require, module, exports) {
             'use strict';
 
@@ -3099,7 +3067,6 @@
             var plugins = require(22);
 
             module.exports = function(Chart) {
-
                 // Create a dictionary of chart types, to allow for extension of existing types
                 Chart.types = {};
 
@@ -4036,14 +4003,12 @@
                  */
                 Chart.Controller = Chart;
             };
-
         }, { "16": 16, "19": 19, "21": 21, "22": 22, "36": 36, "39": 39 }], 15: [function(require, module, exports) {
             'use strict';
 
             var helpers = require(36);
 
             module.exports = function(Chart) {
-
                 var arrayEvents = ['push', 'pop', 'shift', 'splice', 'unshift'];
 
                 /**
@@ -4121,7 +4086,6 @@
                 };
 
                 helpers.extend(Chart.DatasetController.prototype, {
-
                     /**
                      * Element type used to generate a meta dataset (e.g. Chart.element.Line).
                      * @type {Chart.core.element}
@@ -4368,7 +4332,6 @@
 
                 Chart.DatasetController.extend = helpers.inherits;
             };
-
         }, { "36": 36 }], 16: [function(require, module, exports) {
             'use strict';
 
@@ -4382,7 +4345,6 @@
                     return helpers.merge(this[scope] || (this[scope] = {}), values);
                 }
             };
-
         }, { "36": 36 }], 17: [function(require, module, exports) {
             'use strict';
 
@@ -4444,7 +4406,6 @@
             };
 
             helpers.extend(Element.prototype, {
-
                 initialize: function() {
                     this.hidden = false;
                 },
@@ -4499,7 +4460,6 @@
             Element.extend = helpers.inherits;
 
             module.exports = Element;
-
         }, { "2": 2, "36": 36 }], 18: [function(require, module, exports) {
             /* global window: false */
             /* global document: false */
@@ -4510,7 +4470,6 @@
             var helpers = require(36);
 
             module.exports = function(Chart) {
-
                 // -- Basic js utility methods
 
                 helpers.configMerge = function(/* objects ... */) {
@@ -4892,7 +4851,6 @@
                     if (touches && touches.length > 0) {
                         mouseX = touches[0].clientX;
                         mouseY = touches[0].clientY;
-
                     } else {
                         mouseX = e.clientX;
                         mouseY = e.clientY;
@@ -4917,7 +4875,6 @@
                         x: mouseX,
                         y: mouseY
                     };
-
                 };
 
                 // Private helper function to convert max-width/max-height values that may be percentages into a number
@@ -5112,7 +5069,6 @@
                         helpers.color(colorValue).saturate(0.5).darken(0.1).rgbString();
                 };
             };
-
         }, { "16": 16, "2": 2, "36": 36 }], 19: [function(require, module, exports) {
             'use strict';
 
@@ -5444,7 +5400,6 @@
                     }
                 }
             };
-
         }, { "36": 36 }], 20: [function(require, module, exports) {
             'use strict';
 
@@ -5484,7 +5439,6 @@
             });
 
             module.exports = function() {
-
                 // Occupy the global variable of Chart, and create a simple base class
                 var Chart = function(item, config) {
                     this.construct(item, config);
@@ -5495,7 +5449,6 @@
 
                 return Chart;
             };
-
         }, { "16": 16 }], 21: [function(require, module, exports) {
             'use strict';
 
@@ -5875,9 +5828,7 @@
 
                             // Move to next point
                             top = box.bottom;
-
                         } else {
-
                             box.left = left;
                             box.right = left + box.width;
                             box.top = totalTopBoxesHeight;
@@ -5916,7 +5867,6 @@
                     });
                 }
             };
-
         }, { "36": 36 }], 22: [function(require, module, exports) {
             'use strict';
 
@@ -6300,7 +6250,6 @@
              * @param {Chart.Controller} chart - The chart instance.
              * @param {Object} options - The plugin options.
              */
-
         }, { "16": 16, "36": 36 }], 23: [function(require, module, exports) {
             'use strict';
 
@@ -6394,7 +6343,6 @@
             }
 
             module.exports = function(Chart) {
-
                 function computeTextSize(context, tick, font) {
                     return helpers.isArray(tick) ?
                         helpers.longestText(context, font, tick) :
@@ -6561,7 +6509,6 @@
                         me.afterUpdate();
 
                         return me.minSize;
-
                     },
                     afterUpdate: function() {
                         helpers.callback(this.options.afterUpdate, [this]);
@@ -7238,7 +7185,6 @@
                     }
                 });
             };
-
         }, { "16": 16, "17": 17, "25": 25, "36": 36 }], 24: [function(require, module, exports) {
             'use strict';
 
@@ -7247,7 +7193,6 @@
             var layouts = require(21);
 
             module.exports = function(Chart) {
-
                 Chart.scaleService = {
                     // Scale registration object. Extensions can register new scale types (such as log or DB scales) and then
                     // use the new chart options to grab the correct scale
@@ -7286,7 +7231,6 @@
                     }
                 };
             };
-
         }, { "16": 16, "21": 21, "36": 36 }], 25: [function(require, module, exports) {
             'use strict';
 
@@ -7358,7 +7302,6 @@
                     }
                 }
             };
-
         }, { "36": 36 }], 26: [function(require, module, exports) {
             'use strict';
 
@@ -7459,7 +7402,6 @@
             });
 
             module.exports = function(Chart) {
-
                 /**
                    * Helper method to merge the opacity into a color
                    */
@@ -7891,7 +7833,6 @@
                                 labelTextColors.push(opts.callbacks.labelTextColor.call(me, tooltipItem, me._chart));
                             });
 
-
                             // Build the Text Lines
                             model.title = me.getTitle(tooltipItems, data);
                             model.beforeBody = me.getBeforeBody(tooltipItems, data);
@@ -8308,7 +8249,6 @@
                     }
                 };
             };
-
         }, { "16": 16, "17": 17, "36": 36 }], 27: [function(require, module, exports) {
             'use strict';
 
@@ -8417,7 +8357,6 @@
                     }
                 }
             });
-
         }, { "16": 16, "17": 17, "36": 36 }], 28: [function(require, module, exports) {
             'use strict';
 
@@ -8510,7 +8449,6 @@
                     ctx.restore();
                 }
             });
-
         }, { "16": 16, "17": 17, "36": 36 }], 29: [function(require, module, exports) {
             'use strict';
 
@@ -8618,7 +8556,6 @@
                     helpers.canvas.drawPoint(ctx, pointStyle, radius, x, y);
                 }
             });
-
         }, { "16": 16, "17": 17, "36": 36 }], 30: [function(require, module, exports) {
             'use strict';
 
@@ -8837,7 +8774,6 @@
                     };
                 }
             });
-
         }, { "16": 16, "17": 17 }], 31: [function(require, module, exports) {
             'use strict';
 
@@ -8846,7 +8782,6 @@
             module.exports.Line = require(28);
             module.exports.Point = require(29);
             module.exports.Rectangle = require(30);
-
         }, { "27": 27, "28": 28, "29": 29, "30": 30 }], 32: [function(require, module, exports) {
             'use strict';
 
@@ -9062,7 +8997,6 @@
                 exports.roundedRect.apply(exports, arguments);
                 ctx.closePath();
             };
-
         }, { "33": 33 }], 33: [function(require, module, exports) {
             'use strict';
 
@@ -9403,7 +9337,6 @@
              * @private
              */
             helpers.getValueAtIndexOrDefault = helpers.valueAtIndexOrDefault;
-
         }, {}], 34: [function(require, module, exports) {
             'use strict';
 
@@ -9655,7 +9588,6 @@
              * @private
              */
             helpers.easingEffects = effects;
-
         }, { "33": 33 }], 35: [function(require, module, exports) {
             'use strict';
 
@@ -9753,7 +9685,6 @@
                     }
                 }
             };
-
         }, { "33": 33 }], 36: [function(require, module, exports) {
             'use strict';
 
@@ -9761,7 +9692,6 @@
             module.exports.easing = require(34);
             module.exports.canvas = require(32);
             module.exports.options = require(35);
-
         }, { "32": 32, "33": 33, "34": 34, "35": 35 }], 37: [function(require, module, exports) {
             /**
              * Platform fallback implementation (minimal).
@@ -9778,7 +9708,6 @@
                     return item && item.getContext('2d') || null;
                 }
             };
-
         }, {}], 38: [function(require, module, exports) {
             /**
              * Chart.Platform implementation for targeting a web browser
@@ -10236,7 +10165,6 @@
              * @private
              */
             helpers.removeEvent = removeEventListener;
-
         }, { "36": 36 }], 39: [function(require, module, exports) {
             'use strict';
 
@@ -10291,7 +10219,6 @@
                  * @param {Function} listener - The listener function to remove from the event target.
                  */
                 removeEventListener: function() { }
-
             }, implementation);
 
             /**
@@ -10312,7 +10239,6 @@
              * @prop {Number} x - The mouse x position, relative to the canvas (null for incompatible events)
              * @prop {Number} y - The mouse y position, relative to the canvas (null for incompatible events)
              */
-
         }, { "36": 36, "37": 37, "38": 38 }], 40: [function(require, module, exports) {
             'use strict';
 
@@ -10320,7 +10246,6 @@
             module.exports.filler = require(41);
             module.exports.legend = require(42);
             module.exports.title = require(43);
-
         }, { "41": 41, "42": 42, "43": 43 }], 41: [function(require, module, exports) {
             /**
              * Plugin based on discussion from the following Chart.js issues:
@@ -10640,7 +10565,6 @@
                     }
                 }
             };
-
         }, { "16": 16, "31": 31, "36": 36 }], 42: [function(require, module, exports) {
             'use strict';
 
@@ -10742,7 +10666,6 @@
              * IMPORTANT: this class is exposed publicly as Chart.Legend, backward compatibility required!
              */
             var Legend = Element.extend({
-
                 initialize: function(config) {
                     helpers.extend(this, config);
 
@@ -10911,7 +10834,6 @@
                             });
 
                             minSize.height += totalHeight;
-
                         } else {
                             var vPadding = labelOpts.padding;
                             var columnWidths = me.columnWidths = [];
@@ -11100,7 +11022,6 @@
                             } else {
                                 cursor.y += itemHeight;
                             }
-
                         });
                     }
                 },
@@ -11218,7 +11139,6 @@
                     }
                 }
             };
-
         }, { "16": 16, "17": 17, "21": 21, "36": 36 }], 43: [function(require, module, exports) {
             'use strict';
 
@@ -11285,7 +11205,6 @@
                     me.afterUpdate();
 
                     return me.minSize;
-
                 },
                 afterUpdate: noop,
 
@@ -11352,7 +11271,6 @@
 
                     me.width = minSize.width;
                     me.height = minSize.height;
-
                 },
                 afterFit: noop,
 
@@ -11472,12 +11390,10 @@
                     }
                 }
             };
-
         }, { "16": 16, "17": 17, "21": 21, "36": 36 }], 44: [function(require, module, exports) {
             'use strict';
 
             module.exports = function(Chart) {
-
                 // Default config for a category scale
                 var defaultConfig = {
                     position: 'bottom'
@@ -11605,9 +11521,7 @@
                 });
 
                 Chart.scaleService.registerScaleType('category', DatasetScale, defaultConfig);
-
             };
-
         }, {}], 45: [function(require, module, exports) {
             'use strict';
 
@@ -11616,7 +11530,6 @@
             var Ticks = require(25);
 
             module.exports = function(Chart) {
-
                 var defaultConfig = {
                     position: 'left',
                     ticks: {
@@ -11625,7 +11538,6 @@
                 };
 
                 var LinearScale = Chart.LinearScaleBase.extend({
-
                     determineDataLimits: function() {
                         var me = this;
                         var opts = me.options;
@@ -11710,7 +11622,6 @@
                                 me.min = me.min === null ? minVal : Math.min(me.min, minVal);
                                 me.max = me.max === null ? maxVal : Math.max(me.max, maxVal);
                             });
-
                         } else {
                             helpers.each(datasets, function(dataset, datasetIndex) {
                                 var meta = chart.getDatasetMeta(datasetIndex);
@@ -11798,9 +11709,7 @@
                     }
                 });
                 Chart.scaleService.registerScaleType('linear', LinearScale, defaultConfig);
-
             };
-
         }, { "16": 16, "25": 25, "36": 36 }], 46: [function(require, module, exports) {
             'use strict';
 
@@ -11860,9 +11769,7 @@
                 return ticks;
             }
 
-
             module.exports = function(Chart) {
-
                 var noop = helpers.noop;
 
                 Chart.LinearScaleBase = Chart.Scale.extend({
@@ -11988,7 +11895,6 @@
                     }
                 });
             };
-
         }, { "36": 36 }]
     }, {}, [6])(6)
 });

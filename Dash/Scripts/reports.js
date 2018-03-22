@@ -1,4 +1,4 @@
-/*!
+﻿/*!
  * Wraps functionality for displaying reports.
  */
 (function($, Draggabilly, ShareForm, ReportDetails) {
@@ -11,7 +11,7 @@
      * Update zIndex of column being dragged so it is on top.
      * @param {Event} event - Original mousedown or touchstart event
      */
-    var startDrag = function (event) {
+    var startDrag = function(event) {
         var target = $.hasClass(event.target, 'column-item') ? event.target : event.target.parentNode;
         target.style['z-index'] = 9999;
     };
@@ -21,7 +21,7 @@
      * @param {Event} event - Original mouseup or touchend event
      * @param {MouseEvent|Touch} pointer - Event object that has .pageX and .pageY
      */
-    var stopDrag = function (event, pointer) {
+    var stopDrag = function(event, pointer) {
         var target = $.hasClass(event.target, 'column-item') ? event.target : event.target.parentNode;
         var isLeft = pointer.x + target.offsetWidth / 2 < document.documentElement.clientWidth / 2;
         var newPos = Math.max(Math.round(target.offsetTop / target.offsetHeight), 0);
@@ -54,7 +54,7 @@
      * @param {Object} b - Object for second column.
      * @returns {bool} True if first column should be after second column, else false;
      */
-    var columnSort = function (a, b) {
+    var columnSort = function(a, b) {
         return a.offsetTop > b.offsetTop;
     };
 
@@ -63,8 +63,8 @@
      * @param {Node[]} items - Array of column nodes.
      * @param {bool} isLeft - True if the left column list, else false.
      */
-    var updateList = function (items, isLeft) {
-        items.forEach(function (x, i) {
+    var updateList = function(items, isLeft) {
+        items.forEach(function(x, i) {
             updateColumn(x, i, isLeft);
         });
     };
@@ -75,7 +75,7 @@
      * @param {number} index - New index of the column in the list.
      * @param {bool} isLeft - True if the column is in the left list, else false.
      */
-    var updateColumn = function (element, index, isLeft) {
+    var updateColumn = function(element, index, isLeft) {
         element.className = element.className.replace(/column-item-y-([0-9]*)/i, '').trim() + ' column-item-y-' + index;
         var input = $.get('.column-grid-display-order', element);
         if (input) {
@@ -90,8 +90,8 @@
     /**
      * Initialize the report column selector.
      */
-    $.on(document, 'columnSelectorLoad', function () {
-        $.getAll('.column-item').forEach(function (x) {
+    $.on(document, 'columnSelectorLoad', function() {
+        $.getAll('.column-item').forEach(function(x) {
             new Draggabilly(x).on('dragStart', startDrag).on('dragEnd', stopDrag);
         });
     });
@@ -118,7 +118,7 @@
     /**
      * Clean up when closing the report dialog.
      */
-    $.on(document, 'reportUnload', function () {
+    $.on(document, 'reportUnload', function() {
         var dlg = $.dialogs.getActiveDialog();
         var report = _reports[dlg.getId()];
         if (report) {
@@ -145,7 +145,7 @@
     /**
      * Clean up when the report share dialog closes.
      */
-    $.on(document, 'reportShareUnload', function () {
+    $.on(document, 'reportShareUnload', function() {
         var dlg = $.dialogs.getActiveDialog();
         var share = _shares[dlg.getId()];
         if (share) {

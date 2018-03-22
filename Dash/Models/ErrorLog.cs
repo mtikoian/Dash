@@ -2,9 +2,6 @@
 
 namespace Dash.Models
 {
-    /// <summary>
-    /// ErrorLog is only for logging errors.
-    /// </summary>
     public class ErrorLog : BaseModel
     {
         public string Host { get; set; }

@@ -2,10 +2,10 @@
 {
     public interface IAppConfiguration
     {
-        bool IsDevelopment { get; }
         string CryptKey { get; }
         DatabaseConfiguration Database { get; }
-        MembershipConfiguration Membership { get; }
+        bool IsDevelopment { get; }
         MailConfiguration Mail { get; }
+        MembershipConfiguration Membership { get; }
     }
 }

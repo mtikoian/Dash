@@ -1,10 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc.Controllers;
+﻿using System.Security.Claims;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Filters;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using System.Linq;
-using System;
 
 namespace Dash.Utils
 {

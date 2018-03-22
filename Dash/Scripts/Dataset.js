@@ -35,7 +35,7 @@
             columnUpdateFn: this.loadColumnList.bind(this)
         });
         this.joinForm.run();
-        
+
         this.columnForm = new ColumnForm({
             content: opts.content,
             wantsHelp: opts.wantsHelp,

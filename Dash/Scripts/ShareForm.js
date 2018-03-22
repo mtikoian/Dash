@@ -44,7 +44,7 @@
      */
     ShareForm.prototype.userSelectAttr = function(share, index) {
         var res = {
-            name:  this.formName + '[' + index + '].UserId', class: 'form-control custom-select' + ($.hasPositiveValue(share.userId) || $.hasPositiveValue(share.roleId) ? '' : ' mform-control-error'),
+            name: this.formName + '[' + index + '].UserId', class: 'form-control custom-select' + ($.hasPositiveValue(share.userId) || $.hasPositiveValue(share.roleId) ? '' : ' mform-control-error'),
             placeholder: $.resx('selectUser'), onchange: this.set.bind(this, index, 'userId'), value: share.userId
         };
         if ($.hasPositiveValue(share.roleId)) {
@@ -99,7 +99,7 @@
                     m('.float-right', [
                         m('button.btn.btn-info.mr-2', { type: 'button', role: 'button', onclick: self.addRecord.bind(self) }, $.resx('add')),
                         m('button.btn.btn-warning', {
-                            type: 'button', role: 'button',  disabled: !self.hasRecords(),
+                            type: 'button', role: 'button', disabled: !self.hasRecords(),
                             onclick: self.hasRecords() ? self.deleteAllRecords.bind(self) : $.noop
                         }, $.resx('deleteAll'))
                     ])

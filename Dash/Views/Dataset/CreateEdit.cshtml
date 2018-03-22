@@ -1,16 +1,16 @@
-@using Dash.I18n
+﻿@using Dash.I18n
 @using Dash.Models
 @model Dataset
 
 @using (Html.BeginBootForm(Model.FormAction, "Dataset", null, Model.IsCreate ? Datasets.CreateDataset : Datasets.EditDataset, "datasetFormLoad",
-    Url.Action("FormOptions", "Dataset"), new {
-        @class = "dataset-form",
-        @data_table_url = @Url.Action("Sources"),
-        @data_column_url = @Url.Action("TableColumns"),
-        @data_import_url = @Url.Action("ReadSchema"),
-        @data_close_event = "datasetFormUnload"
-    }, method: Model.FormMethod)) {
-
+   Url.Action("FormOptions", "Dataset"), new {
+       @class = "dataset-form",
+       @data_table_url = @Url.Action("Sources"),
+       @data_column_url = @Url.Action("TableColumns"),
+       @data_import_url = @Url.Action("ReadSchema"),
+       @data_close_event = "datasetFormUnload"
+   }, method: Model.FormMethod))
+{
     @Html.HiddenFor(model => model.Id, new { @class = "dataset-id" })
 
     <div class="col-12">
@@ -44,16 +44,16 @@
                     </div>
 
                     <div class="col-6">
-                        @Html.LabelInputFor(model => model.DateFormat, groupAddOn: Html.InputGroupButton("DateFormat", Html.Icon("list-numbered", false).ToString(), Model.DefaultDateFormats))
-                        @Html.LabelInputFor(model => model.CurrencyFormat, groupAddOn: Html.InputGroupButton("CurrencyFormat", Html.Icon("list-numbered", false).ToString(), Model.DefaultCurrencyFormats))
+                        @Html.LabelInputFor(model => model.DateFormat, groupAddOn: Html.InputGroupButton("DateFormat", Html.Icon("list-numbered", false), Model.DefaultDateFormats))
+                        @Html.LabelInputFor(model => model.CurrencyFormat, groupAddOn: Html.InputGroupButton("CurrencyFormat", Html.Icon("list-numbered", false), Model.DefaultCurrencyFormats))
 
                         <div class="form-group row">
-                            @Html.ControlLabel("roleIds", Datasets.Roles)
+                            @Html.ControlLabel("RoleIds", Datasets.Roles)
                             <div class="col-8 checkbox-block">
                                 @foreach (var role in Model.GetAllRoles())
                                 {
-                                    @Html.CustomCheckbox("roleIds", Html.IsChecked(Model.DatasetRole, x => x.RoleId == role.Id, (int[])ViewBag.SelectedRoleIds, role.Id), 
-                                        role.Id.ToString(), role.Name, $"dataset_role_{role.Id}")
+                                    @Html.CustomCheckbox("RoleIds", Html.IsChecked(Model.DatasetRole, x => x.RoleId == role.Id, (int[])ViewBag.SelectedRoleIds, role.Id),
+                                                                           role.Id.ToString(), role.Name, $"dataset_role_{role.Id}")
                                 }
                                 @Html.HelpFor(model => model.DatasetRole, false, true)
                             </div>

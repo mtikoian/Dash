@@ -82,7 +82,7 @@
             columnFn: this.getColumnList.bind(this)
         });
         this.filterForm.run();
-        
+
         this.groupForm = new GroupForm({
             content: opts.content,
             groups: opts.groups,

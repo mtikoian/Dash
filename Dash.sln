@@ -3,11 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dash", "Dash\Dash.csproj", "{A83AC1B8-F676-4639-BFD8-CD1A97D20A91}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dash", "Dash\Dash.csproj", "{A83AC1B8-F676-4639-BFD8-CD1A97D20A91}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dash.I18n", "Dash.I18n\Dash.I18n.csproj", "{06D32664-4F90-4D6D-B4B8-B46C7DDB9062}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dash.I18n", "Dash.I18n\Dash.I18n.csproj", "{06D32664-4F90-4D6D-B4B8-B46C7DDB9062}"
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Dash.Database", "Dash.Database\Dash.Database.sqlproj", "{AACD709E-7F58-4ADA-9F8B-9B36022024FC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B1DBC1AD-9A08-4070-9A4E-DDED91A15D73}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

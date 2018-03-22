@@ -1,5 +1,5 @@
-﻿using Jil;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using Jil;
 
 namespace Dash.Models
 {

@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Linq;
 using System.Collections.Generic;
 using Dash.Configuration;
 using Dash.I18n;
@@ -60,13 +60,13 @@ namespace Dash.Controllers
         public IActionResult Index()
         {
             return PartialView(new Table("tableUsers", Url.Action("List"), new List<TableColumn> {
-                new TableColumn("UID", Users.UID, Table.EditLink($"{Url.Action("Edit")}/{{id}}", "User", hasAccess: User.IsInRole("user.edit"))),
+                new TableColumn("uid", Users.UID, Table.EditLink($"{Url.Action("Edit")}/{{id}}", "User", hasAccess: User.IsInRole("user.edit"))),
                 new TableColumn("firstName", Users.FirstName),
                 new TableColumn("lastName", Users.LastName),
                 new TableColumn("email", Users.Email),
                 new TableColumn("actions", Core.Actions, sortable: false, links: new List<TableLink> {
                     Table.EditButton($"{Url.Action("Edit")}/{{id}}", "User", hasAccess: User.IsInRole("user.edit")),
-                    Table.DeleteButton($"{Url.Action("Delete")}/{{id}}", "User", String.Format(Core.ConfirmDeleteBody, Users.UserLower), User.IsInRole("user.delete"))
+                    Table.DeleteButton($"{Url.Action("Delete")}/{{id}}", "User", string.Format(Core.ConfirmDeleteBody, Users.UserLower), User.IsInRole("user.delete"))
                 })
             }));
         }

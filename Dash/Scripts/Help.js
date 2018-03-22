@@ -1,9 +1,9 @@
 ﻿/*!
  * Help mithril component. Shows input groups with help button.
  */
-(function (root, factory) {
+(function(root, factory) {
     root.Help = factory(root.m, root.$, root.Alertify);
-})(this, function (m, $, Alertify) {
+})(this, function(m, $, Alertify) {
     'use strict';
 
     var Help = {

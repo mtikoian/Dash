@@ -1,5 +1,5 @@
+﻿using System.Collections.Generic;
 using Dash.I18n;
-using System.Collections.Generic;
 
 namespace Dash.Models
 {

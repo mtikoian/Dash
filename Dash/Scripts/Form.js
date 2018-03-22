@@ -1,4 +1,4 @@
-/*!
+﻿/*!
  * Mithril based form component. For repetitive form elements.
  */
 (function(root, factory) {
@@ -165,7 +165,7 @@
                 e.target.onclick.call(this, e);
             }
         },
-        
+
         /**
          * Create the mithril node to show help wrapped around the provided content.
          * @param {string} helpBody - Content of the help dialog.

@@ -1,7 +1,7 @@
-/*!
+﻿/*!
  * Contains custom events.
  */
-(function ($) {
+(function($) {
     'use strict';
 
     /**

@@ -1,7 +1,11 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.IO;
+using System.Linq;
+using System.Linq.Expressions;
 using Dash.I18n;
-using Dash.Models;
 using Microsoft.AspNetCore.Html;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Internal;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
@@ -11,12 +15,6 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Mvc.ViewFeatures.Internal;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.IO;
-using System.Linq;
-using System.Linq.Expressions;
 
 namespace Dash
 {
@@ -27,14 +25,6 @@ namespace Dash
         Info,
         Danger,
         Primary
-    }
-
-    public enum HttpVerbs
-    {
-        Get,
-        Put,
-        Post,
-        Delete
     }
 
     public enum DashClasses
@@ -52,6 +42,14 @@ namespace Dash
         DashConfirm,
         DashDialog,
         DashPrompt
+    }
+
+    public enum HttpVerbs
+    {
+        Get,
+        Put,
+        Post,
+        Delete
     }
 
     /// <summary>

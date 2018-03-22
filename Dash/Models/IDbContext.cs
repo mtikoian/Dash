@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.Caching.Memory;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Common;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Dash.Models
 {

@@ -1,10 +1,10 @@
-/*!
+﻿/*!
  * Library for storing widget positions and detecting collisions.
  */
-(function (root, factory) {
+(function(root, factory) {
     // Assume a traditional browser.
     root.Rect = factory(root.$);
-})(this, function ($) {
+})(this, function($) {
     'use strict';
 
     /**
@@ -21,14 +21,14 @@
         this.height = $.coalesce(height, 0);
         this.updated = false;
     }
-    
+
     Rect.prototype = {
         /**
          * Check if rect intersects with this rect.
          * @param {Rect} rect - Rect to check for intersection with.
          * @returns {bool} True if the rectangles collide, else false.
          */
-        overlaps: function (rect) {
+        overlaps: function(rect) {
             var thisRight = this.x + this.width;
             var thisBottom = this.y + this.height;
             var rectRight = rect.x + rect.width;

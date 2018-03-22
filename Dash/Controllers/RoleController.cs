@@ -78,7 +78,7 @@ namespace Dash.Controllers
                 new TableColumn("name", Roles.Name, Table.EditLink($"{Url.Action("Edit")}/{{id}}", "Role", hasAccess: User.IsInRole("role.edit"))),
                 new TableColumn("actions", Core.Actions, sortable: false, links: new List<TableLink> {
                     Table.EditButton($"{Url.Action("Edit")}/{{id}}", "Role", hasAccess: User.IsInRole("role.edit")),
-                    Table.DeleteButton($"{Url.Action("Delete")}/{{id}}", "Role", String.Format(Core.ConfirmDeleteBody, Roles.RoleLower), User.IsInRole("role.delete")),
+                    Table.DeleteButton($"{Url.Action("Delete")}/{{id}}", "Role", string.Format(Core.ConfirmDeleteBody, Roles.RoleLower), User.IsInRole("role.delete")),
                     Table.CopyButton($"{Url.Action("Copy")}/{{id}}", "Role", Roles.CopyBody, User.IsInRole("role.copy"))
                 })
             }));

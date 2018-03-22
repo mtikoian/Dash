@@ -1,10 +1,10 @@
-/*!
+﻿/*!
  * Lightweight date library
  * https://github.com/taylorhakes/fecha
- * 
+ *
  * Modified to add date manipulation methods similar to moment.js.
  */
-(function ($) {
+(function($) {
     'use strict';
 
     /**
@@ -18,7 +18,7 @@
     var fourDigits = /\d{4}/;
     var word = /[0-9]*['a-z\u00A0-\u05FF\u0700-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+|[\u0600-\u06FF/]+(\s*?[\u0600-\u06FF]+){1,2}/i;
     var literal = /\[([^]*?)\]/gm;
-    var noop = function () { };
+    var noop = function() { };
 
     /**
      * Abbreviate a string.
@@ -40,7 +40,7 @@
      * @returns {string[]} Updated array of month names.
      */
     function monthUpdate(arrName) {
-        return function (d, v, i18n) {
+        return function(d, v, i18n) {
             var index = i18n[arrName].indexOf(v.charAt(0).toUpperCase() + v.substr(1).toLowerCase());
             if (~index) {
                 d.month = index;
@@ -79,141 +79,141 @@
     };
 
     var formatFlags = {
-        D: function (dateObj) {
+        D: function(dateObj) {
             return dateObj.getDate();
         },
-        DD: function (dateObj) {
+        DD: function(dateObj) {
             return pad(dateObj.getDate());
         },
-        Do: function (dateObj, i18n) {
+        Do: function(dateObj, i18n) {
             return i18n.DoFn(dateObj.getDate());
         },
-        d: function (dateObj) {
+        d: function(dateObj) {
             return dateObj.getDay();
         },
-        dd: function (dateObj) {
+        dd: function(dateObj) {
             return pad(dateObj.getDay());
         },
-        ddd: function (dateObj, i18n) {
+        ddd: function(dateObj, i18n) {
             return i18n.dayNamesShort[dateObj.getDay()];
         },
-        dddd: function (dateObj, i18n) {
+        dddd: function(dateObj, i18n) {
             return i18n.dayNames[dateObj.getDay()];
         },
-        M: function (dateObj) {
+        M: function(dateObj) {
             return dateObj.getMonth() + 1;
         },
-        MM: function (dateObj) {
+        MM: function(dateObj) {
             return pad(dateObj.getMonth() + 1);
         },
-        MMM: function (dateObj, i18n) {
+        MMM: function(dateObj, i18n) {
             return i18n.monthNamesShort[dateObj.getMonth()];
         },
-        MMMM: function (dateObj, i18n) {
+        MMMM: function(dateObj, i18n) {
             return i18n.monthNames[dateObj.getMonth()];
         },
-        YY: function (dateObj) {
+        YY: function(dateObj) {
             return String(dateObj.getFullYear()).substr(2);
         },
-        YYYY: function (dateObj) {
+        YYYY: function(dateObj) {
             return dateObj.getFullYear();
         },
-        h: function (dateObj) {
+        h: function(dateObj) {
             return dateObj.getHours() % 12 || 12;
         },
-        hh: function (dateObj) {
+        hh: function(dateObj) {
             return pad(dateObj.getHours() % 12 || 12);
         },
-        H: function (dateObj) {
+        H: function(dateObj) {
             return dateObj.getHours();
         },
-        HH: function (dateObj) {
+        HH: function(dateObj) {
             return pad(dateObj.getHours());
         },
-        m: function (dateObj) {
+        m: function(dateObj) {
             return dateObj.getMinutes();
         },
-        mm: function (dateObj) {
+        mm: function(dateObj) {
             return pad(dateObj.getMinutes());
         },
-        s: function (dateObj) {
+        s: function(dateObj) {
             return dateObj.getSeconds();
         },
-        ss: function (dateObj) {
+        ss: function(dateObj) {
             return pad(dateObj.getSeconds());
         },
-        S: function (dateObj) {
+        S: function(dateObj) {
             return Math.round(dateObj.getMilliseconds() / 100);
         },
-        SS: function (dateObj) {
+        SS: function(dateObj) {
             return pad(Math.round(dateObj.getMilliseconds() / 10), 2);
         },
-        SSS: function (dateObj) {
+        SSS: function(dateObj) {
             return pad(dateObj.getMilliseconds(), 3);
         },
-        a: function (dateObj, i18n) {
+        a: function(dateObj, i18n) {
             return dateObj.getHours() < 12 ? i18n.amPm[0] : i18n.amPm[1];
         },
-        A: function (dateObj, i18n) {
+        A: function(dateObj, i18n) {
             return dateObj.getHours() < 12 ? i18n.amPm[0].toUpperCase() : i18n.amPm[1].toUpperCase();
         },
-        ZZ: function (dateObj) {
+        ZZ: function(dateObj) {
             var o = dateObj.getTimezoneOffset();
             return (o > 0 ? '-' : '+') + pad(Math.floor(Math.abs(o) / 60) * 100 + Math.abs(o) % 60, 4);
         },
-        l: function (dateObj) {
+        l: function(dateObj) {
             var onejan = new Date(dateObj.getFullYear(), 0, 1);
             return Math.ceil((((dateObj - onejan) / 86400000) + onejan.getDay() + 1) / 7);
         },
-        ll: function (dateObj) {
+        ll: function(dateObj) {
             var onejan = new Date(dateObj.getFullYear(), 0, 1);
             return pad(Math.ceil((((dateObj - onejan) / 86400000) + onejan.getDay() + 1) / 7), 2);
         },
-        q: function (dateObj) {
+        q: function(dateObj) {
             return (Math.ceil(dateObj.getMonth() + 1 / 3));
         }
     };
 
     var parseFlags = {
-        D: [twoDigits, function (d, v) {
+        D: [twoDigits, function(d, v) {
             d.day = v;
         }],
-        Do: [new RegExp(twoDigits.source + word.source), function (d, v) {
+        Do: [new RegExp(twoDigits.source + word.source), function(d, v) {
             d.day = parseInt(v, 10);
         }],
-        M: [twoDigits, function (d, v) {
+        M: [twoDigits, function(d, v) {
             d.month = v - 1;
         }],
-        YY: [twoDigits, function (d, v) {
+        YY: [twoDigits, function(d, v) {
             var da = new Date(), cent = +('' + da.getFullYear()).substr(0, 2);
             d.year = '' + (v > 68 ? cent - 1 : cent) + v;
         }],
-        h: [twoDigits, function (d, v) {
+        h: [twoDigits, function(d, v) {
             d.hour = v;
         }],
-        m: [twoDigits, function (d, v) {
+        m: [twoDigits, function(d, v) {
             d.minute = v;
         }],
-        s: [twoDigits, function (d, v) {
+        s: [twoDigits, function(d, v) {
             d.second = v;
         }],
-        YYYY: [fourDigits, function (d, v) {
+        YYYY: [fourDigits, function(d, v) {
             d.year = v;
         }],
-        S: [/\d/, function (d, v) {
+        S: [/\d/, function(d, v) {
             d.millisecond = v * 100;
         }],
-        SS: [/\d{2}/, function (d, v) {
+        SS: [/\d{2}/, function(d, v) {
             d.millisecond = v * 10;
         }],
-        SSS: [threeDigits, function (d, v) {
+        SSS: [threeDigits, function(d, v) {
             d.millisecond = v;
         }],
         d: [twoDigits, noop],
         ddd: [word, noop],
         MMM: [word, monthUpdate('monthNamesShort')],
         MMMM: [word, monthUpdate('monthNames')],
-        a: [word, function (d, v, i18n) {
+        a: [word, function(d, v, i18n) {
             var val = v.toLowerCase();
             if (val === i18n.amPm[0]) {
                 d.isPm = false;
@@ -221,7 +221,7 @@
                 d.isPm = true;
             }
         }],
-        ZZ: [/[+-]\d\d:?\d\d/, function (d, v) {
+        ZZ: [/[+-]\d\d:?\d\d/, function(d, v) {
             var parts = (v + '').match(/([+-]|\d\d)/gi), minutes;
 
             if (parts) {
@@ -259,7 +259,7 @@
      * @param {Object} i18nSettings - i18n resources.
      * @return {string} Formatted date string.
      */
-    fecha.format = function (dateObj, mask, i18nSettings) {
+    fecha.format = function(dateObj, mask, i18nSettings) {
         var i18n = i18nSettings || fecha.i18n;
 
         if (typeof dateObj === 'number') {
@@ -276,16 +276,16 @@
         var literals = [];
 
         // Make literals inactive by replacing them with ??
-        mask = mask.replace(literal, function ($0, $1) {
+        mask = mask.replace(literal, function($0, $1) {
             literals.push($1);
             return '??';
         });
         // Apply formatting rules
-        mask = mask.replace(token, function ($0) {
+        mask = mask.replace(token, function($0) {
             return $0 in formatFlags ? formatFlags[$0](dateObj, i18n) : $0.slice(1, $0.length - 1);
         });
         // Inline literal values back into the formatted value
-        return mask.replace(/\?\?/g, function () {
+        return mask.replace(/\?\?/g, function() {
             return literals.shift();
         });
     };
@@ -298,7 +298,7 @@
      * @param {Object} i18nSettings - i18n resources.
      * @returns {Date|boolean} JS date object or false.
      */
-    fecha.parse = function (dateStr, format, i18nSettings) {
+    fecha.parse = function(dateStr, format, i18nSettings) {
         var i18n = i18nSettings || fecha.i18n;
 
         if (typeof format !== 'string') {
@@ -324,14 +324,14 @@
             isUtc = true;
         }
 
-        format.replace(token, function ($0) {
+        format.replace(token, function($0) {
             if (parseFlags[$0]) {
                 var info = parseFlags[$0];
                 var index = dateStr.search(info[0]);
                 if (!~index) {
                     isValid = false;
                 } else {
-                    dateStr.replace(info[0], function (result) {
+                    dateStr.replace(info[0], function(result) {
                         info[1](dateInfo, result, i18n);
                         dateStr = dateStr.substr(index + result.length);
                         return result;

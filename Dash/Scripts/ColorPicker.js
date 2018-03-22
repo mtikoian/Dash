@@ -102,7 +102,6 @@
             }
         },
 
-
         /**
          * Select an item from the list by index.
          * @param {number} index - Filtered list item index.
@@ -151,8 +150,7 @@
                 type: 'button', role: 'button', disabled: this.opts.disabled,
                 onclick: this.showEditor.bind(this),
                 style: 'background-color: ' + this.opts.value
-                }, [m.trust('&nbsp;'), m('i.dash.colorpicker-indicator', { class: this.opts.active ? 'dash-sort-up' : 'dash-sort-down' }) ]),
-            this.opts.active && m('.editor', [
+            }, [m.trust('&nbsp;'), m('i.dash.colorpicker-indicator', { class: this.opts.active ? 'dash-sort-up' : 'dash-sort-down' })]), this.opts.active && m('.editor', [
                 m('.swatches',
                     m('button.btn.btn-secondary.swatch', {
                         type: 'button', role: 'button', onclick: this.close.bind(this)
@@ -165,8 +163,7 @@
                         }, m('i.dash.dash-cancel'));
                     })
                 )
-            ]),
-            m('input', { type: 'hidden', name: this.opts.name, value: this.opts.value }));
+            ]), m('input', { type: 'hidden', name: this.opts.name, value: this.opts.value }));
         }
     };
 

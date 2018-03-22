@@ -1,9 +1,9 @@
 ﻿/*!
  * Autocomplete mithril component.
  */
-(function (root, factory) {
+(function(root, factory) {
     root.Autocomplete = factory(root.m, root.$);
-})(this, function (m, $) {
+})(this, function(m, $) {
     'use strict';
 
     var _keys = {
@@ -211,7 +211,7 @@
          * Create HTML to display component.
          * @returns {Object} Mithril vnode
          */
-        view: function () {
+        view: function() {
             var self = this;
             return m('.mithril-autocomplete-container.autocomplete', { class: self.opts.active ? 'autocomplete-active' : '' },
                 m('input.form-control', {

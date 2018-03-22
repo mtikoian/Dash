@@ -2,9 +2,9 @@
  * DatePicker mithril component.
  * Modified from https://github.com/CreaturesInUnitards/mithril-datepicker
  */
-(function (root, factory) {
+(function(root, factory) {
     root.DatePicker = factory(root.m, root.$);
-})(this, function (m, $) {
+})(this, function(m, $) {
     'use strict';
 
     var _keys = {
@@ -229,52 +229,52 @@
     };
 
     var MonthView = {
-        view: function (vnode) {
+        view: function(vnode) {
             var props = vnode.attrs.props;
             var prevDates = daysFromLastMonth(props);
             var theseDates = daysFromThisMonth(props);
             var nextDates = daysFromNextMonth(prevDates, theseDates);
             var theseWeekdays = props.days || days;
             return m('.calendar',
-                m('.weekdays', theseWeekdays.map(function (_, idx) {
+                m('.weekdays', theseWeekdays.map(function(_, idx) {
                     var day = wrapAround(idx + props.weekStart, theseWeekdays);
                     return m('.day.dummy', day.substring(0, 2));
                 })),
                 m('.weekdays', {
-                    onclick: function (e) {
+                    onclick: function(e) {
                         chooseDate(props, e);
                     }
                 },
-                prevDates.map(function (date) {
-                    return m('button.day.other-scope', date);
-                }),
-                theseDates.map(function (date) {
-                    return m('button.day', { class: classForBox(props.date.getDate(), date) }, m('.number', date));
-                }),
-                nextDates.map(function (date) {
-                    return m('button.day.other-scope', date);
-                })),
+                    prevDates.map(function(date) {
+                        return m('button.day.other-scope', date);
+                    }),
+                    theseDates.map(function(date) {
+                        return m('button.day', { class: classForBox(props.date.getDate(), date) }, m('.number', date));
+                    }),
+                    nextDates.map(function(date) {
+                        return m('button.day.other-scope', date);
+                    })),
                 m('.time',
                     m('select.form-control.custom-select', {
-                        value: props.date.getHours(), onchange: function (e) {
+                        value: props.date.getHours(), onchange: function(e) {
                             props.date.setHours(e.target.value);
                             props.date.setHours(e.target.value);
                             if (props.onchange) {
                                 props.onchange(props.date);
                             }
                         }
-                    }, hours.map(function (x) {
+                    }, hours.map(function(x) {
                         return m('option', { value: x }, ('00' + x).slice(-2));
                     })),
                     m('select.form-control.custom-select', {
-                        value: props.date.getMinutes(), onchange: function (e) {
+                        value: props.date.getMinutes(), onchange: function(e) {
                             props.date.setMinutes(e.target.value);
                             props.date.setMinutes(e.target.value);
                             if (props.onchange) {
                                 props.onchange(props.date);
                             }
                         }
-                    }, minutes.map(function (x) {
+                    }, minutes.map(function(x) {
                         return m('option', { value: x }, ('00' + x).slice(-2));
                     }))
                 )
@@ -283,18 +283,20 @@
     };
 
     var YearView = {
-        view: function (vnode) {
+        view: function(vnode) {
             var props = vnode.attrs.props;
             var theseMonths = props.months || months;
             return m('.calendar',
                 m('.months',
-                    theseMonths.map(function (month, idx) {
-                        return m('button.month', { class: classForBox(props.date.getMonth(), idx), onclick: function () {
-                            var newDate = new Date(props.date);
-                            newDate.setMonth(idx);
-                            props.date = pushToLastDay(props.date, newDate);
-                            props.view = 0;
-                        } }, m('.number', month.substring(0, 3)));
+                    theseMonths.map(function(month, idx) {
+                        return m('button.month', {
+                            class: classForBox(props.date.getMonth(), idx), onclick: function() {
+                                var newDate = new Date(props.date);
+                                newDate.setMonth(idx);
+                                props.date = pushToLastDay(props.date, newDate);
+                                props.view = 0;
+                            }
+                        }, m('.number', month.substring(0, 3)));
                     })
                 )
             );
@@ -302,21 +304,21 @@
     };
 
     var DecadeView = {
-        view: function (vnode) {
+        view: function(vnode) {
             var props = vnode.attrs.props;
             var decade = yearsForDecade(props.date);
             return m('.calendar',
                 m('.years',
-                    decade.map(function (year) {
+                    decade.map(function(year) {
                         return m('button.year', {
-                            class: classForBox(props.date.getFullYear(), year), onclick: function () {
+                            class: classForBox(props.date.getFullYear(), year), onclick: function() {
                                 var newDate = new Date(props.date);
                                 newDate.setFullYear(year);
                                 props.date = pushToLastDay(props.date, newDate);
                                 props.view = 1;
                             }
                         },
-                        m('.number', year));
+                            m('.number', year));
                     })
                 )
             );
@@ -324,14 +326,14 @@
     };
 
     var Editor = {
-        oncreate: function (vnode) {
-            requestAnimationFrame(function () {
+        oncreate: function(vnode) {
+            requestAnimationFrame(function() {
                 vnode.dom.classList.add('active');
             });
         },
-        onbeforeremove: function (vnode) {
+        onbeforeremove: function(vnode) {
             vnode.dom.classList.remove('active');
-            return new Promise(function (done) {
+            return new Promise(function(done) {
                 setTimeout(done, 200);
             });
         },
@@ -415,7 +417,7 @@
             }
             props.active = !props.active;
         },
-        view: function (vnode) {
+        view: function(vnode) {
             var props = vnode.state.props;
             return m('.mithril-date-picker-container', { class: ((props.active ? 'active' : '') + ' ' + props.class).trim() },
                 m('input.current-date.form-control', {

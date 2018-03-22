@@ -1,7 +1,7 @@
 ﻿/*!
  * Wraps dataset form functionality.
  */
-(function ($, Dataset) {
+(function($, Dataset) {
     'use strict';
 
     /**
@@ -9,11 +9,11 @@
      * @type {Object}
      */
     var _datasets = {};
-    
+
     /**
      * Initialize the dataset form when the datasetFormLoad event fires.
      */
-    $.on(document, 'datasetFormLoad', function () {
+    $.on(document, 'datasetFormLoad', function() {
         var form = $.dialogs.getActiveContent();
         if (!$.hasClass(form, 'dataset-form')) {
             return;
@@ -34,7 +34,7 @@
     /**
      * Destroy the form when the dialog closes.
      */
-    $.on(document, 'datasetFormUnload', function () {
+    $.on(document, 'datasetFormUnload', function() {
         if (!_datasets) {
             return;
         }

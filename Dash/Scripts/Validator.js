@@ -9,10 +9,10 @@
  *
  * Modified to use Dash's core library instead of jQuery, with unneeded functionality removed.
  */
-(function (factory) {
+(function(factory) {
     // Assume a traditional browser.
     window.Validator = factory($, Alertify);
-})(function ($, Alertify) {
+})(function($, Alertify) {
     'use strict';
 
     /**
@@ -20,7 +20,7 @@
      * @param {Node} element - Form to validate.
      * @param {Object} errorMsgs - Error messages for custom errors.
      */
-    var Validator = function (element, errorMsgs) {
+    var Validator = function(element, errorMsgs) {
         this.element = element;
         this.element.setAttribute('novalidate', true); // disable automatic native validation
         this.errorMsgs = $.extend({}, Validator._errors, errorMsgs || {});
@@ -61,10 +61,10 @@
      * @type {Object}
      */
     Validator.VALIDATORS = {
-        'native': function (el) {
+        'native': function(el) {
             return el.checkValidity();
         },
-        'match': function (el) {
+        'match': function(el) {
             var target = $.get('#' + el.getAttribute('data-match'), this.element);
             var res = !target ? false : el.value === target.value;
             if (res) {
@@ -74,7 +74,7 @@
             }
             return res;
         },
-        'minlength': function (el) {
+        'minlength': function(el) {
             var minlength = el.getAttribute('data-minlength');
             var res = !el.value || el.value.length >= minlength;
             if (res) {
@@ -94,7 +94,7 @@
          * Validate a single input element.
          * @param {Node} e - Element to validate
          */
-        validateInput: function (e) {
+        validateInput: function(e) {
             var el;
             if (this.isValidatableInput(e)) {
                 el = e;
@@ -128,7 +128,7 @@
          * Get all the validatable inputs in the form.
          * @returns {Node[]} Array of input elements.
          */
-        inputSelector: function () {
+        inputSelector: function() {
             var inputs = $.getAll('input,select,textarea', this.element);
             var length = inputs.length, i = 0, results = [];
             for (; i < length; i++) {
@@ -146,8 +146,8 @@
         /**
          * Get all the inputs in the form and remove error styling.
          */
-        resetAll: function () {
-            $.getAll('input,select,textarea', this.element).forEach(function (x) {
+        resetAll: function() {
+            $.getAll('input,select,textarea', this.element).forEach(function(x) {
                 $.removeClass(x, 'form-control-error');
             });
         },
@@ -157,7 +157,7 @@
          * @param {Node} input - Node to check.
          * @returns {bool} True if input is an input that can be validated.
          */
-        isValidatableInput: function (input) {
+        isValidatableInput: function(input) {
             return (input.tagName === 'INPUT' || input.tagName === 'SELECT' || input.tagName === 'TEXTAREA') && !input.getAttribute('disabled') && input.style.visibility !== 'hidden';
         },
 
@@ -166,7 +166,7 @@
          * @param {Node} el - Element to validate.
          * @returns {string[]} Array of error messages.
          */
-        runValidators: function (el) {
+        runValidators: function(el) {
             var errors = [];
 
             for (var key in Validator.VALIDATORS) {
@@ -189,7 +189,7 @@
         /**
          * Run validation for the form.
          */
-        validate: function () {
+        validate: function() {
             var inputs = this.inputSelector();
             var length = inputs.length, i = 0;
             for (; i < length; i++) {
@@ -202,7 +202,7 @@
          * @param {Node} el - Element to display errors for.
          * @param {string[]} errors - List of error messages.
          */
-        showErrors: function (el, errors) {
+        showErrors: function(el, errors) {
             if (!errors.length) {
                 return;
             }
@@ -228,7 +228,7 @@
 
             var tab = $.closest('.tab-pane', el);
             if (tab) {
-                // add error class to tab 
+                // add error class to tab
                 var id = tab.getAttribute('aria-labelledby');
                 if (id) {
                     $.addClass($.get('#' + id), 'tab-validation-error');
@@ -240,7 +240,7 @@
          * Hide all error messages for an element.
          * @param {Node} el - Element to hide errors for.
          */
-        clearErrors: function (el) {
+        clearErrors: function(el) {
             $.removeClass(el, 'form-control-error');
 
             var group = $.closest('.form-group', el);
@@ -265,7 +265,7 @@
          * Check if the validator found any errors.
          * @returns {bool} True if there are any errors.
          */
-        hasErrors: function () {
+        hasErrors: function() {
             return $.getAll('.form-control-error', this.element).length;
         },
 
@@ -273,7 +273,7 @@
          * Validate the form and prevent submit if there are errors.
          * @param {Event} e - Form submit event.
          */
-        onSubmit: function (e) {
+        onSubmit: function(e) {
             this.validate();
             if (this.hasErrors()) {
                 e.preventDefault();

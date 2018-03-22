@@ -1,4 +1,4 @@
-/*!
+﻿/*!
  * Draggabilly PACKAGED v2.1.1
  * Make that shiz draggable
  * http://draggabilly.desandro.com
@@ -12,7 +12,7 @@
  * measure size of elements
  * MIT license
  */
-(function (root, factory) {
+(function(root, factory) {
     // Assume a traditional browser.
     root.getSize = factory(root.$);
 })(this, function factory($) {
@@ -165,7 +165,7 @@
 (function(root, factory) {
     // Assume a traditional browser.
     root.EvEmitter = factory();
-}(this, function () {
+}(this, function() {
     /**
      * Constructor for the event emitter.
      */
@@ -178,7 +178,7 @@
          * @param {Function} listener - Callback function
          * @returns {Undefined|Object} Returns undefined if the params aren't valid, else a reference to this for chaining.
          */
-        on: function (eventName, listener) {
+        on: function(eventName, listener) {
             if (!eventName || !listener) {
                 return;
             }
@@ -200,7 +200,7 @@
          * @param {Function} listener - Callback function
          * @returns {Undefined|Object} Returns undefined if the params aren't valid, else a reference to this for chaining.
          */
-        off: function (eventName, listener) {
+        off: function(eventName, listener) {
             var listeners = this._events && this._events[eventName];
             if (!listeners || !listeners.length) {
                 return;
@@ -219,13 +219,13 @@
          * @param {Array} args - Arguments for the callback.
          * @returns {Undefined|Object} Returns undefined if the params aren't valid, else a reference to this for chaining.
          */
-        emitEvent: function (eventName, args) {
+        emitEvent: function(eventName, args) {
             var listeners = this._events && this._events[eventName];
             if (!listeners || !listeners.length) {
                 return;
             }
             args = args || [];
-            listeners.forEach(function (x) {
+            listeners.forEach(function(x) {
                 x.apply(this, args);
             });
             return this;
@@ -242,7 +242,7 @@
  */
 
 /*jshint browser: true, undef: true, unused: true, strict: true */
-(function (root, factory) {
+(function(root, factory) {
     // Assume a traditional browser.
     root.Unipointer = factory(root.$, root, root.EvEmitter);
 }(this, function factory($, root, EvEmitter) {
@@ -258,7 +258,7 @@
      * Add an event to start dragging.
      * @param {Node} elem - Node to add the event to.
      */
-    proto.bindStartEvent = function (elem) {
+    proto.bindStartEvent = function(elem) {
         this._bindStartEvent(elem, true);
     };
 
@@ -266,7 +266,7 @@
      * Remove an event to start dragging.
      * @param {Node} elem - Node to remove the event from.
      */
-    proto.unbindStartEvent = function (elem) {
+    proto.unbindStartEvent = function(elem) {
         this._bindStartEvent(elem, false);
     };
 
@@ -276,7 +276,7 @@
      * @param {Boolean} isBind - will unbind if falsey.
      * @private
      */
-    proto._bindStartEvent = function (elem, isBind) {
+    proto._bindStartEvent = function(elem, isBind) {
         var bindMethod = $.coalesce(isBind, true) ? 'addEventListener' : 'removeEventListener';
 
         if (window.navigator.pointerEnabled) {
@@ -296,7 +296,7 @@
      * Trigger handler methods for events
      * @param {Event} event - Event to trigger.
      */
-    proto.handleEvent = function (event) {
+    proto.handleEvent = function(event) {
         var method = 'on' + event.type;
         if (this[method]) {
             this[method](event);
@@ -308,7 +308,7 @@
      * @param {Touch[]} touches - Touch history
      * @returns {Touch} Touch event.
      */
-    proto.getTouch = function (touches) {
+    proto.getTouch = function(touches) {
         return $.findByKey(touches, 'identifier', this.pointerIdentifier);
     };
 
@@ -316,7 +316,7 @@
      * Handle a mouse click.
      * @param {Event} event - Click event.
      */
-    proto.onmousedown = function (event) {
+    proto.onmousedown = function(event) {
         // dismiss clicks from right or middle buttons
         var button = event.button;
         if (button && (button !== 0 && button !== 1)) {
@@ -329,7 +329,7 @@
      * Handle a touch.
      * @param {Touch} event - Touch event.
      */
-    proto.ontouchstart = function (event) {
+    proto.ontouchstart = function(event) {
         this._pointerDown(event, event.changedTouches[0]);
     };
 
@@ -337,7 +337,7 @@
      * Handle a mouse click for IE.
      * @param {Event} event - Click event.
      */
-    proto.onMSPointerDown = proto.onpointerdown = function (event) {
+    proto.onMSPointerDown = proto.onpointerdown = function(event) {
         this._pointerDown(event, event);
     };
 
@@ -347,7 +347,7 @@
      * @param {Event|Touch} pointer - Event object that has .pageX and .pageY.
      * @private
      */
-    proto._pointerDown = function (event, pointer) {
+    proto._pointerDown = function(event, pointer) {
         // dismiss other pointers
         if (this.isPointerDown) {
             return;
@@ -365,7 +365,7 @@
      * @param {Event} event - Original mousedown or touchstart event.
      * @param {Event|Touch} pointer - Event object that has .pageX and .pageY.
      */
-    proto.pointerDown = function (event, pointer) {
+    proto.pointerDown = function(event, pointer) {
         this._bindPostStartEvents(event);
         this.emitEvent('pointerDown', [event, pointer]);
     };
@@ -383,14 +383,14 @@
      * @param {Event} event - Original click/touch event.
      * @private
      */
-    proto._bindPostStartEvents = function (event) {
+    proto._bindPostStartEvents = function(event) {
         if (!event) {
             return;
         }
         // get proper events to match start event
         var events = postStartEvents[event.type];
         // bind events to node
-        events.forEach(function (eventName) {
+        events.forEach(function(eventName) {
             window.addEventListener(eventName, this);
         }, this);
         // save these arguments
@@ -402,12 +402,12 @@
      * @param {Event} event - Original click/touch event.
      * @private
      */
-    proto._unbindPostStartEvents = function () {
+    proto._unbindPostStartEvents = function() {
         // check for _boundEvents, in case dragEnd triggered twice (old IE8 bug)
         if (!this._boundPointerEvents) {
             return;
         }
-        this._boundPointerEvents.forEach(function (eventName) {
+        this._boundPointerEvents.forEach(function(eventName) {
             window.removeEventListener(eventName, this);
         }, this);
 
@@ -418,7 +418,7 @@
      * Event handler when the mouse moves.
      * @param {Event} event - Original click/touch event.
      */
-    proto.onmousemove = function (event) {
+    proto.onmousemove = function(event) {
         this._pointerMove(event, event);
     };
 
@@ -426,7 +426,7 @@
      * Event handler when the mouse moves for IE.
      * @param {Event} event - Original click/touch event.
      */
-    proto.onMSPointerMove = proto.onpointermove = function (event) {
+    proto.onMSPointerMove = proto.onpointermove = function(event) {
         if (event.pointerId === this.pointerIdentifier) {
             this._pointerMove(event, event);
         }
@@ -436,7 +436,7 @@
      * Event handler when the touch moves.
      * @param {Event} event - Original click/touch event.
      */
-    proto.ontouchmove = function (event) {
+    proto.ontouchmove = function(event) {
         var touch = this.getTouch(event.changedTouches);
         if (touch) {
             this._pointerMove(event, touch);
@@ -449,7 +449,7 @@
      * @param {Event|Touch} pointer - Event object that has .pageX and .pageY.
      * @private
      */
-    proto._pointerMove = function (event, pointer) {
+    proto._pointerMove = function(event, pointer) {
         this.pointerMove(event, pointer);
     };
 
@@ -458,7 +458,7 @@
      * @param {Event} event - Original mousedown or touchstart event.
      * @param {Event|Touch} pointer - Event object that has .pageX and .pageY.
      */
-    proto.pointerMove = function (event, pointer) {
+    proto.pointerMove = function(event, pointer) {
         this.emitEvent('pointerMove', [event, pointer]);
     };
 
@@ -466,7 +466,7 @@
      * Event handler when the mouse button is released.
      * @param {Event} event - Original click/touch event.
      */
-    proto.onmouseup = function (event) {
+    proto.onmouseup = function(event) {
         this._pointerUp(event, event);
     };
 
@@ -474,7 +474,7 @@
      * Event handler when the mouse button is released for IE.
      * @param {Event} event - Original click/touch event.
      */
-    proto.onMSPointerUp = proto.onpointerup = function (event) {
+    proto.onMSPointerUp = proto.onpointerup = function(event) {
         if (event.pointerId === this.pointerIdentifier) {
             this._pointerUp(event, event);
         }
@@ -484,7 +484,7 @@
      * Event handler when the touch is released.
      * @param {Event} event - Original click/touch event.
      */
-    proto.ontouchend = function (event) {
+    proto.ontouchend = function(event) {
         var touch = this.getTouch(event.changedTouches);
         if (touch) {
             this._pointerUp(event, touch);
@@ -497,7 +497,7 @@
      * @param {Event|Touch} pointer - Event object that has .pageX and .pageY.
      * @private
      */
-    proto._pointerUp = function (event, pointer) {
+    proto._pointerUp = function(event, pointer) {
         this._pointerDone();
         this.pointerUp(event, pointer);
     };
@@ -507,7 +507,7 @@
      * @param {Event} event - Original mousedown or touchstart event.
      * @param {Event|Touch} pointer - Event object that has .pageX and .pageY.
      */
-    proto.pointerUp = function (event, pointer) {
+    proto.pointerUp = function(event, pointer) {
         this.emitEvent('pointerUp', [event, pointer]);
     };
 
@@ -515,7 +515,7 @@
      * Event handler for when the dragging stops.
      * @private
      */
-    proto._pointerDone = function () {
+    proto._pointerDone = function() {
         // reset properties
         this.isPointerDown = false;
         delete this.pointerIdentifier;
@@ -530,7 +530,7 @@
      * Event handler when the mouse click is canceled for IE.
      * @param {Event} event - Original click/touch event.
      */
-    proto.onMSPointerCancel = proto.onpointercancel = function (event) {
+    proto.onMSPointerCancel = proto.onpointercancel = function(event) {
         if (event.pointerId === this.pointerIdentifier) {
             this._pointerCancel(event, event);
         }
@@ -540,7 +540,7 @@
      * Event handler when the touch is canceled.
      * @param {Event} event - Original click/touch event.
      */
-    proto.ontouchcancel = function (event) {
+    proto.ontouchcancel = function(event) {
         var touch = this.getTouch(event.changedTouches);
         if (touch) {
             this._pointerCancel(event, touch);
@@ -553,7 +553,7 @@
      * @param {Event|Touch} pointer - Event object that has .pageX and .pageY.
      * @private
      */
-    proto._pointerCancel = function (event, pointer) {
+    proto._pointerCancel = function(event, pointer) {
         this._pointerDone();
         this.pointerCancel(event, pointer);
     };
@@ -563,7 +563,7 @@
      * @param {Event} event - Original mousedown or touchstart event.
      * @param {Event|Touch} pointer - Event object that has .pageX and .pageY.
      */
-    proto.pointerCancel = function (event, pointer) {
+    proto.pointerCancel = function(event, pointer) {
         this.emitEvent('pointerCancel', [event, pointer]);
     };
 
@@ -572,7 +572,7 @@
      * @param {Event|Touch} pointer - Event object that has .pageX and .pageY.
      * @returns {Object} Object with x & y coordinates.
      */
-    Unipointer.getPointerPoint = function (pointer) {
+    Unipointer.getPointerPoint = function(pointer) {
         return {
             x: pointer.pageX,
             y: pointer.pageY
@@ -604,14 +604,14 @@
     /**
      * Add events for drag handle.
      */
-    proto.bindHandles = function () {
+    proto.bindHandles = function() {
         this._bindHandles(true);
     };
 
     /**
      * Remove events for drag handle.
      */
-    proto.unbindHandles = function () {
+    proto.unbindHandles = function() {
         this._bindHandles(false);
     };
 
@@ -619,14 +619,14 @@
      * Handle adding/removing events for the drag handle.
      * @param {Bool} isBind - Unbind if falsey.
      */
-    proto._bindHandles = function (isBind) {
+    proto._bindHandles = function(isBind) {
         isBind = $.coalesce(isBind, true);
         // extra bind logic
         var binderExtra;
         var navigator = window.navigator;
         if (navigator.pointerEnabled || navigator.msPointerEnabled) {
             var prop = navigator.pointerEnabled ? 'touchAction' : 'msTouchAction';
-            binderExtra = function (handle) {
+            binderExtra = function(handle) {
                 // disable scrolling on the element
                 handle.style[prop] = isBind ? 'none' : '';
             };
@@ -648,7 +648,7 @@
      * @param {Event} event - Original mousedown or touchstart event.
      * @param {Event|Touch} pointer - Event object that has .pageX and .pageY.
      */
-    proto.pointerDown = function (event, pointer) {
+    proto.pointerDown = function(event, pointer) {
         // dismiss range sliders
         if (event.target.nodeName === 'INPUT' && event.target.type === 'range') {
             // reset pointerDown logic
@@ -673,7 +673,7 @@
      * @param {Event} event - Original mousedown or touchstart event.
      * @param {Event|Touch} pointer - Event object that has .pageX and .pageY.
      */
-    proto._dragPointerDown = function (event, pointer) {
+    proto._dragPointerDown = function(event, pointer) {
         // track to see when dragging starts
         this.pointerDownPoint = Unipointer.getPointerPoint(pointer);
         if (this.canPreventDefaultOnPointerDown(event, pointer)) {
@@ -686,7 +686,7 @@
      * @param {Event} event - Original mousedown or touchstart event.
      * @returns {Bool} True if allowed to prevent default event, else false.
      */
-    proto.canPreventDefaultOnPointerDown = function (event) {
+    proto.canPreventDefaultOnPointerDown = function(event) {
         // prevent default, unless touchstart or <select>
         return event.target.nodeName !== 'SELECT';
     };
@@ -696,7 +696,7 @@
      * @param {Event} event - Original mousedown or touchstart event.
      * @param {Event|Touch} pointer - Event object that has .pageX and .pageY.
      */
-    proto.pointerMove = function (event, pointer) {
+    proto.pointerMove = function(event, pointer) {
         var moveVector = this._dragPointerMove(event, pointer);
         this.emitEvent('pointerMove', [event, pointer, moveVector]);
         this._dragMove(event, pointer, moveVector);
@@ -708,7 +708,7 @@
      * @param {Event|Touch} pointer - Event object that has .pageX and .pageY.
      * @returns {Object} Object with x & y coordinates.
      */
-    proto._dragPointerMove = function (event, pointer) {
+    proto._dragPointerMove = function(event, pointer) {
         var movePoint = Unipointer.getPointerPoint(pointer);
         var moveVector = {
             x: movePoint.x - this.pointerDownPoint.x,
@@ -726,7 +726,7 @@
      * @param {Object} moveVector - Object with x & y coordinates.
      * @returns {Bool} True if moved far enough to count as move.
      */
-    proto.hasDragStarted = function (moveVector) {
+    proto.hasDragStarted = function(moveVector) {
         return Math.abs(moveVector.x) > 3 || Math.abs(moveVector.y) > 3;
     };
 
@@ -735,7 +735,7 @@
      * @param {Event} event - Original mousedown or touchstart event.
      * @param {Event|Touch} pointer - Event object that has .pageX and .pageY.
      */
-    proto.pointerUp = function (event, pointer) {
+    proto.pointerUp = function(event, pointer) {
         this.emitEvent('pointerUp', [event, pointer]);
         this._dragPointerUp(event, pointer);
     };
@@ -745,7 +745,7 @@
      * @param {Event} event - Original mousedown or touchstart event.
      * @param {Event|Touch} pointer - Event object that has .pageX and .pageY.
      */
-    proto._dragPointerUp = function (event, pointer) {
+    proto._dragPointerUp = function(event, pointer) {
         if (this.isDragging) {
             this._dragEnd(event, pointer);
         } else {
@@ -760,7 +760,7 @@
      * @param {Event|Touch} pointer - Event object that has .pageX and .pageY.
      * @private
      */
-    proto._dragStart = function (event, pointer) {
+    proto._dragStart = function(event, pointer) {
         this.isDragging = true;
         this.dragStartPoint = Unipointer.getPointerPoint(pointer);
         this.isPreventingClicks = true;
@@ -772,7 +772,7 @@
      * @param {Event} event - Original mousedown or touchstart event.
      * @param {Event|Touch} pointer - Event object that has .pageX and .pageY.
      */
-    proto.dragStart = function (event, pointer) {
+    proto.dragStart = function(event, pointer) {
         this.emitEvent('dragStart', [event, pointer]);
     };
 
@@ -783,7 +783,7 @@
      * @param {Object} moveVector - Object with x & y coordinates.
      * @private
      */
-    proto._dragMove = function (event, pointer, moveVector) {
+    proto._dragMove = function(event, pointer, moveVector) {
         // do not drag if not dragging yet
         if (!this.isDragging) {
             return;
@@ -797,7 +797,7 @@
      * @param {Event|Touch} pointer - Event object that has .pageX and .pageY.
      * @param {Object} moveVector - Object with x & y coordinates.
      */
-    proto.dragMove = function (event, pointer, moveVector) {
+    proto.dragMove = function(event, pointer, moveVector) {
         event.preventDefault();
         this.emitEvent('dragMove', [event, pointer, moveVector]);
     };
@@ -807,10 +807,10 @@
      * @param {Event} event - Original mousedown or touchstart event.
      * @param {Event|Touch} pointer - Event object that has .pageX and .pageY.
      */
-    proto._dragEnd = function (event, pointer) {
+    proto._dragEnd = function(event, pointer) {
         this.isDragging = false;
         // re-enable clicking async
-        setTimeout(function () {
+        setTimeout(function() {
             delete this.isPreventingClicks;
         }.bind(this));
         this.dragEnd(event, pointer);
@@ -821,7 +821,7 @@
      * @param {Event} event - Original mousedown or touchstart event.
      * @param {Event|Touch} pointer - Event object that has .pageX and .pageY.
      */
-    proto.dragEnd = function (event, pointer) {
+    proto.dragEnd = function(event, pointer) {
         this.emitEvent('dragEnd', [event, pointer]);
     };
 
@@ -829,7 +829,7 @@
      * Handle all clicks and prevent clicks when dragging
      * @param {Event} event - Original mousedown or touchstart event.
      */
-    proto.onclick = function (event) {
+    proto.onclick = function(event) {
         if (this.isPreventingClicks) {
             event.preventDefault();
         }
@@ -840,7 +840,7 @@
      * @param {Event} event - Original mousedown or touchstart event.
      * @param {Event|Touch} pointer - Event object that has .pageX and .pageY.
      */
-    proto._staticClick = function (event, pointer) {
+    proto._staticClick = function(event, pointer) {
         // ignore emulated mouse up clicks
         if (this.isIgnoringMouseUp && event.type === 'mouseup') {
             return;
@@ -857,7 +857,7 @@
         if (event.type !== 'mouseup') {
             this.isIgnoringMouseUp = true;
             // reset flag after 300ms
-            setTimeout(function () {
+            setTimeout(function() {
                 delete this.isIgnoringMouseUp;
             }.bind(this), 400);
         }
@@ -868,7 +868,7 @@
      * @param {Event} event - Original mousedown or touchstart event.
      * @param {Event|Touch} pointer - Event object that has .pageX and .pageY.
      */
-    proto.staticClick = function (event, pointer) {
+    proto.staticClick = function(event, pointer) {
         this.emitEvent('staticClick', [event, pointer]);
     };
 
@@ -887,7 +887,7 @@
 }(this, function factory($, root, getSize, Unidragger) {
     var lastTime = 0;
     // get rAF, prefixed, if present. fallback to setTimeout
-    var requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || function (callback) {
+    var requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || function(callback) {
         var currTime = new Date().getTime();
         var timeToCall = Math.max(0, 16 - (currTime - lastTime));
         var id = setTimeout(callback, timeToCall);
@@ -920,7 +920,7 @@
     /**
      * Initialize draggabilly.
      */
-    proto._create = function () {
+    proto._create = function() {
         // properties
         this.position = {};
         this._getPosition();
@@ -942,7 +942,7 @@
     /**
      * Set this.handles and bind start events to the handles.
      */
-    proto.setHandles = function () {
+    proto.setHandles = function() {
         this.handles = this.options.handle ? $.getAll(this.options.handle, this.element) : [this.element];
         this.bindHandles();
     };
@@ -953,14 +953,14 @@
      * @param {Event} event - Original event.
      * @param {Array} args - Extra arguments.
      */
-    proto.dispatchEvent = function (type, event, args) {
+    proto.dispatchEvent = function(type, event, args) {
         this.emitEvent(type, [event].concat(args));
     };
 
     /**
      * Get x/y position from style.
      */
-    proto._getPosition = function () {
+    proto._getPosition = function() {
         var style = getComputedStyle(this.element);
         var x = this._getPositionCoord(style.left, 'width');
         var y = this._getPositionCoord(style.top, 'height');
@@ -977,7 +977,7 @@
      * @param {String} measure - Property name to get the size for.
      * @returns {Number} Resulting size in pixels.
      */
-    proto._getPositionCoord = function (styleSide, measure) {
+    proto._getPositionCoord = function(styleSide, measure) {
         if (styleSide.indexOf('%') !== -1) {
             // convert percent into pixel for Safari, #75
             var parentSize = getSize(this.element.parentNode);
@@ -991,7 +991,7 @@
      * Add `transform: translate( x, y )` to position.
      * @param {CSSStyleDeclaration} style - Element styles to add to.
      */
-    proto._addTransformPosition = function (style) {
+    proto._addTransformPosition = function(style) {
         var transform = style[transformProperty];
         // bail out if value is 'none'
         if (transform.indexOf('matrix') !== 0) {
@@ -1013,7 +1013,7 @@
      * @param {Event} event - Original mousedown or touchstart event.
      * @param {Event|Touch} pointer - Event object that has .pageX and .pageY.
      */
-    proto.pointerDown = function (event, pointer) {
+    proto.pointerDown = function(event, pointer) {
         this._dragPointerDown(event, pointer);
         // kludge to blur focused inputs in dragger
         var focused = document.activeElement;
@@ -1032,7 +1032,7 @@
      * @param {Event} event - Original mousedown or touchstart event.
      * @param {Event|Touch} pointer - Event object that has .pageX and .pageY.
      */
-    proto.pointerMove = function (event, pointer) {
+    proto.pointerMove = function(event, pointer) {
         var moveVector = this._dragPointerMove(event, pointer);
         this.dispatchEvent('pointerMove', event, [pointer, moveVector]);
         this._dragMove(event, pointer, moveVector);
@@ -1043,7 +1043,7 @@
      * @param {Event} event - Original mousedown or touchstart event.
      * @param {Event|Touch} pointer - Event object that has .pageX and .pageY.
      */
-    proto.dragStart = function (event, pointer) {
+    proto.dragStart = function(event, pointer) {
         if (!this.isEnabled) {
             return;
         }
@@ -1067,7 +1067,7 @@
     /**
      * Calculate the correct position of the element within its container.
      */
-    proto.measureContainment = function () {
+    proto.measureContainment = function() {
         var containment = this.options.containment;
         if (!containment) {
             return;
@@ -1099,7 +1099,7 @@
      * @param {Event|Touch} pointer - Event object that has .pageX and .pageY.
      * @param {Object} moveVector - Object with x and y coordinates of current position.
      */
-    proto.dragMove = function (event, pointer, moveVector) {
+    proto.dragMove = function(event, pointer, moveVector) {
         if (!this.isEnabled) {
             return;
         }
@@ -1162,7 +1162,7 @@
      * @param {number} grid - Boundary coordinate on axis.
      * @returns {number} Coordinate contained with drag.
      */
-    proto.containDrag = function (axis, drag, grid) {
+    proto.containDrag = function(axis, drag, grid) {
         if (!this.options.containment) {
             return drag;
         }
@@ -1180,7 +1180,7 @@
      * @param {Event} event - Original mousedown or touchstart event.
      * @param {Event|Touch} pointer - Event object that has .pageX and .pageY.
      */
-    proto.pointerUp = function (event, pointer) {
+    proto.pointerUp = function(event, pointer) {
         $.removeClass(this.element, 'is-pointer-down');
         this.dispatchEvent('pointerUp', event, [pointer]);
         this._dragPointerUp(event, pointer);
@@ -1191,7 +1191,7 @@
      * @param {Event} event - Original mousedown or touchstart event.
      * @param {Event|Touch} pointer - Event object that has .pageX and .pageY.
      */
-    proto.dragEnd = function (event, pointer) {
+    proto.dragEnd = function(event, pointer) {
         if (!this.isEnabled) {
             return;
         }
@@ -1207,7 +1207,7 @@
     /**
      * Animate while dragging.
      */
-    proto.animate = function () {
+    proto.animate = function() {
         if (!this.isDragging) {
             return;
         }
@@ -1218,14 +1218,14 @@
     /**
      * Set left/top positioning.
      */
-    proto.setLeftTop = function () {
+    proto.setLeftTop = function() {
         $.style(this.element, { left: this.position.x + 'px', top: this.position.y + 'px' });
     };
 
     /**
      * Set position transform based on drag.
      */
-    proto.positionDrag = function () {
+    proto.positionDrag = function() {
         this.element.style[transformProperty] = 'translate3d( ' + this.dragPoint.x + 'px, ' + this.dragPoint.y + 'px, 0)';
     };
 
@@ -1234,21 +1234,21 @@
      * @param {Event} event - Original mousedown or touchstart event.
      * @param {Event|Touch} pointer - Event object that has .pageX and .pageY.
      */
-    proto.staticClick = function (event, pointer) {
+    proto.staticClick = function(event, pointer) {
         this.dispatchEvent('staticClick', event, [pointer]);
     };
 
     /**
      * Enable dragging.
      */
-    proto.enable = function () {
+    proto.enable = function() {
         this.isEnabled = true;
     };
 
     /**
      * Disable dragging.
      */
-    proto.disable = function () {
+    proto.disable = function() {
         this.isEnabled = false;
         if (this.isDragging) {
             this.dragEnd();
@@ -1258,7 +1258,7 @@
     /**
      * Destroy this instance.
      */
-    proto.destroy = function () {
+    proto.destroy = function() {
         this.disable();
         this.element.removeAttribute('style');
         this.unbindHandles();

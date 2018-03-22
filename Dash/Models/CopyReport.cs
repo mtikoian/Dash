@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 
 namespace Dash.Models
 {
@@ -21,6 +21,7 @@ namespace Dash.Models
         }
 
         public Report NewReport { get; set; }
+
         [Required(ErrorMessageResourceType = typeof(I18n.Reports), ErrorMessageResourceName = "ErrorNameRequired")]
         [StringLength(100, ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string Prompt { get; set; }

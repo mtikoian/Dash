@@ -1,4 +1,4 @@
-/*!
+﻿/*!
  * Contains resource handling code.
  */
 (function($) {

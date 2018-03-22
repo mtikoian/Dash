@@ -1,10 +1,7 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Dash.Models
 {
-    /// <summary>
-    /// DataType is a single SQL type of data.
-    /// </summary>
     public class DataType : BaseModel
     {
         public bool IsBinary { get; set; } = false;

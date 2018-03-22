@@ -240,8 +240,8 @@
             class: column ? this.withError(this.records[index].operatorId) : null,
             placeholder: $.resx('report.filterOperator'), onchange: this.setOperator.bind(this, index), value: this.records[index].operatorId
         }, !column || !this.opts.allowEdit),
-        this.withOptions(column && $.hasPositiveValue(column.filterTypeId) ? this.filterOperators[column.filterTypeId] : [{ id: 0, name: $.resx('report.filterOperator') }],
-            this.records[index].operatorId, 'id', 'name')
+            this.withOptions(column && $.hasPositiveValue(column.filterTypeId) ? this.filterOperators[column.filterTypeId] : [{ id: 0, name: $.resx('report.filterOperator') }],
+                this.records[index].operatorId, 'id', 'name')
         );
     };
 

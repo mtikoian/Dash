@@ -66,10 +66,9 @@ gulp.task('watch', function() {
     gulp.watch('*.csproj', ['webFixer']);
     gulp.watch('../Dash.Database/*.sqlproj', ['dbFixer']);
     gulp.watch('../Dash.I18n/*.csproj', ['i18nFixer']);
-    
 });
 
-gulp.task('sass', function () {
+gulp.task('sass', function() {
     return gulp.src([paths.css + 'bootstrap/bootstrap.scss', paths.css + '*.scss'])
         .pipe(plumber())
         .pipe(sourcemaps.init())
@@ -82,7 +81,7 @@ gulp.task('sass', function () {
         .pipe(gulp.dest(paths.dist + 'css/'));
 });
 
-gulp.task('min:js:core', function () {
+gulp.task('min:js:core', function() {
     return gulp.src([
         paths.js + 'CustomEvent.js',       // customEvent polyfill for ie
         paths.js + 'mithril.js',           // mithril rendering library, includes promise polyfill for ie
@@ -100,7 +99,7 @@ gulp.task('min:js:core', function () {
         .pipe(gulp.dest(paths.dist + 'js/'));
 });
 
-gulp.task('min:js:modules', function () {
+gulp.task('min:js:modules', function() {
     return gulp.src([
         paths.js + 'native.bootstrap.js',  // custom build of the native bootstrap project with just the functionality needed
         paths.js + 'fecha.js',             // lightweight alternative to moment for date manipulation
@@ -146,7 +145,7 @@ gulp.task('min:js:modules', function () {
 });
 
 // Fonts
-gulp.task('fonts', function () {
+gulp.task('fonts', function() {
     return gulp.src([
         paths.css + 'fontello/font/dash.*'
     ])
@@ -155,7 +154,7 @@ gulp.task('fonts', function () {
 
 gulp.task('build', ['clean', 'min:js:core', 'min:js:modules', 'sass', 'fonts', 'favicon']);
 
-gulp.task('clean', function () {
+gulp.task('clean', function() {
     return del.sync(paths.dist + 'css', paths.dist + 'js', paths.dist + 'font');
 });
 
