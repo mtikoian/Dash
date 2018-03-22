@@ -16,7 +16,7 @@ namespace Dash
     public enum TableIcon
     {
         Edit,
-        Cancel,
+        Trash,
         Clone,
         HeartBeat,
         Database
@@ -92,7 +92,7 @@ namespace Dash
             }
             return new TableLink(url,
                 Html.Classes(DashClasses.DashConfirm, DashClasses.BtnDanger).Merge("data-title", Core.ConfirmDelete).Merge("data-message", message),
-                Core.Delete, TableIcon.Cancel, HttpVerbs.Delete);
+                Core.Delete, TableIcon.Trash, HttpVerbs.Delete);
         }
 
         /// <summary>
