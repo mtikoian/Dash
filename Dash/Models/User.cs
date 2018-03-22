@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
-using Dash.Configuration;
 using Dash.I18n;
 using Dash.Utils;
 using Jil;
@@ -184,7 +183,6 @@ namespace Dash.Models
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            AppConfig = (AppConfiguration)validationContext.GetService(typeof(AppConfiguration));
             if (DbContext.GetAll<User>(new { UID }).Any(x => x.Id != Id))
             {
                 yield return new ValidationResult(Users.ErrorDuplicateName, new[] { "UID" });
@@ -200,7 +198,7 @@ namespace Dash.Models
                 {
                     yield return new ValidationResult(Account.ErrorPasswordMatch, new[] { "ConfirmPassword" });
                 }
-                else if ((Password.Length < AppConfig.Membership.MinRequiredPasswordLength) || Password.ToCharArray().Count(c => !Char.IsLetterOrDigit(c)) < AppConfig.Membership.MinRequiredNonAlphanumericCharacters)
+                else if ((Password.Length < AppConfig.Membership.MinRequiredPasswordLength) || Password.ToCharArray().Count(c => !char.IsLetterOrDigit(c)) < AppConfig.Membership.MinRequiredNonAlphanumericCharacters)
                 {
                     yield return new ValidationResult(Account.ErrorInvalidPassword, new[] { "Password" });
                 }
@@ -211,7 +209,7 @@ namespace Dash.Models
                 {
                     yield return new ValidationResult(Account.ErrorPasswordMatch, new[] { "ConfirmPassword" });
                 }
-                else if ((Password.Length < AppConfig.Membership.MinRequiredPasswordLength) || Password.ToCharArray().Count(c => !Char.IsLetterOrDigit(c)) < AppConfig.Membership.MinRequiredNonAlphanumericCharacters)
+                else if ((Password.Length < AppConfig.Membership.MinRequiredPasswordLength) || Password.ToCharArray().Count(c => !char.IsLetterOrDigit(c)) < AppConfig.Membership.MinRequiredNonAlphanumericCharacters)
                 {
                     yield return new ValidationResult(Account.ErrorInvalidPassword, new[] { "Password" });
                 }

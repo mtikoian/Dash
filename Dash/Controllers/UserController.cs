@@ -74,7 +74,7 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly]
         public IActionResult List()
         {
-            return JsonRows(DbContext.GetAll<User>());
+            return JsonRows(DbContext.GetAll<User>().Select(x => new { x.Id, x.UID, x.FirstName, x.LastName, x.Email }));
         }
 
         private IActionResult CreateEditView(User model)
