@@ -1,36 +1,37 @@
-using Dapper;
-using Jil;
-using Dash.Configuration;
-using Dash.I18n;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
-using Microsoft.AspNetCore.Mvc;
+using Dapper;
+using Dash.I18n;
+using Jil;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace Dash.Models
 {
-    /// <summary>
-    /// Database types.
-    /// </summary>
     public enum DatabaseTypes
     {
         SqlServer = 1,
         MySql = 2
     }
 
-    /// <summary>
-    /// Database is a single SQL server database.
-    /// </summary>
     public class Database : BaseModel, IValidatableObject
     {
-        /// <summary>
-        /// Get the translated dropdown list of database types.
-        /// </summary>
+        public Database()
+        {
+        }
+
+        public Database(IDbContext dbContext)
+        {
+            DbContext = dbContext;
+        }
+
+        [BindNever, ValidateNever]
         public static IEnumerable<SelectListItem> DatabaseTypeSelectList
         {
             get
@@ -39,67 +40,58 @@ namespace Dash.Models
             }
         }
 
-        [Display(Name = "AllowPaging", ResourceType = typeof(I18n.Databases))]
-        [JilDirective(true)]
+        [Display(Name = "AllowPaging", ResourceType = typeof(Databases))]
         public bool AllowPaging { get; set; }
 
-        [Display(Name = "ConfirmPassword", ResourceType = typeof(I18n.Databases))]
-        [StringLength(500, ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorMaxLength")]
-        [Ignore, JilDirective(true)]
+        [Display(Name = "ConfirmPassword", ResourceType = typeof(Databases))]
+        [StringLength(500, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
+        [Ignore]
         public string ConfirmPassword { get; set; }
 
-        [Display(Name = "ConnectionString", ResourceType = typeof(I18n.Databases))]
-        [StringLength(500, ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorMaxLength")]
-        [JilDirective(true)]
+        [Display(Name = "ConnectionString", ResourceType = typeof(Databases))]
+        [StringLength(500, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string ConnectionString { get; set; }
 
-        [Display(Name = "DatabaseName", ResourceType = typeof(I18n.Databases))]
-        [Required(ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorRequired")]
-        [StringLength(100, ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorMaxLength")]
+        [Display(Name = "DatabaseName", ResourceType = typeof(Databases))]
+        [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
+        [StringLength(100, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string DatabaseName { get; set; }
 
-        [Display(Name = "Host", ResourceType = typeof(I18n.Databases))]
-        [Required(ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorRequired")]
-        [StringLength(100, ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorMaxLength")]
+        [Display(Name = "Host", ResourceType = typeof(Databases))]
+        [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
+        [StringLength(100, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string Host { get; set; }
 
-        [Display(Name = "IsEmptyPassword", ResourceType = typeof(I18n.Databases))]
-        [Ignore, JilDirective(true)]
+        [Display(Name = "IsEmptyPassword", ResourceType = typeof(Databases))]
+        [Ignore]
         public bool IsEmptyPassword { get; set; } = false;
 
         [Ignore, JilDirective(true)]
         public bool IsSqlServer { get { return TypeId == (int)DatabaseTypes.SqlServer; } }
 
-        [Display(Name = "Name", ResourceType = typeof(I18n.Databases))]
-        [Required(ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorRequired")]
-        [StringLength(100, ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorMaxLength")]
+        [Display(Name = "Name", ResourceType = typeof(Databases))]
+        [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
+        [StringLength(100, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string Name { get; set; }
 
-        [Display(Name = "Password", ResourceType = typeof(I18n.Databases))]
-        [StringLength(500, ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorMaxLength")]
-        [JilDirective(true)]
+        [Display(Name = "Password", ResourceType = typeof(Databases))]
+        [StringLength(500, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string Password { get; set; }
 
-        [Display(Name = "Port", ResourceType = typeof(I18n.Databases))]
-        [StringLength(50, ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorMaxLength")]
-        public string Port { get; set; }
+        [Display(Name = "Port", ResourceType = typeof(Databases))]
+        public int? Port { get; set; }
 
-        [Display(Name = "Type", ResourceType = typeof(I18n.Databases))]
-        [Required(ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorRequired")]
-        [JilDirective(true)]
+        [Display(Name = "Type", ResourceType = typeof(Databases))]
+        [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int TypeId { get; set; }
 
-        [Display(Name = "User", ResourceType = typeof(I18n.Databases))]
-        [StringLength(100, ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorMaxLength")]
+        [Display(Name = "User", ResourceType = typeof(Databases))]
+        [StringLength(100, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string User { get; set; }
 
-        /// <summary>
-        /// Build a connection object for this database.
-        /// </summary>
-        /// <returns>Returns a SQL connection.</returns>
-        public DbConnection GetOpenConnection(IAppConfiguration appConfig)
+        public DbConnection GetOpenConnection()
         {
-            var crypt = new Crypt(appConfig);
+            var crypt = new Crypt(AppConfig);
             string connectionString = null;
             if (!ConnectionString.IsEmpty())
             {
@@ -109,24 +101,26 @@ namespace Dash.Models
             {
                 if (IsSqlServer)
                 {
-                    var connBuilder = new SqlConnectionStringBuilder();
-                    connBuilder.DataSource = Host + (Port.IsEmpty() ? "" : "," + Port);
-                    connBuilder.InitialCatalog = DatabaseName;
-                    connBuilder.UserID = User;
-                    connBuilder.Password = crypt.Decrypt(Password);
+                    var connBuilder = new SqlConnectionStringBuilder {
+                        DataSource = Host + (Port.HasPositiveValue() ? "," + Port.ToString() : ""),
+                        InitialCatalog = DatabaseName,
+                        UserID = User,
+                        Password = crypt.Decrypt(Password)
+                    };
                     connectionString = connBuilder.ToString();
                 }
                 else
                 {
-                    var connBuilder = new MySql.Data.MySqlClient.MySqlConnectionStringBuilder();
-                    connBuilder.Server = Host;
-                    if (!Port.IsEmpty())
+                    var connBuilder = new MySql.Data.MySqlClient.MySqlConnectionStringBuilder {
+                        Server = Host,
+                        Database = DatabaseName,
+                        UserID = User,
+                        Password = crypt.Decrypt(Password)
+                    };
+                    if (Port.HasPositiveValue())
                     {
                         connBuilder.Port = (uint)Port.ToInt();
                     }
-                    connBuilder.Database = DatabaseName;
-                    connBuilder.UserID = User;
-                    connBuilder.Password = crypt.Decrypt(Password);
                     connectionString = connBuilder.ToString();
                 }
             }
@@ -137,14 +131,9 @@ namespace Dash.Models
             return cnn;
         }
 
-        /// <summary>
-        /// Get the tables/procs from this database.
-        /// </summary>
-        /// <param name="includeEmpty">Include an empty entry at start of list.</param>
-        /// <returns>True if successful, else false.</returns>
-        public IEnumerable<string> GetSourceList(IAppConfiguration appConfig, bool includeEmpty = false, bool isProc = false)
+        public IEnumerable<string> GetSourceList(bool includeEmpty = false, bool isProc = false)
         {
-            using (var conn = GetOpenConnection(appConfig))
+            using (var conn = GetOpenConnection())
             {
                 var res = new List<string>();
                 if (includeEmpty)
@@ -167,14 +156,9 @@ namespace Dash.Models
             }
         }
 
-        /// <summary>
-        /// Get the schema for a table from this database.
-        /// </summary>
-        /// <param name="tableName">Table name</param>
-        /// <returns>List of fields, else false.</returns>
-        public DataTable GetTableSchema(IAppConfiguration appConfig, string tableName)
+        public DataTable GetTableSchema(string tableName)
         {
-            using (var conn = GetOpenConnection(appConfig))
+            using (var conn = GetOpenConnection())
             {
                 var parts = tableName.Split('.');
                 if (parts.Any())
@@ -190,14 +174,9 @@ namespace Dash.Models
             }
         }
 
-        /// <summary>
-        /// Query the data source.
-        /// </summary>
-        /// <param name="sql">SQL statement to execute</param>
-        /// <returns>IEnumerable results.</returns>
-        public IEnumerable<dynamic> Query(IAppConfiguration appConfig, string sql, Dictionary<string, object> parameters = null)
+        public IEnumerable<dynamic> Query(string sql, Dictionary<string, object> parameters = null)
         {
-            using (var conn = GetOpenConnection(appConfig))
+            using (var conn = GetOpenConnection())
             {
                 var obj = conn.Query(sql, parameters);
                 conn.Close();
@@ -205,15 +184,9 @@ namespace Dash.Models
             }
         }
 
-        /// <summary>
-        /// Query the data source and map to a type.
-        /// </summary>
-        /// <typeparam name="T">Type to return results as</typeparam>
-        /// <param name="sql">SQL statement to execute</param>
-        /// <returns>IEnumerable results.</returns>
-        public IEnumerable<T> Query<T>(IAppConfiguration appConfig, string sql)
+        public IEnumerable<T> Query<T>(string sql)
         {
-            using (var conn = GetOpenConnection(appConfig))
+            using (var conn = GetOpenConnection())
             {
                 var obj = conn.Query<T>(sql);
                 conn.Close();
@@ -221,10 +194,6 @@ namespace Dash.Models
             }
         }
 
-        /// <summary>
-        /// Save a database, including encrypting the password if provided.
-        /// </summary>
-        /// <returns>True if successful, else false.</returns>
         public bool Save()
         {
             var crypt = new Crypt(AppConfig);
@@ -247,16 +216,11 @@ namespace Dash.Models
             return true;
         }
 
-        /// <summary>
-        /// Test the data source connection.
-        /// </summary>
-        /// <param name="errorMessage">Pass an error message back.</param>
-        /// <returns>True on success, else false.</returns>
-        public bool TestConnection(IAppConfiguration appConfig, out string errorMessage)
+        public bool TestConnection(out string errorMessage)
         {
             try
             {
-                using (var conn = GetOpenConnection(appConfig))
+                using (var conn = GetOpenConnection())
                 {
                     conn.Query("SELECT 1");
                     conn.Close();
@@ -271,27 +235,22 @@ namespace Dash.Models
             }
         }
 
-        /// <summary>
-        /// Validate database object. Check that name is unique.
-        /// </summary>
-        /// <param name="validationContext"></param>
-        /// <returns></returns>
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if (DbContext.GetAll<Database>(new { Name = Name }).Any(x => x.Id != Id))
+            if (DbContext.GetAll<Database>(new { Name }).Any(x => x.Id != Id))
             {
-                yield return new ValidationResult(I18n.Databases.ErrorDuplicateName, new[] { "Name" });
+                yield return new ValidationResult(Databases.ErrorDuplicateName, new[] { "Name" });
             }
             if (ConnectionString.IsEmpty())
             {
                 if (User.IsEmpty())
                 {
-                    yield return new ValidationResult(I18n.Databases.ErrorUsernameRequired, new[] { "User" });
+                    yield return new ValidationResult(Databases.ErrorUsernameRequired, new[] { "User" });
                 }
 
                 if (Password != ConfirmPassword)
                 {
-                    yield return new ValidationResult(I18n.Databases.ErrorPasswordMatching, new[] { "Password" });
+                    yield return new ValidationResult(Databases.ErrorPasswordMatching, new[] { "Password" });
                 }
             }
         }

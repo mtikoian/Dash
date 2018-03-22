@@ -314,7 +314,7 @@ namespace Dash.Models
             IEnumerable<dynamic> dataRes = new List<dynamic>();
             if (Dataset.IsProc)
             {
-                dataRes = Dataset.Database.Query(appConfig, sqlQuery.ExecStatement(), sqlQuery.Params);
+                dataRes = Dataset.Database.Query(sqlQuery.ExecStatement(), sqlQuery.Params);
                 totalRecords = dataRes.Count();
             }
             else
@@ -329,7 +329,7 @@ namespace Dash.Models
                 // get the total record count
                 try
                 {
-                    IEnumerable<dynamic> countRes = Dataset.Database.Query(appConfig, countSql, sqlQuery.Params);
+                    IEnumerable<dynamic> countRes = Dataset.Database.Query(countSql, sqlQuery.Params);
                     if (countRes.Any())
                     {
                         totalRecords = ((IDictionary<string, object>)countRes.First())["cnt"].ToString().ToInt();
@@ -371,7 +371,7 @@ namespace Dash.Models
             {
                 if (!Dataset.IsProc)
                 {
-                    dataRes = Dataset.Database.Query(appConfig, sqlQuery.SelectStatement(start, rows), sqlQuery.Params);
+                    dataRes = Dataset.Database.Query(sqlQuery.SelectStatement(start, rows), sqlQuery.Params);
                 }
                 if (dataRes.Any())
                 {
