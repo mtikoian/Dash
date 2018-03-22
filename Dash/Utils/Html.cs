@@ -444,7 +444,7 @@ namespace Dash
         /// <param name="buttonLabel">Label for the button - can be text or an html string.</param>
         /// <param name="itemList">List of items for the dropdown.</param>
         /// <returns>Returns an input group button with a dropdown.</returns>
-        public static IHtmlContent InputGroupButton<TModel>(this IHtmlHelper<TModel> helper, string targetId, string buttonLabel, List<string> itemList)
+        public static IHtmlContent InputGroupButton<TModel>(this IHtmlHelper<TModel> helper, string targetId, IHtmlContent buttonLabel, List<string> itemList)
         {
             var button = new TagBuilder("button");
             button.AddCssClass("btn btn-secondary dropdown-toggle");
@@ -452,7 +452,7 @@ namespace Dash
             button.Attributes["data-toggle"] = "dropdown";
             button.Attributes["aria-haspopup"] = "true";
             button.Attributes["aria-expanded"] = "false";
-            button.InnerHtml.Append(buttonLabel);
+            button.InnerHtml.AppendHtml(buttonLabel);
 
             var dropdownDiv = new TagBuilder("div");
             dropdownDiv.AddCssClass("dropdown");
@@ -596,7 +596,7 @@ namespace Dash
         /// <param name="inputType">HTML5 input type</param>
         /// <returns>Returns HTML if help is found for the model/field, else returns an empty string.</returns>
         public static TagBuilder LabelInputFor<TModel, TValue>(this IHtmlHelper<TModel> helper, Expression<Func<TModel, TValue>> expression,
-            object inputAttributes = null, int labelWidth = 4, int inputWidth = 8, InputFieldType inputType = InputFieldType.Text, HtmlString groupAddOn = null)
+            object inputAttributes = null, int labelWidth = 4, int inputWidth = 8, InputFieldType inputType = InputFieldType.Text, IHtmlContent groupAddOn = null)
         {
             var attrs = helper.InputAttributesFor(expression, inputAttributes);
             // any input type other than date can use the html5 input type
