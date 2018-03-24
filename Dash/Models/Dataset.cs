@@ -27,6 +27,15 @@ namespace Dash.Models
         private List<DatasetJoin> _DatasetJoin;
         private List<DatasetRole> _DatasetRole;
 
+        public Dataset()
+        {
+        }
+
+        public Dataset(IDbContext dbContext)
+        {
+            DbContext = dbContext;
+        }
+
         [Display(Name = "Conditions", ResourceType = typeof(Datasets))]
         [StringLength(250, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string Conditions { get; set; }
@@ -53,17 +62,15 @@ namespace Dash.Models
         [Ignore]
         public string DatabaseName { get; set; }
 
-        [BindNever, ValidateNever]
         public List<DatasetColumn> DatasetColumn
         {
-            get { return _DatasetColumn ?? (_DatasetColumn = ForSave ? null : DbContext.GetAll<DatasetColumn>(new { DatasetId = Id }).ToList()); }
+            get { return _DatasetColumn ?? (_DatasetColumn = ForSave ? null : DbContext?.GetAll<DatasetColumn>(new { DatasetId = Id }).ToList()); }
             set { _DatasetColumn = value; }
         }
 
-        [BindNever, ValidateNever]
         public List<DatasetJoin> DatasetJoin
         {
-            get { return _DatasetJoin ?? (_DatasetJoin = ForSave ? null : DbContext.GetAll<DatasetJoin>(new { DatasetId = Id }).ToList()); }
+            get { return _DatasetJoin ?? (_DatasetJoin = ForSave ? null : DbContext?.GetAll<DatasetJoin>(new { DatasetId = Id }).ToList()); }
             set { _DatasetJoin = value; }
         }
 
@@ -101,9 +108,6 @@ namespace Dash.Models
         [StringLength(500, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string Description { get; set; }
 
-        [Ignore]
-        public bool ForSave { get; set; } = false;
-
         [Ignore, JilDirective(true)]
         public bool IsProc { get { return TypeId == (int)DatasetTypes.Proc; } }
 
@@ -122,7 +126,6 @@ namespace Dash.Models
 
         [Display(Name = "Type", ResourceType = typeof(Datasets))]
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
-        [JilDirective(true)]
         public int TypeId { get; set; }
 
         [Ignore, JilDirective(true)]
@@ -278,10 +281,8 @@ namespace Dash.Models
 
         public bool Save()
         {
-            // set the new roles
             if (RoleIds != null)
             {
-                // make a list of all dataset roles
                 var keyedDatasetRoles = DbContext.GetAll<DatasetRole>(new { DatasetId = Id }).ToDictionary(x => x.RoleId, x => x);
                 DatasetRole = RoleIds?.Where(x => x > 0).Select(id => keyedDatasetRoles.ContainsKey(id) ? keyedDatasetRoles[id] : new DatasetRole { DatasetId = Id, RoleId = id }).ToList()
                     ?? new List<DatasetRole>();

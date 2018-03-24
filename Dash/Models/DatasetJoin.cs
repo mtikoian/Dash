@@ -2,9 +2,6 @@
 
 namespace Dash.Models
 {
-    /// <summary>
-    /// List of all available join types.
-    /// </summary>
     public enum JoinTypes
     {
         Inner = 1,

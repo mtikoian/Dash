@@ -3,13 +3,13 @@
 @model Dataset
 
 @using (Html.BeginBootForm(Model.FormAction, "Dataset", null, Model.IsCreate ? Datasets.CreateDataset : Datasets.EditDataset, "datasetFormLoad",
-   Url.Action("FormOptions", "Dataset"), new {
-       @class = "dataset-form",
-       @data_table_url = @Url.Action("Sources"),
-       @data_column_url = @Url.Action("TableColumns"),
-       @data_import_url = @Url.Action("ReadSchema"),
-       @data_close_event = "datasetFormUnload"
-   }, method: Model.FormMethod))
+  Url.Action("FormOptions", "Dataset"), new {
+      @class = "dataset-form",
+      @data_table_url = @Url.Action("Sources"),
+      @data_column_url = @Url.Action("TableColumns"),
+      @data_import_url = @Url.Action("ReadSchema"),
+      @data_close_event = "datasetFormUnload"
+  }, method: Model.FormMethod))
 {
     @Html.HiddenFor(model => model.Id, new { @class = "dataset-id" })
 
@@ -53,7 +53,7 @@
                                 @foreach (var role in Model.GetAllRoles())
                                 {
                                     @Html.CustomCheckbox("RoleIds", Html.IsChecked(Model.DatasetRole, x => x.RoleId == role.Id, (int[])ViewBag.SelectedRoleIds, role.Id),
-                                                                           role.Id.ToString(), role.Name, $"dataset_role_{role.Id}")
+                                                                                role.Id.ToString(), role.Name, $"dataset_role_{role.Id}", isMultiple: true)
                                 }
                                 @Html.HelpFor(model => model.DatasetRole, false, true)
                             </div>

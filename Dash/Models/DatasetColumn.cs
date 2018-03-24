@@ -1,11 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Jil;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace Dash.Models
 {
-    /// <summary>
-    /// DatasetColumn is a table column in a dataset.
-    /// </summary>
     public class DatasetColumn : BaseModel
     {
         private DataType _DataType;
@@ -22,6 +21,7 @@ namespace Dash.Models
         public int DatasetId { get; set; }
 
         [JilDirective(true)]
+        [BindNever, ValidateNever]
         public DataType DataType
         {
             get { return _DataType ?? (_DataType = DbContext.Get<DataType>(DataTypeId)); }
@@ -44,21 +44,27 @@ namespace Dash.Models
         public int FilterTypeId { get; set; }
 
         [Ignore, JilDirective(true)]
+        [BindNever, ValidateNever]
         public bool IsBinary { get { return DataType.IsBinary; } }
 
         [Ignore, JilDirective(true)]
+        [BindNever, ValidateNever]
         public bool IsBool { get { return DataType.IsBool; } }
 
         [Ignore, JilDirective(true)]
+        [BindNever, ValidateNever]
         public bool IsCurrency { get { return DataType.IsCurrency; } }
 
         [Ignore, JilDirective(true)]
+        [BindNever, ValidateNever]
         public bool IsDateTime { get { return DataType.IsDateTime; } }
 
         [Ignore, JilDirective(true)]
+        [BindNever, ValidateNever]
         public bool IsDecimal { get { return DataType.IsDecimal; } }
 
         [Ignore, JilDirective(true)]
+        [BindNever, ValidateNever]
         public bool IsInteger { get { return DataType.IsInteger; } }
 
         public bool IsParam { get; set; }
@@ -67,6 +73,7 @@ namespace Dash.Models
         public bool IsSelect { get { return FilterTypeId == 3; } }
 
         [Ignore, JilDirective(true)]
+        [BindNever, ValidateNever]
         public bool IsText { get { return DataType.IsText; } }
 
         [StringLength(250, ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorMaxLength")]
@@ -75,11 +82,8 @@ namespace Dash.Models
         [Ignore, JilDirective(true)]
         public int ReportColumnId { get; set; }
 
-        /// <summary>
-        /// Get the table from the full column name.
-        /// </summary>
-        /// <returns>Returns database table name.</returns>
         [Ignore, JilDirective(true)]
+        [BindNever, ValidateNever]
         public string Table
         {
             get
@@ -90,6 +94,7 @@ namespace Dash.Models
         }
 
         [Ignore, JilDirective(true)]
+        [BindNever, ValidateNever]
         public string TableDataType
         {
             get
@@ -121,11 +126,6 @@ namespace Dash.Models
         [Ignore, JilDirective(true)]
         public int Width { get; set; }
 
-        /// <summary>
-        /// Build the SQL snippet for a single column.
-        /// </summary>
-        /// <param name="includeAlias">Add in the alias with the SQL snippet.</param>
-        /// <returns>Return the SQL for the column.</returns>
         public string BuildSql(bool includeAlias = true, int aggregatorId = 0)
         {
             var columnSql = Derived.IsEmpty() ? ColumnName : Derived;

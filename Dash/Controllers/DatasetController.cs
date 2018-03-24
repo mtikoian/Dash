@@ -40,7 +40,7 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly]
         public IActionResult Create()
         {
-            return CreateEditView(new Dataset());
+            return CreateEditView(new Dataset(DbContext));
         }
 
         [HttpPost, AjaxRequestOnly]
@@ -120,13 +120,13 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly]
         public IActionResult ReadSchema(int databaseId, List<string> sources)
         {
-            return Json(new { columns = new Dataset().ImportSchema(databaseId, sources) });
+            return JsonData(new { columns = new Dataset(DbContext).ImportSchema(databaseId, sources) });
         }
 
         [HttpGet, AjaxRequestOnly]
         public IActionResult Sources(int databaseId, int typeId)
         {
-            return Json(DbContext.Get<Database>(databaseId)?.GetSourceList(true, typeId == (int)DatasetTypes.Proc));
+            return JsonData(DbContext.Get<Database>(databaseId)?.GetSourceList(true, typeId == (int)DatasetTypes.Proc));
         }
 
         [HttpPost, AjaxRequestOnly]
@@ -136,7 +136,7 @@ namespace Dash.Controllers
             var database = DbContext.Get<Database>(databaseId);
             if (database == null || tables == null || tables.Count == 0)
             {
-                return Json("");
+                return JsonData("");
             }
 
             var list = new List<string>();
@@ -150,7 +150,7 @@ namespace Dash.Controllers
                     }
                 }
             });
-            return Json(list.Distinct().OrderBy(x => x));
+            return JsonData(list.Distinct().OrderBy(x => x));
         }
 
         private IActionResult CreateEditView(Dataset model)
