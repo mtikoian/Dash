@@ -671,7 +671,7 @@ namespace Dash
 
         public static int UserId(this ClaimsPrincipal claimsPrincipal)
         {
-            return claimsPrincipal?.Claims.First(x => x.Type == ClaimTypes.PrimarySid)?.Value.ToInt() ?? 0;
+            return claimsPrincipal?.Claims.FirstOrDefault(x => x.Type == ClaimTypes.PrimarySid)?.Value.ToInt() ?? 0;
         }
 
         public static bool WantsHelp(this HttpContext httpContext)
