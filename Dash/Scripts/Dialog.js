@@ -24,12 +24,35 @@
      * @returns {string|number|bool} Returns correctly casted value.
      */
     var tryGetValue = function(field, val) {
-        if ((field.name.substring(0, 2) === 'Is' || field.name.substring(0, 5) === 'Allow') && (field.value === 'true' || field.value === 'false')) {
+        var fieldName = field.name.split('.').pop();
+        if ((fieldName.substring(0, 2) === 'Is' || fieldName.substring(0, 5) === 'Allow') && (field.value === 'true' || field.value === 'false')) {
             return field.value.toLowerCase() === 'true';
         } else if (field.type.toLowerCase() === 'number' || !($.isNull(val) || val.length == 0 || isNaN(val))) {
             return parseInt(val);
         }
         return val;
+    };
+
+    /**
+     * Try to set a value in an object.
+     * @param {Object} obj - Object to add value to.
+     * @param {Node} field - Input that we are converting value for.
+     * @param {string} name - Name of property.
+     * @param {string} val - Value to set.
+     * @returns {Object} Returns correctly updated object.
+     */
+    var trySetValue = function(obj, field, name, val) {
+        if (obj.hasOwnProperty(name) || $.hasClass(field, 'custom-control-input-multiple')) {
+            if (!$.isArray(obj[name])) {
+                obj[name] = $.isNull(obj[name]) ? [] : [obj[name]];
+            }
+            if (!$.isNull(val)) {
+                obj[name].push(val);
+            }
+        } else if (!$.isNull(val)) {
+            obj[name] = val;
+        }
+        return obj;
     };
 
     /**
@@ -285,31 +308,46 @@
 
             var field, data = {};
             var len = form.elements.length;
+            var bracketRegEx = /\[([^\]]+)\]/;
             for (var i = 0; i < len; i++) {
                 field = form.elements[i];
-                if (field.name && !field.disabled && field.type !== 'file' && field.type !== 'reset' && field.type !== 'submit' && field.type !== 'button') {
-                    if (field.type === 'select' && field.hasAttribute('multiple')) {
-                        data[field.name] = Array.apply(null, form.elements[i].options).filter(function(x) {
-                            return x.selected;
-                        }).map(function(x) {
-                            return tryGetValue(field, x.value);
-                        });
-                    } else if (field.type === 'checkbox') {
-                        if (field.checked) {
-                            if (data.hasOwnProperty(field.name) || $.hasClass(field, 'custom-control-input-multiple')) {
-                                if (!$.isArray(data[field.name])) {
-                                    data[field.name] = $.isNull(data[field.name]) || data[field.name] === false ? [] : [data[field.name]];
-                                }
-                                data[field.name].push(tryGetValue(field, field.value));
-                            } else {
-                                data[field.name] = tryGetValue(field, field.value);
-                            }
-                        } else if (!data.hasOwnProperty(field.name)) {
-                            data[field.name] = $.hasClass(field, 'custom-control-input-multiple') ? [] : false;
-                        }
-                    } else if (field.type !== 'radio' || field.checked) {
-                        data[field.name] = tryGetValue(field, field.value);
+                if (!field.name || field.disabled || ['file', 'reset', 'submit', 'button'].indexOf(field.type) > -1) {
+                    continue;
+                }
+
+                var value = null;
+                if (field.type === 'select' && field.hasAttribute('multiple')) {
+                    value = Array.apply(null, form.elements[i].options).filter(function(x) {
+                        return x.selected;
+                    }).map(function(x) {
+                        return tryGetValue(field, x.value);
+                    });
+                } else if (field.type === 'checkbox') {
+                    if (field.checked) {
+                        value = tryGetValue(field, field.value);
                     }
+                } else if (field.type !== 'radio' || field.checked) {
+                    value = tryGetValue(field, field.value);
+                }
+
+                var pieces = field.name.split('.');
+                var name = field.name;
+                if (pieces.length > 1) {
+                    var matches = bracketRegEx.exec(pieces[0]);
+                    name = matches.length > 1 ? pieces[0].replace(matches[0], '') : pieces[0];
+                    if (!data.hasOwnProperty(name)) {
+                        data[name] = [];
+                    }
+                    if (matches.length > 1) {
+                        if (!data[name].hasOwnProperty(matches[1])) {
+                            data[name][matches[1]] = {};
+                        }
+                        data[name][matches[1]] = trySetValue(data[name][matches[1]], field, pieces[1], value);
+                    } else {
+                        data[name][matches[0]] = trySetValue(data[name][matches[0]], field, pieces[1], value);
+                    }
+                } else {
+                    data = trySetValue(data, field, name, value);
                 }
             }
             return data;
