@@ -1,4 +1,4 @@
-/*!
+﻿/*!
  * Contains all the common JS functions Dash needs.
  */
 (function(root) {
@@ -562,6 +562,23 @@
      * @param {Object} obj - Object to change properties of.
      * @returns {Object} New object with all lowercase property names.
      */
+    var toPascalCase = function(obj) {
+        if (isNull(obj)) {
+            return {};
+        }
+        var key, keys = Object.keys(obj), i = keys.length, newObj = {};
+        while (i--) {
+            key = keys[i];
+            newObj[key.substr(0, 1).toUpperCase() + key.substr(1)] = obj[key];
+        }
+        return newObj;
+    };
+
+    /**
+     * Change the property names of an object to lowercase.
+     * @param {Object} obj - Object to change properties of.
+     * @returns {Object} New object with all lowercase property names.
+     */
     var _toLowerKeys = function(obj) {
         if (isNull(obj)) {
             return {};
@@ -643,6 +660,7 @@
         removeClass: removeClass,
         setText: setText,
         show: show,
-        style: style
+        style: style,
+        toPascalCase: toPascalCase
     };
 }(this));
