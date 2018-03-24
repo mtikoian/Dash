@@ -244,16 +244,13 @@
                     onclick: function(e) {
                         chooseDate(props, e);
                     }
-                },
-                    prevDates.map(function(date) {
-                        return m('button.day.other-scope', date);
-                    }),
-                    theseDates.map(function(date) {
-                        return m('button.day', { class: classForBox(props.date.getDate(), date) }, m('.number', date));
-                    }),
-                    nextDates.map(function(date) {
-                        return m('button.day.other-scope', date);
-                    })),
+                }, prevDates.map(function(date) {
+                    return m('button.day.other-scope', date);
+                }), theseDates.map(function(date) {
+                    return m('button.day', { class: classForBox(props.date.getDate(), date) }, m('.number', date));
+                }), nextDates.map(function(date) {
+                    return m('button.day.other-scope', date);
+                })),
                 m('.time',
                     m('select.form-control.custom-select', {
                         value: props.date.getHours(), onchange: function(e) {
@@ -317,8 +314,7 @@
                                 props.date = pushToLastDay(props.date, newDate);
                                 props.view = 1;
                             }
-                        },
-                            m('.number', year));
+                        }, m('.number', year));
                     })
                 )
             );
@@ -381,7 +377,7 @@
             };
 
             ['prevNextTitles', 'locale', 'formatOptions'].forEach(function(prop) {
-                props[prop] = attrs[prop] || eval(prop);
+                props[prop] = attrs[prop] || prop;
             });
             props.weekStart = $.isNumber(attrs.weekStart) ? attrs.weekStart : weekStart;
 
