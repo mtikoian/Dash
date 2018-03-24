@@ -20,7 +20,7 @@ namespace Dash.Models
             AppConfig = appConfig;
         }
 
-        [JilDirective(true)]
+        [Ignore, JilDirective(true)]
         public IAppConfiguration AppConfig { get; set; }
 
         [Ignore, JilDirective(true)]
@@ -32,7 +32,7 @@ namespace Dash.Models
         [Ignore, JilDirective(true)]
         public DateTimeOffset DateUpdated { get; set; }
 
-        [JilDirective(true)]
+        [Ignore, JilDirective(true)]
         public IDbContext DbContext { get; set; }
 
         [Ignore, JilDirective(true)]
@@ -41,26 +41,35 @@ namespace Dash.Models
         [Ignore, JilDirective(true)]
         public HttpVerbs FormMethod { get { return IsCreate ? HttpVerbs.Post : HttpVerbs.Put; } }
 
+        [Ignore, JilDirective(true)]
+        public bool ForSave { get; set; } = false;
+
         public int Id { get; set; }
 
         [Ignore, JilDirective(true)]
         public bool IsCreate { get { return Id == 0; } }
 
+        [JilDirective(true)]
         public int? RequestUserId { get; set; }
-
-        public override void SetDbContext(IDbContext dbContext)
-        {
-            DbContext = dbContext;
-        }
 
         public override void SetAppConfig(IAppConfiguration appConfig)
         {
             AppConfig = appConfig;
         }
 
+        public override void SetDbContext(IDbContext dbContext)
+        {
+            DbContext = dbContext;
+        }
+
         public override void SetRequestUserId(int? userId)
         {
             RequestUserId = userId;
+        }
+
+        public override void SetForSave(bool forSave)
+        {
+            ForSave = forSave;
         }
     }
 

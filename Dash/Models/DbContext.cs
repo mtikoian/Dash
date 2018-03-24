@@ -9,6 +9,7 @@ using System.Reflection;
 using Dapper;
 using Dash.Configuration;
 using FastMember;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Dash.Models
@@ -21,13 +22,15 @@ namespace Dash.Models
         private static readonly Type[] SavableTypes = { typeof(string), typeof(bool), typeof(int), typeof(long), typeof(DateTime), typeof(DateTimeOffset),
             typeof(decimal), typeof(int?), typeof(long?), typeof(byte[]), typeof(Enum), typeof(double) };
 
-        private IMemoryCache _Cache;
         private AppConfiguration _AppConfig;
+        private IMemoryCache _Cache;
+        private IHttpContextAccessor _HttpContextAccessor;
 
-        public DbContext(AppConfiguration config, IMemoryCache cache = null)
+        public DbContext(AppConfiguration config, IMemoryCache cache = null, IHttpContextAccessor httpContextAccessor = null)
         {
             _AppConfig = config;
             _Cache = cache;
+            _HttpContextAccessor = httpContextAccessor;
         }
 
         /// <summary>
@@ -39,7 +42,10 @@ namespace Dash.Models
         {
             using (var conn = GetOpenConnection())
             {
-                conn.Execute($"{type.Name}Delete", new { RequestUserId = requestUserId, Id = id }, commandType: CommandType.StoredProcedure);
+                conn.Execute($"{type.Name}Delete", new {
+                    RequestUserId = requestUserId ?? _HttpContextAccessor.HttpContext.User.UserId(),
+                    Id = id
+                }, commandType: CommandType.StoredProcedure);
             }
         }
 
@@ -51,7 +57,10 @@ namespace Dash.Models
             var myType = model.GetType();
             using (var conn = GetOpenConnection())
             {
-                conn.Execute($"{myType.Name}Delete", new { RequestUserId = model.RequestUserId, Id = myType.GetProperty("Id").GetValue(model) }, commandType: CommandType.StoredProcedure);
+                conn.Execute($"{myType.Name}Delete", new {
+                    RequestUserId = model.RequestUserId ?? _HttpContextAccessor.HttpContext.User.UserId(),
+                    Id = myType.GetProperty("Id").GetValue(model)
+                }, commandType: CommandType.StoredProcedure);
             }
         }
 
@@ -87,6 +96,7 @@ namespace Dash.Models
                 {
                     res.DbContext = this;
                     res.AppConfig = _AppConfig;
+                    res.RequestUserId = _HttpContextAccessor.HttpContext.User.UserId();
                 }
                 return res;
             }
@@ -106,6 +116,7 @@ namespace Dash.Models
                     .Each(x => {
                         x.DbContext = this;
                         x.AppConfig = _AppConfig;
+                        x.RequestUserId = _HttpContextAccessor?.HttpContext?.User?.UserId();
                     }).ToArray();
             }
         }

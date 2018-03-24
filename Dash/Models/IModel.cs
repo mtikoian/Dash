@@ -9,5 +9,7 @@ namespace Dash.Models
         public abstract void SetDbContext(IDbContext dbContext);
 
         public abstract void SetRequestUserId(int? userId);
+
+        public abstract void SetForSave(bool forSave);
     }
 }

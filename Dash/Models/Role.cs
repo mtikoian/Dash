@@ -105,15 +105,13 @@ namespace Dash.Models
                     .Select(id => keyedRolePermissions.ContainsKey(id) ? keyedRolePermissions[id] : new RolePermission { PermissionId = id, RoleId = Id }).ToList()
                     ?? new List<RolePermission>();
             }
-
             if (UserIds != null)
             {
                 var keyedUserRoles = DbContext.GetAll<UserRole>(new { RoleId = Id }).ToDictionary(x => x.UserId, x => x);
                 UserRole = UserIds?.Where(x => x > 0).Select(id => keyedUserRoles.ContainsKey(id) ? keyedUserRoles[id] : new UserRole { UserId = id, RoleId = Id }).ToList()
                     ?? new List<UserRole>();
             }
-
-            DbContext.Save(this);
+            DbContext.Save(this, forceSaveNulls: true);
         }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Dash.Configuration;
@@ -37,9 +38,19 @@ namespace Dash
             {
                 try
                 {
-                    var model = JSON.Deserialize(streamReader, context.ModelType, Options) as IModel;
+                    var json = streamReader.ReadToEnd();
+                    if (json.StartsWith("{\"model\":"))
+                    {
+                        json = json.Replace("{\"model\":", "");
+                        json = json.Remove(json.Length - 1);
+                    }
+                    var model = JSON.Deserialize(json, context.ModelType, Options) as IModel;
                     if (model != null)
                     {
+                        if (new string[] { "POST", "PUT" }.Contains(context.HttpContext.Request.Method.ToUpper()))
+                        {
+                            model.SetForSave(true);
+                        }
                         var dbContext = context.HttpContext.RequestServices.GetService(typeof(IDbContext)) as IDbContext;
                         if (dbContext != null)
                         {
