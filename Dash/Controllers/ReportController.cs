@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using Dash.Configuration;
@@ -51,17 +51,26 @@ namespace Dash.Controllers
         /// </summary>
         /// <param name="model">CreateReport object</param>
         /// <returns>Redirects to index.</returns>
-        [HttpPost, AjaxRequestOnly]
-        public IActionResult Create(CreateReport model)
+        [HttpPost, AjaxRequestOnly, ValidateAntiForgeryToken]
+        public IActionResult Create([FromBody] CreateReport model)
         {
+            if (model == null)
+            {
+                return JsonError(Core.ErrorGeneric);
+            }
             if (!ModelState.IsValid)
             {
                 return JsonError(ModelState.ToErrorString());
             }
 
-            var newReport = new Report(User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt()) { DatasetId = model.DatasetId, Name = model.Name, Width = 0 };
+            var userId = User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt();
+            var newReport = new Report {
+                DatasetId = model.DatasetId, Name = model.Name, Width = 0,
+                OwnerId = userId,
+                RequestUserId = userId
+            };
             DbContext.Save(newReport);
-            return Json(new { message = Reports.SuccessSavingReport, dialogUrl = Url.Action("SelectColumns", new { @id = newReport.Id, @closeParent = false }) });
+            return JsonData(new { message = Reports.SuccessSavingReport, dialogUrl = Url.Action("SelectColumns", new { @id = newReport.Id, @closeParent = false }) });
         }
 
         /// <summary>
@@ -98,7 +107,7 @@ namespace Dash.Controllers
             }
 
             // return our results as json
-            return Json(model.GetData(AppConfig, startItem ?? 0, totalItems, User.IsInRole("dataset.create")));
+            return JsonData(model.GetData(AppConfig, startItem ?? 0, totalItems, User.IsInRole("dataset.create")));
         }
 
         /// <summary>
@@ -174,7 +183,7 @@ namespace Dash.Controllers
                 return JsonError(Reports.ErrorPermissionDenied);
             }
 
-            return Json(new {
+            return JsonData(new {
                 reportId = model.Id,
                 allowEdit = model.IsOwner,
                 loadAllData = model.Dataset.IsProc,
@@ -294,7 +303,7 @@ namespace Dash.Controllers
 
             model.Name = prompt.Trim();
             DbContext.Save(model, false);
-            return Json(new { message = Reports.NameSaved, content = prompt });
+            return JsonData(new { message = Reports.NameSaved, content = prompt });
         }
 
         /// <summary>
@@ -304,20 +313,20 @@ namespace Dash.Controllers
         /// <param name="filters">New filter objects to save</param>
         /// <returns>Error message, or list of updated filter objects.</returns>
         [HttpPut, AjaxRequestOnly]
-        public IActionResult SaveFilters(int id, List<ReportFilter> filters = null)
+        public IActionResult SaveFilters(int id, [FromBody] SaveFilters model)
         {
-            var model = DbContext.Get<Report>(id);
-            if (model == null)
+            var report = DbContext.Get<Report>(id);
+            if (report == null)
             {
                 return JsonError(Core.ErrorInvalidId);
             }
-            if (!model.IsOwner)
+            if (!report.IsOwner)
             {
                 return JsonError(Reports.ErrorOwnerOnly);
             }
 
-            var newFilters = model.UpdateFilters(filters);
-            return Json(new { filters = newFilters });
+            var newFilters = report.UpdateFilters(model.Filters);
+            return JsonData(new { filters = newFilters });
         }
 
         /// <summary>
@@ -340,7 +349,7 @@ namespace Dash.Controllers
             }
 
             var newGroups = model.UpdateGroups(groupAggregator, groups);
-            return Json(new { groups = newGroups });
+            return JsonData(new { groups = newGroups });
         }
 
         /// <summary>
@@ -398,7 +407,7 @@ namespace Dash.Controllers
 
             var myReport = DbContext.Get<Report>(model.Id);
             myReport.UpdateColumns(columns.Where(x => x.DisplayOrder > 0).ToList());
-            return Json(new {
+            return JsonData(new {
                 message = Reports.SuccessSavingReport,
                 closeParent = closeParent,
                 parentTarget = true,

@@ -24,7 +24,7 @@
             appendRecord: true,
             allowEdit: opts.allowEdit,
             wantsHelp: opts.wantsHelp,
-            newRecord: { id: null, columnId: '', operatorId: '', criteria: null, criteria2: null },
+            newRecord: { id: 0, columnId: '', operatorId: '', criteria: null, criteria2: null },
             dateFormat: opts.dateFormat
         }, opts.filters || []);
 
@@ -60,7 +60,7 @@
         var val = this.targetVal(e) * 1;
         if (this.records[index].columnId !== val) {
             this.records[index].columnId = val;
-            this.records[index].operatorId = '';
+            this.records[index].operatorId = 0;
             this.records[index].criteria = null;
             this.records[index].criteria2 = null;
             this.run();
@@ -112,7 +112,11 @@
         $.ajax({
             method: 'PUT',
             url: self.saveFiltersUrl,
-            data: self.records
+            data: {
+                model: {
+                    Filters: self.records.map(function(x) { return $.toPascalCase(x); })
+                }
+            }
         }, function(data) {
             if (data) {
                 self.changed = false;
@@ -239,9 +243,8 @@
             name: 'ReportFilter[' + index + '].OperatorId', id: 'ReportFilter_' + index + '_OperatorId',
             class: column ? this.withError(this.records[index].operatorId) : null,
             placeholder: $.resx('report.filterOperator'), onchange: this.setOperator.bind(this, index), value: this.records[index].operatorId
-        }, !column || !this.opts.allowEdit),
-            this.withOptions(column && $.hasPositiveValue(column.filterTypeId) ? this.filterOperators[column.filterTypeId] : [{ id: 0, name: $.resx('report.filterOperator') }],
-                this.records[index].operatorId, 'id', 'name')
+        }, !column || !this.opts.allowEdit), this.withOptions(column && $.hasPositiveValue(column.filterTypeId) ?
+            this.filterOperators[column.filterTypeId] : [{ id: 0, name: $.resx('report.filterOperator') }], this.records[index].operatorId, 'id', 'name')
         );
     };
 

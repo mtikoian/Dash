@@ -25,7 +25,6 @@ namespace Dash.Models
     [HasMany(typeof(ReportShare))]
     public class Report : BaseModel
     {
-        private int _CurrentUserId;
         private Dataset _Dataset;
         private List<ReportColumn> _ReportColumn;
         private List<ReportFilter> _ReportFilter;
@@ -34,11 +33,6 @@ namespace Dash.Models
 
         public Report()
         {
-        }
-
-        public Report(int userId)
-        {
-            _CurrentUserId = userId;
         }
 
         [JilDirective(true)]
@@ -99,7 +93,7 @@ namespace Dash.Models
         public string DatasetName { get; set; }
 
         [Ignore, JilDirective(true)]
-        public bool IsOwner { get { return _CurrentUserId == OwnerId; } }
+        public bool IsOwner { get { return RequestUserId == OwnerId; } }
 
         [Display(Name = "Name", ResourceType = typeof(I18n.Reports))]
         [Required(ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorRequired")]
@@ -177,8 +171,8 @@ namespace Dash.Models
         {
             var newReport = this.Clone();
             newReport.Id = 0;
-            newReport.OwnerId = _CurrentUserId;
-            newReport.Name = name.IsEmpty() ? String.Format(Core.CopyOf, Name) : name;
+            newReport.OwnerId = RequestUserId ?? 0;
+            newReport.Name = name.IsEmpty() ? string.Format(Core.CopyOf, Name) : name;
 
             // duplicate the report columns
             newReport.ReportColumn = (ReportColumn ?? DbContext.GetAll<ReportColumn>(new { ReportId = Id }))?.Select(x => new ReportColumn {
@@ -329,7 +323,7 @@ namespace Dash.Models
                 // get the total record count
                 try
                 {
-                    IEnumerable<dynamic> countRes = Dataset.Database.Query(countSql, sqlQuery.Params);
+                    var countRes = Dataset.Database.Query(countSql, sqlQuery.Params);
                     if (countRes.Any())
                     {
                         totalRecords = ((IDictionary<string, object>)countRes.First())["cnt"].ToString().ToInt();
@@ -344,13 +338,13 @@ namespace Dash.Models
             // figure out the row limit
             rows = rows == 0 ? 25 : rows;
             // calculate the total number of pages
-            int totalPages = totalRecords > 0 ? Convert.ToInt32(Math.Ceiling(Convert.ToDecimal(totalRecords) / Convert.ToDecimal(rows))) : 0;
+            var totalPages = totalRecords > 0 ? Convert.ToInt32(Math.Ceiling(Convert.ToDecimal(totalRecords) / Convert.ToDecimal(rows))) : 0;
             if (start < 0)
             {
                 start = 0;
             }
             // max sure we aren't past the end
-            int page = start / rows;
+            var page = start / rows;
             if (page > totalPages)
             {
                 page = totalPages;
