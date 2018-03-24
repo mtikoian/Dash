@@ -1,4 +1,4 @@
-/*!
+﻿/*!
  * Alertify library
  * https://github.com/alertifyjs/alertify.js
  */
@@ -48,8 +48,8 @@
         dialogs: {
             buttons: {
                 holder: '<nav>{{buttons}}</nav>',
-                ok: '<button class="ok btn btn-warning" tabindex="1">{{ok}}</button>',
-                cancel: '<button class="cancel btn btn-primary" tabindex="2">{{cancel}}</button>'
+                ok: '<button class="ok btn btn-primary" tabindex="1">{{ok}}</button>',
+                cancel: '<button class="cancel btn btn-warning" tabindex="2">{{cancel}}</button>'
             },
             input: '<div class="ml-10 mr-10"><input type="text" class="form-control"></div>',
             message: '<p class="msg">{{message}}</p>',
