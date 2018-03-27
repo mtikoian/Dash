@@ -826,7 +826,7 @@
          * @returns {Object}  Mithril DIV node.
          */
         view: function() {
-            return m('.container-fluid', [
+            return m('.container-fluid.data-table', [
                 !this.opts.editable ? m('span#table-items-per-page') :
                     m('.form-inline.pb-2', [
                         m('.col-4',
