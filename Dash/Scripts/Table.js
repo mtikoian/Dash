@@ -1,4 +1,4 @@
-/*!
+﻿/*!
  * Mithril based table component. Supports ajax data, searching, sorting, paging, & resizing columns.
  */
 (function(root, factory) {

@@ -2,9 +2,6 @@
 
 namespace Dash.Models
 {
-    /// <summary>
-    /// Group the data in a report by a column.
-    /// </summary>
     public class ReportGroup : BaseModel
     {
         [Required(ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorRequired")]

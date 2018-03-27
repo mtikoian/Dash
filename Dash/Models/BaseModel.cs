@@ -62,14 +62,14 @@ namespace Dash.Models
             DbContext = dbContext;
         }
 
-        public override void SetRequestUserId(int? userId)
-        {
-            RequestUserId = userId;
-        }
-
         public override void SetForSave(bool forSave)
         {
             ForSave = forSave;
+        }
+
+        public override void SetRequestUserId(int? userId)
+        {
+            RequestUserId = userId;
         }
     }
 

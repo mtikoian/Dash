@@ -22,21 +22,12 @@ namespace Dash
         Database
     }
 
-    /// <summary>
-    /// Table defines the settings passed to the Table.js component to generate a table from JSON data.
-    /// </summary>
     public class Table
     {
         public Table()
         {
         }
 
-        /// <summary>
-        /// Table constructor.
-        /// </summary>
-        /// <param name="id">Identifier for table.</param>
-        /// <param name="url">Url to load data from.</param>
-        /// <param name="columns">List of table columns.</param>
         public Table(string id, string url, List<TableColumn> columns)
         {
             Id = id;
@@ -50,22 +41,11 @@ namespace Dash
         public bool LoadAllData { get; set; } = true;
         public bool Searchable { get; set; } = true;
 
-        /// <summary>
-        /// Convert the model to a json string.
-        /// </summary>
         [JilDirective(true)]
         public string ToJson { get { return JSON.Serialize(this, JilOutputFormatter.Options); } }
 
         public string Url { get; set; }
 
-        /// <summary>
-        /// Create a icon button link for an Table column to copy a model.
-        /// </summary>
-        /// <param name="url">URL for the new link.</param>
-        /// <param name="controller">Name of controller used for copy.</param>
-        /// <param name="body">Body text for copy dialog.</param>
-        /// <param name="hasAccess">User has access.</param>
-        /// <returns>Returns new button link.</returns>
         public static TableLink CopyButton(string url, string controller, string body, bool hasAccess = true)
         {
             if (!hasAccess)
@@ -76,14 +56,6 @@ namespace Dash
                 .Merge("data-message", body), Core.Copy, TableIcon.Clone);
         }
 
-        /// <summary>
-        /// Create a icon button link for an Table column to edit a model.
-        /// </summary>
-        /// <param name="url">URL for the new link.</param>
-        /// <param name="controller">Name of controller used for edit.</param>
-        /// <param name="message">Delete confirmation message.</param>
-        /// <param name="hasAccess">User has access.</param>
-        /// <returns>Returns new button link.</returns>
         public static TableLink DeleteButton(string url, string controller, string message, bool hasAccess = true)
         {
             if (!hasAccess)
@@ -95,14 +67,6 @@ namespace Dash
                 Core.Delete, TableIcon.Trash, HttpVerbs.Delete);
         }
 
-        /// <summary>
-        /// Create a icon button link for an Table column to edit a model.
-        /// </summary>
-        /// <param name="url">URL for the new link.</param>
-        /// <param name="controller">Name of controller used for edit.</param>
-        /// <param name="controller">Name of action used for edit. Defaults to `Edit`.</param>
-        /// <param name="hasAccess">User has access.</param>
-        /// <returns>Returns new button link.</returns>
         public static TableLink EditButton(string url, string controller, string action = "Edit", bool hasAccess = true)
         {
             if (!hasAccess)
@@ -112,14 +76,6 @@ namespace Dash
             return new TableLink(url, Html.Classes(DashClasses.DashDialog, DashClasses.BtnWarning), Core.Edit, TableIcon.Edit);
         }
 
-        /// <summary>
-        /// Create a link for an Table column to edit a model.
-        /// </summary>
-        /// <param name="url">URL for the new link.</param>
-        /// <param name="controller">Name of controller used for edit.</param>
-        /// <param name="controller">Name of action used for edit. Defaults to `Edit`.</param>
-        /// <param name="hasAccess">User has access.</param>
-        /// <returns>Returns new link.</returns>
         public static TableLink EditLink(string url, string controller, string action = "Edit", bool hasAccess = true)
         {
             if (!hasAccess)
@@ -130,7 +86,6 @@ namespace Dash
         }
     }
 
-    // Defines a single column in the table.
     public class TableColumn
     {
         public TableColumn()

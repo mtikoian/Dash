@@ -8,9 +8,9 @@ using System.Linq;
 using Dapper;
 using Dash.I18n;
 using Jil;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Dash.Models
 {

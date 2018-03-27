@@ -1,4 +1,4 @@
-/*!
+﻿/*!
  * Contains ajax wrapper and error logging code.
  */
 (function(m, $, Alertify) {

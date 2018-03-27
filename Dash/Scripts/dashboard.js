@@ -1,4 +1,4 @@
-/*!
+﻿/*!
  * Wraps functionality for displaying/moving/resizing widgets and their contents.
  */
 (function($, Widget) {
