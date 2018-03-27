@@ -563,6 +563,7 @@
      * @returns {Object} New object with all lowercase property names.
      */
     var toPascalCase = function(obj) {
+        // @todo add a check for isArray and convert elements in array 
         if (isNull(obj)) {
             return {};
         }
