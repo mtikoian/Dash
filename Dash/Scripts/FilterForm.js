@@ -24,7 +24,7 @@
             appendRecord: true,
             allowEdit: opts.allowEdit,
             wantsHelp: opts.wantsHelp,
-            newRecord: { id: 0, columnId: '', operatorId: '', criteria: null, criteria2: null },
+            newRecord: { id: 0, columnId: 0, operatorId: 0, criteria: null, criteria2: null },
             dateFormat: opts.dateFormat
         }, opts.filters || []);
 
@@ -113,9 +113,7 @@
             method: 'PUT',
             url: self.saveFiltersUrl,
             data: {
-                model: {
-                    Filters: self.records.map(function(x) { return $.toPascalCase(x); })
-                }
+                Model: { List: self.records.map(function(x) { return $.toPascalCase(x); }) }
             }
         }, function(data) {
             if (data) {
@@ -239,11 +237,12 @@
      * @returns {Object} Mithril node containing the operator select.
      */
     FilterForm.prototype.operatorView = function(index, column) {
-        return m('select.form-control.required.custom-select', this.withDisabled({
+        return m('select.form-control.required.custom-select', {
             name: 'ReportFilter[' + index + '].OperatorId', id: 'ReportFilter_' + index + '_OperatorId',
-            class: column ? this.withError(this.records[index].operatorId) : null,
+            disabled: !column || !this.opts.allowEdit,
+            class: column ? this.withError(this.records[index].operatorId, true) : null,
             placeholder: $.resx('report.filterOperator'), onchange: this.setOperator.bind(this, index), value: this.records[index].operatorId
-        }, !column || !this.opts.allowEdit), this.withOptions(column && $.hasPositiveValue(column.filterTypeId) ?
+        }, this.withOptions(column && $.hasPositiveValue(column.filterTypeId) ?
             this.filterOperators[column.filterTypeId] : [{ id: 0, name: $.resx('report.filterOperator') }], this.records[index].operatorId, 'id', 'name')
         );
     };
@@ -261,6 +260,7 @@
         return this.records.map(function(x, index) {
             var column = $.hasPositiveValue(x.columnId) ? $.findByKey(self.columnFn(), 'id', x.columnId) : null;
 
+            // @todo this isn't setting the `placeholder` default value correctly anymore it seems
             var attrs = {
                 name: 'ReportFilter[' + index + '].ColumnId', class: 'form-control custom-select required' + self.withError(x.columnId, true),
                 placeholder: $.resx('report.filterColumn'), onchange: self.setColumnId.bind(self, index), value: x.columnId

@@ -8,17 +8,11 @@ using Jil;
 
 namespace Dash.Models
 {
-    /// <summary>
-    /// List the allowed group aggregators.
-    /// </summary>
     public enum Aggregators
     {
         Avg = 1, Count = 2, Max = 3, Min = 4, Sum = 5
     }
 
-    /// <summary>
-    /// Report is a report derived from one dataset.
-    /// </summary>
     [HasMany(typeof(ReportColumn))]
     [HasMany(typeof(ReportFilter))]
     [HasMany(typeof(ReportGroup))]
@@ -48,7 +42,7 @@ namespace Dash.Models
         }
 
         [Ignore, JilDirective(true)]
-        public bool CloseParent { get; set; }
+        public bool AllowCloseParent { get; set; }
 
         [JilDirective(true)]
         public Dataset Dataset
@@ -57,9 +51,6 @@ namespace Dash.Models
             set { _Dataset = value; }
         }
 
-        /// <summary>
-        /// This is used in views, but never saved.
-        /// </summary>
         [Ignore, JilDirective(true)]
         public List<DatasetColumn> DatasetColumns { get { return _DatasetColumns ?? (_DatasetColumns = Dataset?.DatasetColumn ?? new List<DatasetColumn>()); } }
 
@@ -85,8 +76,8 @@ namespace Dash.Models
             }
         }
 
-        [Display(Name = "Dataset", ResourceType = typeof(I18n.Reports))]
-        [Required(ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorRequired")]
+        [Display(Name = "Dataset", ResourceType = typeof(Reports))]
+        [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int DatasetId { get; set; }
 
         [Ignore]
@@ -95,18 +86,15 @@ namespace Dash.Models
         [Ignore, JilDirective(true)]
         public bool IsOwner { get { return RequestUserId == OwnerId; } }
 
-        [Display(Name = "Name", ResourceType = typeof(I18n.Reports))]
-        [Required(ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorRequired")]
-        [StringLength(100, ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorMaxLength")]
+        [Display(Name = "Name", ResourceType = typeof(Reports))]
+        [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
+        [StringLength(100, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string Name { get; set; }
 
-        /// <summary>
-        /// Get the user object of the report owner.
-        /// </summary>
         [Ignore, JilDirective(true)]
         public User Owner { get { return _Owner ?? (_Owner = DbContext.Get<User>(OwnerId)); } }
 
-        [Required(ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorRequired")]
+        [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         [JilDirective(true)]
         public int OwnerId { get; set; }
 
@@ -163,10 +151,6 @@ namespace Dash.Models
         private List<DatasetColumn> _DatasetColumnsByDisplay { get; set; }
         private User _Owner { get; set; }
 
-        /// <summary>
-        /// Copy a report.
-        /// </summary>
-        /// <param name="name">New role name.</param>
         public Report Copy(string name = null)
         {
             var newReport = this.Clone();
@@ -174,7 +158,6 @@ namespace Dash.Models
             newReport.OwnerId = RequestUserId ?? 0;
             newReport.Name = name.IsEmpty() ? string.Format(Core.CopyOf, Name) : name;
 
-            // duplicate the report columns
             newReport.ReportColumn = (ReportColumn ?? DbContext.GetAll<ReportColumn>(new { ReportId = Id }))?.Select(x => new ReportColumn {
                 ColumnId = x.ColumnId,
                 DisplayOrder = x.DisplayOrder,
@@ -183,7 +166,6 @@ namespace Dash.Models
                 SortDirection = x.SortDirection
             }).ToList();
 
-            // duplicate the report filters
             newReport.ReportFilter = (ReportFilter ?? DbContext.GetAll<ReportFilter>(new { ReportId = Id }))?.Select(x => new ReportFilter {
                 ColumnId = x.ColumnId,
                 DisplayOrder = x.DisplayOrder,
@@ -192,7 +174,6 @@ namespace Dash.Models
                 OperatorId = x.OperatorId
             }).ToList();
 
-            // duplicate the report groups
             newReport.ReportGroup = (ReportGroup ?? DbContext.GetAll<ReportGroup>(new { ReportId = Id }))?.Select(x => new ReportGroup {
                 ColumnId = x.ColumnId,
                 DisplayOrder = x.DisplayOrder
@@ -204,26 +185,19 @@ namespace Dash.Models
             return newReport;
         }
 
-        /// <summary>
-        /// Save changes to the report coming from the data ajax request.
-        /// </summary>
-        /// <param name="rows">Number of rows to return.</param>
-        /// <param name="sort">Sorting criteria</param>
-        public void DataUpdate(int rows, IEnumerable<TableSorting> sort = null)
+        public void DataUpdate(int rowLimit, IEnumerable<TableSorting> sort = null)
         {
             if (!IsOwner)
             {
                 return;
             }
 
-            // check for row limit change
-            if (rows != RowLimit)
+            if (rowLimit != RowLimit)
             {
-                RowLimit = rows;
+                RowLimit = rowLimit;
                 DbContext.Save(this, false);
             }
 
-            // get any sorting columns
             if (sort != null)
             {
                 // building sorting objects from the querystring values
@@ -277,14 +251,7 @@ namespace Dash.Models
             }
         }
 
-        /// <summary>
-        /// Get the data for the report.
-        /// </summary>
-        /// <param name="start">Row number to start at.</param>
-        /// <param name="rows">Number of rows to return.</param>
-        /// <param name="hasDatasetAccess">User has access to dataset.</param>
-        /// <returns>Returns the data for the report.</returns>
-        public ReportResult GetData(IAppConfiguration appConfig, int start, int rows, bool hasDatasetAccess)
+        public ReportResult GetData(IAppConfiguration appConfig, int start, int rowLimit, bool hasDatasetAccess)
         {
             // build a obj to store our results
             var response = new ReportResult() { UpdatedDate = DateUpdated };
@@ -305,10 +272,10 @@ namespace Dash.Models
             }
 
             var totalRecords = 0;
-            IEnumerable<dynamic> dataRes = new List<dynamic>();
+            var dataRes = new List<dynamic>();
             if (Dataset.IsProc)
             {
-                dataRes = Dataset.Database.Query(sqlQuery.ExecStatement(), sqlQuery.Params);
+                dataRes = Dataset.Database.Query(sqlQuery.ExecStatement(), sqlQuery.Params).ToList();
                 totalRecords = dataRes.Count();
             }
             else
@@ -335,37 +302,32 @@ namespace Dash.Models
                 }
             }
 
-            // figure out the row limit
-            rows = rows == 0 ? 25 : rows;
-            // calculate the total number of pages
-            var totalPages = totalRecords > 0 ? Convert.ToInt32(Math.Ceiling(Convert.ToDecimal(totalRecords) / Convert.ToDecimal(rows))) : 0;
+            rowLimit = rowLimit == 0 ? 10 : rowLimit;
+            var totalPages = totalRecords > 0 ? Convert.ToInt32(Math.Ceiling(Convert.ToDecimal(totalRecords) / Convert.ToDecimal(rowLimit))) : 0;
             if (start < 0)
             {
                 start = 0;
             }
-            // max sure we aren't past the end
-            var page = start / rows;
+            var page = start / rowLimit;
             if (page > totalPages)
             {
                 page = totalPages;
             }
 
-            // add the page number, total records, etc to our response object
             response.Page = page;
             response.Total = totalRecords;
             response.FilteredTotal = totalRecords;
             response.Rows = new List<object>();
             if (hasDatasetAccess)
             {
-                response.DataSql = Dataset.IsProc ? sqlQuery.ExecStatement(true) : sqlQuery.SelectStatement(start, rows, true);
+                response.DataSql = Dataset.IsProc ? sqlQuery.ExecStatement(true) : sqlQuery.SelectStatement(start, rowLimit, true);
             }
 
-            // get the actual query data
             try
             {
                 if (!Dataset.IsProc)
                 {
-                    dataRes = Dataset.Database.Query(sqlQuery.SelectStatement(start, rows), sqlQuery.Params);
+                    dataRes = Dataset.Database.Query(sqlQuery.SelectStatement(start, rowLimit), sqlQuery.Params).ToList();
                 }
                 if (dataRes.Any())
                 {
@@ -381,21 +343,11 @@ namespace Dash.Models
             return response;
         }
 
-        /// <summary>
-        /// Get the column filter lookups for the report.
-        /// </summary>
-        /// <returns>List of column ids and the lookup values.</returns>
         public object Lookups()
         {
             return Dataset?.GetSelectFilters(true).ToDictionary(x => x.Key, x => x.Value.Values);
         }
 
-        /// <summary>
-        /// Processes the data from the query replacing lookup values, formatting data, and creating an arraylist of rows.
-        /// </summary>
-        /// <param name="dataRes">Input data as enumerable of dynamic objects.</param>
-        /// <param name="sqlQuery">SqlQuery object with all the info for the query that produced this data.</param>
-        /// <returns>Returns an arraylist of dictionary objects.</returns>
         public List<object> ProcessData(IEnumerable<dynamic> dataRes, Query sqlQuery)
         {
             var result = new List<object>();
@@ -428,10 +380,6 @@ namespace Dash.Models
             return result;
         }
 
-        /// <summary>
-        /// Get a list of columns used in the report, for use displaying the report.
-        /// </summary>
-        /// <returns>List of objects with field, label, sortable, datatype, width, and links.</returns>
         public IEnumerable<object> ReportColumns()
         {
             if (ReportColumn == null)
@@ -456,10 +404,6 @@ namespace Dash.Models
             });
         }
 
-        /// <summary>
-        /// Get the columns used to sort the report, for use displaying the report.
-        /// </summary>
-        /// <returns>List of objects with field, dir, and datatype.</returns>
         public IEnumerable<object> SortColumns()
         {
             if (ReportColumn == null)
@@ -473,10 +417,6 @@ namespace Dash.Models
             });
         }
 
-        /// <summary>
-        /// Update the widths of columns after adding/removing columns.
-        /// </summary>
-        /// <param name="newColumns">List of new report columns</param>
         public void UpdateColumns(List<ReportColumn> newColumns)
         {
             var len = newColumns.Count();
@@ -512,12 +452,6 @@ namespace Dash.Models
             ReportColumn = newColumns;
         }
 
-        /// <summary>
-        /// Update the report column widths, without adding/removing columns.
-        /// </summary>
-        /// <param name="reportWidth">Total width of report as %.</param>
-        /// <param name="newColumns">List of new report columns.</param>
-        /// <returns>Returns the updated list of groups.</returns>
         public void UpdateColumnWidths(decimal reportWidth, List<TableColumnWidth> newColumns = null)
         {
             if (Width != reportWidth)
@@ -526,7 +460,6 @@ namespace Dash.Models
                 DbContext.Save(this, false);
             }
 
-            // make a list of all report columns keyed on column id
             var keyedReportColumns = ReportColumn.ToDictionary(x => x.ColumnId, x => x);
             newColumns.Each(x => {
                 var columnId = x.Field.Replace("column", "").ToInt();
@@ -538,11 +471,6 @@ namespace Dash.Models
             });
         }
 
-        /// <summary>
-        /// Update the report filters.
-        /// </summary>
-        /// <param name="newFilters">List of new report filters.</param>
-        /// <returns>Returns the updated list of filters.</returns>
         public List<ReportFilter> UpdateFilters(List<ReportFilter> newFilters = null)
         {
             newFilters?.Each(x => {
@@ -562,12 +490,6 @@ namespace Dash.Models
             return keyedFilters?.Values.ToList();
         }
 
-        /// <summary>
-        /// Update the report groups.
-        /// </summary>
-        /// <param name="groupAggregator">Group aggregator ID</param>
-        /// <param name="newGroups">List of new report groups.</param>
-        /// <returns>Returns the updated list of groups.</returns>
         public List<ReportGroup> UpdateGroups(int groupAggregator, List<ReportGroup> newGroups = null)
         {
             if (AggregatorId != groupAggregator)
@@ -578,21 +500,15 @@ namespace Dash.Models
 
             // save the submitted groups
             var keyedGroups = new Dictionary<int, ReportGroup>();
-            if (newGroups != null)
-            {
-                foreach (var group in newGroups)
-                {
-                    group.ReportId = Id;
-                    DbContext.Save(group);
-                    keyedGroups.Add(group.Id, group);
-                }
-            }
+            newGroups?.Each(x => {
+                x.ReportId = Id;
+                DbContext.Save(x);
+                keyedGroups.Add(x.Id, x);
+            });
 
             // delete any old groups that weren't in the new list
-            if (ReportGroup != null && ReportGroup.Any())
-            {
-                ReportGroup.Where(x => !keyedGroups.ContainsKey(x.Id)).ToList().ForEach(x => DbContext.Delete(x));
-            }
+            ReportGroup?.Where(x => !keyedGroups.ContainsKey(x.Id)).ToList().ForEach(x => DbContext.Delete(x));
+
             return keyedGroups.Values.ToList();
         }
     }

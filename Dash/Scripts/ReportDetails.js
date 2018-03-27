@@ -28,7 +28,11 @@
                 $.ajax({
                     method: 'PUT',
                     url: saveUrl,
-                    data: { columnWidths: settings.columnWidths, reportWidth: settings.width },
+                    data: {
+                        Id: opts.reportId,
+                        Columns: settings.columnWidths.map(function(x) { return $.toPascalCase(x); }),
+                        ReportWidth: settings.width * 1
+                    },
                     block: false
                 });
                 self.dataTable.previousColumnWidths = settings.columnWidths;

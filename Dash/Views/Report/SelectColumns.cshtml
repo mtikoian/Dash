@@ -1,11 +1,11 @@
-@model Dash.Models.Report
+﻿@model Dash.Models.Report
 @using Dash.I18n
 
 @using (Html.BeginBootForm("SelectColumns", "Report", null, Reports.SelectColumns, "columnSelectorLoad",
-    method: HttpVerbs.Put))
+method: HttpVerbs.Put))
 {
     @Html.HiddenFor(model => model.Id)
-    @Html.HiddenFor(model => model.CloseParent)
+    @Html.HiddenFor(model => model.AllowCloseParent)
     @Html.ToCard(Reports.SelectColumnsExplain, BootstrapTypes.Primary)
 
     <div class="col-12">
@@ -34,9 +34,9 @@
                     <div class="column-item column-item-y-@(column.DisplayOrder > 0 ? right : left) @(column.DisplayOrder > 0 ? "column-item-right" : "column-item-left")" data-item-id="@column.Id">
                         <div>
                             @column.Title
-                            <input type="hidden" name="columns[@i].Id" value="@column.ReportColumnId" />
-                            <input type="hidden" name="columns[@i].ColumnId" value="@column.Id" />
-                            <input type="hidden" name="columns[@i].DisplayOrder" value="@column.DisplayOrder" class="column-grid-display-order" />
+                            <input type="hidden" name="Columns[@i].Id" value="@column.ReportColumnId" />
+                            <input type="hidden" name="Columns[@i].ColumnId" value="@column.Id" />
+                            <input type="hidden" name="Columns[@i].DisplayOrder" value="@column.DisplayOrder" class="column-grid-display-order" />
                         </div>
                     </div>
                 }

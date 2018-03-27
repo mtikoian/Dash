@@ -1,12 +1,9 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Dash.Models
 {
-    /// <summary>
-    /// Handles filtering a single column in a report.
-    /// </summary>
     public class ReportFilter : BaseModel
     {
         [Required(ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorRequired")]
@@ -31,13 +28,6 @@ namespace Dash.Models
         [Required(ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorRequired")]
         public int ReportId { get; set; }
 
-        /// <summary>
-        /// Creates the SQL statement to filter this column.
-        /// </summary>
-        /// <param name="column">DatasetColumn to build the clause for.</param>
-        /// <param name="filter">ReportFilter the clause is coming from.</param>
-        /// <param name="parameters">Dictionary of parameter names/values for replacement later.</param>
-        /// <returns>Returns the SQL for the where clause, and the parameter dictionary.</returns>
         public string BuildFilterSql(DatasetColumn column, ReportFilter filter, out Dictionary<string, object> parameters)
         {
             var sql = "";
@@ -167,19 +157,11 @@ namespace Dash.Models
             return $"({column.BuildSql(false)} {sql})";
         }
 
-        /// <summary>
-        /// Check if this filter is a special date function.
-        /// </summary>
-        /// <returns>True if the operator for this filter is a date function.</returns>
         public bool IsDate()
         {
             return OperatorId == (int)FilterOperatorsAbstract.DateInterval;
         }
 
-        /// <summary>
-        /// Check if this filter is a range.
-        /// </summary>
-        /// <returns>True if the operator for this filter is a range.</returns>
         public bool IsRange()
         {
             return OperatorId == (int)FilterOperatorsAbstract.Range;

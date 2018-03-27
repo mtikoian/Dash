@@ -6,11 +6,14 @@ namespace Dash.Models
 {
     public class CreateReport : BaseModel, IValidatableObject
     {
-        private int UserId;
-
-        public CreateReport(int userId)
+        public CreateReport()
         {
-            UserId = userId;
+        }
+
+        public CreateReport(IDbContext dbContext, int userId)
+        {
+            DbContext = dbContext;
+            RequestUserId = userId;
         }
 
         [Display(Name = "Dataset", ResourceType = typeof(Reports))]
@@ -22,24 +25,15 @@ namespace Dash.Models
         [MaxLength(250, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength"), StringLength(250)]
         public string Name { get; set; }
 
-        /// <summary>
-        /// Get all datasets a user can access.
-        /// </summary>
-        /// <returns>Returns a dictionary of <RoleId, DatasetRole>.</returns>
-        public IEnumerable<Dataset> GetDatasetsForUser(int userId)
+        public IEnumerable<Dataset> GetDatasetsForUser()
         {
-            return DbContext.GetAll<Dataset>(new { UserId = userId });
+            return DbContext.GetAll<Dataset>(new { UserId = RequestUserId });
         }
 
-        /// <summary>
-        /// Validate report object.
-        /// </summary>
-        /// <param name="validationContext"></param>
-        /// <returns></returns>
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            var user = DbContext.Get<User>(UserId);
-            if (!user.CanAccessDataset(DatasetId))
+            DbContext = (IDbContext)validationContext.GetService(typeof(IDbContext));
+            if (DbContext.Get<User>(RequestUserId.Value)?.CanAccessDataset(DatasetId) != true)
             {
                 yield return new ValidationResult(Reports.ErrorReportDatasetAccess);
             }

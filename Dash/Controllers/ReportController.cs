@@ -10,9 +10,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Dash.Controllers
 {
-    /// <summary>
-    /// Handles CRUD for reports.
-    /// </summary>
     [Authorize(Policy = "HasPermission")]
     public class ReportController : BaseController
     {
@@ -20,14 +17,13 @@ namespace Dash.Controllers
         {
         }
 
-        /// <summary>
-        /// Make a copy of a report.
-        /// </summary>
-        /// <param name="model">CopyReport object</param>
-        /// <returns>Redirects to new report.</returns>
         [HttpGet, AjaxRequestOnly]
         public IActionResult Copy(CopyReport model)
         {
+            if (model == null)
+            {
+                return JsonError(Core.ErrorGeneric);
+            }
             if (!ModelState.IsValid)
             {
                 return JsonError(ModelState.ToErrorString());
@@ -36,21 +32,12 @@ namespace Dash.Controllers
             return Details(model.Id);
         }
 
-        /// <summary>
-        /// Show datasets so user can select one to create a report from.
-        /// </summary>
-        /// <returns>Form to select dataset and enter name.</returns>
         [HttpGet, AjaxRequestOnly]
         public IActionResult Create()
         {
-            return PartialView(new CreateReport(User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt()));
+            return PartialView(new CreateReport(DbContext, User.UserId()));
         }
 
-        /// <summary>
-        /// Create a new report.
-        /// </summary>
-        /// <param name="model">CreateReport object</param>
-        /// <returns>Redirects to index.</returns>
         [HttpPost, AjaxRequestOnly, ValidateAntiForgeryToken]
         public IActionResult Create([FromBody] CreateReport model)
         {
@@ -63,147 +50,125 @@ namespace Dash.Controllers
                 return JsonError(ModelState.ToErrorString());
             }
 
-            var userId = User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt();
+            var userId = User.UserId();
             var newReport = new Report {
-                DatasetId = model.DatasetId, Name = model.Name, Width = 0,
+                DatasetId = model.DatasetId,
+                Name = model.Name,
+                Width = 0,
                 OwnerId = userId,
                 RequestUserId = userId
             };
-            DbContext.Save(newReport);
+            DbContext.Save(newReport, false);
             return JsonData(new { message = Reports.SuccessSavingReport, dialogUrl = Url.Action("SelectColumns", new { @id = newReport.Id, @closeParent = false }) });
         }
 
-        /// <summary>
-        /// Gets the data for a report.
-        /// </summary>
-        /// <param name="id">Report Id</param>
-        /// <param name="startItem">Record number to start with.</param>
-        /// <param name="items">Maximum number of rows to return.</param>
-        /// <param name="sorting">JSON object of sorting settings.</param>
-        /// <param name="save">Save the changes if value=1.</param>
-        /// <returns>Object with the queries run, retrieved data, and any errors.</returns>
         [HttpPost, AjaxRequestOnly]
-        public IActionResult Data(int id, int? startItem, int? items, IEnumerable<TableSorting> sort = null, bool? save = false)
+        public IActionResult Data(int id, int? startItem, int? items, [FromBody] ModelList<TableSorting> model, bool? save = false)
         {
-            var model = DbContext.Get<Report>(id);
-            if (model == null)
+            var report = DbContext.Get<Report>(id);
+            if (report == null)
             {
                 return JsonError(Core.ErrorInvalidId);
             }
             var user = DbContext.Get<User>(User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt());
-            if (!user.CanViewReport(model))
+            if (!user.CanViewReport(report))
             {
                 return JsonError(Reports.ErrorPermissionDenied);
             }
-            if ((model.Dataset?.DatasetColumn?.Count ?? 0) == 0)
+            if ((report.Dataset?.DatasetColumn?.Count ?? 0) == 0)
             {
                 return JsonError(Reports.ErrorNoColumnsSelected);
             }
 
-            var totalItems = items ?? model.RowLimit;
+            var totalItems = items ?? report.RowLimit;
             if (save == true)
             {
-                model.DataUpdate(totalItems, sort);
+                report.DataUpdate(totalItems, model.List);
             }
 
             // return our results as json
-            return JsonData(model.GetData(AppConfig, startItem ?? 0, totalItems, User.IsInRole("dataset.create")));
+            return JsonData(report.GetData(AppConfig, startItem ?? 0, totalItems, User.IsInRole("dataset.create")));
         }
 
-        /// <summary>
-        /// Delete a report.
-        /// </summary>
-        /// <param name="id">ID of report to delete</param>
-        /// <returns>Success or error message.</returns>
         [HttpDelete, AjaxRequestOnly]
         public IActionResult Delete(int id)
         {
-            var model = DbContext.Get<Report>(id);
-            if (model == null)
+            var report = DbContext.Get<Report>(id);
+            if (report == null)
             {
                 return JsonError(Core.ErrorInvalidId);
             }
-            if (!model.IsOwner)
+            if (!report.IsOwner)
             {
                 return JsonError(Reports.ErrorOwnerOnly);
             }
-            DbContext.Delete(model);
+            DbContext.Delete(report);
             return JsonSuccess(Reports.SuccessDeletingReport);
         }
 
-        /// <summary>
-        /// Display a report to view data and edit the report.
-        /// </summary>
-        /// <param name="id">ID of report to display.</param>
-        /// <returns>Details view, or an error message.</returns>
         [HttpGet, AjaxRequestOnly]
         public IActionResult Details(int id)
         {
-            var model = DbContext.Get<Report>(id);
-            if (model == null)
+            var report = DbContext.Get<Report>(id);
+            if (report == null)
             {
                 return JsonError(Core.ErrorInvalidId);
             }
-            var user = DbContext.Get<User>(User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt());
-            if (!user.CanViewReport(model))
+            var user = DbContext.Get<User>(User.UserId());
+            if (!user.CanViewReport(report))
             {
                 return JsonError(Reports.ErrorPermissionDenied);
             }
 
-            if ((model.Dataset?.DatasetColumn?.Count ?? 0) == 0 || !user.CanAccessDataset(model.Dataset.Id))
+            if ((report.Dataset?.DatasetColumn?.Count ?? 0) == 0 || !user.CanAccessDataset(report.Dataset.Id))
             {
                 return JsonError(Reports.ErrorGeneric);
             }
 
-            if (model.ReportColumn.Count > 0 && !model.ReportColumn.Any(x => x.SortDirection != null))
+            if (report.ReportColumn.Count > 0 && !report.ReportColumn.Any(x => x.SortDirection != null))
             {
-                model.ReportColumn[0].SortDirection = "asc";
-                model.ReportColumn[0].SortOrder = 1;
+                report.ReportColumn[0].SortDirection = "asc";
+                report.ReportColumn[0].SortOrder = 1;
             }
 
-            return PartialView("Details", model);
+            return PartialView("Details", report);
         }
 
-        /// <summary>
-        /// Return an object with translations and other data needed to view a report.
-        /// </summary>
-        /// <param name="id">Report ID</param>
-        /// <returns>Options object for viewing the report, or an error message.</returns>
         [HttpGet, AjaxRequestOnly]
         public IActionResult DetailsOptions(int id)
         {
-            var model = DbContext.Get<Report>(id);
-            if (model == null)
+            var report = DbContext.Get<Report>(id);
+            if (report == null)
             {
                 return JsonError(Core.ErrorInvalidId);
             }
-            var user = DbContext.Get<User>(User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt());
-            if (!user.CanViewReport(model))
+            var user = DbContext.Get<User>(User.UserId());
+            if (!user.CanViewReport(report))
             {
                 return JsonError(Reports.ErrorPermissionDenied);
             }
 
             return JsonData(new {
-                reportId = model.Id,
-                allowEdit = model.IsOwner,
-                loadAllData = model.Dataset.IsProc,
+                reportId = report.Id,
+                allowEdit = report.IsOwner,
+                loadAllData = report.Dataset.IsProc,
                 wantsHelp = HttpContext.Session.GetString("ContextHelp").ToBool(),
-                columns = model.Dataset.DatasetColumn.Select(x => new { x.Id, x.Title, x.FilterTypeId, x.IsParam })
+                columns = report.Dataset.DatasetColumn.Select(x => new { x.Id, x.Title, x.FilterTypeId, x.IsParam })
                     .Prepend(new { Id = 0, Title = Reports.FilterColumn, FilterTypeId = 0, IsParam = true }),
                 filterOperators = FilterType.FilterOperators,
                 dateOperators = FilterType.DateOperators,
-                filters = model.ReportFilter,
-                lookups = model.Lookups(),
-                saveFiltersUrl = Url.Action("SaveFilters", "Report", new { model.Id }),
-                saveGroupsUrl = Url.Action("SaveGroups", "Report", new { model.Id }),
-                saveColumnsUrl = Url.Action("UpdateColumnWidths", "Report", new { model.Id }),
-                dataUrl = Url.Action("Data", "Report", new { model.Id }),
-                exportUrl = Url.Action("Export", "Report", new { model.Id }),
-                aggregators = model.AggregatorList.Prepend(new { Id = 0, Name = Reports.Aggregator }),
-                groups = model.ReportGroup,
-                aggregatorId = model.AggregatorId,
-                dateFormat = model.Dataset.DateFormat,
-                currencyFormat = model.Dataset.CurrencyFormat,
+                filters = report.ReportFilter,
+                lookups = report.Lookups(),
+                saveFiltersUrl = Url.Action("SaveFilters", "Report", new { report.Id }),
+                saveGroupsUrl = Url.Action("SaveGroups", "Report", new { report.Id }),
+                saveColumnsUrl = Url.Action("UpdateColumnWidths", "Report", new { report.Id }),
+                dataUrl = Url.Action("Data", "Report", new { report.Id }),
+                exportUrl = Url.Action("Export", "Report", new { report.Id }),
+                aggregators = report.AggregatorList.Prepend(new { Id = 0, Name = Reports.Aggregator }),
+                groups = report.ReportGroup,
+                aggregatorId = report.AggregatorId,
+                dateFormat = report.Dataset.DateFormat,
+                currencyFormat = report.Dataset.CurrencyFormat,
                 filterTypes = new {
                     boolean = (int)FilterTypes.Boolean,
                     date = (int)FilterTypes.Date,
@@ -215,45 +180,36 @@ namespace Dash.Controllers
                     equal = (int)FilterOperatorsAbstract.Equal,
                     range = (int)FilterOperatorsAbstract.Range,
                 },
-                rowLimit = model.RowLimit,
-                sortColumns = model.SortColumns(),
-                width = model.Width,
-                reportColumns = model.ReportColumns(),
+                rowLimit = report.RowLimit,
+                sortColumns = report.SortColumns(),
+                width = report.Width,
+                reportColumns = report.ReportColumns(),
                 countAggregatorId = (int)Aggregators.Count
             });
         }
 
-        /// <summary>
-        /// Gets the data for a report and return an Excel spreadsheet.
-        /// </summary>
-        /// <param name="id">Report Id</param>
-        /// <returns>Streams an Excel spreadsheet.</returns>
         [HttpGet]
         public IActionResult Export(int id)
         {
-            var model = DbContext.Get<Report>(id);
-            if (model == null)
+            var report = DbContext.Get<Report>(id);
+            if (report == null)
             {
                 return JsonError(Core.ErrorInvalidId);
             }
-            var user = DbContext.Get<User>(User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt());
-            if (!user.CanViewReport(model))
+            var user = DbContext.Get<User>(User.UserId());
+            if (!user.CanViewReport(report))
             {
                 return JsonError(Reports.ErrorPermissionDenied);
             }
-            if (model.Dataset?.DatasetColumn.Any() != true)
+            if (report.Dataset?.DatasetColumn.Any() != true)
             {
                 return JsonError(Reports.ErrorNoColumnsSelected);
             }
 
-            new ExportData { Report = model }.Stream();
+            new ExportData { Report = report }.Stream();
             return null;
         }
 
-        /// <summary>
-        /// List all reports.
-        /// </summary>
-        /// <returns>Index view.</returns>
         [HttpGet, AjaxRequestOnly]
         public IActionResult Index()
         {
@@ -268,31 +224,21 @@ namespace Dash.Controllers
             }));
         }
 
-        /// <summary>
-        /// Return the report list for table to display.
-        /// </summary>
-        /// <returns>Array of report objects.</returns>
         [HttpGet, AjaxRequestOnly]
         public IActionResult List()
         {
-            return JsonRows(DbContext.GetAll<Report>(new { UserId = User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt() }));
+            return JsonRows(DbContext.GetAll<Report>(new { UserId = User.UserId() }));
         }
 
-        /// <summary>
-        /// Rename a report.
-        /// </summary>
-        /// <param name="id">ID of report to display.</param>
-        /// <param name="prompt">New report name.</param>
-        /// <returns>Success or error message.</returns>
         [HttpPut, AjaxRequestOnly]
         public IActionResult Rename(int id, string prompt)
         {
-            var model = DbContext.Get<Report>(id);
-            if (model == null)
+            var report = DbContext.Get<Report>(id);
+            if (report == null)
             {
                 return JsonError(Core.ErrorInvalidId);
             }
-            if (!model.IsOwner)
+            if (!report.IsOwner)
             {
                 return JsonError(Reports.ErrorOwnerOnly);
             }
@@ -301,19 +247,92 @@ namespace Dash.Controllers
                 return JsonError(Reports.ErrorNameRequired);
             }
 
-            model.Name = prompt.Trim();
-            DbContext.Save(model, false);
+            report.Name = prompt.Trim();
+            DbContext.Save(report, false);
             return JsonData(new { message = Reports.NameSaved, content = prompt });
         }
 
-        /// <summary>
-        /// Save the filters for a report.
-        /// </summary>
-        /// <param name="id">Report Id</param>
-        /// <param name="filters">New filter objects to save</param>
-        /// <returns>Error message, or list of updated filter objects.</returns>
         [HttpPut, AjaxRequestOnly]
-        public IActionResult SaveFilters(int id, [FromBody] SaveFilters model)
+        public IActionResult SaveFilters(int id, [FromBody] ModelList<ReportFilter> model)
+        {
+            if (model == null)
+            {
+                return JsonError(Core.ErrorGeneric);
+            }
+            var report = DbContext.Get<Report>(id);
+            if (report == null)
+            {
+                return JsonError(Core.ErrorInvalidId);
+            }
+            if (!report.IsOwner)
+            {
+                return JsonError(Reports.ErrorOwnerOnly);
+            }
+            return JsonData(new { filters = report.UpdateFilters(model.List) });
+        }
+
+        [HttpPut, AjaxRequestOnly]
+        public IActionResult SaveGroups(int id, int groupAggregator, [FromBody] ModelList<ReportGroup> model)
+        {
+            if (model == null)
+            {
+                return JsonError(Core.ErrorGeneric);
+            }
+            var report = DbContext.Get<Report>(id);
+            if (report == null)
+            {
+                return JsonError(Core.ErrorInvalidId);
+            }
+            if (!report.IsOwner)
+            {
+                return JsonError(Reports.ErrorOwnerOnly);
+            }
+            return JsonData(new { groups = report.UpdateGroups(groupAggregator, model.List) });
+        }
+
+        [HttpGet, AjaxRequestOnly]
+        public IActionResult SelectColumns(int id, bool closeParent = true)
+        {
+            var report = DbContext.Get<Report>(id);
+            if (report == null)
+            {
+                return JsonError(Core.ErrorInvalidId);
+            }
+            if (!report.IsOwner)
+            {
+                return JsonError(Reports.ErrorOwnerOnly);
+            }
+            var user = DbContext.Get<User>(User.UserId());
+            if (!user.CanAccessDataset(report.DatasetId))
+            {
+                return JsonError(Reports.ErrorInvalidDatasetId);
+            }
+            report.AllowCloseParent = closeParent;
+            return PartialView(report);
+        }
+
+        [HttpPut, AjaxRequestOnly]
+        public IActionResult SelectColumns([FromBody] SelectColumn model)
+        {
+            if (model == null)
+            {
+                return JsonError(Core.ErrorGeneric);
+            }
+            if (!ModelState.IsValid)
+            {
+                return JsonError(ModelState.ToErrorString());
+            }
+            model.UpdateColumns();
+            return JsonData(new {
+                message = Reports.SuccessSavingReport,
+                closeParent = model.AllowCloseParent,
+                parentTarget = true,
+                dialogUrl = Url.Action("Details", new { @id = model.Id })
+            });
+        }
+
+        [HttpGet, AjaxRequestOnly]
+        public IActionResult Share(int id)
         {
             var report = DbContext.Get<Report>(id);
             if (report == null)
@@ -325,168 +344,42 @@ namespace Dash.Controllers
                 return JsonError(Reports.ErrorOwnerOnly);
             }
 
-            var newFilters = report.UpdateFilters(model.Filters);
-            return JsonData(new { filters = newFilters });
+            return PartialView(report);
         }
 
-        /// <summary>
-        /// Save the groups for a report.
-        /// </summary>
-        /// <param name="id">Report Id</param>
-        /// <param name="groups">New group objects to save</param>
-        /// <returns>Error message, or list of updated group objects.</returns>
         [HttpPut, AjaxRequestOnly]
-        public IActionResult SaveGroups(int id, int groupAggregator, List<ReportGroup> groups = null)
-        {
-            var model = DbContext.Get<Report>(id);
-            if (model == null)
-            {
-                return JsonError(Core.ErrorInvalidId);
-            }
-            if (!model.IsOwner)
-            {
-                return JsonError(Reports.ErrorOwnerOnly);
-            }
-
-            var newGroups = model.UpdateGroups(groupAggregator, groups);
-            return JsonData(new { groups = newGroups });
-        }
-
-        /// <summary>
-        /// Show columns so user can select one ones to use in a report.
-        /// </summary>
-        /// <param name="id">Report ID</param>
-        /// <returns>Form to select and order columns.</returns>
-        [HttpGet, AjaxRequestOnly]
-        public IActionResult SelectColumns(int id, bool closeParent = true)
-        {
-            var model = DbContext.Get<Report>(id);
-            if (model == null)
-            {
-                return JsonError(Core.ErrorInvalidId);
-            }
-            if (!model.IsOwner)
-            {
-                return JsonError(Reports.ErrorOwnerOnly);
-            }
-            var user = DbContext.Get<User>(User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt());
-            if (!user.CanAccessDataset(model.DatasetId))
-            {
-                return JsonError(Reports.ErrorInvalidDatasetId);
-            }
-            model.CloseParent = closeParent;
-            return PartialView(model);
-        }
-
-        /// <summary>
-        /// Update the column list for an existing report.
-        /// </summary>
-        /// <param name="id">Report object</param>
-        /// <returns>Success or error message.</returns>
-        [HttpPut, AjaxRequestOnly]
-        public IActionResult SelectColumns(int id, List<ReportColumn> columns, bool closeParent = true)
-        {
-            var model = DbContext.Get<Report>(id);
-            if (model == null)
-            {
-                return JsonError(Core.ErrorInvalidId);
-            }
-            if (!model.IsOwner)
-            {
-                return JsonError(Reports.ErrorOwnerOnly);
-            }
-            var user = DbContext.Get<User>(User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt());
-            if (!user.CanAccessDataset(model.DatasetId))
-            {
-                return JsonError(Reports.ErrorInvalidDatasetId);
-            }
-            if (columns?.Any(x => x.DisplayOrder > 0) != true)
-            {
-                return JsonError(Reports.ErrorSelectColumn);
-            }
-
-            var myReport = DbContext.Get<Report>(model.Id);
-            myReport.UpdateColumns(columns.Where(x => x.DisplayOrder > 0).ToList());
-            return JsonData(new {
-                message = Reports.SuccessSavingReport,
-                closeParent = closeParent,
-                parentTarget = true,
-                dialogUrl = Url.Action("Details", new { @id = myReport.Id })
-            });
-        }
-
-        /// <summary>
-        /// Display a report to share with users/roles.
-        /// </summary>
-        /// <param name="id">ID of report to display.</param>
-        /// <returns>Share view, or error message.</returns>
-        [HttpGet, AjaxRequestOnly]
-        public IActionResult Share(int id)
-        {
-            var model = DbContext.Get<Report>(id);
-            if (model == null)
-            {
-                return JsonError(Core.ErrorInvalidId);
-            }
-            if (!model.IsOwner)
-            {
-                return JsonError(Reports.ErrorOwnerOnly);
-            }
-
-            return PartialView(model);
-        }
-
-        /// <summary>
-        /// Save the report shares.
-        /// </summary>
-        /// <param name="id">ID of report to update.</param>
-        /// <param name="reportShare">List of shares.</param>
-        /// <returns>Success or error message.</returns>
-        [HttpPut, AjaxRequestOnly]
-        public IActionResult Share(int id, List<ReportShare> reportShare)
+        public IActionResult Share(int id, [FromBody] ModelList<ReportShare> model)
         {
             // @todo renamed this from `ShareSave`, when testing make sure it still routes correctly
-            var model = DbContext.Get<Report>(id);
-            if (model == null)
+            var report = DbContext.Get<Report>(id);
+            if (report == null)
             {
                 return JsonError(Core.ErrorInvalidId);
             }
-            if (!model.IsOwner)
+            if (!report.IsOwner)
             {
                 return JsonError(Reports.ErrorOwnerOnly);
             }
 
-            reportShare?.ForEach(x => { x.ReportId = model.Id; DbContext.Save(x); });
-            model.ReportShare.Where(x => reportShare == null || !reportShare.Any(s => s.Id == x.Id))
-                .ToList().ForEach(x => DbContext.Delete(x));
+            model.List?.ForEach(x => { x.ReportId = report.Id; DbContext.Save(x); });
+            report.ReportShare.Where(x => !model.List.Any(s => s.Id == x.Id))
+                .ToList()
+                .ForEach(x => DbContext.Delete(x));
             return JsonSuccess(Reports.SuccessSavingReport);
         }
 
-        /// <summary>
-        /// Update the list of selected columns for this report and the order of those columns.
-        /// </summary>
-        /// <param name="id">Report Id</param>
-        /// <param name="columnWidths">Array of column widths</param>
-        /// <param name="reportWidth">Total report width</param>
-        /// <returns>Success or error message.</returns>
         [HttpPut, AjaxRequestOnly]
-        public IActionResult UpdateColumnWidths(int id, List<TableColumnWidth> columnWidths, decimal reportWidth)
+        public IActionResult UpdateColumnWidths([FromBody] UpdateColumnWidth model)
         {
-            var model = DbContext.Get<Report>(id);
             if (model == null)
             {
-                return JsonError(Core.ErrorInvalidId);
+                return JsonError(Core.ErrorGeneric);
             }
-            if (!model.IsOwner)
+            if (!ModelState.IsValid)
             {
-                return JsonError(Reports.ErrorOwnerOnly);
+                return JsonError(ModelState.ToErrorString());
             }
-            if (columnWidths == null || model.ReportColumn == null || !model.ReportColumn.Any())
-            {
-                return JsonError(Reports.ErrorNoColumnsSelected);
-            }
-
-            model.UpdateColumnWidths(reportWidth, columnWidths);
+            model.UpdateColumns();
             return JsonSuccess();
         }
     }

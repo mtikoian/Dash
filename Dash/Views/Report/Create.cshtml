@@ -7,7 +7,7 @@
     @Html.ToCard(Reports.CreateReportExplain, BootstrapTypes.Primary)
 
     <div class="col-6 pt-1">
-        @Html.LabelDropDownListFor(model => model.DatasetId, Model.GetDatasetsForUser(User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt()).ToSelectList(d => d.Name, d => d.Id.ToString()))
+        @Html.LabelDropDownListFor(model => model.DatasetId, Model.GetDatasetsForUser().ToSelectList(d => d.Name, d => d.Id.ToString()))
         @Html.LabelInputFor(model => model.Name)
     </div>
 }
