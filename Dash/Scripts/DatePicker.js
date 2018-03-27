@@ -46,18 +46,16 @@
             if (e.target && $.hasClass('number', e.target)) {
                 e.preventDefault();
                 chooseDate(props, e);
-                return false;
-            }
-
-            var parent = e.relatedTarget && $.closest('.mithril-date-picker-container', e.relatedTarget);
-            if (!parent) {
-                e.preventDefault();
-                props.view = 0;
-                props.active = false;
-                return false;
+            } else {
+                var parent = e.relatedTarget && $.closest('.mithril-date-picker-container', e.relatedTarget);
+                if (!parent) {
+                    e.preventDefault();
+                    props.view = 0;
+                    props.active = false;
+                }
             }
         }
-
+        // @todo this probably needs more testing to make sure it triggers correctly
         if (props.onchange) {
             props.onchange(props.date);
         }
