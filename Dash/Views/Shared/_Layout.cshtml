@@ -22,15 +22,6 @@
 
         <script type="text/javascript" src="~/js/core.js"></script>
         <script type="text/javascript" src="~/js/modules.js"></script>
-
-        @if (ViewBag.Error != null || TempData.ContainsKey("Error"))
-        {
-            <script type="text/javascript">$.ready(function () { Alertify.error(@Html.EscapeForJs((string)(ViewBag.Error ?? TempData["Error"]))) });</script>
-        }
-        @if (TempData.ContainsKey("Message"))
-        {
-            <script type="text/javascript">$.ready(function () { Alertify.success(@Html.EscapeForJs((string)TempData["Message"])) });</script>
-        }
     </div>
 </body>
 </html>
