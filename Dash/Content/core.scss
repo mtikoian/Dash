@@ -13,6 +13,18 @@
     border-bottom: 1px solid #ddd;
 }
 
+.dropdown-menu {
+    .dropdown-item {
+        color: #000;
+    }
+
+    .dropdown-item {
+        &:hover, &.active {
+            background-color: $gray-100;
+        }
+    }
+}
+
 /*
 * Context help styling
 */
