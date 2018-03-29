@@ -26,6 +26,8 @@
             columns: [],
             url: '',
             requestMethod: 'GET',
+            requestUsePascalCase: true,
+            requestParams: {},
             searchable: true,
             loadAllData: true,
             inputTimeout: 200,
@@ -248,13 +250,21 @@
          * @returns {Object} Request parameters.
          */
         buildParams: function() {
-            return {
+            var sort = this.sorting.length > 0 ? this.sorting.map(function(obj, i) { return { field: obj.field, dir: obj.dir, index: i }; }) : null;
+            if (this.opts.requestUsePascalCase) {
+                return $.extend(this.opts.requestParams, {
+                    StartItem: this.currentStartItem,
+                    Items: this.itemsPerPage,
+                    Query: this.searchQuery,
+                    Sort: $.toPascalKeys(sort)
+                });
+            }
+            return $.extend(this.opts.requestParams, {
                 startItem: this.currentStartItem,
                 items: this.itemsPerPage,
                 query: this.searchQuery,
-                sort: this.sorting.length > 0 ? this.sorting.map(function(obj, i) { return { field: obj.field, dir: obj.dir, index: i }; }) : null,
-                t: Math.random()
-            };
+                sort: sort
+            });
         },
 
         /**
