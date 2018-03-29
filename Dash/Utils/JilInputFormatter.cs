@@ -38,20 +38,7 @@ namespace Dash
             {
                 try
                 {
-                    IModel model;
-                    var json = streamReader.ReadToEnd();
-                    if (json.StartsWith("{\"Model\":"))
-                    {
-                        // this is messy, but its the only way i could get it to correctly deserialize for an action with multiple params
-                        // if i don't tack the `Model:` on from the front-end the input formatter doesn't run
-                        var obj = JSON.Deserialize(json, typeof(ModelWrapper<>).MakeGenericType(context.ModelType), Options);
-                        var propertyInfo = obj.GetType().GetProperty("Model");
-                        model = propertyInfo.GetValue(obj) as IModel;
-                    }
-                    else
-                    {
-                        model = JSON.Deserialize(json, context.ModelType, Options) as IModel;
-                    }
+                    var model = JSON.Deserialize(streamReader.ReadToEnd(), context.ModelType, Options) as IModel;
                     if (model != null)
                     {
                         if (new string[] { "POST", "PUT" }.Contains(context.HttpContext.Request.Method.ToUpper()))
