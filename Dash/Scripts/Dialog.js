@@ -27,8 +27,8 @@
         var fieldName = field.name.split('.').pop();
         if ((fieldName.substring(0, 2) === 'Is' || fieldName.substring(0, 5) === 'Allow') && (field.value.toLowerCase() === 'true' || field.value.toLowerCase() === 'false')) {
             return field.value.toLowerCase() === 'true';
-        } else if (field.type.toLowerCase() === 'number' || !($.isNull(val) || val.length == 0 || isNaN(val))) {
-            return parseInt(val);
+        } else if (field.type.toLowerCase() === 'number' || field.name.slice(-2) === 'Id' || !($.isNull(val) || val.length == 0 || isNaN(val))) {
+            return val.length ? parseInt(val) : null;
         }
         return val;
     };
