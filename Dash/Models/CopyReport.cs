@@ -15,12 +15,19 @@ namespace Dash.Models
         [StringLength(100, ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string Prompt { get; set; }
 
+        // @todo Look at creating a ReportBaseModel to abstract some common functionality
         [BindNever, ValidateNever]
-        public Report Report { get { return _Report ?? (_Report = DbContext.Get<Report>(Id)); } }
+        public Report Report
+        {
+            get { return _Report ?? (_Report = DbContext.Get<Report>(Id)); }
+            set { _Report = value; }
+        }
 
         public void Save()
         {
-            DbContext.Save(Report.Copy(Prompt));
+            Report = Report.Copy(Prompt);
+            DbContext.Save(Report);
+            Id = Report.Id;
         }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)

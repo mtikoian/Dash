@@ -7,11 +7,9 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace Dash.Models
 {
-    public class UpdateColumnWidth : BaseModel, IValidatableObject
+    public class SaveReportShare : BaseModel, IValidatableObject
     {
         private Report _Report;
-
-        public List<TableColumnWidth> Columns { get; set; }
 
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public new int Id { get; set; }
@@ -19,11 +17,14 @@ namespace Dash.Models
         [BindNever, ValidateNever]
         public Report Report { get { return _Report ?? (_Report = DbContext.Get<Report>(Id)); } }
 
-        public decimal ReportWidth { get; set; }
+        public List<ReportShare> Shares { get; set; }
 
         public void Update()
         {
-            Report.UpdateColumnWidths(ReportWidth, Columns);
+            Shares?.ForEach(x => { x.ReportId = Report.Id; DbContext.Save(x); });
+            Report.ReportShare.Where(x => Shares?.Any(s => s.Id == x.Id) != true)
+                .ToList()
+                .ForEach(x => DbContext.Delete(x));
         }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
@@ -33,16 +34,9 @@ namespace Dash.Models
             {
                 yield return new ValidationResult(Core.ErrorInvalidId);
             }
-            else
+            else if (!Report.IsOwner)
             {
-                if (!Report.IsOwner)
-                {
-                    yield return new ValidationResult(Reports.ErrorOwnerOnly);
-                }
-                if (Columns?.Any() != true || !Report.ReportColumn.Any())
-                {
-                    yield return new ValidationResult(Reports.ErrorNoColumnsSelected);
-                }
+                yield return new ValidationResult(Reports.ErrorOwnerOnly);
             }
         }
     }

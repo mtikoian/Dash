@@ -28,6 +28,7 @@
             dateFormat: opts.dateFormat
         }, opts.filters || []);
 
+        this.reportId = opts.reportId;
         this.isProc = opts.isProc;
         this.saveFiltersUrl = opts.saveFiltersUrl;
         this.filterOperators = opts.filterOperators || [];
@@ -113,7 +114,8 @@
             method: 'PUT',
             url: self.saveFiltersUrl,
             data: {
-                Model: { List: self.records.map(function(x) { return $.toPascalCase(x); }) }
+                Id: self.reportId,
+                Filters: $.toPascalKeys(self.records)
             }
         }, function(data) {
             if (data) {

@@ -30,7 +30,7 @@
                     url: saveUrl,
                     data: {
                         Id: opts.reportId,
-                        Columns: settings.columnWidths.map(function(x) { return $.toPascalCase(x); }),
+                        Columns: $.toPascalKeys(settings.columnWidths),
                         ReportWidth: settings.width * 1
                     },
                     block: false
@@ -41,8 +41,9 @@
 
         this.dataTable = new Table({
             content: $.get('.report-data-container', opts.content),
-            url: opts.dataUrl + '?save=true',
+            url: opts.dataUrl,
             requestMethod: 'POST',
+            requestParams: { Id: opts.reportId, Save: true },
             searchable: false,
             loadAllData: opts.loadAllData,
             editable: opts.allowEdit,
@@ -61,6 +62,7 @@
         this.dataTable.previousColumnWidths = opts.reportColumns.map(function(x) { return { field: x.field, width: x.width * 1.0 }; });
 
         this.filterForm = new FilterForm({
+            reportId: opts.reportId,
             content: opts.content,
             filters: opts.filters,
             columns: {
@@ -88,6 +90,7 @@
         this.filterForm.run();
 
         this.groupForm = new GroupForm({
+            reportId: opts.reportId,
             content: opts.content,
             groups: opts.groups,
             allowEdit: opts.allowEdit,

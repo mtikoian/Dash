@@ -25,7 +25,7 @@
             },
             appendRecord: true,
             wantsHelp: formOpts.wantsHelp,
-            newRecord: { id: null, userId: 0, roleId: 0 }
+            newRecord: { id: 0, userId: 0, roleId: 0 }
         }, formOpts.shares || []);
 
         this.users = formOpts.userList || [];

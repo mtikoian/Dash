@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using Dash.Configuration;
 using Dash.I18n;
 using Dash.Models;
@@ -17,6 +16,7 @@ namespace Dash.Controllers
         {
         }
 
+        // @todo test and see which, if any, methods i could antiforgery to
         [HttpGet, AjaxRequestOnly]
         public IActionResult Copy(CopyReport model)
         {
@@ -63,31 +63,18 @@ namespace Dash.Controllers
         }
 
         [HttpPost, AjaxRequestOnly]
-        public IActionResult Data(int id, int? startItem, int? items, [FromBody] ModelList<TableSorting> model, bool? save = false)
+        public IActionResult Data([FromBody] ReportData model)
         {
-            var report = DbContext.Get<Report>(id);
-            if (report == null)
+            if (model == null)
             {
-                return JsonError(Core.ErrorInvalidId);
+                return JsonError(Core.ErrorGeneric);
             }
-            var user = DbContext.Get<User>(User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt());
-            if (!user.CanViewReport(report))
+            if (!ModelState.IsValid)
             {
-                return JsonError(Reports.ErrorPermissionDenied);
+                return JsonError(ModelState.ToErrorString());
             }
-            if ((report.Dataset?.DatasetColumn?.Count ?? 0) == 0)
-            {
-                return JsonError(Reports.ErrorNoColumnsSelected);
-            }
-
-            var totalItems = items ?? report.RowLimit;
-            if (save == true)
-            {
-                report.DataUpdate(totalItems, model.List);
-            }
-
-            // return our results as json
-            return JsonData(report.GetData(AppConfig, startItem ?? 0, totalItems, User.IsInRole("dataset.create")));
+            model.Update();
+            return JsonData(model.GetResult());
         }
 
         [HttpDelete, AjaxRequestOnly]
@@ -206,8 +193,8 @@ namespace Dash.Controllers
                 return JsonError(Reports.ErrorNoColumnsSelected);
             }
 
-            new ExportData { Report = report }.Stream();
-            return null;
+            var export = new ExportData { Report = report, HttpContext = HttpContext, AppConfig = AppConfig };
+            return File(export.Stream(), export.ContentType, export.FileName);
         }
 
         [HttpGet, AjaxRequestOnly]
@@ -253,41 +240,31 @@ namespace Dash.Controllers
         }
 
         [HttpPut, AjaxRequestOnly]
-        public IActionResult SaveFilters(int id, [FromBody] ModelList<ReportFilter> model)
+        public IActionResult SaveFilters([FromBody] SaveFilter model)
         {
             if (model == null)
             {
                 return JsonError(Core.ErrorGeneric);
             }
-            var report = DbContext.Get<Report>(id);
-            if (report == null)
+            if (!ModelState.IsValid)
             {
-                return JsonError(Core.ErrorInvalidId);
+                return JsonError(ModelState.ToErrorString());
             }
-            if (!report.IsOwner)
-            {
-                return JsonError(Reports.ErrorOwnerOnly);
-            }
-            return JsonData(new { filters = report.UpdateFilters(model.List) });
+            return JsonData(new { filters = model.Update() });
         }
 
         [HttpPut, AjaxRequestOnly]
-        public IActionResult SaveGroups(int id, int groupAggregator, [FromBody] ModelList<ReportGroup> model)
+        public IActionResult SaveGroups([FromBody] SaveGroup model)
         {
             if (model == null)
             {
                 return JsonError(Core.ErrorGeneric);
             }
-            var report = DbContext.Get<Report>(id);
-            if (report == null)
+            if (!ModelState.IsValid)
             {
-                return JsonError(Core.ErrorInvalidId);
+                return JsonError(ModelState.ToErrorString());
             }
-            if (!report.IsOwner)
-            {
-                return JsonError(Reports.ErrorOwnerOnly);
-            }
-            return JsonData(new { groups = report.UpdateGroups(groupAggregator, model.List) });
+            return JsonData(new { groups = model.Update() });
         }
 
         [HttpGet, AjaxRequestOnly]
@@ -322,7 +299,7 @@ namespace Dash.Controllers
             {
                 return JsonError(ModelState.ToErrorString());
             }
-            model.UpdateColumns();
+            model.Update();
             return JsonData(new {
                 message = Reports.SuccessSavingReport,
                 closeParent = model.AllowCloseParent,
@@ -348,23 +325,17 @@ namespace Dash.Controllers
         }
 
         [HttpPut, AjaxRequestOnly]
-        public IActionResult Share(int id, [FromBody] ModelList<ReportShare> model)
+        public IActionResult Share([FromBody] SaveReportShare model)
         {
-            // @todo renamed this from `ShareSave`, when testing make sure it still routes correctly
-            var report = DbContext.Get<Report>(id);
-            if (report == null)
+            if (model == null)
             {
-                return JsonError(Core.ErrorInvalidId);
+                return JsonError(Core.ErrorGeneric);
             }
-            if (!report.IsOwner)
+            if (!ModelState.IsValid)
             {
-                return JsonError(Reports.ErrorOwnerOnly);
+                return JsonError(ModelState.ToErrorString());
             }
-
-            model.List?.ForEach(x => { x.ReportId = report.Id; DbContext.Save(x); });
-            report.ReportShare.Where(x => !model.List.Any(s => s.Id == x.Id))
-                .ToList()
-                .ForEach(x => DbContext.Delete(x));
+            model.Update();
             return JsonSuccess(Reports.SuccessSavingReport);
         }
 
@@ -379,7 +350,7 @@ namespace Dash.Controllers
             {
                 return JsonError(ModelState.ToErrorString());
             }
-            model.UpdateColumns();
+            model.Update();
             return JsonSuccess();
         }
     }

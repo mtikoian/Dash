@@ -24,9 +24,10 @@
             appendRecord: true,
             allowEdit: opts.allowEdit,
             wantsHelp: opts.wantsHelp,
-            newRecord: { id: null, columnId: '', displayOrder: 0 }
+            newRecord: { id: 0, columnId: 0, displayOrder: 0 }
         }, opts.groups || []);
 
+        this.reportId = opts.reportId;
         this.isProc = opts.isProc;
         this.saveGroupsUrl = opts.saveGroupsUrl;
         this.aggregator = opts.aggregatorId === 0 ? '' : opts.aggregatorId;
@@ -51,7 +52,11 @@
         $.ajax({
             method: 'PUT',
             url: self.saveGroupsUrl,
-            data: { groupAggregator: this.aggregator === '' ? 0 : this.aggregator, groups: this.records }
+            data: {
+                Id: self.reportId,
+                GroupAggregator: self.aggregator === '' ? 0 : self.aggregator * 1,
+                Groups: $.toPascalKeys(self.records)
+            }
         }, function(data) {
             if (data) {
                 if ($.isArray(data.groups)) {

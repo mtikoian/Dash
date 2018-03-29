@@ -23,7 +23,7 @@ namespace Dash.Models
         [BindNever, ValidateNever]
         public Report Report { get { return _Report ?? (_Report = DbContext.Get<Report>(Id)); } }
 
-        public void UpdateColumns()
+        public void Update()
         {
             Report.UpdateColumns(Columns.Where(x => x.DisplayOrder > 0).ToList());
         }
