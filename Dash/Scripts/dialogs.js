@@ -95,7 +95,10 @@
             setTimeout(activeDialog.onShow.bind(activeDialog), 25);
         } else {
             // back to dashboard so set title
-            document.title = $.get('#dashboard').getAttribute('data-title');
+            var dashboard = $.get('#dashboard');
+            if (dashboard) {
+                document.title = dashboard.getAttribute('data-title');
+            }
         }
     };
 
