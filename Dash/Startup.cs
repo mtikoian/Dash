@@ -54,6 +54,7 @@ namespace Dash
             app.UseContentSecurityPolicy(new ContentSecurityPolicyBuilder()
                 .WithDefaultSource(CSPConstants.Self)
                 .WithImageSource("'self'", "data:") // allow images from self, including base64 encoding images aka icon fonts
+                .WithStyleSource("'self'", "'unsafe-inline'") // allow styles from self and inline from js
                 .WithFontSource(CSPConstants.Self)
                 .WithFrameAncestors(CSPConstants.None)
                 .BuildPolicy()
