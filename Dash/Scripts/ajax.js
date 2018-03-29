@@ -18,6 +18,7 @@
         };
         if (options.token) {
             options.headers['X-XSRF-Token'] = options.token;
+            delete options.token;
         }
         options.config = function(xhr) {
             xhr.timeout = 60000;
