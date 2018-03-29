@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace Dash.Models
 {
@@ -24,9 +26,6 @@ namespace Dash.Models
         OneHour = 7
     }
 
-    /// <summary>
-    /// Widgets is an element on the user dashboard that shows data/chart from a report.
-    /// </summary>
     public class Widget : BaseModel, IValidatableObject
     {
         private List<Column> _Columns;
@@ -47,9 +46,9 @@ namespace Dash.Models
         public IActionContextAccessor ActionContextAccessor { get; set; }
 
         [Ignore, JilDirective(true)]
-        public bool AllowEdit { get { return UserId == ActionContextAccessor.ActionContext.HttpContext.User.UserId(); } }
+        public bool AllowEdit { get { return UserId == RequestUserId; } }
 
-        [Display(Name = "Chart", ResourceType = typeof(I18n.Widgets))]
+        [Display(Name = "Chart", ResourceType = typeof(Widgets))]
         public int? ChartId { get; set; }
 
         [Ignore]
@@ -100,8 +99,8 @@ namespace Dash.Models
         [Ignore]
         public bool IsData { get { return ReportId.HasPositiveValue(); } }
 
-        [Display(Name = "RefreshRate", ResourceType = typeof(I18n.Widgets))]
-        [Required(ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorRequired")]
+        [Display(Name = "RefreshRate", ResourceType = typeof(Widgets))]
+        [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         [JilDirective(true)]
         public int RefreshRate { get; set; }
 
@@ -139,7 +138,7 @@ namespace Dash.Models
             }
         }
 
-        [Display(Name = "Report", ResourceType = typeof(I18n.Widgets))]
+        [Display(Name = "Report", ResourceType = typeof(Widgets))]
         public int? ReportId { get; set; }
 
         [Ignore]
@@ -166,12 +165,13 @@ namespace Dash.Models
             }
         }
 
-        [Display(Name = "Title", ResourceType = typeof(I18n.Widgets))]
-        [Required(ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorRequired")]
-        [StringLength(100, ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorMaxLength")]
+        [Display(Name = "Title", ResourceType = typeof(Widgets))]
+        [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
+        [StringLength(100, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string Title { get; set; }
 
         [Ignore]
+        [BindNever, ValidateNever]
         public string Url
         {
             get
@@ -181,7 +181,7 @@ namespace Dash.Models
             }
         }
 
-        [Display(Name = "User", ResourceType = typeof(I18n.Widgets))]
+        [Display(Name = "User", ResourceType = typeof(Widgets))]
         [Required]
         [JilDirective(true)]
         public int UserId { get; set; }
@@ -195,57 +195,38 @@ namespace Dash.Models
 
         public int Y { get; set; } = -1;
 
-        /// <summary>
-        /// Get all the charts available to the user as a select list.
-        /// </summary>
-        /// <returns>Returns a IEnumerable of list items.</returns>
         public IEnumerable<SelectListItem> GetChartSelectList()
         {
-            return DbContext.GetAll<Chart>(new { UserId = ActionContextAccessor.ActionContext.HttpContext.User.UserId() }).ToSelectList(r => r.Name, r => r.Id.ToString());
+            return DbContext.GetAll<Chart>(new { UserId = RequestUserId }).ToSelectList(r => r.Name, r => r.Id.ToString());
         }
 
-        /// <summary>
-        /// Get all the reports available to the user as a select list.
-        /// </summary>
-        /// <returns>Returns a IEnumerable of list items.</returns>
         public IEnumerable<SelectListItem> GetReportSelectList()
         {
-            return DbContext.GetAll<Report>(new { UserId = ActionContextAccessor.ActionContext.HttpContext.User.UserId() }).ToSelectList(r => r.Name, r => r.Id.ToString());
+            return DbContext.GetAll<Report>(new { UserId = RequestUserId }).ToSelectList(r => r.Name, r => r.Id.ToString());
         }
 
-        /// <summary>
-        /// Get all the widget refresh rates as a select list.
-        /// </summary>
-        /// <returns>Returns a IEnumerable of list items.</returns>
         public IEnumerable<SelectListItem> GetWidgetRefreshRateSelectList()
         {
             return typeof(WidgetRefreshRates).TranslatedSelect(new ResourceDictionary("Widgets"), "LabelRefreshRate_");
         }
 
-        /// <summary>
-        /// Save the widget, calculating the position for the widget first if it is new.
-        /// </summary>
-        /// <returns>Returns tru if save is successful, else false.</returns>
         public void Save()
         {
             if (Id == 0)
             {
                 // new widget - find the correct position
                 var gridBottom = 0;
-                DbContext.GetAll<Widget>(new { UserId = ActionContextAccessor.ActionContext.HttpContext.User.UserId() }).ToList().ForEach(x => gridBottom = Math.Max(x.Y + x.Height, gridBottom));
+                DbContext.GetAll<Widget>(new { UserId = RequestUserId }).ToList().ForEach(x => gridBottom = Math.Max(x.Y + x.Height, gridBottom));
                 X = 0;
                 Y = gridBottom;
+            }
+            if (UserId == 0)
+            {
+                UserId = RequestUserId ?? 0;
             }
             DbContext.Save(this);
         }
 
-        /// <summary>
-        /// Save widgets size and position to db if changed.
-        /// </summary>
-        /// <param name="width">Width of widget.</param>
-        /// <param name="height">Height of widget.</param>
-        /// <param name="x">X coordinate of widget.</param>
-        /// <param name="y">Y coordinate of widget.</param>
         public void SavePosition(int width, int height, int x, int y)
         {
             if (!AllowEdit)
@@ -266,15 +247,11 @@ namespace Dash.Models
             }
         }
 
-        /// <summary>
-        /// Validate widget object. Check that report or chart one is provided.
-        /// </summary>
-        /// <returns>Returns a list of errors if any.</returns>
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             if (!ReportId.HasPositiveValue() && !ChartId.HasPositiveValue())
             {
-                yield return new ValidationResult(I18n.Widgets.ErrorReportOrChartRequired, new[] { "ReportId" });
+                yield return new ValidationResult(Widgets.ErrorReportOrChartRequired, new[] { "ReportId" });
             }
         }
     }

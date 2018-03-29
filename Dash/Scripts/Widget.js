@@ -66,6 +66,7 @@
                     id: 'widgetTable_' + opts.id,
                     url: opts.url,
                     requestMethod: 'POST',
+                    requestParams: { Id: opts.reportId },
                     loadAllData: false,
                     editable: false,
                     itemsPerPage: opts.reportRowLimit || 10,

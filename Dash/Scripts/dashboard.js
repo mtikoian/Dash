@@ -178,11 +178,11 @@
     var saveDashboard = function() {
         var positions = getWidgets().map(function(w) {
             return {
-                id: w.opts.id || 0,
-                width: w.rect.width || 1,
-                height: w.rect.height || 1,
-                x: w.rect.x || 0,
-                y: w.rect.y || 0
+                Id: w.opts.id || 0,
+                Width: w.rect.width || 1,
+                Height: w.rect.height || 1,
+                X: w.rect.x || 0,
+                Y: w.rect.y || 0
             };
         });
 
@@ -195,7 +195,7 @@
         $.ajax({
             method: 'POST',
             url: dash.getAttribute('data-save-url'),
-            data: positions,
+            data: { Widgets: positions },
             block: false
         }, null);
     };
