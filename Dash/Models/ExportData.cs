@@ -16,6 +16,16 @@ namespace Dash.Models
         public HttpContext HttpContext { get; set; }
         public Report Report { get; set; }
 
+        public string FormattedFileName
+        {
+            get
+            {
+                var formattedName = FileName;
+                Array.ForEach(Path.GetInvalidFileNameChars(), c => formattedName = formattedName.Replace(c.ToString(), String.Empty));
+                return $"{formattedName}.xlsx";
+            }
+        }
+
         /// <summary>
         /// Create the spreadsheet.
         /// </summary>
@@ -32,10 +42,10 @@ namespace Dash.Models
             using (var package = new ExcelPackage())
             {
                 var worksheet = package.Workbook.Worksheets.Add(Report.Name);
-
                 var columns = Report.Dataset.DatasetColumn.ToDictionary(j => j.Id, j => j);
                 var table = new DataTable();
                 Report.ReportColumn.ForEach(x => table.Columns.Add(columns[x.ColumnId]?.Title ?? "", typeof(string)));
+                FileName = Report.Name;
 
                 dynamic result = Report.GetData(AppConfig, 0, Int32.MaxValue, false);
                 foreach (IDictionary<string, object> row in result.Rows)
@@ -56,10 +66,6 @@ namespace Dash.Models
                 }
 
                 worksheet.Cells["A1:" + Report.ReportColumn.Count.ToExcelColumn() + table.Rows.Count].AutoFitColumns();
-
-                FileName = Report.Name;
-                Array.ForEach(Path.GetInvalidFileNameChars(), c => FileName = FileName.Replace(c.ToString(), String.Empty));
-                FileName = $"{FileName}.xlsx";
 
                 return package.GetAsByteArray();
             }

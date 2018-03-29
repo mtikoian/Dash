@@ -29,7 +29,7 @@ namespace Dash.Controllers
                 return JsonError(ModelState.ToErrorString());
             }
             model.Save();
-            return Details(model.Id);
+            return JsonSuccess();
         }
 
         [HttpGet, AjaxRequestOnly]
@@ -194,7 +194,7 @@ namespace Dash.Controllers
             }
 
             var export = new ExportData { Report = report, HttpContext = HttpContext, AppConfig = AppConfig };
-            return File(export.Stream(), export.ContentType, export.FileName);
+            return File(export.Stream(), export.ContentType, export.FormattedFileName);
         }
 
         [HttpGet, AjaxRequestOnly]
