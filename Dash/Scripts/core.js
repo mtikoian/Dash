@@ -558,14 +558,28 @@
     };
 
     /**
-     * Change the property names of an object to lowercase.
-     * @param {Object} obj - Object to change properties of.
-     * @returns {Object} New object with all lowercase property names.
+     * Change the property names of an object or array to pascal case.
+     * @param {Object|Obj[]} obj - Object to change properties of.
+     * @returns {Object} New object with all pascal case property names.
      */
-    var toPascalCase = function(obj) {
-        // @todo add a check for isArray and convert elements in array 
+    var toPascalKeys = function(obj) {
         if (isNull(obj)) {
-            return {};
+            return null;
+        }
+        if (isArray(obj)) {
+            return obj.map(function(x) { return _toPascalKeys(x); });
+        }
+        return _toPascalKeys(obj);
+    };
+
+    /**
+     * Change the property names of an object to pascal case.
+     * @param {Object} obj - Object to change properties of.
+     * @returns {Object} New object with all pascal case property names.
+     */
+    var _toPascalKeys = function(obj) {
+        if (isNull(obj)) {
+            return null;
         }
         var key, keys = Object.keys(obj), i = keys.length, newObj = {};
         while (i--) {
@@ -662,6 +676,6 @@
         setText: setText,
         show: show,
         style: style,
-        toPascalCase: toPascalCase
+        toPascalKeys: toPascalKeys
     };
 }(this));
