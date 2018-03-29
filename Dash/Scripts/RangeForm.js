@@ -30,9 +30,10 @@
             appendRecord: true,
             allowEdit: opts.allowEdit,
             wantsHelp: opts.wantsHelp,
-            newRecord: { id: null, reportId: '', xAxisColumnId: '', yAxisColumnId: '', aggregatorId: '', dateIntervalId: '', color: '', displayOrder: 0 }
+            newRecord: { id: 0, reportId: 0, xAxisColumnId: 0, yAxisColumnId: 0, aggregatorId: 0, dateIntervalId: 0, color: '', displayOrder: 0 }
         }, ranges || []);
 
+        this.chartId = opts.chartId;
         this.filterTypes = opts.filterTypes || {};
         this.saveRangesUrl = opts.saveRangesUrl;
         this.dateIntervals = opts.dateIntervals || [];
@@ -62,7 +63,10 @@
         $.ajax({
             method: 'POST',
             url: self.saveRangesUrl,
-            data: { ranges: this.records }
+            data: {
+                Id: self.chartId,
+                Ranges: $.toPascalKeys(self.records)
+            }
         }, function(data) {
             if (data) {
                 self.changed = false;
@@ -117,10 +121,10 @@
      */
     RangeForm.prototype.setReport = function(index, e) {
         if (this.set(index, 'reportId', e)) {
-            this.records[index].xAxisColumnId = '';
-            this.records[index].yAxisColumnId = '';
-            this.records[index].aggregatorId = '';
-            this.records[index].dateIntervalId = '';
+            this.records[index].xAxisColumnId = 0;
+            this.records[index].yAxisColumnId = 0;
+            this.records[index].aggregatorId = 0;
+            this.records[index].dateIntervalId = 0;
             this.run();
         }
     };

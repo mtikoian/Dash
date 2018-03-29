@@ -59,7 +59,7 @@
         }
 
         var dlg = $.dialogs.getActiveDialog();
-        _shares[dlg.getId()] = new ShareForm({ content: dlg.getContent(), formName: 'ChartShare' });
+        _shares[dlg.getId()] = new ShareForm({ content: dlg.getContent(), formName: 'Shares' });
         _shares[dlg.getId()].run();
     });
 

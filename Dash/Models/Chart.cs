@@ -9,9 +9,39 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Dash.Models
 {
-    /// <summary>
-    /// Chart is a chart derived from multiple reports.
-    /// </summary>
+    public enum ChartOperators
+    {
+        Sum,
+        Avg,
+        Count,
+        Min,
+        Max
+    }
+
+    public enum ChartTypes
+    {
+        Line = 1,
+        Bar = 2,
+        Pie = 3,
+        Doughnut = 4,
+        HorizontalBar = 5
+    }
+
+    public enum DateIntervals
+    {
+        None = 11,
+        FiveMinutes = 10,
+        TenMinutes = 9,
+        FifteenMinutes = 8,
+        ThirtyMinutes = 7,
+        Hour = 6,
+        Day = 5,
+        Week = 4,
+        Month = 3,
+        Quarter = 2,
+        Year = 1
+    }
+
     [HasMany(typeof(ChartRange))]
     [HasMany(typeof(ChartShare))]
     public class Chart : BaseModel
@@ -20,14 +50,9 @@ namespace Dash.Models
         private List<ChartRange> _ChartRange;
         private List<ChartShare> _ChartShare;
         private User _Owner;
-        private int CurrentUserId;
 
-        /// <summary>
-        /// Default constructor.
-        /// </summary>
-        public Chart(int userId)
+        public Chart()
         {
-            CurrentUserId = userId;
         }
 
         public static IEnumerable<SelectListItem> ChartTypeSelectList
@@ -60,7 +85,7 @@ namespace Dash.Models
             set { _ChartShare = value; }
         }
 
-        [Display(Name = "Type", ResourceType = typeof(I18n.Charts))]
+        [Display(Name = "Type", ResourceType = typeof(Charts))]
         [JilDirective(true)]
         public int ChartTypeId { get; set; }
 
@@ -77,20 +102,17 @@ namespace Dash.Models
         }
 
         [Ignore, JilDirective(true)]
-        public bool IsOwner { get { return CurrentUserId == OwnerId; } }
+        public bool IsOwner { get { return RequestUserId == OwnerId; } }
 
-        [Display(Name = "Name", ResourceType = typeof(I18n.Charts))]
-        [Required(ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorRequired")]
-        [StringLength(100, ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorMaxLength")]
+        [Display(Name = "Name", ResourceType = typeof(Charts))]
+        [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
+        [StringLength(100, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string Name { get; set; }
 
-        /// <summary>
-        /// Get the user object of the report owner.
-        /// </summary>
         [Ignore, JilDirective(true)]
         public User Owner { get { return _Owner ?? (_Owner = DbContext.Get<User>(OwnerId)); } }
 
-        [Required(ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorRequired")]
+        [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         [JilDirective(true)]
         public int OwnerId { get; set; }
 
@@ -110,26 +132,17 @@ namespace Dash.Models
             }
         }
 
-        /// <summary>
-        /// Create a new chart object from a createChart object.
-        /// </summary>
-        /// <param name="chart">Setting for new chart.</param>
-        /// <returns>Returns a new chart object.</returns>
         public static Chart Create(CreateChart chart, int userId)
         {
-            return new Chart(userId) { Name = chart.Name, ChartTypeId = chart.ChartTypeId };
+            return new Chart { Name = chart.Name, ChartTypeId = chart.ChartTypeId, OwnerId = userId, RequestUserId = userId };
         }
 
-        /// <summary>
-        /// Copy a chart.
-        /// </summary>
-        /// <param name="name">New role name.</param>
         public Chart Copy(string name = null)
         {
             var newChart = this.Clone();
             newChart.Id = 0;
-            newChart.OwnerId = CurrentUserId;
-            newChart.Name = name.IsEmpty() ? String.Format(Core.CopyOf, Name) : name;
+            newChart.OwnerId = RequestUserId ?? 0;
+            newChart.Name = name.IsEmpty() ? string.Format(Core.CopyOf, Name) : name;
 
             // duplicate the chart ranges
             newChart.ChartRange = (ChartRange ?? DbContext.GetAll<ChartRange>(new { ChartId = Id }))?.Select(x => new ChartRange {
@@ -148,17 +161,9 @@ namespace Dash.Models
             return newChart;
         }
 
-        /// <summary>
-        /// Get the data for a chart.
-        /// </summary>
-        /// <param name="hasDatasetAccess">User has dataset access.</param>
-        /// <returns>Returns the data for the chart as a dynamic object.</returns>
         public ChartResult GetData(bool hasDatasetAccess)
         {
-            // build a obj to store our results
             var response = new ChartResult() { UpdatedDate = DateUpdated };
-
-            // no reason to go any further if there are no ranges for this chart
             if (ChartRange?.Any() != true)
             {
                 response.Error = Charts.ErrorNoRanges;
@@ -214,7 +219,7 @@ namespace Dash.Models
                 // get the actual query data
                 try
                 {
-                    IEnumerable<dynamic> dataRes = report.Dataset.Database.Query(report.Dataset.IsProc ? sqlQuery.ExecStatement() : sqlQuery.SelectStatement(), sqlQuery.Params);
+                    var dataRes = report.Dataset.Database.Query(report.Dataset.IsProc ? sqlQuery.ExecStatement() : sqlQuery.SelectStatement(), sqlQuery.Params);
                     if (dataRes.Any())
                     {
                         result.AddData(range, report.ProcessData(dataRes, sqlQuery), xColumn, yColumn);
@@ -235,22 +240,14 @@ namespace Dash.Models
             return response;
         }
 
-        /// <summary>
-        /// Update the chart ranges.
-        /// </summary>
-        /// <param name="newRanges">List of new chart ranges.</param>
-        /// <returns>Returns the updated list of ranges.</returns>
         public List<ChartRange> UpdateRanges(List<ChartRange> newRanges = null)
         {
-            // save the submitted ranges
             var keyedRanges = new Dictionary<int, ChartRange>();
             newRanges.ForEach(x => {
                 x.ChartId = Id;
                 DbContext.Save(x);
                 keyedRanges.Add(x.Id, x);
             });
-
-            // delete any old ranges that weren't in the new list
             if (ChartRange?.Any() == true)
             {
                 ChartRange.Where(x => !keyedRanges.ContainsKey(x.Id)).ToList().ForEach(x => DbContext.Delete(x));

@@ -4,9 +4,6 @@ using System.Linq;
 
 namespace Dash.Models
 {
-    /// <summary>
-    /// ChartResult stores results from a report query for a chart.
-    /// </summary>
     public class ChartResult : BaseModel
     {
         public string Error { get; set; }
@@ -31,13 +28,6 @@ namespace Dash.Models
         public string YTitle { get; set; }
         public string YType { get; set; }
 
-        /// <summary>
-        /// Process the data from a report and add it to this result range.
-        /// </summary>
-        /// <param name="range">ChartRange that the data is coming from.</param>
-        /// <param name="data">Dataset to process.</param>
-        /// <param name="xColumn">DatasetColumn selected for the X axis.</param>
-        /// <param name="yColumn">DatasetColumn selected for the Y axis.</param>
         public void AddData(ChartRange range, List<object> data, DatasetColumn xColumn, DatasetColumn yColumn)
         {
             var xName = xColumn.Alias;

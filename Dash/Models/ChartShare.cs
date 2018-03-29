@@ -2,9 +2,6 @@
 
 namespace Dash.Models
 {
-    /// <summary>
-    /// Share a chart with a user or role.
-    /// </summary>
     public class ChartShare : BaseModel
     {
         [Required(ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorRequired")]

@@ -18,6 +18,7 @@
         this.enableExport = false;
 
         this.rangeForm = new RangeForm({
+            chartId: opts.chartId,
             content: opts.content,
             ranges: opts.ranges,
             allowEdit: opts.allowEdit,

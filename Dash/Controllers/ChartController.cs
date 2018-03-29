@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using Dash.Configuration;
 using Dash.I18n;
 using Dash.Models;
@@ -10,9 +9,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Dash.Controllers
 {
-    /// <summary>
-    /// Handles CRUD for charts.
-    /// </summary>
     [Authorize(Policy = "HasPermission")]
     public class ChartController : BaseController
     {
@@ -20,66 +16,37 @@ namespace Dash.Controllers
         {
         }
 
-        /// <summary>
-        /// Show form to change chart type.
-        /// </summary>
-        /// <param name="id">ID of chart to display.</param>
-        /// <returns>Form or error message.</returns>
         [HttpGet, AjaxRequestOnly]
         public IActionResult ChangeType(int id)
         {
-            var model = DbContext.Get<Chart>(id);
-            if (model == null)
+            var chart = DbContext.Get<Chart>(id);
+            if (chart == null)
             {
                 return JsonError(Core.ErrorInvalidId);
             }
-            if (!model.IsOwner)
+            if (!chart.IsOwner)
             {
                 return JsonError(Charts.ErrorOwnerOnly);
             }
-            return PartialView(model);
+            return PartialView(chart);
         }
 
-        /// <summary>
-        /// Change chart type.
-        /// </summary>
-        /// <param name="id">ID of chart to display.</param>
-        /// <param name="chartTypeId">New chart type.</param>
-        /// <returns>Success or error message.</returns>
-        [HttpPost, AjaxRequestOnly]
-        public IActionResult ChangeType(int id, int chartTypeId)
+        [HttpPost, AjaxRequestOnly, ValidateAntiForgeryToken]
+        public IActionResult ChangeType([FromBody] ChangeType model)
         {
-            // @todo test that this still works, changed named from ChangeTypeSave to ChangeType
-            var model = DbContext.Get<Chart>(id);
             if (model == null)
             {
-                return JsonError(Core.ErrorInvalidId);
+                return JsonError(Core.ErrorGeneric);
             }
-            if (!model.IsOwner)
+            if (!ModelState.IsValid)
             {
-                return JsonError(Charts.ErrorOwnerOnly);
+                return JsonError(ModelState.ToErrorString());
             }
-            if (chartTypeId < 1)
-            {
-                return JsonError(Charts.ErrorTypeRequired);
-            }
-
-            model.ChartTypeId = chartTypeId;
-            DbContext.Save(model, false);
-            return Json(new {
-                message = Charts.SuccessSavingChart,
-                closeParent = true,
-                parentTarget = true,
-                dialogUrl = Url.Action("Details", new { @id = model.Id })
-            });
+            model.Update();
+            return JsonSuccess();
         }
 
-        /// <summary>
-        /// Make a copy of a chart.
-        /// </summary>
-        /// <param name="model">CopyChart object</param>
-        /// <returns>Redirects to new chart.</returns>
-        [HttpGet]
+        [HttpGet, AjaxRequestOnly]
         public IActionResult Copy(CopyChart model)
         {
             if (!ModelState.IsValid)
@@ -87,127 +54,94 @@ namespace Dash.Controllers
                 return JsonError(ModelState.ToErrorString());
             }
             model.Save();
-            return Details(model.Id);
+            return JsonSuccess();
         }
 
-        /// <summary>
-        /// Create a new chart.
-        /// </summary>
-        /// <param name="prompt">Name value from prompt</param>
-        /// <returns>Redirects to index.</returns>
         [HttpGet, AjaxRequestOnly]
         public IActionResult Create()
         {
-            return PartialView(new CreateChart());
+            return PartialView(new CreateChart(DbContext, User.UserId()));
         }
 
-        /// <summary>
-        /// Create a new chart.
-        /// </summary>
-        /// <param name="model">CreateChart object</param>
-        /// <returns>Redirects to index.</returns>
-        [HttpPost, AjaxRequestOnly]
-        public IActionResult Create(CreateChart model)
+        [HttpPost, AjaxRequestOnly, ValidateAntiForgeryToken]
+        public IActionResult Create([FromBody] CreateChart model)
         {
-            // @todo test this, changed name from CreateChart to Create
+            if (model == null)
+            {
+                return JsonError(Core.ErrorGeneric);
+            }
             if (!ModelState.IsValid)
             {
                 return JsonError(ModelState.ToErrorString());
             }
 
-            var newChart = Chart.Create(model, User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt());
-            DbContext.Save(newChart);
-            return Json(new { message = Charts.SuccessSavingChart, dialogUrl = Url.Action("Details", new { @id = newChart.Id }) });
+            var newChart = Chart.Create(model, User.UserId());
+            DbContext.Save(newChart, false);
+            return JsonData(new { message = Charts.SuccessSavingChart, dialogUrl = Url.Action("Details", new { @id = newChart.Id }) });
         }
 
-        /// <summary>
-        /// Creates chart data for Charts.js to consume.
-        /// </summary>
-        /// <param name="id">Chart Id</param>
-        /// <returns>Object with the queries run, execution time, retrieved data, and any errors.</returns>
         [HttpPost, AjaxRequestOnly]
         public IActionResult Data(int id)
         {
-            var model = DbContext.Get<Chart>(id);
-            if (model == null)
+            var chart = DbContext.Get<Chart>(id);
+            if (chart == null)
             {
                 return JsonError(Core.ErrorInvalidId);
             }
-            var user = DbContext.Get<User>(User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt());
-            if (!user.CanViewChart(model))
+            var user = DbContext.Get<User>(User.UserId());
+            if (!user.CanViewChart(chart))
             {
                 return JsonError(Charts.ErrorPermissionDenied);
             }
-            if ((model.ChartRange?.Count ?? 0) == 0)
+            if ((chart.ChartRange?.Count ?? 0) == 0)
             {
                 return JsonError(Charts.ErrorNoRanges);
             }
-
-            var result = model.GetData(User.IsInRole("dataset.create"));
-            return Json(result);
+            return JsonData(chart.GetData(User.IsInRole("dataset.create")));
         }
 
-        /// <summary>
-        /// Delete a chart.
-        /// </summary>
-        /// <param name="id">ID of chart to delete</param>
-        /// <param name="model">Chart object</param>
-        /// <returns>Success or error message.</returns>
         [HttpDelete, AjaxRequestOnly]
         public IActionResult Delete(int id)
         {
-            var model = DbContext.Get<Chart>(id);
-            if (model == null)
+            var chart = DbContext.Get<Chart>(id);
+            if (chart == null)
             {
                 return JsonError(Core.ErrorInvalidId);
             }
-            if (!model.IsOwner)
+            if (!chart.IsOwner)
             {
                 return JsonError(Charts.ErrorOwnerOnly);
             }
-
-            DbContext.Delete(model);
+            DbContext.Delete(chart);
             return JsonSuccess(Charts.SuccessDeletingChart);
         }
 
-        /// <summary>
-        /// Display a chart to view/edit.
-        /// </summary>
-        /// <param name="id">ID of chart to display.</param>
-        /// <returns>Details view, or an error message.</returns>
         [HttpGet, AjaxRequestOnly]
         public IActionResult Details(int id)
         {
-            var model = DbContext.Get<Chart>(id);
-            if (model == null)
+            var chart = DbContext.Get<Chart>(id);
+            if (chart == null)
             {
                 return JsonError(Core.ErrorInvalidId);
             }
-            var user = DbContext.Get<User>(User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt());
-            if (!user.CanViewChart(model))
+            var user = DbContext.Get<User>(User.UserId());
+            if (!user.CanViewChart(chart))
             {
                 return JsonError(Charts.ErrorPermissionDenied);
             }
-
-            return PartialView("Details", model);
+            return PartialView("Details", chart);
         }
 
-        /// <summary>
-        /// Return an object with translations and other data needed to view a chart.
-        /// </summary>
-        /// <param name="id">Chart ID</param>
-        /// <param name="model">Chart object</param>
-        /// <returns>Options object for viewing the chart, or an error message.</returns>
         [HttpGet, AjaxRequestOnly]
         public IActionResult DetailsOptions(int id)
         {
-            var model = DbContext.Get<Chart>(id);
-            if (model == null)
+            var chart = DbContext.Get<Chart>(id);
+            if (chart == null)
             {
                 return JsonError(Core.ErrorInvalidId);
             }
-            var user = DbContext.Get<User>(User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt());
-            if (!user.CanViewChart(model))
+            var user = DbContext.Get<User>(User.UserId());
+            if (!user.CanViewChart(chart))
             {
                 return JsonError(Charts.ErrorPermissionDenied);
             }
@@ -221,10 +155,11 @@ namespace Dash.Controllers
                 columns[x.ReportId].Add(x);
             });
 
-            return Json(new {
-                dateIntervals = model.DateIntervalList.Prepend(new { Id = 0, Name = Charts.DateInterval }),
-                aggregators = model.AggregatorList.Prepend(new { Id = 0, Name = Charts.Aggregator }),
-                ranges = model.ChartRange,
+            return JsonData(new {
+                chartId = chart.Id,
+                dateIntervals = chart.DateIntervalList.Prepend(new { Id = 0, Name = Charts.DateInterval }),
+                aggregators = chart.AggregatorList.Prepend(new { Id = 0, Name = Charts.Aggregator }),
+                ranges = chart.ChartRange,
                 reports = DbContext.GetAll<Report>(new { UserId = user.Id })
                     .Select(x => new { id = x.Id, name = x.Name }).Prepend(new { id = 0, name = Charts.Report }),
                 columns = columns.Select(x => new { reportId = x.Key, columns = x.Value }),
@@ -234,35 +169,26 @@ namespace Dash.Controllers
                     select = (int)FilterTypes.Select,
                     numeric = (int)FilterTypes.Numeric
                 },
-                allowEdit = model.IsOwner,
+                allowEdit = chart.IsOwner,
                 wantsHelp = HttpContext.Session.GetString("ContextHelp").ToBool(),
-                saveRangesUrl = Url.Action("SaveRanges", "Chart", new { model.Id })
+                saveRangesUrl = Url.Action("SaveRanges", "Chart", new { chart.Id })
             });
         }
 
-        /// <summary>
-        /// Export a chart to an image file.
-        /// </summary>
-        /// <param name="model">Export chart settings model</param>
-        /// <param name="data">Base64 data for the image.</param>
-        /// <param name="width">Width of the image.</param>
-        /// <returns>Streams a png image.</returns>
         [HttpPost]
         public IActionResult Export(ExportChart model)
         {
+            if (model == null)
+            {
+                return JsonError(Core.ErrorGeneric);
+            }
             if (!ModelState.IsValid)
             {
                 return JsonError(ModelState.ToErrorString());
             }
-
-            model.Stream();
-            return null;
+            return File(model.Stream(), model.ContentType, model.FormattedFileName);
         }
 
-        /// <summary>
-        /// List all charts.
-        /// </summary>
-        /// <returns>Index view.</returns>
         [HttpGet, AjaxRequestOnly]
         public IActionResult Index()
         {
@@ -276,31 +202,21 @@ namespace Dash.Controllers
             }));
         }
 
-        /// <summary>
-        /// Return the chart list for table to display.
-        /// </summary>
-        /// <returns>Array of chart objects.</returns>
         [HttpGet, AjaxRequestOnly]
         public IActionResult List()
         {
-            return JsonRows(DbContext.GetAll<Chart>(new { UserId = User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt() }));
+            return JsonRows(DbContext.GetAll<Chart>(new { UserId = User.UserId() }));
         }
 
-        /// <summary>
-        /// Rename a chart.
-        /// </summary>
-        /// <param name="id">ID of chart to display.</param>
-        /// <param name="prompt">New chart name.</param>
-        /// <returns>Success or error message.</returns>
         [HttpGet, AjaxRequestOnly]
         public IActionResult Rename(int id, string prompt)
         {
-            var model = DbContext.Get<Chart>(id);
-            if (model == null)
+            var chart = DbContext.Get<Chart>(id);
+            if (chart == null)
             {
                 return JsonError(Core.ErrorInvalidId);
             }
-            if (!model.IsOwner)
+            if (!chart.IsOwner)
             {
                 return JsonError(Charts.ErrorOwnerOnly);
             }
@@ -309,75 +225,52 @@ namespace Dash.Controllers
                 return JsonError(Charts.ErrorNameRequired);
             }
 
-            model.Name = prompt.Trim();
-            DbContext.Save(model, false);
-            return Json(new { message = Charts.NameSaved, content = prompt });
+            chart.Name = prompt.Trim();
+            DbContext.Save(chart, false);
+            return JsonData(new { message = Charts.NameSaved, content = prompt });
         }
 
-        /// <summary>
-        /// Save the ranges for a chart.
-        /// </summary>
-        /// <param name="id">Chart Id</param>
-        /// <param name="groups">New ranges objects to save</param>
-        /// <returns>Error message, or list of updated range objects.</returns>
         [HttpPost, AjaxRequestOnly]
-        public IActionResult SaveRanges(int id, List<ChartRange> ranges = null)
+        public IActionResult SaveRanges([FromBody] SaveRange model)
         {
-            var model = DbContext.Get<Chart>(id);
             if (model == null)
             {
                 return JsonError(Core.ErrorInvalidId);
             }
-            if (!model.IsOwner)
+            if (!ModelState.IsValid)
             {
-                return JsonError(Charts.ErrorOwnerOnly);
+                return JsonError(ModelState.ToErrorString());
             }
-
-            return Json(new { ranges = model.UpdateRanges(ranges) });
+            return JsonData(new { ranges = model.Update() });
         }
 
-        /// <summary>
-        /// Display a chart to share with users/roles.
-        /// </summary>
-        /// <param name="id">ID of chart to display.</param>
-        /// <returns>Share view, or error message.</returns>
         [HttpGet, AjaxRequestOnly]
         public IActionResult Share(int id)
         {
-            var model = DbContext.Get<Chart>(id);
-            if (model == null)
+            var chart = DbContext.Get<Chart>(id);
+            if (chart == null)
             {
                 return JsonError(Core.ErrorInvalidId);
             }
-            if (!model.IsOwner)
+            if (!chart.IsOwner)
             {
                 return JsonError(Charts.ErrorOwnerOnly);
             }
-            return PartialView(model);
+            return PartialView(chart);
         }
 
-        /// <summary>
-        /// Save the chart shares.
-        /// </summary>
-        /// <param name="id">ID of chart to update.</param>
-        /// <param name="chartShare">List of shares.</param>
-        /// <returns>Success or error message.</returns>
         [HttpPut, AjaxRequestOnly]
-        public IActionResult Share(int id, List<ChartShare> chartShare)
+        public IActionResult Share([FromBody] SaveChartShare model)
         {
-            // @todo renamed this from `ShareSave`, when testing make sure it still routes correctly
-            var model = DbContext.Get<Chart>(id);
             if (model == null)
             {
                 return JsonError(Core.ErrorInvalidId);
             }
-            if (!model.IsOwner)
+            if (!ModelState.IsValid)
             {
-                return JsonError(Charts.ErrorOwnerOnly);
+                return JsonError(ModelState.ToErrorString());
             }
-
-            chartShare?.ForEach(x => { x.ChartId = model.Id; DbContext.Save(x); });
-            model.ChartShare?.Where(x => chartShare?.Any(s => s.Id == x.Id) != true).Each(x => DbContext.Delete(x));
+            model.Update();
             return JsonSuccess(Charts.SuccessSavingChart);
         }
     }

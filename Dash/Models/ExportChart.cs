@@ -8,6 +8,8 @@ namespace Dash.Models
 {
     public class ExportChart
     {
+        public string ContentType { get; } = "image/png";
+
         [Required, Display(Name = "ExportChartData", ResourceType = typeof(I18n.Charts))]
         public string Data { get; set; }
 
@@ -21,7 +23,7 @@ namespace Dash.Models
             {
                 var formattedName = FileName;
                 Array.ForEach(Path.GetInvalidFileNameChars(), c => formattedName = formattedName.Replace(c.ToString(), String.Empty));
-                return formattedName;
+                return $"{formattedName}.png";
             }
         }
 
@@ -31,13 +33,11 @@ namespace Dash.Models
         /// <summary>
         /// Create the chart image and stream to the response.
         /// </summary>
-        public void Stream()
+        public byte[] Stream()
         {
-            throw new NotImplementedException("Stream needs work still.");
-            /*
-            byte[] bytes = Convert.FromBase64String(Data.Replace("data:image/png;base64,", ""));
+            var bytes = Convert.FromBase64String(Data.Replace("data:image/png;base64,", ""));
             Image image;
-            using (MemoryStream ms = new MemoryStream(bytes))
+            using (var ms = new MemoryStream(bytes))
             {
                 image = Image.FromStream(ms);
             }
@@ -52,15 +52,10 @@ namespace Dash.Models
                     g.DrawImageUnscaled(image, 0, 0);
                 }
 
-                nonTransparent.Save(HttpContext.Current.Response.OutputStream, System.Drawing.Imaging.ImageFormat.Png);
-                HttpContext.Current.Response.ContentType = "image/png";
-                HttpContext.Current.Response.AddHeader("Content-Disposition", "attachment;filename=" + FormattedFileName + ".png");
-
-                // Short-circuit this ASP.NET request and end. Short-circuiting prevents other modules from adding/interfering with the output.
-                HttpContext.Current.ApplicationInstance.CompleteRequest();
-                HttpContext.Current.Response.End();
+                var stream = new MemoryStream();
+                nonTransparent.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+                return stream.ToArray();
             }
-            */
         }
     }
 }

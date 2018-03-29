@@ -2,9 +2,6 @@
 
 namespace Dash.Models
 {
-    /// <summary>
-    /// A single range of data for a chart.
-    /// </summary>
     public class ChartRange : BaseModel
     {
         public int AggregatorId { get; set; }

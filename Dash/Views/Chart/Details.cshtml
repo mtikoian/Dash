@@ -1,9 +1,7 @@
 ﻿@using Dash.I18n
 @model Dash.Models.Chart
 
-<div class="chart-form" data-event="chartLoad" data-close-event="chartUnload"
-     data-url="@Url.Action("DetailsOptions", "Chart", new { id = Model.Id })" data-title="@Model.Name" data-basic-dialog="true">
-
+<div class="chart-form" data-event="chartLoad" data-close-event="chartUnload" data-url="@Url.Action("DetailsOptions", "Chart", new { id = Model.Id })" data-title="@Model.Name" data-basic-dialog="true">
     <div class="hidden">
         @if (this.User.IsInRole("dataset.create"))
         {
@@ -44,11 +42,6 @@
                                 @data_title = Charts.ShareChart
                             }, hasAccess: this.User.IsInRole("chart.share"))
                         }
-                        @Html.AuthorizedActionLink(Charts.CopyChart, "Copy", "Chart", new { id = Model.Id }, new {
-                            @class = "dropdown-item dash-ajax dash-prompt",
-                            @data_title = Charts.CopyChart,
-                            @data_message = Charts.NewName
-                        }, hasAccess: this.User.IsInRole("chart.copy"))
                         @if (this.User.IsInRole("dataset.create"))
                         {
                             <a href="#" class="dropdown-item view-sql">@Html.Raw(Core.ViewSql)</a>
