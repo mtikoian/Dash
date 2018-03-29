@@ -149,10 +149,16 @@
             return;
         }
 
+        if (promptValue) {
+            if (url.indexOf('?') > -1) {
+                url += '&Prompt=' + encodeURIComponent(promptValue);
+            } else {
+                url += '?Prompt=' + encodeURIComponent(promptValue);
+            }
+        }
         $.ajax({
             method: method || 'GET',
-            url: url,
-            data: promptValue ? { Prompt: promptValue } : null
+            url: url
         }, function(responseData) {
             if (!responseData.content) {
                 refreshTable();
