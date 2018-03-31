@@ -101,7 +101,6 @@ namespace Dash.Models
 
         [Display(Name = "RefreshRate", ResourceType = typeof(Widgets))]
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
-        [JilDirective(true)]
         public int RefreshRate { get; set; }
 
         [Ignore]
