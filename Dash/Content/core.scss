@@ -1,5 +1,23 @@
-@import "bootstrap/functions";
-@import "bootstrap/variables";
+//@import "bootstrap/functions";
+//@import "bootstrap/variables";
+
+@import "spectre/variables-custom";
+@import "spectre/mixins.scss";
+
+$gray-100: #f8f9fa !default;
+$teal: #20c997 !default;
+
+li {
+    list-style: none;
+}
+
+.btn-secondary {
+    @include button-variant(#dee2e6);
+}
+
+.btn-warning {
+    @include button-variant($warning-color);
+}
 
 .btn-secondary, .btn-secondary:hover, .btn-warning, .btn-warning:hover {
     color: #fff;
@@ -71,7 +89,7 @@
 
     .input-group-btn {
         .dropdown-toggle {
-            border: $input-border-width solid $input-border-color;
+            border: 2px solid #ced4da;
             border-radius: 0;
         }
 
@@ -124,13 +142,13 @@
     text-align: right;
 
     &.required {
-        color: $danger;
+        color: $error-color;
     }
 }
 
 .help-block.with-errors {
     width: 100%;
-    color: $danger;
+    color: $error-color;
     text-align: left;
     font-weight: normal;
     font-style: italic;
@@ -139,11 +157,11 @@
 }
 
 .form-control-error, .mform-control-error {
-    border-color: $danger;
+    border-color: $error-color;
 }
 
 .tab-validation-error {
-    color: $danger !important;
+    color: $error-color !important;
 }
 
 .form-buttons .btn {

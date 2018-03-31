@@ -6,29 +6,29 @@
     color: $info;
 
     a {
-        padding-left: .3rem;
+        padding-left: .7rem;
     }
 }
 
 .nav-side {
     width: 16rem;
     padding-left: 0;
+    margin-right: .5rem;
+    margin-left: .1rem;
 
     li {
-        line-height: 2.6rem;
+        line-height: 2rem;
+        padding-left: .3rem;
 
         a {
             display: block;
             text-decoration: none;
             color: #999999;
-
-            .dash {
-                padding-left: 1rem;
-            }
+            padding-left: .5rem;
 
             span {
                 display: none;
-                padding-left: 1.5rem;
+                padding-left: .5rem;
             }
 
             &:hover {

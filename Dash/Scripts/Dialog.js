@@ -89,7 +89,7 @@
             return m('.rd-dialog', { onkeydown: this.checkKey.bind(this), tabindex: 0 }, [
                 m('.rd-commands', [
                     m('button.btn.btn-secondary.rd-close', { type: 'button', role: 'button', onclick: this.onCancel.bind(this) },
-                        m('i.dash.dash-cancel.text-danger', { title: this.opts.buttons.close })
+                        m('i.dash.dash-cancel.text-error', { title: this.opts.buttons.close })
                     )
                 ]),
                 m('.rd-header.dialog-header', this.opts.title),

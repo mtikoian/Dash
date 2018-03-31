@@ -1,21 +1,21 @@
 ﻿@import "bootstrap/functions";
 @import "bootstrap/variables";
 
-html, body{
-  height: 100%;
-  width: 100%;
+html, body {
+    height: 100%;
+    width: 100%;
 }
 
 #sidebarWrapper {
     height: 100%;
     background: #000;
-    width: 4rem;
+    width: 3.3rem;
     overflow: hidden;
     float: left;
 }
 
 #contentWrapper {
-    padding-left: 4rem;
+    padding-left: 3.3rem;
     width: auto;
 }
 

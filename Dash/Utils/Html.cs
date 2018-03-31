@@ -216,7 +216,7 @@ namespace Dash
             {
                 htmlAttr["data-toggle"] = "";
             }
-            htmlAttr["class"] = MergedList(htmlAttr.ContainsKey("class") ? htmlAttr["class"] : "", new string[] { (ajaxForm ? "dash-form" : ""), "pt-1 mx-1 row" }).Combine();
+            htmlAttr["class"] = MergedList(htmlAttr.ContainsKey("class") ? htmlAttr["class"] : "", new string[] { (ajaxForm ? "dash-form" : ""), "form-horizontal pt-1 mx-1 row" }).Combine();
             htmlAttr["data-toggle"] = MergedList(htmlAttr.ContainsKey("data-toggle") ? htmlAttr["data-toggle"] : "", new[] { "validator" }).Combine();
             if (!title.IsEmpty())
             {
@@ -718,7 +718,7 @@ namespace Dash
         private static TagBuilder FormGroup()
         {
             var formGroup = new TagBuilder("div");
-            formGroup.AddCssClass("form-group row");
+            formGroup.AddCssClass("form-group");
             return formGroup;
         }
 
@@ -762,7 +762,7 @@ namespace Dash
             {
                 attrs.Remove("required");
             }
-            attrs.Append("class", "form-control");
+            attrs.Append("class", "form-input");
 
             return attrs;
         }
@@ -857,7 +857,7 @@ namespace Dash
         private static IHtmlContent StyledLabelFor<TModel, TProperty>(this IHtmlHelper<TModel> helper, Expression<Func<TModel, TProperty>> expression, IDictionary<string, object> htmlAttributes = null, int labelWidth = 4)
         {
             var metadata = ExpressionMetadataProvider.FromLambdaExpression(expression, helper.ViewData, helper.MetadataProvider);
-            var label = helper.LabelFor(expression, new { @class = "col-form-label col-" + labelWidth + (IsRequired(metadata, htmlAttributes) ? " required" : "") });
+            var label = helper.LabelFor(expression, new { @class = "form-label col-" + labelWidth + (IsRequired(metadata, htmlAttributes) ? " required" : "") });
             return label;
         }
 
