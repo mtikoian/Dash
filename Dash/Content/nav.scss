@@ -1,9 +1,8 @@
-﻿@import "bootstrap/functions";
-@import "bootstrap/variables";
+﻿@import "spectre/variables-custom";
 
 #menuBtn {
     cursor: pointer;
-    color: $info;
+    color: $info-color;
 
     a {
         padding-left: .7rem;
@@ -34,12 +33,19 @@
             &:hover {
                 color: #fff;
                 background: rgba(255,255,255,0.2);
-                border-left: $info 2px solid;
+                border-left: $info-color 2px solid;
             }
 
             &:active, &:focus {
                 text-decoration: none;
             }
+        }
+
+        &.divider {
+            height: 0;
+            margin: .5rem 0;
+            overflow: hidden;
+            border-top: 1px solid $gray-color-light;
         }
     }
 }

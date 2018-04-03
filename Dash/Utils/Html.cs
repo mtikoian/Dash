@@ -23,7 +23,7 @@ namespace Dash
         Success,
         Warning,
         Info,
-        Danger,
+        Error,
         Primary
     }
 
@@ -34,7 +34,7 @@ namespace Dash
         BtnSuccess,
         BtnWarning,
         BtnInfo,
-        BtnDanger,
+        BtnError,
         BtnPrimary,
         BtnLink,
         BtnSecondary,
@@ -57,7 +57,7 @@ namespace Dash
     /// </summary>
     public static class Html
     {
-        private static List<DashClasses> Buttons = new List<DashClasses> { DashClasses.BtnDanger, DashClasses.BtnInfo, DashClasses.BtnPrimary,
+        private static List<DashClasses> Buttons = new List<DashClasses> { DashClasses.BtnError, DashClasses.BtnInfo, DashClasses.BtnPrimary,
             DashClasses.BtnSuccess, DashClasses.BtnWarning, DashClasses.BtnLink };
         private static List<DashClasses> Dialogs = new List<DashClasses> { DashClasses.DashConfirm, DashClasses.DashDialog, DashClasses.DashPrompt };
 
@@ -216,7 +216,7 @@ namespace Dash
             {
                 htmlAttr["data-toggle"] = "";
             }
-            htmlAttr["class"] = MergedList(htmlAttr.ContainsKey("class") ? htmlAttr["class"] : "", new string[] { (ajaxForm ? "dash-form" : ""), "form-horizontal pt-1 mx-1 row" }).Combine();
+            htmlAttr["class"] = MergedList(htmlAttr.ContainsKey("class") ? htmlAttr["class"] : "", new string[] { (ajaxForm ? "dash-form" : ""), "col-12 form-horizontal pt-1 mx-1" }).Combine();
             htmlAttr["data-toggle"] = MergedList(htmlAttr.ContainsKey("data-toggle") ? htmlAttr["data-toggle"] : "", new[] { "validator" }).Combine();
             if (!title.IsEmpty())
             {
@@ -252,7 +252,7 @@ namespace Dash
         public static IDisposable BeginToolbar(this IHtmlHelper helper)
         {
             var writer = helper.ViewContext.Writer;
-            writer.Write("<div class=\"p-2 d-flex\"><div class=\"ml-auto\">");
+            writer.Write("<div class=\"col-12\"><div class=\"text-right\">");
             return new Toolbar(writer);
         }
 

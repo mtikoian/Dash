@@ -5,10 +5,6 @@
 }
 
 .data-table {
-    i.dash-search {
-        padding-top: .6rem;
-    }
-
     .table-scrollable {
         display: block;
         position: relative;
@@ -19,11 +15,11 @@
         .table {
             td {
                 vertical-align: middle;
+                padding: 0 .4rem;
 
                 .btn-link {
                     padding-left: 0;
                     padding-right: 0;
-                    color: black;
                 }
             }
         }
@@ -70,7 +66,7 @@
                 border-right: 1px gray dotted;
 
                 div {
-                    padding: .5rem;
+                    padding: .3rem;
                 }
             }
 

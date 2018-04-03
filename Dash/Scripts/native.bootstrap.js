@@ -24,9 +24,9 @@
      */
     var Dropdown = function(element) {
         this.menu = $.get(element);
-        this.target = $.get('.dropdown-menu', element.parentNode);
+        this.target = $.get('.menu', element.parentNode);
         this.container = $.closest('.dropdown', this.target);
-        this.items = $.getAll('.dropdown-item', this.target);
+        this.items = $.getAll('.menu-item', this.target);
         this.selectedIndex = -1;
         this.init();
     };
@@ -172,7 +172,7 @@
         this.tab = $.get(element);
         this.tabs = this.tab.parentNode.parentNode;
         this.dropdown = $.get('.dropdown', this.tabs);
-        if ($.hasClass(this.tabs, 'dropdown-menu')) {
+        if ($.hasClass(this.tabs, 'menu')) {
             this.dropdown = this.tabs.parentNode;
             this.tabs = this.tabs.parentNode.parentNode;
         }
@@ -215,7 +215,7 @@
 
                     // handle dropdown menu "active" class name
                     if (self.dropdown) {
-                        if (!$.hasClass(self.tab.parentNode.parentNode, 'dropdown-menu')) {
+                        if (!$.hasClass(self.tab.parentNode.parentNode, 'menu')) {
                             $.removeClass(self.dropdown, 'active');
                         } else {
                             $.addClass(self.dropdown, 'active');
@@ -238,9 +238,9 @@
             },
 
                 /**
-                 * Gets the currently active tab.
-                 * @returns {Node} Active tab element.
-                 */
+                    * Gets the currently active tab.
+                    * @returns {Node} Active tab element.
+                    */
                 this.getActiveTab = function() {
                     var activeTabs = $.getAll('.active', this.tabs);
                     if (activeTabs.length === 1 && !$.hasClass(activeTabs[0], 'dropdown')) {
@@ -251,9 +251,9 @@
                 },
 
                 /**
-                 * Get the currently active tab content.
-                 * @returns {Node} Active content element
-                 */
+                    * Get the currently active tab content.
+                    * @returns {Node} Active content element
+                    */
                 this.getActiveContent = function() {
                     var a = this.getActiveTab();
                     var b = a && $.getAll('a', a);

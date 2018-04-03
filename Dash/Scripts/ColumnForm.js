@@ -158,7 +158,7 @@
                         m('button.btn.btn-info.mr-2', {
                             type: 'button', role: 'button', onclick: self.addRecord.bind(self)
                         }, $.resx('add')),
-                        m('button.btn.btn-danger.mr-2', {
+                        m('button.btn.btn-error.mr-2', {
                             type: 'button', role: 'button', onclick: self.import.bind(self)
                         }, $.resx('dataset.import')),
                         m(Help, { enabled: this.opts.wantsHelp, message: $.resx('dataset.columnsText') })

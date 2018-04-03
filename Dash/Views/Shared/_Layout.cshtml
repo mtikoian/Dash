@@ -13,7 +13,7 @@
 <body data-base-url="@Url.Content("~")" data-resx="@Url.Action("Index", "Resx", null)" data-lang="@(CultureInfo.DefaultThreadCurrentCulture?.TwoLetterISOLanguageName ?? "en")">
     @{ Html.RenderPartial("_NavBar"); }
 
-    <div id="contentWrapper">
+    <div class="content-wrapper">
         @RenderBody()
 
         <div id="loader" class="dialog-loading hidden">

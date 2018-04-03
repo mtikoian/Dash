@@ -4,19 +4,20 @@
 @import "spectre/variables-custom";
 @import "spectre/mixins.scss";
 
-$gray-100: #f8f9fa !default;
-$teal: #20c997 !default;
-
 li {
     list-style: none;
 }
 
 .btn-secondary {
-    @include button-variant(#dee2e6);
+    @include button-variant($gray-color);
 }
 
 .btn-warning {
     @include button-variant($warning-color);
+}
+
+.btn-info {
+    @include button-variant($info-color);
 }
 
 .btn-secondary, .btn-secondary:hover, .btn-warning, .btn-warning:hover {
@@ -38,7 +39,7 @@ li {
 
     .dropdown-item {
         &:hover, &.active {
-            background-color: $gray-100;
+            background-color: $gray-color-light;
         }
     }
 }
@@ -78,6 +79,19 @@ li {
     }
 }
 
+a {
+    .dash-trash {
+        color: $error-color;
+
+        &:focus,
+        &:hover,
+        &:active,
+        &.active {
+            color: $error-color-dark;
+        }
+    }
+}
+
 .input-group {
     .input-group-prepend {
         margin-right: 0;
@@ -99,7 +113,7 @@ li {
         }
 
         .dropdown-item:hover {
-            background-color: $gray-100;
+            background-color: $gray-color-light;
         }
     }
 }

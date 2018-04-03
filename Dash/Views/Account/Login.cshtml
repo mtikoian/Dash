@@ -1,36 +1,42 @@
 ﻿@using Dash.I18n
 @model Dash.Models.LogOn
 
-@using (Html.BeginBootForm("Login", "Account", ajaxForm: false))
-{
-    <div class="col-12 pb-3">
-        <h4>@Account.Login</h4>
-    </div>
+<div class="container">
+    <div class="columns">
+        <div class="col-11 col-ml-auto pt-2">
+            @using (Html.BeginBootForm("Login", "Account", ajaxForm: false))
+            {
+                <div class="col-12 pb-3">
+                    <h4>@Account.Login</h4>
+                </div>
 
-    @if (!((string)ViewBag.Error).IsEmpty())
-    {
-        @Html.ToCard((string)ViewBag.Error, BootstrapTypes.Warning)
-    }
-    @if (!((string)TempData["Error"]).IsEmpty())
-    {
-        @Html.ToCard((string)TempData["Error"], BootstrapTypes.Warning)
-    }
+                @if (!((string)ViewBag.Error).IsEmpty())
+                {
+                    @Html.ToCard((string)ViewBag.Error, BootstrapTypes.Warning)
+                }
+                @if (!((string)TempData["Error"]).IsEmpty())
+                {
+                    @Html.ToCard((string)TempData["Error"], BootstrapTypes.Warning)
+                }
 
-    <div class="col-12 pt-2">
-        <div class="col-6">
-            @Html.LabelInputFor(m => m.UserName)
-            @Html.LabelPasswordFor(m => m.Password, new { })
+                <div class="col-12 pt-2">
+                    <div class="col-6">
+                        @Html.LabelInputFor(m => m.UserName)
+                        @Html.LabelPasswordFor(m => m.Password, new { })
+                    </div>
+                </div>
+
+                <div class="col-12 pt-2">
+                    <div class="col-6">
+                        <div class="row">
+                            <span class="form-buttons offset-4 col-8">
+                                <input type="submit" value="@Account.Login" class="btn btn-primary" />
+                                @Html.ActionLink(Account.ForgotPassword, "ForgotPassword", "Account", null, new { @class = "btn btn-warning dash-ajax dash-dialog" })
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            }
         </div>
     </div>
-
-    <div class="col-12 pt-2">
-        <div class="col-6">
-            <div class="row">
-                <span class="form-buttons offset-4 col-8">
-                    <input type="submit" value="@Account.Login" class="btn btn-primary" />
-                    @Html.ActionLink(Account.ForgotPassword, "ForgotPassword", "Account", null, new { @class = "btn btn-warning dash-ajax dash-dialog" })
-                </span>
-            </div>
-        </div>
-    </div>
-}
+</div>
