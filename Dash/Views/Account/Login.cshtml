@@ -4,9 +4,9 @@
 <div class="container">
     <div class="columns">
         <div class="col-11 col-ml-auto pt-2">
-            @using (Html.BeginBootForm("Login", "Account", ajaxForm: false))
+            @using (Html.BeginCustomForm("Login", "Account", ajaxForm: false))
             {
-                <div class="col-12 pb-3">
+                <div class="col-12 pb-2">
                     <h4>@Account.Login</h4>
                 </div>
 
@@ -28,8 +28,8 @@
 
                 <div class="col-12 pt-2">
                     <div class="col-6">
-                        <div class="row">
-                            <span class="form-buttons offset-4 col-8">
+                        <div class="columns">
+                            <span class="form-buttons col-8 col-ml-auto">
                                 <input type="submit" value="@Account.Login" class="btn btn-primary" />
                                 @Html.ActionLink(Account.ForgotPassword, "ForgotPassword", "Account", null, new { @class = "btn btn-warning dash-ajax dash-dialog" })
                             </span>

@@ -1,9 +1,8 @@
-﻿@import "bootstrap/functions";
-@import "bootstrap/variables";
+﻿@import "spectre/variables";
 
-$calendar-head-background: $primary;
+$calendar-head-background: $primary-color;
 $calendar-head-foreground: white;
-$calendar-body-background: $gray-100;
+$calendar-body-background: $gray-color-light;
 $calendar-body-foreground: #555555;
 $chosen-day-stroke: #222222;
 $chosen-day-fill: white;
@@ -55,7 +54,7 @@ $other-months-foreground: #999999;
         position: relative;
         display: flex;
         justify-content: space-between;
-        background: $info;
+        background: $info-color;
 
         .header-button {
             position: relative;

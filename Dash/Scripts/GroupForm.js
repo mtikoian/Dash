@@ -90,13 +90,13 @@
         return this.records.map(function(x, index) {
             x.displayOrder = index;
             var attrs = {
-                name: 'ReportGroup[' + index + '].ColumnId', class: 'form-control custom-select required' + self.withError(x.columnId, true),
+                name: 'ReportGroup[' + index + '].ColumnId', class: 'form-select required' + self.withError(x.columnId, true),
                 placeholder: $.resx('report.groupColumn'), onchange: self.set.bind(self, index, 'columnId'), value: x.columnId
             };
             if (!self.opts.allowEdit) {
                 attrs.disabled = true;
             }
-            return m('.row.wrapper-row', { class: index % 2 === 1 ? 'odd' : 'even' }, [
+            return m('.columns.wrapper-row', { class: index % 2 === 1 ? 'odd' : 'even' }, [
                 m('input', { type: 'hidden', name: 'ReportGroup[' + index + '].Id', value: x.id }),
                 m('input', { type: 'hidden', name: 'ReportGroup[' + index + '].DisplayOrder', value: index }),
                 m('.col-10', [
@@ -117,26 +117,26 @@
         }
 
         var attrs = {
-            name: 'Report.Aggregator', class: 'form-control custom-select', placeholder: $.resx('report.aggregator'),
+            name: 'Report.Aggregator', class: 'form-select', placeholder: $.resx('report.aggregator'),
             onchange: this.setAggregator.bind(this), value: this.aggregator
         };
         if (!this.opts.allowEdit) {
             attrs.disabled = true;
         }
-        return m('.col-12.table-wrapper', m('.row', [
+        return m('.col-12.table-wrapper', m('.columns', [
             m('.col-2.mt-1', [
-                m('.row.form-group', [
+                m('.form-group', [
                     m('select', attrs, this.withOptions(this.aggregators, this.aggregator, 'id', 'name'))
                 ]),
                 this.opts.allowEdit ? m('.row.mt-1', m('button.btn.btn-primary', {
                     type: 'button', role: 'button', onclick: this.saveGroups.bind(this)
                 }, $.resx('save'))) : null
             ]),
-            m('.col-9.offset-1.mt-1', [
+            m('.col-9.col-ml-auto.mt-1', [
                 this.groupView(),
-                this.opts.allowEdit ? m('.row.pt-1', [
-                    m('.col-6.offset-6', [
-                        m('.btn-toolbar.float-right', [
+                this.opts.allowEdit ? m('.columns.pt-1', [
+                    m('.col-12', [
+                        m('.btn-toolbar.text-right', [
                             m('button.btn.btn-info.mr-1', {
                                 type: 'button', role: 'button', onclick: this.addRecord.bind(this)
                             }, $.resx('add')),

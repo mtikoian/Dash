@@ -1,7 +1,4 @@
-//@import "bootstrap/functions";
-//@import "bootstrap/variables";
-
-@import "spectre/variables-custom";
+@import "spectre/variables";
 @import "spectre/mixins.scss";
 
 li {
@@ -9,7 +6,7 @@ li {
 }
 
 .btn-secondary {
-    @include button-variant($gray-color);
+    @include button-variant($gray-color-light);
 }
 
 .btn-warning {
@@ -61,6 +58,7 @@ li {
 }
 
 .form-group {
+    /*
     .context-help-pad {
         right: 15px;
         float: right;
@@ -71,6 +69,7 @@ li {
     .checkbox-block .context-help-pad {
         right: 30px;
     }
+    */
 }
 
 .dash-context-help {
@@ -118,15 +117,6 @@ a {
     }
 }
 
-.dropdown-menu {
-    .dropdown-item {
-        &.active {
-            color: inherit;
-            text-decoration: none;
-        }
-    }
-}
-
 .card {
     .card-body {
         padding: .75rem;
@@ -139,21 +129,12 @@ a {
     }
 }
 
-@media screen\0 {
-    // pad input group elements correctly in IE
-    .input-group-prepend, .input-group-append, .input-group-btn {
-        button, span {
-            padding-top: .8rem;
-            padding-bottom: .7rem;
-        }
-    }
-}
-
 /*
 * Form validation
 */
-.col-form-label {
+.form-label {
     text-align: right;
+    padding-right: 1rem;
 
     &.required {
         color: $error-color;
@@ -174,6 +155,35 @@ a {
     border-color: $error-color;
 }
 
+.tab-item {
+    .menu {
+        text-align: left;
+        width: 100% !important;
+
+        li {
+            margin-top: 0;
+
+            .dropdown-item {
+                padding: .2rem;
+
+                &:hover {
+                    background-color: $gray-color-light;
+                }
+            }
+        }
+    }
+}
+
+.tab-content {
+    .tab-pane {
+        display: none;
+
+        &.active {
+            display: inherit;
+        }
+    }
+}
+
 .tab-validation-error {
     color: $error-color !important;
 }
@@ -182,31 +192,37 @@ a {
     margin-right: 1rem;
 }
 
-.collapsible-list li {
-    list-style-type: none;
+.collapsible-list {
+    margin-top: 0;
+    margin-bottom: 0;
 
-    .custom-control {
-        display: inline;
-    }
+    li {
+        list-style-type: none;
+        margin-top: 0;
 
-    &.collapsible-list-open:before {
-        content: "\e808"; /* Dash Unicode */
-        font-family: "dash";
-        font-size: 1.1em;
-        display: inline-block;
-        margin-left: -1.1em; /* same as padding-left set on li */
-        width: 1.1em; /* same as padding-left set on li */
-        cursor: pointer;
-    }
+        .form-group {
+            display: inline;
+        }
 
-    &.collapsible-list-closed:before {
-        content: "\e807"; /* Dash Unicode */
-        font-family: "dash";
-        font-size: 1.1em;
-        display: inline-block;
-        margin-left: -1.1em; /* same as padding-left set on li */
-        width: 1.1em; /* same as padding-left set on li */
-        cursor: pointer;
+        &.collapsible-list-open:before {
+            content: "\e808"; /* Dash Unicode */
+            font-family: "dash";
+            font-size: 1.1em;
+            display: inline-block;
+            margin-left: -1.1em; /* same as padding-left set on li */
+            width: 1.1em; /* same as padding-left set on li */
+            cursor: pointer;
+        }
+
+        &.collapsible-list-closed:before {
+            content: "\e807"; /* Dash Unicode */
+            font-family: "dash";
+            font-size: 1.1em;
+            display: inline-block;
+            margin-left: -1.1em; /* same as padding-left set on li */
+            width: 1.1em; /* same as padding-left set on li */
+            cursor: pointer;
+        }
     }
 }
 

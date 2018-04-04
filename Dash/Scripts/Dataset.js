@@ -129,7 +129,7 @@
                 $.ajax({
                     method: 'POST',
                     url: url,
-                    data: { databaseId: database.value, tables: self.selectedSourceList }
+                    data: { DatabaseId: database.value * 1, Tables: self.selectedSourceList }
                 }, function(columns) {
                     self.columnList = columns && columns.length ? columns : [];
                 });

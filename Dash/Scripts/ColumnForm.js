@@ -152,9 +152,9 @@
     ColumnForm.prototype.view = function() {
         var self = this;
         return m('.table-wrapper', [
-            m('.row.wrapper-row.pb-1',
+            m('.columns.wrapper-row.pb-1',
                 m('.col-12',
-                    m('.float-right', [
+                    m('.text-right', [
                         m('button.btn.btn-info.mr-2', {
                             type: 'button', role: 'button', onclick: self.addRecord.bind(self)
                         }, $.resx('add')),
@@ -167,14 +167,14 @@
             ),
             self.records.map(function(record, index) {
                 return m('.col-12.wrapper-row', { class: index % 2 === 1 ? 'odd' : 'even', key: record._index }, [
-                    m('.row', [
+                    m('.columns', [
                         m('input', { type: 'hidden', name: 'DatasetColumn[' + index + '].Id', value: record.id }),
                         m('.col-4', self.withHelp($.resx('dataset.columnTitleText'), [
-                            m('span.input-group-prepend', m('button.btn.btn-secondary', {
+                            m('span.input-group-addon.input-group-custom', m('button.btn.btn-secondary', {
                                 type: 'button', role: 'button',
                                 onclick: self.toggleExpanded.bind(self, record)
-                            }, m('i.rn', { class: record.isExpanded ? 'dash-minus' : 'dash-plus' }))),
-                            m('input.form-control.required', {
+                            }, m('i.dash.text-primary', { class: record.isExpanded ? 'dash-minus' : 'dash-plus' }))),
+                            m('input.form-input.required', {
                                 type: 'text', name: 'DatasetColumn[' + index + '].Title', class: self.withError(record.title),
                                 placeholder: $.resx('dataset.columnTitle'), oninput: self.set.bind(self, index, 'title'), value: record.title
                             }),
@@ -188,49 +188,50 @@
                             onSelect: self.set.bind(self, index, 'columnName')
                         }))),
                         m('.col-3', self.withHelp($.resx('dataset.dataTypeText'),
-                            m('select.form-control.required.custom-select', {
+                            m('select.form-select.required', {
                                 name: 'DatasetColumn[' + index + '].DataTypeId', class: self.withError(record.dataTypeId),
                                 placeholder: $.resx('dataset.dataType'), oninput: self.set.bind(self, index, 'dataTypeId'), value: record.dataTypeId
                             }, self.withOptions(self.dataTypes, record.dataTypeId, 'id', 'name'))
                         )),
                         m('.col-1', self.buttonView(index, false))
                     ]),
-                    m('.row', { class: record.isExpanded ? '' : ' hidden' },
-                        m('.col-10.offset-1', self.withHelp($.resx('dataset.derivedText'),
-                            m('input.form-control', {
+                    m('.columns', { class: record.isExpanded ? '' : ' hidden' },
+                        m('.col-10.col-mx-auto', self.withHelp($.resx('dataset.derivedText'),
+                            m('input.form-input', {
                                 type: 'text', name: 'DatasetColumn[' + index + '].Derived', placeholder: $.resx('dataset.derived'),
                                 oninput: self.set.bind(self, index, 'derived'), value: record.derived
                             })
                         ))
                     ),
-                    m('.row', { class: record.isExpanded ? '' : ' hidden' }, [
-                        m('.col-3.offset-1', self.withHelp($.resx('dataset.filterTypeText'),
-                            m('select.form-control.custom-select', {
+                    m('.columns', { class: record.isExpanded ? '' : ' hidden' }, [
+                        m('.col-3.col-mx-auto', self.withHelp($.resx('dataset.filterTypeText'),
+                            m('select.form-select', {
                                 name: 'DatasetColumn[' + index + '].FilterTypeId', class: self.withError(record.filterTypeId),
                                 placeholder: $.resx('dataset.filterType'), oninput: self.set.bind(self, index, 'filterTypeId'), value: record.filterTypeId
                             }, self.withOptions(self.filterTypes, record.filterTypeId, 'id', 'name'))
                         )),
                         m('.col-7', self.withHelp($.resx('dataset.queryText'),
-                            m('input.form-control', {
+                            m('input.form-input', {
                                 type: 'text', name: 'DatasetColumn[' + index + '].FilterQuery', placeholder: $.resx('dataset.query'),
                                 oninput: self.set.bind(self, index, 'filterQuery'), value: record.filterQuery, readOnly: record.filterTypeId !== 3
                             }))
                         )
                     ]),
-                    m('.row', { class: record.isExpanded ? '' : ' hidden' }, [
-                        m('.col-8.offset-1', self.withHelp($.resx('dataset.linkText'),
-                            m('input.form-control', {
+                    m('.columns', { class: record.isExpanded ? '' : ' hidden' }, [
+                        m('.col-8.col-mx-auto', self.withHelp($.resx('dataset.linkText'),
+                            m('input.form-input', {
                                 type: 'text', name: 'DatasetColumn[' + index + '].Link', placeholder: $.resx('dataset.link'),
                                 oninput: self.set.bind(self, index, 'link'), value: record.link
                             })
                         )),
                         m('.col-1', [
-                            m('label.custom-control.custom-checkbox', [
+                            m('label.form-checkbox', { for: 'DatasetColumn_' + index + '_.IsParam' }, [
                                 m('input.custom-control-input', self.withChecked({
                                     type: 'checkbox', name: 'DatasetColumn[' + index + '].IsParam', id: 'DatasetColumn_' + index + '_.IsParam',
                                     oninput: self.set.bind(self, index, 'isParam'), value: 'true'
                                 }, record.isParam)),
-                                m('label.custom-control-label', { for: 'DatasetColumn_' + index + '_.IsParam' }, $.resx('dataset.isParam'))
+                                m('i.form-icon'),
+                                $.resx('dataset.isParam')
                             ])
                         ]),
                         m('.col-1', m(Help, { enabled: self.opts.wantsHelp, message: $.resx('dataset.isParamText') }))

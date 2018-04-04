@@ -1,7 +1,7 @@
 ﻿@using Dash.I18n
 @model Dash.Models.Chart
 
-@using (Html.BeginBootForm("Share", "Chart", null, Charts.ShareChart, "chartShareLoad",
+@using (Html.BeginCustomForm("Share", "Chart", null, Charts.ShareChart, "chartShareLoad",
     htmlAttributes: new { @class = "chart-share-form", @data_close_event = "chartShareUnload" },
     method: HttpVerbs.Put))
 {

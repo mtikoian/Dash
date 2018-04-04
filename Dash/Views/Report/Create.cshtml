@@ -2,7 +2,7 @@
 @using Dash.I18n
 @using System.Security.Claims;
 
-@using (Html.BeginBootForm("Create", "Report", null, Reports.CreateReport, null, null))
+@using (Html.BeginCustomForm("Create", "Report", null, Reports.CreateReport, null, null))
 {
     @Html.ToCard(Reports.CreateReportExplain, BootstrapTypes.Primary)
 

@@ -2,31 +2,32 @@
 @using Dash.Models
 @model User
 
-@using (Html.BeginBootForm(Model.FormAction, "User", null, Model.IsCreate ? Users.CreateUser : Users.EditUser, method: Model.FormMethod))
+@using (Html.BeginCustomForm(Model.FormAction, "User", null, Model.IsCreate ? Users.CreateUser : Users.EditUser, method: Model.FormMethod))
 {
     @Html.HiddenFor(model => model.Id)
+    <div class="columns">
+        <div class="col-6">
+            @Html.LabelInputFor(model => model.UID)
+            @Html.LabelInputFor(model => model.FirstName)
+            @Html.LabelInputFor(model => model.LastName)
+            @Html.LabelCheckBoxFor(model => model.IsActive)
+            @Html.LabelPasswordFor(model => model.Password, new { data_match = "ConfirmPassword", required = Model.Id == 0 })
+            @Html.LabelPasswordFor(model => model.ConfirmPassword, new { required = Model.Id == 0 })
+        </div>
 
-    <div class="col">
-        @Html.LabelInputFor(model => model.UID)
-        @Html.LabelInputFor(model => model.FirstName)
-        @Html.LabelInputFor(model => model.LastName)
-        @Html.LabelCheckBoxFor(model => model.IsActive)
-        @Html.LabelPasswordFor(model => model.Password, new { data_match = "ConfirmPassword", required = Model.Id == 0 })
-        @Html.LabelPasswordFor(model => model.ConfirmPassword, new { required = Model.Id == 0 })
-    </div>
+        <div class="col-6">
+            @Html.LabelInputFor(model => model.Email, inputType: Dash.Html.InputFieldType.Email)
+            @Html.LabelDropDownListFor(model => model.LanguageId, new SelectList(Model.DbContext.GetAll<Language>(), "Id", "Name"))
 
-    <div class="col">
-        @Html.LabelInputFor(model => model.Email, inputType: Dash.Html.InputFieldType.Email)
-        @Html.LabelDropDownListFor(model => model.LanguageId, new SelectList(Model.DbContext.GetAll<Language>(), "Id", "Name"))
-
-        <div class="form-group row">
-            @Html.ControlLabel("RoleIds", Users.Roles)
-            <div class="col-8 checkbox-block">
-                @foreach (var role in Model.AllRoles)
-                {
-                    @Html.CustomCheckbox("RoleIds", Html.IsChecked(Model.UserRole, x => x.RoleId == role.Id, ((int[])ViewBag.SelectedRoleIds), role.Id), role.Id.ToString(), role.Name, isMultiple: true)
-                }
-                @Html.HelpFor(model => model.UserRole, false, true)
+            <div class="form-group columns">
+                @Html.ControlLabel("RoleIds", Users.Roles)
+                <div class="col-8 checkbox-block">
+                    @foreach (var role in Model.AllRoles)
+                    {
+                        @Html.CustomCheckbox("RoleIds", Html.IsChecked(Model.UserRole, x => x.RoleId == role.Id, ((int[])ViewBag.SelectedRoleIds), role.Id), role.Id.ToString(), role.Name, isMultiple: true)
+                    }
+                    @Html.HelpFor(model => model.UserRole, false, true)
+                </div>
             </div>
         </div>
     </div>

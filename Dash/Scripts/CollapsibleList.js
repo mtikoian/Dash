@@ -78,7 +78,7 @@
                     var checked = elem.checked;
 
                     // first toggle the check for all of the children
-                    var inputs = $.getAll('ul input[type="checkbox"]', elem.parentNode.parentNode);
+                    var inputs = $.getAll('ul input[type="checkbox"]', $.closest('li', elem));
                     i = inputs.length;
                     while (i--) {
                         inputs[i].checked = checked;
@@ -110,7 +110,7 @@
                     return;
                 }
 
-                if ($.hasClass(elem, 'custom-checkbox') || (elem.parentNode && $.hasClass(elem.parentNode, 'custom-checkbox'))) {
+                if ($.hasClass(elem, 'form-group') || $.hasClass(elem, 'form-icon') || (elem.parentNode && $.hasClass(elem.parentNode, 'form-group'))) {
                     // prevent toggling tree when checking/unchecking an element
                     return;
                 }

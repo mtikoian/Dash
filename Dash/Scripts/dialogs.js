@@ -18,7 +18,7 @@
      * Selectors and callback function to create events.
      */
     var _contentActions = [
-        { selector: '[data-toggle="dropdown"]', action: function() { new Dropdown(this); } },
+        //{ selector: '[data-toggle="dropdown"]', action: function() { new Dropdown(this); } },
         { selector: '[data-toggle="tab"], [data-toggle="pill"]', action: function() { new Tab(this); } },
         { selector: '.dash-table', action: function() { tableLoad(this); } },
         { selector: '.dash-ajax', action: function() { $.on(this, 'click', handleAjaxRequest); } },

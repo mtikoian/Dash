@@ -93,7 +93,7 @@
                     )
                 ]),
                 m('.rd-header.dialog-header', this.opts.title),
-                m('.rd-content', { class: this.opts.basic ? 'rd-no-footer' : '' }, m.trust(this.opts.content)),
+                m('.rd-content.container', { class: this.opts.basic ? 'rd-no-footer' : '' }, m.trust(this.opts.content)),
                 this.opts.basic ? null : m('.rd-footer', [
                     m('.rd-buttons', [
                         m('button.rd-button.btn.btn-primary', {

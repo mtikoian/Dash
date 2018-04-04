@@ -1,7 +1,7 @@
 ﻿@model Dash.Models.Chart
 @using Dash.I18n
 
-@using (Html.BeginBootForm("ChangeType", "Chart", null, Charts.ChangeType))
+@using (Html.BeginCustomForm("ChangeType", "Chart", null, Charts.ChangeType))
 {
     <div class="col-6">
         @Html.HiddenFor(model => model.Id)

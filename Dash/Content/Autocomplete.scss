@@ -17,17 +17,16 @@
 
     > ul {
         position: absolute;
-        left: 1rem;
-        right: 1rem;
-        top: 2rem;
+        left: 0;
+        right: 0;
         z-index: 9999;
         box-sizing: border-box;
         list-style: none;
         padding: 0;
-        margin: .2rem 0 0 0;
+        margin: 0;
         background: hsla(0,0%,100%,1);
         border: 1px solid rgba(0,0,0,.3);
-        box-shadow: .05em .2em .6em rgba(0,0,0,.2);
+        box-shadow: .05rem .2rem .6rem rgba(0,0,0,.2);
         text-shadow: none;
         max-height: 300px;
         overflow-y: auto;
@@ -35,11 +34,11 @@
         &:before {
             content: "";
             position: absolute;
-            top: -.43em;
-            left: 1em;
+            top: -.43rem;
+            left: 1rem;
             width: 0;
             height: 0;
-            padding: .4em;
+            padding: .4rem;
             background: white;
             border: inherit;
             border-right: 0;
@@ -50,8 +49,9 @@
 
         > li {
             position: relative;
-            padding: .2em .5em;
+            padding: 0 .5rem;
             cursor: pointer;
+            margin: .2rem;
 
             &:hover {
                 background: hsl(200, 40%, 80%);
