@@ -1,5 +1,6 @@
 ﻿.mithril-colorpicker {
     width: 100%;
+    position: relative;
 
     > .btn {
         width: 100%;
@@ -8,7 +9,7 @@
     .colorpicker-indicator {
         cursor: pointer;
         position: absolute;
-        right: 1rem;
+        right: .5rem;
         top: .5rem;
     }
 
@@ -20,9 +21,6 @@
 
     .editor {
         position: absolute;
-        margin: 0;
-        width: 100%;
-        height: auto;
         transition: height 0.2s;
         z-index: 2000;
         background: #fff;

@@ -939,16 +939,16 @@
                 m('.col-4.btn-toolbar', { class: this.filteredTotal > this.itemsPerPage ? '' : ' invisible' }, [
                     m('button.btn.btn-secondary', {
                         type: 'button', role: 'button', title: res.firstPage, onclick: this.moveToPage.bind(this, -1, true)
-                    }, m('i.dash.dash-to-start-alt')),
+                    }, m('i.dash.dash-to-start-alt.text-primary')),
                     m('button.btn.btn-secondary', {
                         type: 'button', role: 'button', title: res.previousPage, onclick: this.moveToPage.bind(this, -1, false)
-                    }, m('i.dash.dash-to-start')),
+                    }, m('i.dash.dash-to-start.text-primary')),
                     m('button.btn.btn-secondary', {
                         type: 'button', role: 'button', title: res.nextPage, onclick: this.moveToPage.bind(this, 1, false)
-                    }, m('i.dash.dash-to-end')),
+                    }, m('i.dash.dash-to-end.text-primary')),
                     m('button.btn.btn-secondary', {
                         type: 'button', role: 'button', title: res.lastPage, onclick: this.moveToPage.bind(this, 1, true)
-                    }, m('i.dash.dash-to-end-alt'))
+                    }, m('i.dash.dash-to-end-alt.text-primary'))
                 ]),
                 m('.col-4', { class: this.filteredTotal > this.itemsPerPage ? '' : ' invisible' },
                     !this.opts.pageDropdown ? null : m('.col-8.offset-2',

@@ -250,7 +250,7 @@
                     return m('button.day.other-scope', date);
                 })),
                 m('.time',
-                    m('select.form-control.custom-select', {
+                    m('select.form-select', {
                         value: props.date.getHours(), onchange: function(e) {
                             props.date.setHours(e.target.value);
                             props.date.setHours(e.target.value);
@@ -261,7 +261,7 @@
                     }, hours.map(function(x) {
                         return m('option', { value: x }, ('00' + x).slice(-2));
                     })),
-                    m('select.form-control.custom-select', {
+                    m('select.form-select', {
                         value: props.date.getMinutes(), onchange: function(e) {
                             props.date.setMinutes(e.target.value);
                             props.date.setMinutes(e.target.value);
@@ -414,7 +414,7 @@
         view: function(vnode) {
             var props = vnode.state.props;
             return m('.mithril-date-picker-container', { class: ((props.active ? 'active' : '') + ' ' + props.class).trim() },
-                m('input.current-date.form-control', {
+                m('input.current-date.form-input', {
                     name: props.name,
                     class: props.required ? 'required' : null,
                     format: props.format,

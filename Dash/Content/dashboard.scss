@@ -73,6 +73,13 @@ body.toggled {
 
     .table-area {
         min-height: 5rem;
+
+        .table {
+            td, th {
+                padding-top: 0;
+                padding-bottom: 0;
+            }
+        }
     }
 
     .table-spinner {

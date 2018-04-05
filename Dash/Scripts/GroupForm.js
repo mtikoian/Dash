@@ -134,7 +134,7 @@
             ]),
             m('.col-9.col-ml-auto.mt-1', [
                 this.groupView(),
-                this.opts.allowEdit ? m('.columns.pt-1', [
+                this.opts.allowEdit ? m('.container.pt-1', m('.columns', [
                     m('.col-12', [
                         m('.btn-toolbar.text-right', [
                             m('button.btn.btn-info.mr-1', {
@@ -147,7 +147,7 @@
                             m(Help, { enabled: this.opts.wantsHelp, message: $.resx('report.groupText') })
                         ])
                     ])
-                ]) : null
+                ])) : null
             ])
         ]));
     };

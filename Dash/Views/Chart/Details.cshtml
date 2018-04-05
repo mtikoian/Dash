@@ -3,7 +3,7 @@
 
 <div class="chart-form" data-event="chartLoad" data-close-event="chartUnload" data-url="@Url.Action("DetailsOptions", "Chart", new { id = Model.Id })" data-title="@Model.Name" data-basic-dialog="true">
     <div class="hidden">
-        @if (this.User.IsInRole("dataset.create"))
+        @if (User.IsInRole("dataset.create"))
         {
             <div class="p-1 modal-sql" data-title="@Core.ViewSql" data-basic-dialog="true">
                 <div class="col-12">
@@ -16,48 +16,60 @@
         }
     </div>
 
-    <div class="row ml-2 mr-2 mb-1 pb-1 tab-nav-content">
-        <div class="col-12">
-            <ul class="nav nav-tabs" role="tablist">
-                <li role="presentation" class="nav-item">
-                    <a href="#" id="tabRanges_@Model.Id" class="nav-link active">@Charts.Ranges</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">@Core.Actions</a>
-                    <div class="dropdown-menu" role="menu">
-                        @if (Model.IsOwner)
+    <div class="m-2">
+        <ul class="tab tab-block" role="tablist">
+            <li role="presentation" class="tab-item">
+                <a href="#" id="tabRanges_@Model.Id" class="active">@Charts.Ranges</a>
+            </li>
+            <li class="tab-item dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">@Core.Actions</a>
+                <ul class="menu" role="menu">
+                    @if (Model.IsOwner)
+                    {
+                        if (User.IsInRole("chart.changetype"))
                         {
-                            @Html.AuthorizedActionLink(Charts.ChangeType, "ChangeType", "Chart", new { id = Model.Id }, new {
-                                @class = "dropdown-item dash-ajax dash-dialog",
-                                @data_title = Charts.ChangeType
-                            }, hasAccess: this.User.IsInRole("chart.changetype"))
-                            @Html.AuthorizedActionLink(Charts.Rename, "Rename", "Chart", new { id = Model.Id }, new {
-                                @class = "dropdown-item dash-ajax dash-prompt",
-                                @data_update_target = ".dialog-header",
-                                @data_title = Charts.Rename,
-                                @data_message = Charts.NewName
-                            }, hasAccess: this.User.IsInRole("chart.rename"))
-                            @Html.AuthorizedActionLink(Charts.ShareChart, "Share", "Chart", new { id = Model.Id }, new {
-                                @class = "dropdown-item dash-ajax dash-dialog",
-                                @data_title = Charts.ShareChart
-                            }, hasAccess: this.User.IsInRole("chart.share"))
+                            <li>
+                                @Html.AuthorizedActionLink(Charts.ChangeType, "ChangeType", "Chart", new { id = Model.Id }, new {
+                                    @class = "dropdown-item dash-ajax dash-dialog",
+                                    @data_title = Charts.ChangeType
+                                })
+                            </li>
                         }
-                        @if (this.User.IsInRole("dataset.create"))
+                        if (User.IsInRole("chart.rename"))
                         {
-                            <a href="#" class="dropdown-item view-sql">@Html.Raw(Core.ViewSql)</a>
+                            <li>
+                                @Html.AuthorizedActionLink(Charts.Rename, "Rename", "Chart", new { id = Model.Id }, new {
+                                    @class = "dropdown-item dash-ajax dash-prompt",
+                                    @data_update_target = ".dialog-header",
+                                    @data_title = Charts.Rename,
+                                    @data_message = Charts.NewName
+                                })
+                            </li>
                         }
+                        if (User.IsInRole("chart.share"))
+                        {
+                            <li>
+                                @Html.AuthorizedActionLink(Charts.ShareChart, "Share", "Chart", new { id = Model.Id }, new {
+                                    @class = "dropdown-item dash-ajax dash-dialog",
+                                    @data_title = Charts.ShareChart
+                                })
+                            </li>
+                        }
+                    }
+                    @if (this.User.IsInRole("dataset.create"))
+                    {
+                        <li><a href="#" class="dropdown-item view-sql">@Html.Raw(Core.ViewSql)</a></li>
+                    }
+                    <li class="divider"></li>
+                    <li><a class="dropdown-item disabled">@Core.Owner: @Model.Owner.FullName</a></li>
+                </ul>
+            </li>
+        </ul>
 
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item disabled">@Core.Owner: @Model.Owner.FullName</a>
-                    </div>
-                </li>
-            </ul>
-
-            <div class="table-wrapper range-table-wrapper"></div>
-        </div>
+        <div class="table-wrapper range-table-wrapper"></div>
     </div>
 
-    <div class="chart-container p-1" data-url="@Url.Action("Data", "Chart", new { id = Model.Id })">
+    <div class="chart-container container p-2" data-url="@Url.Action("Data", "Chart", new { id = Model.Id })">
         <div class="chart-spinner hidden">
             @Html.Partial("_Spinner")
         </div>

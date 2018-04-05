@@ -1,9 +1,7 @@
 ﻿@using Dash.I18n
 @model Dash.Models.Report
 
-@using (Html.BeginCustomForm("Share", "Report", null, Reports.ShareReport, "reportShareLoad",
- htmlAttributes: new { @class = "report-share-form", @data_close_event = "reportShareUnload" },
- method: HttpVerbs.Put))
+@using (Html.BeginCustomForm("Share", "Report", null, Reports.ShareReport, "reportShareLoad", null, new { @class = "report-share-form", @data_close_event = "reportShareUnload" }, true, HttpVerbs.Put))
 {
     @Html.HiddenFor(model => model.Id)
     @Html.ToCard(Reports.ShareReportExplain)
