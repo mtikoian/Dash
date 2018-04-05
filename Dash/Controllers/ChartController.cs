@@ -43,7 +43,12 @@ namespace Dash.Controllers
                 return JsonError(ModelState.ToErrorString());
             }
             model.Update();
-            return JsonSuccess();
+            return JsonData(new {
+                message = Charts.SuccessSavingChart,
+                closeParent = true,
+                parentTarget = true,
+                dialogUrl = Url.Action("Details", new { @id = model.Id })
+            });
         }
 
         [HttpGet, AjaxRequestOnly]
