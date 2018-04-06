@@ -139,7 +139,7 @@
         var filter = this.records[index];
         var column = $.hasPositiveValue(filter.columnId) ? $.findByKey(this.columnFn(), 'id', filter.columnId) : null;
         if (column === null || !$.hasPositiveValue(filter.operatorId)) {
-            return m('input.form-control', { disabled: true, placeholder: $.resx('report.filterCriteria') });
+            return m('input.form-input', { disabled: true, placeholder: $.resx('report.filterCriteria') });
         }
 
         var criteria = null;

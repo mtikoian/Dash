@@ -363,6 +363,7 @@
                 // add error class to tab
                 var id = tab.getAttribute('aria-labelledby');
                 if (id) {
+                    // @todo rename this class - maybe mform-error instead?
                     if ($.hasClass(el, 'mform-control-error')) {
                         $.addClass($.get('#' + id), 'tab-validation-error');
                     } else {
@@ -380,6 +381,7 @@
             var form = this.findForm();
             form.dispatchEvent($.events.formValidate);
 
+            // @todo refactor to work with spectre
             var tabs = $.getAll('.nav-tabs.nav-item.nav-link', form);
             tabs.forEach(function(x) {
                 $.removeClass(x, 'tab-validation-error');
