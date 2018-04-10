@@ -54,14 +54,14 @@
         }
 
         return m('.table-wrapper', [
-            m('.row.wrapper-row.pb-1',
-                m('.col-12', m('.float-right', [
+            m('.columns.wrapper-row.pb-1',
+                m('.col-12', m('.text-right', [
                     m('button.btn.btn-info.mr-2', { type: 'button', role: 'button', onclick: self.addRecord.bind(self) }, $.resx('add')),
                     m(Help, { enabled: this.opts.wantsHelp, message: $.resx('dataset.joinsText') })
                 ]))
             ),
             self.records.map(function(record, index) {
-                return m('.row.wrapper-row', { class: index % 2 === 1 ? 'odd' : 'even', key: record._index }, [
+                return m('.columns.wrapper-row', { class: index % 2 === 1 ? 'odd' : 'even', key: record._index }, [
                     m('input', { type: 'hidden', name: 'DatasetJoin[' + index + '].Id', value: record.id }),
                     m('input', { type: 'hidden', name: 'DatasetJoin[' + index + '].JoinOrder', value: index }),
                     m('.col-3', self.withHelp($.resx('dataset.joinTableText'), m(Autocomplete, {
@@ -74,13 +74,13 @@
                         onCancel: self.setJoinTable.bind(self, index),
                     }))),
                     m('.col-2', self.withHelp($.resx('dataset.joinTypeText'),
-                        m('select.form-control.required.custom-select', {
+                        m('select.form-select.required', {
                             name: 'DatasetJoin[' + index + '].JoinTypeId', class: self.withError(record.joinTypeId),
                             placeholder: $.resx('dataset.joinType'), oninput: self.set.bind(self, index, 'joinTypeId'), value: record.joinTypeId
                         }, self.withOptions(self.joinTypes, record.joinTypeId, 'id', 'name'))
                     )),
                     m('.col-5', self.withHelp($.resx('dataset.joinKeysText'),
-                        m('input.form-control.required', {
+                        m('input.form-input.required', {
                             type: 'text', name: 'DatasetJoin[' + index + '].Keys', class: self.withError(record.keys),
                             placeholder: $.resx('dataset.joinKeys'), oninput: self.set.bind(self, index, 'keys'), value: record.keys
                         }))

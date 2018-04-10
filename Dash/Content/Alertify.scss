@@ -1,11 +1,9 @@
-@import "bootstrap/functions";
-@import "bootstrap/variables";
+@import "spectre/variables";
 
 $box-shadow: 0 2px 5px 0 rgba(0, 0, 0, .2);
 $padding-base: 12px;
-$success-color: $info;
-$danger-color: $danger;
-$text-color: $body-color;
+$success-color: $info-color;
+$danger-color: $error-color;
 $border-radius: 1px;
 $black: #fff;
 $log-background: rgba(0, 0, 0, .8);

@@ -1,7 +1,7 @@
 ﻿@using Dash.I18n
 @model Dash.Models.Widget
 
-@using (Html.BeginBootForm(Model.FormAction, "Dashboard", null, Model.IsCreate ? Widgets.CreateWidget : Widgets.EditWidget, htmlAttributes: new { @data_close_event = "dashboardReload" }, method: Model.FormMethod))
+@using (Html.BeginCustomForm(Model.FormAction, "Dashboard", null, Model.IsCreate ? Widgets.CreateWidget : Widgets.EditWidget, htmlAttributes: new { @data_close_event = "dashboardReload" }, method: Model.FormMethod))
 {
     @Html.HiddenFor(model => model.Id)
     @Html.HiddenFor(model => model.X)

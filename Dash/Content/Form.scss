@@ -9,7 +9,12 @@
             clear: both;
         }
 
-        .row:not(:first-child) {
+        .columns, &.columns {
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+
+        .columns:not(:first-child) {
             padding-top: .4rem;
         }
 
@@ -21,10 +26,8 @@
             background-color: #f1f1f1;
         }
 
-        .input-group-btn {
-            .dash {
-                padding-top: 0;
-            }
+        .input-group {
+            padding-right: 1rem;
         }
     }
 

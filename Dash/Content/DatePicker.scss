@@ -1,9 +1,8 @@
-﻿@import "bootstrap/functions";
-@import "bootstrap/variables";
+﻿@import "spectre/variables";
 
-$calendar-head-background: $primary;
+$calendar-head-background: $primary-color;
 $calendar-head-foreground: white;
-$calendar-body-background: $gray-100;
+$calendar-body-background: $gray-color-light;
 $calendar-body-foreground: #555555;
 $chosen-day-stroke: #222222;
 $chosen-day-fill: white;
@@ -11,11 +10,7 @@ $other-months-foreground: #999999;
 
 .mithril-date-picker-container {
     width: 100%;
-
-    &.col {
-        margin-left: -15px;
-        margin-right: -15px;
-    }
+    position: relative;
 
     * {
         box-sizing: border-box;
@@ -32,7 +27,7 @@ $other-months-foreground: #999999;
     .current-date-indicator {
         cursor: pointer;
         position: absolute;
-        right: 2rem;
+        right: .5rem;
         top: .5rem;
     }
 
@@ -44,7 +39,6 @@ $other-months-foreground: #999999;
 
     .editor {
         position: absolute;
-        margin: 0 15px 0 0;
         height: auto;
         transition: height 0.2s;
         z-index: 2000;
@@ -55,7 +49,7 @@ $other-months-foreground: #999999;
         position: relative;
         display: flex;
         justify-content: space-between;
-        background: $info;
+        background: $info-color;
 
         .header-button {
             position: relative;

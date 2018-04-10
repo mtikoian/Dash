@@ -1,9 +1,12 @@
 ﻿@using Dash.I18n
 @model Table
 
-<div data-title="@Charts.ViewAll" data-basic-dialog="true" data-close-event="dashboardReload">
-    @using (Html.BeginToolbar()) {
-        @Html.AuthorizedButton(Charts.CreateChart, "Chart", "Create", DashClasses.BtnPrimary, DashClasses.DashDialog, hasAccess: this.User.IsInRole("chart.create"))
-    }
-    <div class="col-12 dash-table" data-json="@Model.ToJson"></div>
+<div data-title="@Charts.ViewAll" data-basic-dialog="true" data-close-event="dashboardReload" class="container">
+    <div class="p-2">
+        @using (Html.BeginToolbar())
+        {
+            @Html.AuthorizedButton(Charts.CreateChart, "Chart", "Create", DashClasses.BtnPrimary, DashClasses.DashDialog, hasAccess: this.User.IsInRole("chart.create"))
+        }
+        <div class="col-12 dash-table" data-json="@Model.ToJson"></div>
+    </div>
 </div>

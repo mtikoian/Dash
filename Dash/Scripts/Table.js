@@ -242,6 +242,7 @@
         refresh: function() {
             this.loading = true;
             this.loadingError = false;
+            m.redraw();
             this.loadData();
         },
 
@@ -836,26 +837,28 @@
          * @returns {Object}  Mithril DIV node.
          */
         view: function() {
-            return m('.container-fluid.data-table', [
+            return m('.data-table', [
                 !this.opts.editable ? m('span#table-items-per-page') :
-                    m('.form-inline.pb-2', [
-                        m('.col-4',
-                            this.opts.searchable ? m('.input-group', [
-                                m('span.input-group-prepend', m('i.dash.dash-search.input-group-text')),
-                                m('input.form-control', { type: 'text', oninput: this.setSearchQuery.bind(this), value: this.searchQuery, disabled: this.loading })
-                            ]) : null
-                        ),
-                        m('.col-4', this.opts.headerButtons ? m('.float-right', this.opts.headerButtons) : null),
-                        m('.col-4',
-                            m('.input-group', [
-                                m('span.input-group-prepend', m('span.input-group-text', this.opts.resources.perPage)),
-                                m('select.form-control.custom-select', {
-                                    id: 'table-items-per-page', onchange: this.setItemsPerPage.bind(this),
-                                    value: this.itemsPerPage, disabled: this.loading
-                                }, this.pageOptions)
-                            ])
-                        )
-                    ]),
+                    m('.container',
+                        m('.columns.form-horizontal.m-2', [
+                            m('.col-4',
+                                this.opts.searchable ? m('.input-group', [
+                                    m('span.input-group-addon', m('i.dash.dash-search.input-group-text')),
+                                    m('input.form-input', { type: 'text', oninput: this.setSearchQuery.bind(this), value: this.searchQuery, disabled: this.loading })
+                                ]) : null
+                            ),
+                            m('.col-4', this.opts.headerButtons ? m('.float-right', this.opts.headerButtons) : null),
+                            m('.col-4',
+                                m('.input-group', [
+                                    m('span.input-group-addon', m('span.input-group-text', this.opts.resources.perPage)),
+                                    m('select.form-select', {
+                                        id: 'table-items-per-page', onchange: this.setItemsPerPage.bind(this),
+                                        value: this.itemsPerPage, disabled: this.loading
+                                    }, this.pageOptions)
+                                ])
+                            )
+                        ])
+                    ),
                 m('.table-scrollable', { class: this.opts.editable ? '' : ' table-no-edit' }, [
                     m('.table-area', { onscroll: this.onScroll.bind(this) }, [
                         m('table.table.table-hover.table-sm.table-striped.table-data-table', [
@@ -896,9 +899,7 @@
          */
         tableBodyView: function() {
             if (this.loading) {
-                return m('tr', m('td', { colspan: this.opts.columns.length }, m('.table-spinner', [
-                    m('.rect1', ''), m('.rect2', ''), m('.rect3', ''), m('.rect4', ''), m('.rect5', '')
-                ])));
+                return m('tr', m('td', { colspan: this.opts.columns.length }, m('.loading.loading-lg')));
             }
             if (this.loadingError) {
                 return m('tr.table-loading-error', m('td', { colspan: this.opts.columns.length }, [
@@ -933,35 +934,35 @@
             }
 
             var res = this.opts.resources;
-            return m('.row.p-2', [
-                m('.col.btn-toolbar', { class: this.filteredTotal > this.itemsPerPage ? '' : ' invisible' }, [
+            return m('.container', m('.columns.m-2', [
+                m('.col-4.btn-toolbar', { class: this.filteredTotal > this.itemsPerPage ? '' : ' invisible' }, [
                     m('button.btn.btn-secondary', {
                         type: 'button', role: 'button', title: res.firstPage, onclick: this.moveToPage.bind(this, -1, true)
-                    }, m('i.dash.dash-to-start-alt')),
+                    }, m('i.dash.dash-to-start-alt.text-primary')),
                     m('button.btn.btn-secondary', {
                         type: 'button', role: 'button', title: res.previousPage, onclick: this.moveToPage.bind(this, -1, false)
-                    }, m('i.dash.dash-to-start')),
+                    }, m('i.dash.dash-to-start.text-primary')),
                     m('button.btn.btn-secondary', {
                         type: 'button', role: 'button', title: res.nextPage, onclick: this.moveToPage.bind(this, 1, false)
-                    }, m('i.dash.dash-to-end')),
+                    }, m('i.dash.dash-to-end.text-primary')),
                     m('button.btn.btn-secondary', {
                         type: 'button', role: 'button', title: res.lastPage, onclick: this.moveToPage.bind(this, 1, true)
-                    }, m('i.dash.dash-to-end-alt'))
+                    }, m('i.dash.dash-to-end-alt.text-primary'))
                 ]),
-                m('.col', { class: this.filteredTotal > this.itemsPerPage ? '' : ' invisible' },
+                m('.col-4', { class: this.filteredTotal > this.itemsPerPage ? '' : ' invisible' },
                     !this.opts.pageDropdown ? null : m('.col-8.offset-2',
                         m('.input-group', [
-                            m('span.input-group-prepend', m('span.input-group-text', res.page)),
-                            m('select.form-control.custom-select', { onchange: this.changePage.bind(this), value: currentPage }, optionList)
+                            m('span.input-group-addon', m('span.input-group-text', res.page)),
+                            m('select.form-select', { onchange: this.changePage.bind(this), value: currentPage }, optionList)
                         ])
                     )
                 ),
-                m('.col.text-right.my-auto', res.showing
+                m('.col-4.text-right.my-auto', res.showing
                     .replace('{0}', Math.min(this.currentStartItem + 1, this.filteredTotal))
                     .replace('{1}', Math.min(this.currentStartItem + this.itemsPerPage, this.filteredTotal))
                     .replace('{2}', this.filteredTotal)
                 )
-            ]);
+            ]));
         },
 
         /**

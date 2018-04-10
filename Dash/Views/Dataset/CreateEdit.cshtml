@@ -2,73 +2,70 @@
 @using Dash.Models
 @model Dataset
 
-@using (Html.BeginBootForm(Model.FormAction, "Dataset", null, Model.IsCreate ? Datasets.CreateDataset : Datasets.EditDataset, "datasetFormLoad",
-  Url.Action("FormOptions", "Dataset"), new {
-      @class = "dataset-form",
-      @data_table_url = @Url.Action("Sources"),
-      @data_column_url = @Url.Action("TableColumns"),
-      @data_import_url = @Url.Action("ReadSchema"),
-      @data_close_event = "datasetFormUnload"
-  }, method: Model.FormMethod))
+@using (Html.BeginCustomForm(Model.FormAction, "Dataset", null, Model.IsCreate ? Datasets.CreateDataset : Datasets.EditDataset, "datasetFormLoad",
+Url.Action("FormOptions", "Dataset"), new {
+   @class = "dataset-form",
+   @data_table_url = @Url.Action("Sources"),
+   @data_column_url = @Url.Action("TableColumns"),
+   @data_import_url = @Url.Action("ReadSchema"),
+   @data_close_event = "datasetFormUnload"
+}, method: Model.FormMethod))
 {
     @Html.HiddenFor(model => model.Id, new { @class = "dataset-id" })
 
-    <div class="col-12">
-        <ul class="nav nav-tabs m-2" role="tablist">
-            <li role="presentation" class="nav-item">
-                <a href="#overviewContent_@Model.Id" id="overviewTab_@Model.Id" class="nav-link active" role="tab" data-toggle="tab" aria-controls="overviewTab_@Model.Id">@Html.Raw(Datasets.Overview)</a>
-            </li>
-            <li role="presentation" class="nav-item">
-                <a href="#joinsContent_@Model.Id" id="joinsTab_@Model.Id" class="nav-link" role="tab" data-toggle="tab" aria-controls="joinsTab_@Model.Id">@Html.Raw(Datasets.Joins)</a>
-            </li>
-            <li role="presentation" class="nav-item">
-                <a href="#columnsContent_@Model.Id" id="columnsTab_@Model.Id" class="nav-link" role="tab" data-toggle="tab" aria-controls="columnsTab_@Model.Id">@Html.Raw(Datasets.Columns)</a>
-            </li>
-        </ul>
+    <ul class="tab tab-block m-2" role="tablist">
+        <li role="presentation" class="tab-item">
+            <a href="#overviewContent_@Model.Id" id="overviewTab_@Model.Id" class="active" role="tab" data-toggle="tab" aria-controls="overviewTab_@Model.Id">@Html.Raw(Datasets.Overview)</a>
+        </li>
+        <li role="presentation" class="tab-item">
+            <a href="#joinsContent_@Model.Id" id="joinsTab_@Model.Id" role="tab" data-toggle="tab" aria-controls="joinsTab_@Model.Id">@Html.Raw(Datasets.Joins)</a>
+        </li>
+        <li role="presentation" class="tab-item">
+            <a href="#columnsContent_@Model.Id" id="columnsTab_@Model.Id" role="tab" data-toggle="tab" aria-controls="columnsTab_@Model.Id">@Html.Raw(Datasets.Columns)</a>
+        </li>
+    </ul>
 
-        <div class="tab-content m-2">
-            <div role="tabpanel" class="tab-pane fade show active" id="overviewContent_@Model.Id" aria-labelledby="overviewTab_@Model.Id">
-                <div class="row">
-                    <div class="col-6">
-                        @Html.LabelInputFor(model => model.Name)
-                        @Html.LabelDropDownListFor(model => model.DatabaseId, new SelectList(Model.DbContext.GetAll<Database>(), "Id", "Name"), new { @class = "dataset-database" })
-                        @Html.LabelDropDownListFor(model => model.TypeId, Model.TypeList, new { @class = "dataset-type" })
-                        <div class="form-group row">
-                            <label class="col-form-label col-4 required" for="PrimarySource">@Datasets.PrimarySource</label>
-                            <div class="col-8">
-                                <div class="dataset-primary-source" data-value="@Model.PrimarySource"></div>
-                            </div>
+    <div class="tab-content m-2">
+        <div role="tabpanel" class="tab-pane active" id="overviewContent_@Model.Id" aria-labelledby="overviewTab_@Model.Id">
+            <div class="columns">
+                <div class="col-6">
+                    @Html.LabelInputFor(model => model.Name)
+                    @Html.LabelDropDownListFor(model => model.DatabaseId, new SelectList(Model.DbContext.GetAll<Database>(), "Id", "Name"), new { @class = "dataset-database" })
+                    @Html.LabelDropDownListFor(model => model.TypeId, Model.TypeList, new { @class = "dataset-type" })
+                    <div class="form-group">
+                        <label class="form-label col-4 required" for="PrimarySource">@Datasets.PrimarySource</label>
+                        <div class="col-8">
+                            <div class="dataset-primary-source" data-value="@Model.PrimarySource"></div>
                         </div>
-                        @Html.LabelTextAreaFor(model => model.Description)
-                        @Html.LabelTextAreaFor(model => model.Conditions)
                     </div>
+                    @Html.LabelTextAreaFor(model => model.Description)
+                    @Html.LabelTextAreaFor(model => model.Conditions)
+                </div>
 
-                    <div class="col-6">
-                        @Html.LabelInputFor(model => model.DateFormat, groupAddOn: Html.InputGroupButton("DateFormat", Html.Icon("list-numbered", false), Model.DefaultDateFormats))
-                        @Html.LabelInputFor(model => model.CurrencyFormat, groupAddOn: Html.InputGroupButton("CurrencyFormat", Html.Icon("list-numbered", false), Model.DefaultCurrencyFormats))
+                <div class="col-6">
+                    @Html.LabelInputFor(model => model.DateFormat, groupAddOn: Html.InputGroupButton("DateFormat", Html.Icon("list-numbered", false, true), Model.DefaultDateFormats))
+                    @Html.LabelInputFor(model => model.CurrencyFormat, groupAddOn: Html.InputGroupButton("CurrencyFormat", Html.Icon("list-numbered", false, true), Model.DefaultCurrencyFormats))
 
-                        <div class="form-group row">
-                            @Html.ControlLabel("RoleIds", Datasets.Roles)
-                            <div class="col-8 checkbox-block">
-                                @foreach (var role in Model.GetAllRoles())
-                                {
-                                    @Html.CustomCheckbox("RoleIds", Html.IsChecked(Model.DatasetRole, x => x.RoleId == role.Id, (int[])ViewBag.SelectedRoleIds, role.Id),
-                                                                                role.Id.ToString(), role.Name, $"dataset_role_{role.Id}", isMultiple: true)
-                                }
-                                @Html.HelpFor(model => model.DatasetRole, false, true)
-                            </div>
+                    <div class="form-group">
+                        @Html.ControlLabel("RoleIds", Datasets.Roles)
+                        <div class="col-8 checkbox-block">
+                            @foreach (var role in Model.GetAllRoles())
+                            {
+                                @Html.CustomCheckbox("RoleIds", Html.IsChecked(Model.DatasetRole, x => x.RoleId == role.Id, (int[])ViewBag.SelectedRoleIds, role.Id), role.Id.ToString(), role.Name, $"dataset_role_{role.Id}", isMultiple: true)
+                            }
+                            @Html.HelpFor(model => model.DatasetRole, false, true)
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div role="tabpanel" class="tab-pane fade" id="joinsContent_@Model.Id" aria-labelledby="joinsTab_@Model.Id">
-                <div class="table-wrapper join-table-wrapper"></div>
-            </div>
+        <div role="tabpanel" class="tab-pane" id="joinsContent_@Model.Id" aria-labelledby="joinsTab_@Model.Id">
+            <div class="table-wrapper join-table-wrapper"></div>
+        </div>
 
-            <div role="tabpanel" class="tab-pane fade" id="columnsContent_@Model.Id" aria-labelledby="columnsTab_@Model.Id">
-                <div class="table-wrapper column-table-wrapper"></div>
-            </div>
+        <div role="tabpanel" class="tab-pane" id="columnsContent_@Model.Id" aria-labelledby="columnsTab_@Model.Id">
+            <div class="table-wrapper column-table-wrapper"></div>
         </div>
     </div>
 }

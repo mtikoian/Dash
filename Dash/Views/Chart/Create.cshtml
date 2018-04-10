@@ -1,7 +1,7 @@
 ﻿@model Dash.Models.CreateChart
 @using Dash.I18n
 
-@using (Html.BeginBootForm("Create", "Chart", null, Charts.CreateChart))
+@using (Html.BeginCustomForm("Create", "Chart", null, Charts.CreateChart))
 {
     <div class="col-6">
         @Html.LabelInputFor(model => model.Name)

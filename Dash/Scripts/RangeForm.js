@@ -166,15 +166,15 @@
                 }
             }
 
-            return m('.col-12.wrapper-row', { class: index % 2 === 1 ? 'odd' : 'even', key: record._index }, [
-                m('.row', [
+            return m('.container.wrapper-row', { class: index % 2 === 1 ? 'odd' : 'even', key: record._index }, [
+                m('.columns', [
                     m('input', { type: 'hidden', name: 'ChartRange[' + index + '].Id', value: record.id }),
                     m('.col-4',
                         self.withHelp($.resx('chart.reportText'), [
-                            m('span.input-group-prepend', m('button.btn.btn-secondary', { onclick: self.toggleExpanded.bind(self, record) },
-                                m('i.dash', { class: record.isExpanded ? 'dash-minus' : 'dash-plus' })
+                            m('span.input-group-addon.input-group-custom', m('button.btn.btn-secondary', { onclick: self.toggleExpanded.bind(self, record) },
+                                m('i.dash.text-primary', { class: record.isExpanded ? 'dash-minus' : 'dash-plus' })
                             )),
-                            m('select.form-control.custom-select.required', self.withDisabled({
+                            m('select.form-select.required', self.withDisabled({
                                 name: 'ChartRange[' + index + '].ReportId', class: self.withError(record.reportId, true),
                                 placeholder: $.resx('chart.report'), onchange: self.setReport.bind(self, index), value: record.reportId
                             }, !self.opts.allowEdit), self.withOptions(self.reports, record.reportId, 'id', 'name'))
@@ -182,7 +182,7 @@
                     ),
                     m('.col-3',
                         self.withHelp($.resx('chart.xAxisColumnText'),
-                            m('select.form-control.custom-select.required', self.withDisabled({
+                            m('select.form-select.required', self.withDisabled({
                                 name: 'ChartRange[' + index + '].XAxisColumnId', id: 'xAxisColumnId' + index, class: report ? self.withError(record.xAxisColumnId, true) : null,
                                 placeholder: $.resx('chart.xAxisColumn'), onchange: self.set.bind(self, index, 'xAxisColumnId'), value: record.xAxisColumnId
                             }, inputsDisabled), self.withOptions(report ? report.xColumns : [{ columnId: 0, title: $.resx('chart.xAxisColumn') }], record.xAxisColumnId, 'columnId', 'title'))
@@ -190,7 +190,7 @@
                     ),
                     m('.col-3',
                         self.withHelp($.resx('chart.yAxisColumnText'),
-                            m('select.form-control.custom-select.required', self.withDisabled({
+                            m('select.form-select.required', self.withDisabled({
                                 name: 'ChartRange[' + index + '].YAxisColumnId', id: 'yAxisColumnId' + index, class: report ? self.withError(record.yAxisColumnId, true) : null,
                                 placeholder: $.resx('chart.yAxisColumn'), onchange: self.set.bind(self, index, 'yAxisColumnId'), value: record.yAxisColumnId
                             }, inputsDisabled), self.withOptions(report ? report.yColumns : [{ columnId: 0, title: $.resx('chart.yAxisColumn') }], record.yAxisColumnId, 'columnId', 'title'))
@@ -198,10 +198,10 @@
                     ),
                     m('.col-2', self.opts.allowEdit ? self.buttonView.call(self, index, true) : null)
                 ]),
-                m('.row', { class: record.isExpanded ? '' : ' hidden' }, [
-                    m('.col-4.offset-1',
+                m('.columns', { class: record.isExpanded ? '' : ' d-none' }, [
+                    m('.col-4.col-ml-auto',
                         self.withHelp($.resx('chart.aggregatorText'),
-                            m('select.form-control.custom-select', self.withDisabled({
+                            m('select.form-select', self.withDisabled({
                                 name: 'ChartRange[' + index + '].AggregatorId', id: 'aggregatorId' + index,
                                 placeholder: $.resx('chart.aggregator'), onchange: self.set.bind(self, index, 'aggregatorId'), value: record.aggregatorId
                             }, inputsDisabled), self.withOptions(self.aggregators, record.aggregatorId, 'id', 'name'))
@@ -209,7 +209,7 @@
                     ),
                     m('.col-4',
                         self.withHelp($.resx('chart.dateIntervalText'),
-                            m('select.form-control.custom-select', self.withDisabled({
+                            m('select.form-select', self.withDisabled({
                                 name: 'ChartRange[' + index + '].DateIntervalId', id: 'dateIntervalId' + index,
                                 placeholder: $.resx('chart.dateInterval'), onchange: self.set.bind(self, index, 'dateIntervalId'), value: record.dateIntervalId
                             }, dateIntervalDisabled), self.withOptions(self.dateIntervals, record.dateIntervalId, 'id', 'name'))
@@ -222,7 +222,8 @@
                                 onSelect: self.set.bind(self, index, 'color')
                             })
                         ),
-                    ])
+                    ]),
+                    m('.col-1')
                 ])
             ]);
         });
@@ -235,7 +236,7 @@
     RangeForm.prototype.view = function() {
         return [
             this.rangeView(),
-            m('.row.pt-1', [
+            m('.container.pt-1', m('.columns', [
                 m('.col-6', [
                     m('.btn-toolbar', [
                         this.opts.allowEdit ? m('button.btn.btn-primary.mr-1', {
@@ -246,8 +247,8 @@
                         }, $.resx('export'))
                     ])
                 ]),
-                this.opts.allowEdit ? m('.col-6.float-right', [
-                    m('.float-right', [
+                this.opts.allowEdit ? m('.col-6.text-right', [
+                    m('.text-right', [
                         m('button.btn.btn-info.mr-1', {
                             type: 'button', role: 'button', onclick: this.addRecord.bind(this)
                         }, $.resx('add')),
@@ -257,7 +258,7 @@
                         m(Help, { enabled: this.opts.wantsHelp, message: $.resx('chart.rangeText') })
                     ])
                 ]) : null
-            ])
+            ]))
         ];
     };
 

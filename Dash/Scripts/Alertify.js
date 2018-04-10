@@ -51,7 +51,7 @@
                 ok: '<button class="ok btn btn-primary" tabindex="1">{{ok}}</button>',
                 cancel: '<button class="cancel btn btn-warning" tabindex="2">{{cancel}}</button>'
             },
-            input: '<div class="ml-10 mr-10"><input type="text" class="form-control"></div>',
+            input: '<div class="ml-10 mr-10"><input type="text" class="form-input"></div>',
             message: '<p class="msg">{{message}}</p>',
             log: '<div class="{{class}}">{{message}}</div>'
         },
@@ -196,7 +196,7 @@
          */
         setup: function(item) {
             var el = document.createElement('div');
-            el.className = 'alertify hidden';
+            el.className = 'alertify d-none';
             el.innerHTML = this.build(item);
 
             var btnOK = $.get('.ok', el);

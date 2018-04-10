@@ -1,0 +1,28 @@
+// Variables and mixins
+@import "variables";
+@import "mixins";
+
+/*! Spectre.css v#{$version} | MIT License | github.com/picturepan2/spectre */
+// Reset and dependencies
+@import "normalize";
+@import "base";
+
+// Elements
+@import "typography";
+@import "tables";
+@import "buttons";
+@import "forms";
+@import "labels";
+
+// Layout
+@import "layout";
+
+// Components
+@import "cards";
+@import "dropdowns";
+@import "menus";
+@import "tabs";
+
+// Utility classes
+@import "animations";
+@import "utilities";

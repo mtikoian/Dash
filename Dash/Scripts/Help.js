@@ -42,7 +42,7 @@
                 }, m('i.dash.dash-help')));
             }
             return m('.input-group',
-                vnode.children.concat(m('span.input-group-append', m('button.btn.btn-secondary.dash-context-help', {
+                vnode.children.concat(m('span.input-group-addon.input-group-custom', m('button.btn.btn-secondary.dash-context-help', {
                     type: 'button', role: 'button', onclick: this.showHelp.bind(this)
                 }, m('i.dash.dash-help'))))
             );

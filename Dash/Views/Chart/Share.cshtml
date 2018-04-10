@@ -1,14 +1,11 @@
 ﻿@using Dash.I18n
 @model Dash.Models.Chart
 
-@using (Html.BeginBootForm("Share", "Chart", null, Charts.ShareChart, "chartShareLoad",
-    htmlAttributes: new { @class = "chart-share-form", @data_close_event = "chartShareUnload" },
-    method: HttpVerbs.Put))
+@using (Html.BeginCustomForm("Share", "Chart", null, Charts.ShareChart, "chartShareLoad", null, new { @class = "chart-share-form", @data_close_event = "chartShareUnload" }, true, HttpVerbs.Put))
 {
     @Html.HiddenFor(model => model.Id)
     @Html.ToCard(Charts.ShareExplain)
-
-    <div class="col-12 pt-3">
+    <div class="col-12 p-2">
         <div class="share-table-wrapper" data-json="@Model.ShareOptionsJson"></div>
     </div>
 }

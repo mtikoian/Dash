@@ -89,11 +89,11 @@
             return m('.rd-dialog', { onkeydown: this.checkKey.bind(this), tabindex: 0 }, [
                 m('.rd-commands', [
                     m('button.btn.btn-secondary.rd-close', { type: 'button', role: 'button', onclick: this.onCancel.bind(this) },
-                        m('i.dash.dash-cancel.text-danger', { title: this.opts.buttons.close })
+                        m('i.dash.dash-cancel.text-error', { title: this.opts.buttons.close })
                     )
                 ]),
                 m('.rd-header.dialog-header', this.opts.title),
-                m('.rd-content', { class: this.opts.basic ? 'rd-no-footer' : '' }, m.trust(this.opts.content)),
+                m('.rd-content.container', { class: this.opts.basic ? 'rd-no-footer' : '' }, m.trust(this.opts.content)),
                 this.opts.basic ? null : m('.rd-footer', [
                     m('.rd-buttons', [
                         m('button.rd-button.btn.btn-primary', {
@@ -363,6 +363,7 @@
                 // add error class to tab
                 var id = tab.getAttribute('aria-labelledby');
                 if (id) {
+                    // @todo rename this class - maybe mform-error instead?
                     if ($.hasClass(el, 'mform-control-error')) {
                         $.addClass($.get('#' + id), 'tab-validation-error');
                     } else {
@@ -380,6 +381,7 @@
             var form = this.findForm();
             form.dispatchEvent($.events.formValidate);
 
+            // @todo refactor to work with spectre
             var tabs = $.getAll('.nav-tabs.nav-item.nav-link', form);
             tabs.forEach(function(x) {
                 $.removeClass(x, 'tab-validation-error');

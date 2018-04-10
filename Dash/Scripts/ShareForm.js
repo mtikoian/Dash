@@ -44,7 +44,7 @@
      */
     ShareForm.prototype.userSelectAttr = function(share, index) {
         var res = {
-            name: this.formName + '[' + index + '].UserId', class: 'form-control custom-select' + ($.hasPositiveValue(share.userId) || $.hasPositiveValue(share.roleId) ? '' : ' mform-control-error'),
+            name: this.formName + '[' + index + '].UserId', class: 'form-select' + ($.hasPositiveValue(share.userId) || $.hasPositiveValue(share.roleId) ? '' : ' mform-control-error'),
             placeholder: $.resx('selectUser'), onchange: this.set.bind(this, index, 'userId'), value: share.userId
         };
         if ($.hasPositiveValue(share.roleId)) {
@@ -61,7 +61,7 @@
      */
     ShareForm.prototype.roleSelectAttr = function(share, index) {
         var res = {
-            name: this.formName + '[' + index + '].RoleId', class: 'form-control custom-select' + ($.hasPositiveValue(share.userId) || $.hasPositiveValue(share.roleId) ? '' : ' mform-control-error'),
+            name: this.formName + '[' + index + '].RoleId', class: 'form-select' + ($.hasPositiveValue(share.userId) || $.hasPositiveValue(share.roleId) ? '' : ' mform-control-error'),
             placeholder: $.resx('selectRole'), onchange: this.set.bind(this, index, 'roleId'), value: share.roleId
         };
         if ($.hasPositiveValue(share.userId)) {
@@ -77,15 +77,15 @@
     ShareForm.prototype.view = function() {
         var self = this;
         return m('.table-wrapper', [
-            m('.row', [
+            m('.columns', [
                 m('.col-5', m('h5', $.resx('user'))),
                 m('.col-5', m('h5', $.resx('role'))),
                 m('.col-2')
             ]),
             self.records.map(function(share, index) {
-                return m('.row.wrapper-row', { class: index % 2 === 1 ? 'odd' : 'even', key: share._index }, [
+                return m('.columns.wrapper-row', { class: index % 2 === 1 ? 'odd' : 'even', key: share._index }, [
                     m('input', { type: 'hidden', name: self.formName + '[' + index + '].Id', value: share.id }),
-                    m('.col-5',
+                    m('.col-5.pr-2',
                         m('select', self.userSelectAttr(share, index), self.withOptions(self.users, share.userId, 'id', 'fullName'))
                     ),
                     m('.col-5',
@@ -94,9 +94,9 @@
                     m('.col-2', self.buttonView(index, false))
                 ]);
             }),
-            m('.row.pt-1', [
-                m('.col-6.offset-6', [
-                    m('.float-right', [
+            m('.columns.pt-1', [
+                m('.col-12', [
+                    m('.text-right', [
                         m('button.btn.btn-info.mr-2', { type: 'button', role: 'button', onclick: self.addRecord.bind(self) }, $.resx('add')),
                         m('button.btn.btn-warning', {
                             type: 'button', role: 'button', disabled: !self.hasRecords(),

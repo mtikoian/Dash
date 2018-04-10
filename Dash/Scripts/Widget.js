@@ -112,44 +112,37 @@
                 m('.row.grid-header', [
                     m('span.grid-title.col-11', this.opts.title),
                     m('span.grid-buttons.col-1', [
-                        m('span.dropdown.float-right', [
-                            m('a.btn.dropdown-toggle', { id: 'dropdownMenuButton_' + this.opts.id, 'data-toggle': 'dropdown', 'aria-haspopup': true, 'aria-expanded': false },
-                                m('i.dash.dash-menu')
+                        m('span.float-right', [
+                            m('a.btn.btn-link.btn-refresh', { title: $.resx('refresh'), onclick: this.forceRefresh.bind(this) },
+                                m('i.dash.dash-arrows-cw')
                             ),
-                            m('span.dropdown-menu', { 'aria-labelledby': 'dropdownMenuButton_' + this.id }, [
-                                m('a.dropdown-item.btn-refresh', { title: $.resx('refresh'), onclick: this.forceRefresh.bind(this) }, [
-                                    m('i.dash.dash-arrows-cw'), m('span', ' ' + $.resx('refresh'))
-                                ]),
-                                m('a.dropdown-item.btn-fullscreen', { title: $.resx('toggleFullScreen'), onclick: this.toggleFullScreen.bind(this) }, [
-                                    m('i.dash.dash-max'), m('span', ' ' + $.resx('toggleFullScreen'))
-                                ]),
-                                m('a.dropdown-item.dash-ajax.dash-dialog.fs-disabled', {
-                                    href: this.opts.baseUrl + (this.opts.isData ? 'Report' : 'Chart') + '/Details/' + (this.opts.isData ? this.opts.reportId : this.opts.chartId),
-                                    title: $.resx(this.opts.isData ? 'viewReport' : 'viewChart')
-                                }, [m('i.dash.dash-info'), ' ' + $.resx(this.opts.isData ? 'viewReport' : 'viewChart')]),
-                                m('a.dropdown-item.dash-ajax.dash-dialog.fs-disabled', { href: this.opts.baseUrl + 'Dashboard/Edit/' + this.opts.id, title: $.resx('editWidget') }, [
-                                    m('i.dash.dash-pencil'), ' ' + $.resx('editWidget')
-                                ]),
-                                m('a.dropdown-item.dash-ajax.dash-dialog.fs-disabled', { title: $.resx('deleteWidget'), onclick: this.deleteWidget.bind(this) }, [
-                                    m('i.dash.dash-trash.text-danger'), ' ' + $.resx('deleteWidget')
-                                ])
-                            ])
+                            m('a.btn.btn-link.btn-fullscreen', { title: $.resx('toggleFullScreen'), onclick: this.toggleFullScreen.bind(this) },
+                                m('i.dash.dash-max')
+                            ),
+                            m('a.btn.btn-link.dash-ajax.dash-dialog.fs-disabled', {
+                                href: this.opts.baseUrl + (this.opts.isData ? 'Report' : 'Chart') + '/Details/' + (this.opts.isData ? this.opts.reportId : this.opts.chartId),
+                                title: $.resx(this.opts.isData ? 'viewReport' : 'viewChart')
+                            }, m('i.dash.dash-info')),
+                            m('a.btn.btn-link.dash-ajax.dash-dialog.fs-disabled', { href: this.opts.baseUrl + 'Dashboard/Edit/' + this.opts.id, title: $.resx('editWidget') },
+                                m('i.dash.dash-pencil')
+                            ),
+                            m('a.btn.btn-link.dash-ajax.dash-dialog.fs-disabled', { title: $.resx('deleteWidget'), onclick: this.deleteWidget.bind(this) },
+                                m('i.dash.dash-trash')
+                            )
                         ])
                     ])
                 ]),
                 m('.grid-body', [
-                    m('.widget-data hidden', { id: 'widgetData_' + this.opts.id }),
-                    m('.widget-chart hidden', { id: 'widgetChart_' + this.opts.id }, [
-                        m('.chart-spinner',
-                            m('.table-spinner', [m('.rect1'), m('.rect2'), m('.rect3'), m('.rect4'), m('.rect5')])
-                        ),
-                        m('.chart-error.hidden.pl-1',
+                    m('.widget-data d-none', { id: 'widgetData_' + this.opts.id }),
+                    m('.widget-chart d-none', { id: 'widgetChart_' + this.opts.id }, [
+                        m('.chart-spinner', m('.loading.loading-lg')),
+                        m('.chart-error.d-none.pl-1',
                             m('div', [
                                 m('p', $.resx('errorChartLoad')),
                                 m('.btn.btn-info.btn-sm', { onclick: this.refresh.bind(this) }, $.resx('tryAgain'))
                             ])
                         ),
-                        m('canvas.chart-canvas.hidden')
+                        m('canvas.chart-canvas.d-none')
                     ])
                 ]),
                 m('.grid-footer', [

@@ -63,7 +63,7 @@ namespace Dash
                 return null;
             }
             return new TableLink(url,
-                Html.Classes(DashClasses.DashConfirm, DashClasses.BtnDanger).Merge("data-title", Core.ConfirmDelete).Merge("data-message", message),
+                Html.Classes(DashClasses.DashConfirm, DashClasses.BtnError).Merge("data-title", Core.ConfirmDelete).Merge("data-message", message),
                 Core.Delete, TableIcon.Trash, HttpVerbs.Delete);
         }
 

@@ -146,7 +146,7 @@
         selectIndex: function(index) {
             this.opts.selectedIndex = index;
             var ul = $.get('ul', this.opts.container);
-            if (ul) {
+            if (ul && ul.children[index]) {
                 ul.children[index].scrollIntoView();
             }
         },
@@ -214,7 +214,7 @@
         view: function() {
             var self = this;
             return m('.mithril-autocomplete-container.autocomplete', { class: self.opts.active ? 'autocomplete-active' : '' },
-                m('input.form-control', {
+                m('input.form-input', {
                     type: 'text',
                     name: self.opts.name,
                     placeholder: self.opts.placeholder,

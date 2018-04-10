@@ -3,8 +3,8 @@
 @model Report
 
 <div class="report-form" data-event="reportLoad" data-close-event="reportUnload" data-url="@Url.Action("DetailsOptions", "Report", new { id = Model.Id })" data-title="@Model.Name" data-basic-dialog="true">
-    <div class="hidden">
-        @if (this.User.IsInRole("dataset.create"))
+    <div class="d-none">
+        @if (User.IsInRole("dataset.create"))
         {
             <div class="p-1 modal-sql" data-title="@Core.ViewSql" data-basic-dialog="true">
                 <div class="col-12">
@@ -37,59 +37,69 @@
 
     @if (Model.ReportColumn.Any())
     {
-        <div class="row ml-2 mr-2 mb-1 pb-1 tab-nav-content">
-            <div class="col-12">
-                <ul class="nav nav-tabs" role="tablist">
-                    <li role="presentation" class="nav-item">
-                        <a href="#tabFiltersContent_@Model.Id" id="tabFilters_@Model.Id" class="nav-link active" role="tab" data-toggle="tab" aria-controls="tabFiltersContent_@Model.Id">@Reports.Filters</a>
-                    </li>
-                    <li role="presentation" class="nav-item">
-                        <a href="#tabGroupingContent_@Model.Id" id="tabGrouping_@Model.Id" class="nav-link" role="tab" data-toggle="tab" aria-controls="tabGroupingContent_@Model.Id">@Reports.Groups</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">@Core.Actions</a>
-                        <div class="dropdown-menu" role="menu">
-                            @if (Model.IsOwner)
+        <div class="m-2">
+            <ul class="tab tab-block" role="tablist">
+                <li role="presentation" class="tab-item">
+                    <a href="#tabFiltersContent_@Model.Id" id="tabFilters_@Model.Id" class="active" role="tab" data-toggle="tab" aria-controls="tabFiltersContent_@Model.Id">@Reports.Filters</a>
+                </li>
+                <li role="presentation" class="tab-item">
+                    <a href="#tabGroupingContent_@Model.Id" id="tabGrouping_@Model.Id" role="tab" data-toggle="tab" aria-controls="tabGroupingContent_@Model.Id">@Reports.Groups</a>
+                </li>
+                <li class="tab-item dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">@Core.Actions</a>
+                    <ul class="menu" role="menu">
+                        @if (Model.IsOwner)
+                        {
+                            if (User.IsInRole("report.selectcolumns"))
                             {
-                                @Html.AuthorizedActionLink(Reports.SelectColumns, "SelectColumns", "Report", new { id = Model.Id }, new { @class = "dropdown-item dash-ajax dash-dialog" }, hasAccess: this.User.IsInRole("report.selectcolumns"))
-                                @Html.AuthorizedActionLink(Core.Rename, "Rename", "Report", new { id = Model.Id }, new {
-                                    @class = "dropdown-item dash-ajax dash-prompt",
-                                    @data_method = "PUT",
-                                    @data_update_target = ".dialog-header",
-                                    @data_message = Reports.NewName
-                                }, hasAccess: this.User.IsInRole("report.rename"))
-                                @Html.AuthorizedActionLink(Reports.ShareReport, "Share", "Report", new { id = Model.Id }, new {
-                                    @class = "dropdown-item dash-ajax dash-dialog",
-                                    @data_title = Reports.ShareReport
-                                }, hasAccess: this.User.IsInRole("report.share"))
+                                <li>
+                                    @Html.AuthorizedActionLink(Reports.SelectColumns, "SelectColumns", "Report", new { id = Model.Id }, new { @class = "dropdown-item dash-ajax dash-dialog" })
+                                </li>
                             }
-                            @if (this.User.IsInRole("dataset.create"))
+                            if (User.IsInRole("report.rename"))
                             {
-                                <a href="#" class="dropdown-item view-sql">@Html.Raw(Core.ViewSql)</a>
+                                <li>
+                                    @Html.AuthorizedActionLink(Core.Rename, "Rename", "Report", new { id = Model.Id }, new {
+                                        @class = "dropdown-item dash-ajax dash-prompt",
+                                        @data_method = "PUT",
+                                        @data_update_target = ".dialog-header",
+                                        @data_message = Reports.NewName
+                                    })
+                                </li>
                             }
+                            if (User.IsInRole("report.share"))
+                            {
+                                <li>
+                                    @Html.AuthorizedActionLink(Reports.ShareReport, "Share", "Report", new { id = Model.Id }, new {
+                                        @class = "dropdown-item dash-ajax dash-dialog",
+                                        @data_title = Reports.ShareReport
+                                    })
+                                </li>
+                            }
+                        }
+                        @if (this.User.IsInRole("dataset.create"))
+                        {
+                            <li><a href="#" class="dropdown-item view-sql">@Html.Raw(Core.ViewSql)</a></li>
+                        }
+                        <li class="divider"></li>
+                        <li><a class="dropdown-item disabled">@Core.Owner: @Model.Owner.FullName</a></li>
+                        <li><a class="dropdown-item disabled">@Reports.Database: @Model.Dataset.Database.Name</a></li>
+                        <li><a class="dropdown-item disabled">@Reports.Dataset: @Model.Dataset.Name</a></li>
+                    </ul>
+                </li>
+            </ul>
 
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item disabled">@Core.Owner: @Model.Owner.FullName</a>
-                            <a class="dropdown-item disabled">@Reports.Database: @Model.Dataset.Database.Name</a>
-                            <a class="dropdown-item disabled">@Reports.Dataset: @Model.Dataset.Name</a>
-                        </div>
-                    </li>
-                </ul>
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="tabFiltersContent_@Model.Id" aria-labelledby="tabFilters_@Model.Id">
+                    <div class="table-wrapper filter-table-wrapper container"></div>
+                </div>
 
-                <div class="tab-content">
-                    <div role="tabpanel" class="tab-pane active" id="tabFiltersContent_@Model.Id" aria-labelledby="tabFilters_@Model.Id">
-                        <div class="table-wrapper filter-table-wrapper"></div>
-                    </div>
-
-                    <div role="tabpanel" class="tab-pane" id="tabGroupingContent_@Model.Id" aria-labelledby="tabGrouping_@Model.Id">
-                        <div class="table-wrapper group-table-wrapper"></div>
-                    </div>
+                <div role="tabpanel" class="tab-pane" id="tabGroupingContent_@Model.Id" aria-labelledby="tabGrouping_@Model.Id">
+                    <div class="table-wrapper group-table-wrapper container"></div>
                 </div>
             </div>
         </div>
 
-        <div class="ml-1 mr-1">
-            <div class="report-data-container"></div>
-        </div>
+        <div class="report-data-container container p-2"></div>
     }
 </div>

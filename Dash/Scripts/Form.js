@@ -262,7 +262,7 @@
             }
             btns.push(m('button.btn.btn-sm.btn-secondary.confirm-delete-row-button', {
                 type: 'button', role: 'button', onclick: this.deleteRecord.bind(this, index), title: this.opts.resx.deleteRecord
-            }, m('i.dash.dash-trash.dash-lg.text-danger')));
+            }, m('i.dash.dash-trash.dash-lg.text-error')));
             return m('.btn-toolbar.float-right', btns);
         },
 

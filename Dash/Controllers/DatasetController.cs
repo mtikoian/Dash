@@ -130,27 +130,21 @@ namespace Dash.Controllers
         }
 
         [HttpPost, AjaxRequestOnly]
-        public IActionResult TableColumns(int databaseId, List<string> tables)
+        public IActionResult TableColumns([FromBody] TableColumnList model)
         {
-            // find table list
-            var database = DbContext.Get<Database>(databaseId);
-            if (database == null || tables == null || tables.Count == 0)
+            if (model == null)
+            {
+                return JsonError(Core.ErrorGeneric);
+            }
+            if (!ModelState.IsValid)
+            {
+                return JsonError(ModelState.ToErrorString());
+            }
+            if (model.Tables?.Any() != true)
             {
                 return JsonData("");
             }
-
-            var list = new List<string>();
-            tables.ForEach(x => {
-                var schema = database.GetTableSchema(x);
-                if (schema.Rows.Count > 0)
-                {
-                    foreach (System.Data.DataRow row in schema.Rows)
-                    {
-                        list.Add(row.ToColumnName(database.IsSqlServer));
-                    }
-                }
-            });
-            return JsonData(list.Distinct().OrderBy(x => x));
+            return JsonData(model.GetList());
         }
 
         private IActionResult CreateEditView(Dataset model)

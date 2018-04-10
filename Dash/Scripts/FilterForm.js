@@ -139,14 +139,14 @@
         var filter = this.records[index];
         var column = $.hasPositiveValue(filter.columnId) ? $.findByKey(this.columnFn(), 'id', filter.columnId) : null;
         if (column === null || !$.hasPositiveValue(filter.operatorId)) {
-            return m('input.form-control', { disabled: true, placeholder: $.resx('report.filterCriteria') });
+            return m('input.form-input', { disabled: true, placeholder: $.resx('report.filterCriteria') });
         }
 
         var criteria = null;
         var attrs = {
             name: 'ReportFilter[' + index + '].Criteria',
             id: 'ReportFilter_' + index + '_Criteria',
-            class: 'form-control required' + this.withError(filter.criteria),
+            class: 'form-input required' + this.withError(filter.criteria),
             placeholder: $.resx('report.filterCriteria'),
             oninput: this.setCriteria.bind(this, index)
         };
@@ -161,12 +161,12 @@
 
         switch (column.filterTypeId) {
             case this.filterTypes.boolean:
-                attrs.class += ' custom-select';
+                attrs.class = 'form-select required' + this.withError(filter.criteria);
                 criteria = m('select', attrs, this.boolOptions);
                 break;
             case this.filterTypes.date:
                 if (filter.operatorId === this.filterOperatorIds.dateInterval) {
-                    attrs.class += ' custom-select';
+                    attrs.class = 'form-select required' + this.withError(filter.criteria);
                     criteria = m('select', attrs, this.withOptions(this.dateOperators, filter.criteria * 1, 'id', 'name'));
                 } else {
                     criteria = m(DatePicker, {
@@ -180,7 +180,7 @@
                 if (filter.operatorId !== this.filterOperatorIds.equal) {
                     attrs.multiple = true;
                 } else {
-                    attrs.class += ' custom-select';
+                    attrs.class = 'form-select required' + this.withError(filter.criteria);
                 }
 
                 try {
@@ -211,7 +211,7 @@
         var attrs2 = {
             name: 'ReportFilter[' + index + '].Criteria2',
             id: 'ReportFilter_' + index + '_Criteria2',
-            class: 'form-control required' + this.withError(filter.criteria2, null, column.filterTypeId === this.filterTypes.date),
+            class: 'form-input required' + this.withError(filter.criteria2, null, column.filterTypeId === this.filterTypes.date),
             placeholder: $.resx('report.filterCriteria2'),
             onchange: isDatePicker ? this.setDate.bind(this, index, 'criteria2') : this.set.bind(this, index, 'criteria2'),
             value: filter.criteria2,
@@ -239,7 +239,7 @@
      * @returns {Object} Mithril node containing the operator select.
      */
     FilterForm.prototype.operatorView = function(index, column) {
-        return m('select.form-control.required.custom-select', {
+        return m('select.form-select.required', {
             name: 'ReportFilter[' + index + '].OperatorId', id: 'ReportFilter_' + index + '_OperatorId',
             disabled: !column || !this.opts.allowEdit,
             class: column ? this.withError(this.records[index].operatorId, true) : null,
@@ -264,7 +264,7 @@
 
             // @todo this isn't setting the `placeholder` default value correctly anymore it seems
             var attrs = {
-                name: 'ReportFilter[' + index + '].ColumnId', class: 'form-control custom-select required' + self.withError(x.columnId, true),
+                name: 'ReportFilter[' + index + '].ColumnId', class: 'form-select required' + self.withError(x.columnId, true),
                 placeholder: $.resx('report.filterColumn'), onchange: self.setColumnId.bind(self, index), value: x.columnId
             };
             if (!self.opts.allowEdit) {
@@ -273,7 +273,7 @@
 
             var filterColumns = self.isProc ? self.columnFn().filter(function(x) { return x.isParam; }) : self.columnFn();
 
-            return m('.row.wrapper-row', { class: index % 2 === 1 ? 'odd' : 'even' }, [
+            return m('.columns.wrapper-row', { class: index % 2 === 1 ? 'odd' : 'even' }, [
                 m('input', { type: 'hidden', name: 'ReportFilter[' + index + '].Id', value: x.id }),
                 m('input', { type: 'hidden', name: 'ReportFilter[' + index + '].DisplayOrder', value: index }),
                 m('.col-4',
@@ -297,12 +297,12 @@
     FilterForm.prototype.view = function() {
         return [
             this.filterView(),
-            this.opts.allowEdit ? m('.row.pt-1', [
+            this.opts.allowEdit ? m('.columns.pt-1', [
                 m('.col-6', m('button.btn.btn-primary', {
                     type: 'button', role: 'button', onclick: this.saveFilters.bind(this)
                 }, $.resx('save'))),
                 m('.col-6', [
-                    m('.float-right', [
+                    m('.text-right', [
                         m('button.btn.btn-info.mr-2', {
                             type: 'button', role: 'button', onclick: this.addRecord.bind(this),
                         }, $.resx('add')),

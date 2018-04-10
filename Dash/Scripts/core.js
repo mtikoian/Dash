@@ -325,9 +325,9 @@
         var node = get(element);
         if (node) {
             if (coalesce(maintainLayout, false)) {
-                addClass(node, 'invisible');
+                addClass(node, 'd-invisible');
             } else {
-                addClass(node, 'hidden');
+                addClass(node, 'd-none');
             }
         }
     };
@@ -533,8 +533,8 @@
     var show = function(element) {
         var node = get(element);
         if (node) {
-            removeClass(node, 'invisible');
-            removeClass(node, 'hidden');
+            removeClass(node, 'd-invisible');
+            removeClass(node, 'd-none');
         }
     };
 
