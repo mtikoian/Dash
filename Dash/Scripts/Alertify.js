@@ -196,7 +196,7 @@
          */
         setup: function(item) {
             var el = document.createElement('div');
-            el.className = 'alertify hidden';
+            el.className = 'alertify d-none';
             el.innerHTML = this.build(item);
 
             var btnOK = $.get('.ok', el);

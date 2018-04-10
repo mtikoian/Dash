@@ -198,7 +198,7 @@
                     ),
                     m('.col-2', self.opts.allowEdit ? self.buttonView.call(self, index, true) : null)
                 ]),
-                m('.columns', { class: record.isExpanded ? '' : ' hidden' }, [
+                m('.columns', { class: record.isExpanded ? '' : ' d-none' }, [
                     m('.col-4.col-ml-auto',
                         self.withHelp($.resx('chart.aggregatorText'),
                             m('select.form-select', self.withDisabled({

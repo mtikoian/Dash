@@ -3,7 +3,7 @@
 @model Report
 
 <div class="report-form" data-event="reportLoad" data-close-event="reportUnload" data-url="@Url.Action("DetailsOptions", "Report", new { id = Model.Id })" data-title="@Model.Name" data-basic-dialog="true">
-    <div class="hidden">
+    <div class="d-none">
         @if (User.IsInRole("dataset.create"))
         {
             <div class="p-1 modal-sql" data-title="@Core.ViewSql" data-basic-dialog="true">

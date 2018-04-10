@@ -242,6 +242,7 @@
         refresh: function() {
             this.loading = true;
             this.loadingError = false;
+            m.redraw();
             this.loadData();
         },
 
@@ -898,9 +899,7 @@
          */
         tableBodyView: function() {
             if (this.loading) {
-                return m('tr', m('td', { colspan: this.opts.columns.length }, m('.table-spinner', [
-                    m('.rect1', ''), m('.rect2', ''), m('.rect3', ''), m('.rect4', ''), m('.rect5', '')
-                ])));
+                return m('tr', m('td', { colspan: this.opts.columns.length }, m('.loading.loading-lg')));
             }
             if (this.loadingError) {
                 return m('tr.table-loading-error', m('td', { colspan: this.opts.columns.length }, [

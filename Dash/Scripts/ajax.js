@@ -213,7 +213,7 @@
     var _loadingDiv = (function() {
         var div = $.get('#loader');
         $.on(div, 'keydown', function(e) {
-            if ($.hasClass('#loader', 'hidden')) {
+            if ($.hasClass('#loader', 'd-none')) {
                 return;
             }
             e.preventDefault();

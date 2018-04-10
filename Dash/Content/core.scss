@@ -57,21 +57,6 @@ li {
     }
 }
 
-.form-group {
-    /*
-    .context-help-pad {
-        right: 15px;
-        float: right;
-        position: absolute;
-        top: 0;
-    }
-
-    .checkbox-block .context-help-pad {
-        right: 30px;
-    }
-    */
-}
-
 .dash-context-help {
     i, &.dash-help {
         color: $teal;
@@ -266,10 +251,6 @@ a {
     }
 }
 
-.hidden {
-    display: none;
-}
-
 .dialog-loading {
     position: fixed;
     z-index: 99999;
@@ -279,10 +260,9 @@ a {
     left: 0;
     padding: 0;
     margin: 0;
-    background-color: #252525;
-    opacity: .9;
+    background-color: $gray-color-light;
 
-    .table-spinner {
+    .loading {
         width: 100px;
         position: fixed;
         top: 50%;

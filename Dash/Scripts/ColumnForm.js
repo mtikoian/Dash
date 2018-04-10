@@ -195,7 +195,7 @@
                         )),
                         m('.col-1', self.buttonView(index, false))
                     ]),
-                    m('.columns', { class: record.isExpanded ? '' : ' hidden' },
+                    m('.columns', { class: record.isExpanded ? '' : ' d-none' },
                         m('.col-10.col-mx-auto', self.withHelp($.resx('dataset.derivedText'),
                             m('input.form-input', {
                                 type: 'text', name: 'DatasetColumn[' + index + '].Derived', placeholder: $.resx('dataset.derived'),
@@ -203,7 +203,7 @@
                             })
                         ))
                     ),
-                    m('.columns', { class: record.isExpanded ? '' : ' hidden' }, [
+                    m('.columns', { class: record.isExpanded ? '' : ' d-none' }, [
                         m('.col-3.col-mx-auto', self.withHelp($.resx('dataset.filterTypeText'),
                             m('select.form-select', {
                                 name: 'DatasetColumn[' + index + '].FilterTypeId', class: self.withError(record.filterTypeId),
@@ -217,7 +217,7 @@
                             }))
                         )
                     ]),
-                    m('.columns', { class: record.isExpanded ? '' : ' hidden' }, [
+                    m('.columns', { class: record.isExpanded ? '' : ' d-none' }, [
                         m('.col-8.col-mx-auto', self.withHelp($.resx('dataset.linkText'),
                             m('input.form-input', {
                                 type: 'text', name: 'DatasetColumn[' + index + '].Link', placeholder: $.resx('dataset.link'),
