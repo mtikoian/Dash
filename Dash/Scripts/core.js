@@ -351,6 +351,15 @@
     };
 
     /**
+     * Check if a variable is an event.
+     * @param {*} x - Variable to check the type of.
+     * @returns {bool} True if x is a event.
+     */
+    var isEvent = function(x) {
+        return x instanceof Event;
+    };
+
+    /**
      * Check if a variable is a function.
      * @param {*} x - Variable to check the type of.
      * @returns {bool} True if x is a function.
@@ -557,6 +566,23 @@
         return;
     };
 
+
+    /**
+     * Add/remove a class from an element based on the value of toggle.
+     * @param {Node|string} element - Element to modify, or selector to get element.
+     * @param {string} className - Name of class to add/remove.
+     * @param {bool|undefined} toggle - If true add class, if false remove class, if null toggle based on current status.
+     * @returns {undefined}
+     */
+    var toggleClass = function(element, className, toggle) {
+        var node = get(element);
+        if (isNull(toggle)) {
+            toggle = !hasClass(node, className);
+        }
+        toggle ? addClass(node, className) : removeClass(node, className);
+        return;
+    };
+
     /**
      * Change the property names of an object or array to pascal case.
      * @param {Object|Obj[]} obj - Object to change properties of.
@@ -658,6 +684,7 @@
         hide: hide,
         isArray: isArray,
         isDate: isDate,
+        isEvent: isEvent,
         isFunction: isFunction,
         isNode: isNode,
         isNull: isNull,
@@ -676,6 +703,7 @@
         setText: setText,
         show: show,
         style: style,
+        toggleClass: toggleClass,
         toPascalKeys: toPascalKeys
     };
 }(this));
