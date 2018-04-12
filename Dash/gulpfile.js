@@ -76,7 +76,7 @@ gulp.task('sass', function() {
         .pipe(sass().on('error', sass.logError))
         .pipe(postcss([autoprefixer()]))
         .pipe(addsrc.append(paths.css + 'fontello/css/dash.css'))
-        .pipe(concat('core.css'))
+        .pipe(concat('bundle.css'))
         .pipe(cleancss())
         .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest(paths.dist + 'css/'));
@@ -94,7 +94,7 @@ gulp.task('min:js:core', function() {
     ])
         .pipe(plumber())
         .pipe(sourcemaps.init())
-        .pipe(concat('core.js'))
+        .pipe(concat('bundle.js'))
         .pipe(uglify())
         .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest(paths.dist + 'js/'));
