@@ -16,11 +16,6 @@
     var Tab = function(element) {
         this.tab = $.get(element);
         this.tabs = this.tab.parentNode.parentNode;
-        this.dropdown = $.get('.dropdown', this.tabs);
-        if ($.hasClass(this.tabs, 'menu')) {
-            this.dropdown = this.tabs.parentNode;
-            this.tabs = this.tabs.parentNode.parentNode;
-        }
         this.duration = 100;
         this.init();
     };
@@ -58,15 +53,6 @@
                     $.removeClass($.getAll('a', activeTab)[0], 'active');
                     $.addClass(next, 'active');
 
-                    // handle dropdown menu "active" class name
-                    if (self.dropdown) {
-                        if (!$.hasClass(self.tab.parentNode.parentNode, 'menu')) {
-                            $.removeClass(self.dropdown, 'active');
-                        } else {
-                            $.addClass(self.dropdown, 'active');
-                        }
-                    }
-
                     //1. hide current active content first
                     $.removeClass(activeContent, 'show');
 
@@ -88,7 +74,7 @@
             */
             this.getActiveTab = function() {
                 var activeTabs = $.getAll('.active', this.tabs);
-                if (activeTabs.length === 1 && !$.hasClass(activeTabs[0], 'dropdown')) {
+                if (activeTabs.length === 1) {
                     return activeTabs[0].parentNode;
                 } else if (activeTabs.length > 1) {
                     return activeTabs[activeTabs.length - 1].parentNode;
