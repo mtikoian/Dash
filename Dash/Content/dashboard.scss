@@ -7,25 +7,68 @@ html, body {
 }
 
 .sidebar-wrapper {
-    height: calc(100% - 2px);
+    height: 100%;
     background: #000;
-    width: 3.5rem;
-    overflow: hidden;
-    float: left;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 2.8rem;
+
+    .nav-side {
+        margin-left: .1rem;
+
+        #menuBtn {
+            a {
+                color: $info-color;
+                padding-left: .7rem;
+            }
+        }
+
+        li {
+            line-height: 2rem;
+
+            a {
+                display: block;
+                text-decoration: none;
+                color: #999999;
+                padding-left: .5rem;
+
+                span {
+                    display: none;
+                    padding-left: .5rem;
+                }
+
+                &:hover {
+                    color: #fff;
+                    background: rgba(255,255,255,0.2);
+                    border-left: $info-color 2px solid;
+                }
+
+                &:active, &:focus {
+                    text-decoration: none;
+                }
+            }
+        }
+    }
 }
 
 .content-wrapper {
-    padding-left: 3.5rem;
-    width: auto;
+    top: 0;
+    left: 2.8rem;
+    right: 0;
+    bottom: .1rem;
+    position: absolute;
 
     .container {
         background: #fff;
+        height: 100%;
     }
 }
 
 body.toggled {
     .sidebar-wrapper {
-        width: 14rem;
+        width: 12rem;
         z-index: 1000;
 
         li {
@@ -35,10 +78,6 @@ body.toggled {
                 }
             }
         }
-    }
-
-    .content-wrapper {
-        padding-left: 14rem;
     }
 }
 
@@ -65,13 +104,6 @@ body.toggled {
 
     .table-area {
         min-height: 5rem;
-
-        .table {
-            td, th {
-                padding-top: 0;
-                padding-bottom: 0;
-            }
-        }
     }
 
     .chart-error {
@@ -140,7 +172,6 @@ body.toggled {
             background-color: white;
 
             button {
-                font-size: .7rem;
                 padding-top: 0;
                 padding-bottom: 0;
             }

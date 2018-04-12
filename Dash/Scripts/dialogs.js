@@ -303,7 +303,7 @@
      * @param {Node} node - Node to add events to.
      */
     var processContent = function(node) {
-        node = node instanceof Event ? null : node instanceof Table ? node.table : node;
+        node = $.isEvent(node) ? null : node instanceof Table ? node.table : node;
         if (!node) {
             return;
         }

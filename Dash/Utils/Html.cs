@@ -329,7 +329,7 @@ namespace Dash
             foreach (var item in itemList)
             {
                 var itemTag = new TagBuilder("li");
-                itemTag.AddCssClass("menu-item dash-input-replace");
+                itemTag.AddCssClass("menu-item dash-input-replace c-hand");
                 itemTag.Attributes["data-target"] = targetId;
                 itemTag.Attributes["data-value"] = item;
                 itemTag.InnerHtml.AppendHtml(item);

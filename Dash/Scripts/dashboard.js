@@ -223,27 +223,11 @@
                 method: 'GET',
                 url: this.getAttribute('href')
             }, function(data) {
-                if (data.enabled) {
-                    $.addClass('#toggleContextHelpBtn', 'help-active');
-                } else {
-                    $.removeClass('#toggleContextHelpBtn', 'help-active');
-                }
+                $.toggleClass('#toggleContextHelpBtn', 'help-active', data.enabled);
             });
         });
 
-        $.on('#menuBtn', 'click', function() {
-            var body = $.get('body');
-            if ($.hasClass(body, 'toggled')) {
-                $.removeClass(body, 'toggled');
-            } else {
-                $.addClass(body, 'toggled');
-            }
-
-            // fire window resize in cross browser friendly way so tables and charts will resize
-            var evt = document.createEvent('HTMLEvents');
-            evt.initEvent('resize', true, false);
-            window.dispatchEvent(evt);
-        });
+        $.on('#menuBtn', 'click', $.toggleClass.bind(null, 'body', 'toggled', null));
 
         document.dispatchEvent($.events.dashboardLoad);
     };

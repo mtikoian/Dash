@@ -133,17 +133,17 @@
                     ])
                 ]),
                 m('.grid-body', [
-                    m('.widget-data d-none', { id: 'widgetData_' + this.opts.id }),
-                    m('.widget-chart d-none', { id: 'widgetChart_' + this.opts.id }, [
-                        m('.chart-spinner', m('.loading.loading-lg')),
-                        m('.chart-error.d-none.pl-1',
-                            m('div', [
-                                m('p', $.resx('errorChartLoad')),
-                                m('.btn.btn-info.btn-sm', { onclick: this.refresh.bind(this) }, $.resx('tryAgain'))
-                            ])
-                        ),
-                        m('canvas.chart-canvas.d-none')
-                    ])
+                    this.opts.isData ? m('.widget-data d-none', { id: 'widgetData_' + this.opts.id }) :
+                        m('.widget-chart d-none', { id: 'widgetChart_' + this.opts.id }, [
+                            m('.chart-spinner', m('.loading.loading-lg')),
+                            m('.chart-error.d-none.pl-1',
+                                m('div', [
+                                    m('p', $.resx('errorChartLoad')),
+                                    m('.btn.btn-info.btn-sm', { onclick: this.refresh.bind(this) }, $.resx('tryAgain'))
+                                ])
+                            ),
+                            m('.canvas-container', m('canvas.chart-canvas.d-none'))
+                        ])
                 ]),
                 m('.grid-footer', [
                     m('span.grid-updated-time', new Date().toLocaleTimeString()),
@@ -423,8 +423,10 @@
                 headerHideBtns.forEach(function(x) { $.addClass(x, 'disabled'); });
             }
 
-            if (this.opts.isData) {
+            if (this.table) {
                 this.table.updateLayout();
+            } else if (this.chart) {
+                this.chart.resize();
             }
         }
     };

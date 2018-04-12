@@ -814,22 +814,25 @@
          */
         tableHeaders: function(obj) {
             var field = obj.field;
-            var thAttrs = { class: obj.classes || '' }, divAttrs = {};
+            var attrs = { class: obj.classes || '' };
 
-            var divContent = [obj.label || field];
+            var content = [obj.label || field];
             if ($.isUndefined(obj.sortable) || obj.sortable === true) {
                 var val = $.findByKey(this.sorting, 'field', field);
-                divContent.push(m('i.float-right.dash', { class: val ? (val.dir === 'ASC' ? 'dash-sort-up' : 'dash-sort-down') : this.opts.editable ? 'dash-sort' : '' }));
+                var arrowAttrs = {
+                    class: val ? (val.dir === 'ASC' ? 'dash-sort-up' : 'dash-sort-down') : this.opts.editable ? 'dash-sort' : ''
+                };
                 if (this.opts.editable) {
-                    divAttrs = { onclick: this.changeSort.bind(this, field, obj.dataType.toLowerCase()) };
+                    arrowAttrs.onclick = this.changeSort.bind(this, field, obj.dataType.toLowerCase());
                 }
+                content.push(m('i.float-right.dash.data-table-arrow', arrowAttrs));
             } else {
-                thAttrs.class += ' disabled';
+                attrs.class += ' disabled';
             }
             if (this.opts.editable) {
-                thAttrs.onmousedown = this.onHeaderMouseDown.bind(this);
+                attrs.onmousedown = this.onHeaderMouseDown.bind(this);
             }
-            return m('th', thAttrs, [m('div', divAttrs, divContent)]);
+            return m('th', attrs, content);
         },
 
         /**

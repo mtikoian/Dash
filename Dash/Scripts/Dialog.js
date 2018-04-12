@@ -363,12 +363,7 @@
                 // add error class to tab
                 var id = tab.getAttribute('aria-labelledby');
                 if (id) {
-                    // @todo rename this class - maybe mform-error instead?
-                    if ($.hasClass(el, 'mform-control-error')) {
-                        $.addClass($.get('#' + id), 'tab-validation-error');
-                    } else {
-                        $.removeClass($.get('#' + id), 'tab-validation-error');
-                    }
+                    $.toggleClass($.get('#' + id), 'tab-validation-error', $.hasClass(el, 'mform-control-error'));
                 }
             }
         },

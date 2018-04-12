@@ -2,7 +2,7 @@
 @model Dash.Models.Chart
 
 <div class="chart-form" data-event="chartLoad" data-close-event="chartUnload" data-url="@Url.Action("DetailsOptions", "Chart", new { id = Model.Id })" data-title="@Model.Name" data-basic-dialog="true">
-    <div class="hidden">
+    <div class="d-none">
         @if (User.IsInRole("dataset.create"))
         {
             <div class="p-1 modal-sql" data-title="@Core.ViewSql" data-basic-dialog="true">
@@ -76,7 +76,9 @@
         <div class="chart-error d-none">
             <div>@Core.ErrorChartLoad</div>
         </div>
-        <canvas class="chart-canvas d-none" />
+        <div class="canvas-container">
+            <canvas class="chart-canvas d-none" />
+        </div>
     </div>
 
     <form action="@Url.Action("Export", "Chart")" class="export-form" method="POST" target="_blank">
