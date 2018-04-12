@@ -24,6 +24,8 @@
         this.errorFn = errorFn;
         this.toggleExportFn = toggleExportFn;
         this.chart = null;
+        this.events = { resize: $.debounce(this.resize.bind(this), 50) };
+        $.on(window, 'resize', this.events.resize);
         this.run();
     };
 
@@ -255,10 +257,22 @@
         },
 
         /**
+         * Resize the chart.
+         */
+        resize: function() {
+            if (this.chart) {
+                this.chart.resize();
+            }
+        },
+
+        /**
          * Destroy the chart.
          */
         destroy: function() {
             $.destroy(this.chart);
+            if (this.events) {
+                $.off(window, 'resize', this.events.resize);
+            }
         }
     };
 
