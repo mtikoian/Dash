@@ -33,6 +33,7 @@
             newRecord: { id: 0, reportId: 0, xAxisColumnId: 0, yAxisColumnId: 0, aggregatorId: 0, dateIntervalId: 0, color: '', displayOrder: 0 }
         }, ranges || []);
 
+        this.content = opts.content;
         this.chartId = opts.chartId;
         this.filterTypes = opts.filterTypes || {};
         this.saveRangesUrl = opts.saveRangesUrl;
