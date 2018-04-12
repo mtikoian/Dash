@@ -1,7 +1,7 @@
 ﻿/*!
  * Wraps dialog functionality.
  */
-(function($, Alertify, Dialog, Table, Dropdown, Tab, CollapsibleList, Validator, DatePicker) {
+(function($, Alertify, Dialog, Table, Tab, CollapsibleList, Validator, DatePicker) {
     'use strict';
 
     /**
@@ -18,7 +18,6 @@
      * Selectors and callback function to create events.
      */
     var _contentActions = [
-        //{ selector: '[data-toggle="dropdown"]', action: function() { new Dropdown(this); } },
         { selector: '[data-toggle="tab"], [data-toggle="pill"]', action: function() { new Tab(this); } },
         { selector: '.dash-table', action: function() { tableLoad(this); } },
         { selector: '.dash-ajax', action: function() { $.on(this, 'click', handleAjaxRequest); } },
@@ -346,4 +345,4 @@
         removeDialog: removeDialog,
         sendAjaxRequest: sendAjaxRequest
     };
-})(this.$, this.Alertify, this.Dialog, this.Table, this.Dropdown, this.Tab, this.CollapsibleList, this.Validator, this.DatePicker);
+})(this.$, this.Alertify, this.Dialog, this.Table, this.Tab, this.CollapsibleList, this.Validator, this.DatePicker);
