@@ -374,13 +374,11 @@
          */
         validateForm: function() {
             var form = this.findForm();
-            form.dispatchEvent($.events.formValidate);
-
-            // @todo refactor to work with spectre
-            var tabs = $.getAll('.nav-tabs.nav-item.nav-link', form);
-            tabs.forEach(function(x) {
+            $.getAll('.tab-validation-error', form).forEach(function(x) {
                 $.removeClass(x, 'tab-validation-error');
             });
+
+            form.dispatchEvent($.events.formValidate);
 
             var mErrors = $.getAll('.mform-control-error', form);
             if (mErrors.length) {
