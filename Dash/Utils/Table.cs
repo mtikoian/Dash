@@ -82,7 +82,7 @@ namespace Dash
             {
                 return null;
             }
-            return new TableLink(url, Html.Classes(DashClasses.DashDialog, DashClasses.BtnLink));
+            return new TableLink(url, Html.Classes(DashClasses.DashDialog));
         }
     }
 

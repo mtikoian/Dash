@@ -99,7 +99,10 @@
                             }
                         }
                         var classes = attr['class'].split(' ');
-                        if (classes.indexOf('btn') === -1) {
+                        var isBtn = classes.indexOf('btn') !== -1;
+                        if (isBtn) {
+                            attr['type'] = attr['role'] = 'button';
+                        } else {
                             classes.push('btn');
                             classes.push('btn-link');
                         }
@@ -110,8 +113,7 @@
                         attr['data-method'] = link.method ? link.method.toUpperCase() : 'GET';
                         attr['data-href'] = href;
                         attr['title'] = label;
-                        attr['type'] = attr['role'] = 'button';
-                        return m('button', attr, $.isNull(link.icon) ? label : m('i', { class: 'dash dash-' + link.icon.toLowerCase() }));
+                        return m(isBtn ? 'button' : 'a', attr, $.isNull(link.icon) ? label : m('i', { class: 'dash dash-' + link.icon.toLowerCase() }));
                     });
                 };
 
@@ -832,7 +834,7 @@
             if (this.opts.editable) {
                 attrs.onmousedown = this.onHeaderMouseDown.bind(this);
             }
-            return m('th', attrs, content);
+            return m('th.text-no-select', attrs, content);
         },
 
         /**
@@ -845,15 +847,15 @@
                     m('.container',
                         m('.columns.form-horizontal.m-2', [
                             m('.col-4',
-                                this.opts.searchable ? m('.input-group', [
-                                    m('span.input-group-addon', m('i.dash.dash-search.input-group-text')),
+                                this.opts.searchable ? m('.input-group.col-8.col-mr-auto', [
+                                    m('span.input-group-addon.text-no-select', m('i.dash.dash-search')),
                                     m('input.form-input', { type: 'text', oninput: this.setSearchQuery.bind(this), value: this.searchQuery, disabled: this.loading })
                                 ]) : null
                             ),
                             m('.col-4', this.opts.headerButtons ? m('.float-right', this.opts.headerButtons) : null),
                             m('.col-4',
-                                m('.input-group', [
-                                    m('span.input-group-addon', m('span.input-group-text', this.opts.resources.perPage)),
+                                m('.input-group.col-8.col-ml-auto', [
+                                    m('span.input-group-addon.text-no-select', this.opts.resources.perPage),
                                     m('select.form-select', {
                                         id: 'table-items-per-page', onchange: this.setItemsPerPage.bind(this),
                                         value: this.itemsPerPage, disabled: this.loading
@@ -953,12 +955,10 @@
                     }, m('i.dash.dash-to-end-alt.text-primary'))
                 ]),
                 m('.col-4', { class: this.filteredTotal > this.itemsPerPage ? '' : ' invisible' },
-                    !this.opts.pageDropdown ? null : m('.col-8.offset-2',
-                        m('.input-group', [
-                            m('span.input-group-addon', m('span.input-group-text', res.page)),
-                            m('select.form-select', { onchange: this.changePage.bind(this), value: currentPage }, optionList)
-                        ])
-                    )
+                    !this.opts.pageDropdown ? null : m('.input-group.col-8.col-mx-auto', [
+                        m('span.input-group-addon.text-no-select', res.page),
+                        m('select.form-select', { onchange: this.changePage.bind(this), value: currentPage, disabled: this.pageTotal === 0 }, optionList)
+                    ])
                 ),
                 m('.col-4.text-right.my-auto', res.showing
                     .replace('{0}', Math.min(this.currentStartItem + 1, this.filteredTotal))

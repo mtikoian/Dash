@@ -6,90 +6,73 @@
         overflow: hidden;
         word-wrap: break-word;
 
-        .table {
-            td {
-                vertical-align: middle;
-
-                .btn-link {
-                    padding-left: 0;
-                    padding-right: 0;
-                }
-            }
-        }
-
         .table-area {
             height: 100%;
             overflow: auto;
 
             table {
-                margin-bottom: 0;
-
                 thead {
                     display: table;
                     position: absolute;
                     top: 0;
                     left: 0;
                     background-color: #eeeeee;
-
-                    th {
-                        user-select: none; /* CSS3 (little to no support) */
-                        -ms-user-select: none; /* IE 10+ */
-                        -moz-user-select: none; /* Gecko (Firefox) */
-                        -webkit-user-select: none; /* Webkit (Safari, Chrome) */
-                        border-bottom: none;
-                    }
                 }
 
                 &.table-data-table {
-                    a.btn, button {
-                        margin-right: .5em;
-                    }
+                    tr {
+                        th {
+                            padding: .3rem .3rem;
+                            border-top: none;
+                            border-right: 1px gray dotted;
 
-                    .btn-link {
-                        height: 1.3rem;
+                            .data-table-arrow {
+                                font-size: 1rem;
+                                cursor: pointer;
+                            }
+                        }
+
+                        th:last-child, col:last-child {
+                            width: auto;
+                        }
+
+                        &.table-loading-error {
+                            background-color: inherit;
+
+                            div {
+                                margin: 5px;
+
+                                &.table-loading-error-message {
+                                    color: #FF0039;
+                                }
+                            }
+                        }
+
+                        td {
+                            vertical-align: middle;
+
+                            a.btn, button {
+                                margin-right: .5em;
+                            }
+
+                            .btn-link {
+                                height: 1.3rem;
+                                padding-left: 0;
+                                padding-right: 0;
+                                max-width: 100%;
+                                overflow: hidden;
+                                text-overflow: ellipsis;
+                                white-space: nowrap;
+                                text-align: left;
+                            }
+                        }
                     }
                 }
             }
         }
 
-        th:last-child, col:last-child {
-            width: auto;
-        }
-
-        table tr {
-            th {
-                padding: .3rem .3rem;
-                border-top: none;
-                border-right: 1px gray dotted;
-
-                .data-table-arrow {
-                    font-size: 1rem;
-                }
-            }
-
-            &.table-loading-error {
-                background-color: inherit;
-
-                div {
-                    margin: 5px;
-
-                    &.table-loading-error-message {
-                        color: #FF0039;
-                    }
-                }
-            }
-        }
-
-        th:not(.disabled) i {
-            cursor: pointer;
-        }
-
-        &.table-no-edit table tr th {
-            cursor: default;
-
-            i {
-                cursor: default;
-            }
+        &.table-no-edit table tr th i {
+            cursor: default !important;
         }
     }
 }
