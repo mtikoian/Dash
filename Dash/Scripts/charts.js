@@ -5,6 +5,7 @@
     'use strict';
 
     // Change chart settings.
+    Chart.defaults.global.responsive = true;
     Chart.defaults.global.maintainAspectRatio = false;
     Chart.defaults.global.title.display = false;
     Chart.defaults.global.legend.position = 'bottom';

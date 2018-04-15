@@ -225,7 +225,6 @@
                     var chartData = {
                         type: chartType === 'horizontalbar' ? 'horizontalBar' : chartType,
                         options: {
-                            responsive: true,
                             scales: isRadial ? null : scales,
                             tooltips: tooltips,
                             legend: { display: self.showLegend }
@@ -258,6 +257,7 @@
 
         /**
          * Resize the chart.
+         * @todo Eventually this may not be necessary, but responsive functionality for Chart.js does not seem to work correctly.
          */
         resize: function() {
             if (this.chart) {
