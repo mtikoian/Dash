@@ -291,3 +291,8 @@ label {
 select [disabled] {
     color: #808080;
 }
+
+/* Text Utilities */
+.text-no-select {
+    user-select: none;
+}
