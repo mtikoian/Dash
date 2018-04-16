@@ -58,8 +58,7 @@
     }
 
     .rd-footer {
-        padding: 4px;
-        min-height: 43px;
+        padding: .4rem 1.5rem;
         position: absolute;
         left: 0;
         right: 0;
@@ -68,14 +67,10 @@
         background: #fbfbfb;
         border-top: #eee 1px solid;
         border-radius: 0 0 2px 2px;
+        text-align: right;
 
-        .rd-buttons {
-            text-align: right;
-            margin-right: 1.5rem;
-
-            .rd-button {
-                margin: .3rem;
-            }
+        .btn {
+            margin-right: .4rem;
         }
     }
 }

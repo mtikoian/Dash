@@ -95,14 +95,12 @@
                 m('.rd-header.dialog-header', this.opts.title),
                 m('.rd-content.container', { class: this.opts.basic ? 'rd-no-footer' : '' }, m.trust(this.opts.content)),
                 this.opts.basic ? null : m('.rd-footer', [
-                    m('.rd-buttons', [
-                        m('button.rd-button.btn.btn-primary', {
-                            type: 'button', role: 'button', onclick: this.onOkay.bind(this)
-                        }, this.opts.buttons.ok),
-                        m('button.rd-button.btn.btn-warning', {
-                            type: 'button', role: 'button', onclick: this.onCancel.bind(this)
-                        }, this.opts.buttons.cancel)
-                    ])
+                    m('button.btn.btn-primary', {
+                        type: 'button', role: 'button', onclick: this.onOkay.bind(this)
+                    }, this.opts.buttons.ok),
+                    m('button.btn.btn-warning', {
+                        type: 'button', role: 'button', onclick: this.onCancel.bind(this)
+                    }, this.opts.buttons.cancel)
                 ])
             ]);
         },
