@@ -109,27 +109,25 @@
 
             // now render the rest of the widget content
             m.render(parentNode, [
-                m('.row.grid-header', [
-                    m('span.grid-title.col-11', this.opts.title),
-                    m('span.grid-buttons.col-1', [
-                        m('span.float-right', [
-                            m('a.btn.btn-link.btn-refresh', { title: $.resx('refresh'), onclick: this.forceRefresh.bind(this) },
-                                m('i.dash.dash-arrows-cw')
-                            ),
-                            m('a.btn.btn-link.btn-fullscreen', { title: $.resx('toggleFullScreen'), onclick: this.toggleFullScreen.bind(this) },
-                                m('i.dash.dash-max')
-                            ),
-                            m('a.btn.btn-link.dash-ajax.dash-dialog.fs-disabled', {
-                                href: this.opts.baseUrl + (this.opts.isData ? 'Report' : 'Chart') + '/Details/' + (this.opts.isData ? this.opts.reportId : this.opts.chartId),
-                                title: $.resx(this.opts.isData ? 'viewReport' : 'viewChart')
-                            }, m('i.dash.dash-info')),
-                            m('a.btn.btn-link.dash-ajax.dash-dialog.fs-disabled', { href: this.opts.baseUrl + 'Dashboard/Edit/' + this.opts.id, title: $.resx('editWidget') },
-                                m('i.dash.dash-pencil')
-                            ),
-                            m('a.btn.btn-link.dash-ajax.dash-dialog.fs-disabled', { title: $.resx('deleteWidget'), onclick: this.deleteWidget.bind(this) },
-                                m('i.dash.dash-trash')
-                            )
-                        ])
+                m('.row.grid-header.columns', [
+                    m('span.grid-title.col-8', this.opts.title),
+                    m('span.grid-buttons.col-4.text-right', [
+                        m('a.btn.btn-link.btn-refresh', { title: $.resx('refresh'), onclick: this.forceRefresh.bind(this) },
+                            m('i.dash.dash-arrows-cw')
+                        ),
+                        m('a.btn.btn-link.btn-fullscreen', { title: $.resx('toggleFullScreen'), onclick: this.toggleFullScreen.bind(this) },
+                            m('i.dash.dash-max')
+                        ),
+                        m('a.btn.btn-link.dash-ajax.dash-dialog.fs-disabled', {
+                            href: this.opts.baseUrl + (this.opts.isData ? 'Report' : 'Chart') + '/Details/' + (this.opts.isData ? this.opts.reportId : this.opts.chartId),
+                            title: $.resx(this.opts.isData ? 'viewReport' : 'viewChart')
+                        }, m('i.dash.dash-info')),
+                        m('a.btn.btn-link.dash-ajax.dash-dialog.fs-disabled', { href: this.opts.baseUrl + 'Dashboard/Edit/' + this.opts.id, title: $.resx('editWidget') },
+                            m('i.dash.dash-pencil')
+                        ),
+                        m('a.btn.btn-link.dash-ajax.dash-dialog.fs-disabled', { title: $.resx('deleteWidget'), onclick: this.deleteWidget.bind(this) },
+                            m('i.dash.dash-trash')
+                        )
                     ])
                 ]),
                 m('.grid-body', [
