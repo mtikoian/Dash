@@ -17,7 +17,7 @@ namespace Dash.Models
 
         public abstract IEnumerable<T> GetAll<T>(object parameters = null) where T : BaseModel;
 
-        public abstract DbConnection GetOpenConnection();
+        public abstract DbConnection GetConnection();
 
         public abstract List<DbColumn> GetTableSchema(string tableName);
 

@@ -89,7 +89,7 @@ namespace Dash.Models
         [StringLength(100, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string User { get; set; }
 
-        public DbConnection GetOpenConnection()
+        public DbConnection GetConnection()
         {
             var crypt = new Crypt(AppConfig);
             string connectionString = null;
@@ -127,13 +127,12 @@ namespace Dash.Models
 
             var cnn = IsSqlServer ? SqlClientFactory.Instance.CreateConnection() : MySql.Data.MySqlClient.MySqlClientFactory.Instance.CreateConnection();
             cnn.ConnectionString = connectionString;
-            cnn.Open();
             return cnn;
         }
 
         public IEnumerable<string> GetSourceList(bool includeEmpty = false, bool isProc = false)
         {
-            using (var conn = GetOpenConnection())
+            using (var conn = GetConnection())
             {
                 var res = new List<string>();
                 if (includeEmpty)
@@ -158,7 +157,7 @@ namespace Dash.Models
 
         public DataTable GetTableSchema(string tableName)
         {
-            using (var conn = GetOpenConnection())
+            using (var conn = GetConnection())
             {
                 var parts = tableName.Split('.');
                 if (parts.Any())
@@ -176,7 +175,7 @@ namespace Dash.Models
 
         public IEnumerable<dynamic> Query(string sql, Dictionary<string, object> parameters = null)
         {
-            using (var conn = GetOpenConnection())
+            using (var conn = GetConnection())
             {
                 var obj = conn.Query(sql, parameters);
                 conn.Close();
@@ -186,7 +185,7 @@ namespace Dash.Models
 
         public IEnumerable<T> Query<T>(string sql)
         {
-            using (var conn = GetOpenConnection())
+            using (var conn = GetConnection())
             {
                 var obj = conn.Query<T>(sql);
                 conn.Close();
@@ -220,7 +219,7 @@ namespace Dash.Models
         {
             try
             {
-                using (var conn = GetOpenConnection())
+                using (var conn = GetConnection())
                 {
                     conn.Query("SELECT 1");
                     conn.Close();

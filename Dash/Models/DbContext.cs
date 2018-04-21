@@ -17,7 +17,7 @@ namespace Dash.Models
     public class DbContext : IDbContext
     {
         /// <summary>
-        /// Specifies the type of properties that should be including when building sql parameters to save an object.
+        /// Specifies the type of properties that should be included when building sql parameters to save an object.
         /// </summary>
         private static readonly Type[] SavableTypes = { typeof(string), typeof(bool), typeof(int), typeof(long), typeof(DateTime), typeof(DateTimeOffset),
             typeof(decimal), typeof(int?), typeof(long?), typeof(byte[]), typeof(Enum), typeof(double) };
@@ -33,14 +33,9 @@ namespace Dash.Models
             _HttpContextAccessor = httpContextAccessor;
         }
 
-        /// <summary>
-        /// Delete an object from the database.
-        /// </summary>
-        /// <param name="id">ID of the object to delete.</param>
-        /// <param name="type">Type of object to delete.</typeparam>
         public override void Delete(int id, Type type, int? requestUserId = null)
         {
-            using (var conn = GetOpenConnection())
+            using (var conn = GetConnection())
             {
                 conn.Execute($"{type.Name}Delete", new {
                     RequestUserId = requestUserId ?? _HttpContextAccessor.HttpContext.User.UserId(),
@@ -49,13 +44,10 @@ namespace Dash.Models
             }
         }
 
-        /// <summary>
-        /// Delete an object from the database.
-        /// </summary>
         public override void Delete<T>(T model)
         {
             var myType = model.GetType();
-            using (var conn = GetOpenConnection())
+            using (var conn = GetConnection())
             {
                 conn.Execute($"{myType.Name}Delete", new {
                     RequestUserId = model.RequestUserId ?? _HttpContextAccessor.HttpContext.User.UserId(),
@@ -64,32 +56,21 @@ namespace Dash.Models
             }
         }
 
-        /// <summary>
-        /// Run a stored procedure that doesn't return a result.
-        /// </summary>
-        /// <param name="procName">Name of the stored procedure to run.</param>
-        /// <param name="parameters">Parameters to pass to stored procedure.</param>
         public override void Execute(string procName, object parameters)
         {
-            using (var conn = GetOpenConnection())
+            using (var conn = GetConnection())
             {
                 conn.Execute(procName, parameters, commandType: CommandType.StoredProcedure);
             }
         }
 
-        /// <summary>
-        /// Find a record in the database by Id and load into the specified object type.
-        /// </summary>
-        /// <typeparam name="T">Any object type derived from this class.</typeparam>
-        /// <param name="id">Id of the record to load</param>
-        /// <returns>Returns a new object of type T or null.</returns>
         public override T Get<T>(int id)
         {
             if (id == 0)
             {
                 return null;
             }
-            using (var conn = GetOpenConnection())
+            using (var conn = GetConnection())
             {
                 var res = conn.Query<T>($"{typeof(T).Name}Get", new { Id = id }, commandType: CommandType.StoredProcedure).FirstOrDefault();
                 if (res != null)
@@ -102,15 +83,9 @@ namespace Dash.Models
             }
         }
 
-        /// <summary>
-        /// Find all the records of the requested type and return as objects. Does not load children.
-        /// </summary>
-        /// <typeparam name="T">Any object type derived from this class.</typeparam>
-        /// <param name="parameters">Sql parameters. Each property is the parameter name and the value is the param value.</param>
-        /// <returns>Return enumerable of objects.</returns>
         public override IEnumerable<T> GetAll<T>(object parameters = null)
         {
-            using (var conn = GetOpenConnection())
+            using (var conn = GetConnection())
             {
                 return conn.Query<T>($"{typeof(T).Name}Get", parameters, commandType: CommandType.StoredProcedure)
                     .Each(x => {
@@ -121,25 +96,14 @@ namespace Dash.Models
             }
         }
 
-        /// <summary>
-        /// Get an open connection.
-        /// </summary>
-        /// <returns>Returns an open dbConnection object.</returns>
-        public override DbConnection GetOpenConnection()
+        public override DbConnection GetConnection()
         {
-            var conn = new SqlConnection(_AppConfig.Database.ConnectionString);
-            conn.Open();
-            return conn;
+            return new SqlConnection(_AppConfig.Database.ConnectionString);
         }
 
-        /// <summary>
-        /// Get the schema for a table from this database.
-        /// </summary>
-        /// <param name="tableName">Table name</param>
-        /// <returns>List of fields, else false.</returns>
         public override List<DbColumn> GetTableSchema(string tableName)
         {
-            using (var conn = GetOpenConnection())
+            using (var conn = GetConnection())
             {
                 var cmd = new SqlCommand($"SELECT TOP 1 * FROM {tableName}", (SqlConnection)conn);
                 var reader = cmd.ExecuteReader(System.Data.CommandBehavior.SchemaOnly);
@@ -151,33 +115,20 @@ namespace Dash.Models
             return null;
         }
 
-        /// <summary>
-        /// Run a stored procedure.
-        /// </summary>
-        /// <typeparam name="T">Any object type derived from this class.</typeparam>
-        /// <param name="procName">Name of the stored procedure to run.</param>
-        /// <param name="parameters">Parameters to pass to stored procedure.</param>
-        /// <param name="connectionName">Use the named connection string instead of the default one.</param>
-        /// <returns>Returns a new object of type T.</returns>
         public override IEnumerable<T> Query<T>(string procName, object parameters = null)
         {
-            using (var conn = GetOpenConnection())
+            using (var conn = GetConnection())
             {
                 return conn.Query<T>(procName, parameters, commandType: CommandType.StoredProcedure);
             }
         }
 
-        /// <summary>
-        /// Saves the object to the database. Includes any children.
-        /// </summary>
-        /// <param name="lazySave">Save children objects if true.</param>
-        /// <returns>true</returns>
         public override void Save<T>(T model, bool lazySave = true, bool forceSaveNulls = false)
         {
             // @todo modify to return a bool instead of void
 
             var myType = model.GetType();
-            using (var conn = GetOpenConnection())
+            using (var conn = GetConnection())
             {
                 // build the parameters for saving
                 var paramList = new DynamicParameters();
@@ -253,13 +204,6 @@ namespace Dash.Models
             _Cache = cache;
         }
 
-        /// <summary>
-        /// Gets an object from the cache. Cache persists for the lifetime of the app pool.
-        /// </summary>
-        /// <typeparam name="T">Type of the object.</typeparam>
-        /// <param name="key">Unique key to identify the object.</param>
-        /// <param name="onCreate">If object doesn't exist in cache, use return value from this function to create the object.</param>
-        /// <returns>Returns the matched object.</returns>
         protected T Cached<T>(string key, Func<T> onCreate) where T : class
         {
             if (_Cache == null)
