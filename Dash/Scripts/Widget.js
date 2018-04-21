@@ -105,7 +105,7 @@
 
             // now render the rest of the widget content
             m.render(parentNode, [
-                m('.row.grid-header.columns', [
+                m('.grid-header.columns', [
                     m('span.grid-title.col-8', this.opts.title),
                     m('span.grid-buttons.col-4.text-right', [
                         m('a.btn.btn-link.btn-refresh', { title: $.resx('refresh'), onclick: this.forceRefresh.bind(this) },
@@ -386,27 +386,15 @@
             }
         },
 
-        /**
-         * Switch this widget in/out of full screen mode.
-         */
         toggleFullScreen: function() {
             var container = this.getContainer();
             var fullScreenIcon = $.get('.btn-fullscreen i', container);
-            var headerHideBtns = $.getAll('.fs-disabled', container);
-
-            if (this.isFullscreen) {
-                this.isFullscreen = false;
-                $.removeClass(container, 'full-screen');
-                $.removeClass(fullScreenIcon, 'dash-min');
-                $.addClass(fullScreenIcon, 'dash-max');
-                headerHideBtns.forEach(function(x) { $.removeClass(x, 'disabled'); });
-            } else {
-                this.isFullscreen = true;
-                $.addClass(container, 'full-screen');
-                $.addClass(fullScreenIcon, 'dash-min');
-                $.removeClass(fullScreenIcon, 'dash-max');
-                headerHideBtns.forEach(function(x) { $.addClass(x, 'disabled'); });
-            }
+            $.toggleClass(container, 'full-screen', !this.isFullscreen);
+            $.toggleClass(fullScreenIcon, 'dash-min', !this.isFullscreen);
+            $.toggleClass(fullScreenIcon, 'dash-max', this.isFullscreen);
+            var isFullscreen = this.isFullscreen;
+            $.getAll('.fs-disabled', container).forEach(function(x) { $.toggleClass(x, 'disabled', !isFullscreen); });
+            this.isFullscreen = !this.isFullscreen;
 
             if (this.table) {
                 this.table.updateLayout();
