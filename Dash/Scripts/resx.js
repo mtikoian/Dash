@@ -4,10 +4,6 @@
 (function($) {
     'use strict';
 
-    /**
-     * Variable to store resource strings.
-     * {Object}
-     */
     var _resx = {};
 
     /**
@@ -23,9 +19,6 @@
             if (_resx.hasOwnProperty(key)) {
                 return _resx[key];
             } else {
-                // @todo remove once i'm done migrating to the new translation set up
-                console.log('Couldn\'t find translation for key `' + key + '`.');
-                console.trace();
                 return null;
             }
         } else {
@@ -33,16 +26,12 @@
         }
     };
 
-    /**
-     * Load all resources from the server.
-     */
     var body = $.get('body');
     if (body && body.hasAttribute('data-resx')) {
         $.ajax({
             method: 'GET',
             url: body.getAttribute('data-resx')
         }, function(data) {
-            // parse the results into the resx object
             if (data) {
                 _resx = data;
             }

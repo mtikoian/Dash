@@ -367,6 +367,5 @@
         return date;
     };
 
-    // Assume a traditional browser.
     $.fecha = fecha;
 })(this.$);

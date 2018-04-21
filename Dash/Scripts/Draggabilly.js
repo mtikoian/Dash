@@ -13,7 +13,6 @@
  * MIT license
  */
 (function(root, factory) {
-    // Assume a traditional browser.
     root.getSize = factory(root.$);
 })(this, function factory($) {
     /**

@@ -77,9 +77,6 @@
         return true;
     };
 
-    /**
-     * Get export flag.
-     */
     ChartDetails.prototype.canExport = function() {
         return this.enableExport;
     };
@@ -92,9 +89,6 @@
         this.enableExport = val;
     };
 
-    /**
-     * Clean up our mess.
-     */
     ChartDetails.prototype.destroy = function() {
         $.destroy(this.rangeForm);
         $.destroy(this.chart);

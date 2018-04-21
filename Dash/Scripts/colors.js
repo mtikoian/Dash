@@ -1,5 +1,5 @@
 ﻿/*!
- * Color library
+ * Color helper library.
  */
 (function($) {
     'use strict';

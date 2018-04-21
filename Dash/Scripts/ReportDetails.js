@@ -118,7 +118,7 @@
         if (json.updatedDate && this.initDate) {
             var updateDate = new Date(json.updatedDate);
             if (updateDate && updateDate > this.initDate) {
-                // report has been modified - warn the user to refresh
+                // report has been modified - warn the user of the refresh
                 Alertify.error($.resx('reportModified'));
                 return false;
             }
@@ -138,9 +138,6 @@
         return true;
     };
 
-    /**
-     * Clean up our mess.
-     */
     ReportDetails.prototype.destroy = function() {
         $.destroy(this.dataTable);
         $.destroy(this.filterForm);

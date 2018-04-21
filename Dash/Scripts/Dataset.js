@@ -194,9 +194,6 @@
             setTimeout(this.loadColumnList.bind(this), 10);
         },
 
-        /**
-         * Clean up our mess.
-         */
         destroy: function() {
             $.destroy(this.columnForm);
             $.destroy(this.joinForm);

@@ -27,9 +27,6 @@
     var formatOptions = null;
     var defaultFormat = 'YYYY-MM-DD HH:mm';
 
-    /**
-     * Actions
-     */
     function chooseDate(props, e) {
         var box = e.target;
         var selectedDate = parseInt(box.textContent);
@@ -85,9 +82,6 @@
         props.date = pushToLastDay(props.date, newDate);
     }
 
-    /**
-     * Utility
-     */
     function adjustedProps(date, delta) {
         var month = date.getMonth() + delta, year = date.getFullYear();
         var over = month > 11, under = month < 0;
@@ -140,9 +134,6 @@
         return array[n];
     }
 
-    /**
-     * Generators
-     */
     function daysFromLastMonth(props) {
         var month = props.date.getMonth(), year = props.date.getFullYear();
         var firstDay = (new Date(year, month, 1)).getDay() - props.weekStart;
@@ -194,16 +185,10 @@
         return array;
     }
 
-    /**
-     * View helpers
-     */
     function classForBox(a, b) {
         return a === b ? 'chosen' : '';
     }
 
-    /**
-     * Components
-     */
     var Header = {
         view: function(vnode) {
             var props = vnode.attrs.props;

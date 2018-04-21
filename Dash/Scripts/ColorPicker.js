@@ -117,9 +117,6 @@
             }
         },
 
-        /**
-         * Set value and close the picker.
-         */
         close: function() {
             this.opts.active = false;
             var trigger = $.get('.colorpicker-trigger', this.opts.container);
@@ -128,9 +125,6 @@
             }
         },
 
-        /**
-         * Show the swatch list.
-         */
         showEditor: function() {
             if (this.opts.disabled) {
                 return;

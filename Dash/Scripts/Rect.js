@@ -2,7 +2,6 @@
  * Library for storing widget positions and detecting collisions.
  */
 (function(root, factory) {
-    // Assume a traditional browser.
     root.Rect = factory(root.$);
 })(this, function($) {
     'use strict';

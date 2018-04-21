@@ -78,9 +78,6 @@
         });
     };
 
-    /**
-     * User request queue.
-     */
     var _requestQueue = [];
 
     var Request = function(options, onSuccess, onError) {

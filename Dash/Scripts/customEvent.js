@@ -3,7 +3,7 @@
  * https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/CustomEvent#Polyfill
  */
 (function(root) {
-    if (typeof root.CustomEvent === "function") {
+    if (typeof root.CustomEvent === 'function') {
         return false;
     }
 

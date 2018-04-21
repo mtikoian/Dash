@@ -71,9 +71,6 @@
             return false;
         },
 
-        /**
-         * Add a new record.
-         */
         addRecord: function() {
             --this.addedCount;
             var obj = $.clone(this.opts.newRecord);
@@ -110,9 +107,6 @@
             }
         },
 
-        /**
-         * Delete all records.
-         */
         deleteAllRecords: function() {
             var self = this;
             setTimeout(function() {
@@ -148,10 +142,6 @@
             }
         },
 
-        /**
-         * Check if there are any records.
-         * @returns {bool} True if there are any records, else false.
-         */
         hasRecords: function() {
             return this.records && this.records.length > 0;
         },
@@ -266,9 +256,6 @@
             return m('.btn-toolbar.float-right', btns);
         },
 
-        /**
-         * Clean up our mess.
-         */
         destroy: function() {
             m.mount(this.container, null);
         },

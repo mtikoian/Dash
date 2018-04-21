@@ -1,12 +1,9 @@
 ﻿/*!
- * Contains custom events.
+ * Custom event list.
  */
 (function($) {
     'use strict';
 
-    /**
-    * Custom event list.
-    */
     var events = {
         resxLoaded: new CustomEvent('resxLoaded'),
         formValidate: new CustomEvent('formValidate'),

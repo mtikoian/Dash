@@ -38,9 +38,6 @@
         { selector: '.dash-input-replace', action: function() { $.on(this, 'click', inputReplace); } }
     ];
 
-    /**
-     * Store list of open dialogs.
-     */
     var _dialogs = [];
 
     /**
@@ -74,9 +71,6 @@
         return dlg ? dlg.getContent() : null;
     };
 
-    /**
-     * Check if any dialogs are open.
-     */
     var hasOpenDialog = function() {
         return _dialogs.length > 0;
     };
@@ -230,7 +224,7 @@
     };
 
     /**
-     * Initialize an table instance
+     * Initialize a table instance
      * @param {Node} node - Node containing the data url for the table settings.
      */
     var tableLoad = function(node) {
@@ -329,9 +323,6 @@
         }
     };
 
-    /**
-     * Set up the functions that are exposed publicly.
-     */
     $.dialogs = {
         openDialog: openDialog,
         findDialogById: findDialogById,

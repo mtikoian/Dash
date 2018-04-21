@@ -6,7 +6,6 @@
  * Modified to work with bootstrap/fontAwesome and incorporate cascading checkboxes.
  */
 (function(root, factory) {
-    // Assume a traditional browser.
     window.CollapsibleList = factory(root.$);
 })(this, function($) {
     'use strict';
@@ -20,13 +19,7 @@
         this.init();
     };
 
-    /**
-     * Declare CollapseCollapsibleList class methods.
-     */
     CollapsibleList.prototype = {
-        /**
-         * Make the specified list collapsible.
-         */
         init: function() {
             var node = this.container;
             // loop over the list items within this node

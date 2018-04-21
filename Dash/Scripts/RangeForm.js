@@ -80,9 +80,6 @@
         });
     };
 
-    /**
-     * Make the chart.
-     */
     RangeForm.prototype.makeChart = function() {
         var chartContent = $.get('.chart-container', this.content);
         if (!(chartContent && chartContent.hasAttribute('data-url'))) {
@@ -100,9 +97,6 @@
         this.dashChart = new DashChart(chartContent, true, this.processJsonFn, null, this.toggleExportFn);
     };
 
-    /**
-     * Export a chart as an image.
-     */
     RangeForm.prototype.exportChart = function() {
         if (!this.canExportFn()) {
             return;

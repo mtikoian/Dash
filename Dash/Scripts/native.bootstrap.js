@@ -6,7 +6,6 @@
  * Modified to use Dash's core library, and remove unneeded functionality.
  */
 (function(root, factory) {
-    // Assume a traditional browser.
     root.Tab = factory(root.$);
 })(this, function($) {
     /**
@@ -20,18 +19,12 @@
         this.init();
     };
 
-    /**
-     * Declare Tab class methods.
-     */
     Tab.prototype = {
         init: function() {
             this.actions();
             $.on(this.tab, 'click', this.action, false);
         },
 
-        /**
-         * Closure for class methods.
-         */
         actions: function() {
             var self = this;
 

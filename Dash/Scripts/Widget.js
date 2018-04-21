@@ -2,7 +2,6 @@
  * Wraps functionality needed to display a dashboard widget.
  */
 (function(root, factory) {
-    // Assume a traditional browser.
     root.Widget = factory(root.m, root.$, root.Alertify, root.Table, root.DashChart, root.Draggabilly, root.Rect);
 })(this, function(m, $, Alertify, Table, DashChart, Draggabilly, Rect) {
     'use strict';
@@ -29,9 +28,6 @@
         container.widget = this;
     };
 
-    /**
-     * Declare Widget class methods.
-     */
     Widget.prototype = {
         /**
          * Initialize the widget.
@@ -248,9 +244,6 @@
             this.rect.updated = true;
         },
 
-        /**
-         * Delete this widget.
-         */
         deleteWidget: function() {
             var self = this;
             Alertify.confirm($.resx('areYouSure'), function() {
@@ -303,9 +296,6 @@
             }
         },
 
-        /**
-         * Refresh the data for the widget.
-         */
         refresh: function() {
             if ($.dialogs.hasOpenDialog()) {
                 // don't refresh when a dialog is open
@@ -324,9 +314,6 @@
             }
         },
 
-        /**
-         * Force the widget to refresh now.
-         */
         forceRefresh: function() {
             if (this.opts.refreshSeconds > 0) {
                 clearInterval(this.interval);

@@ -9,7 +9,6 @@
     /**
      * Declare DashChart class.
      * @param {Node} content - DOM node that contains the chart.
-     * @param {Node} canvas - Canvas element to display the chart in.
      * @param {bool} showLegend - Show or hide the chart legend.
      * @param {Function} dataFn - Function to call if after loading data. Runs before other functions.
      * @param {Function} errorFn - Function to call if an error occurs loading data.
@@ -29,9 +28,6 @@
         this.run();
     };
 
-    /**
-     * Declare DashChart class methods.
-     */
     DashChart.prototype = {
         /**
          * Generate a random number within range.
@@ -83,9 +79,6 @@
             ];
         },
 
-        /**
-         * Build the chart.
-         */
         run: function() {
             var self = this;
 
@@ -256,7 +249,6 @@
         },
 
         /**
-         * Resize the chart.
          * @todo Eventually this may not be necessary, but responsive functionality for Chart.js does not seem to work correctly.
          */
         resize: function() {
@@ -265,9 +257,6 @@
             }
         },
 
-        /**
-         * Destroy the chart.
-         */
         destroy: function() {
             $.destroy(this.chart);
             if (this.events) {
