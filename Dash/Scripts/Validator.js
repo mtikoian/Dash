@@ -9,10 +9,9 @@
  *
  * Modified to use Dash's core library instead of jQuery, with unneeded functionality removed.
  */
-(function(factory) {
-    // Assume a traditional browser.
-    window.Validator = factory($, Alertify);
-})(function($, Alertify) {
+(function(root, factory) {
+    root.Validator = factory(root.$);
+})(this, function($) {
     'use strict';
 
     /**
@@ -70,7 +69,7 @@
             if (res) {
                 el.setCustomValidity('');
             } else {
-                el.setCustomValidity(this.errorMsgs.match.replace("{0}", el.name).replace("{1}", el.getAttribute('data-match')));
+                el.setCustomValidity(this.errorMsgs.match.replace('{0}', el.name).replace('{1}', el.getAttribute('data-match')));
             }
             return res;
         },
@@ -86,9 +85,6 @@
         }
     };
 
-    /**
-     * Declare validator class methods.
-     */
     Validator.prototype = {
         /**
          * Validate a single input element.
@@ -135,7 +131,7 @@
                 var input = inputs[i];
                 if (input.type !== 'submit' && input.type !== 'button' && !input.getAttribute('disabled') && input.style.visibility !== 'hidden') {
                     results.push(input);
-                } else if ($.hasClass(input, 'form-control-error')) {
+                } else {
                     // remove error class on disabled items
                     $.removeClass(input, 'form-control-error');
                 }
@@ -175,8 +171,8 @@
                     var attr = el.getAttribute('data-' + key);
                     if ((attr || key === 'native') && !validator.call(this, el)) {
                         var error = el.getAttribute('data' + key + '-error') || el.getAttribute('data-error') || (key === 'native' ? el.validationMessage : this.errorMsgs[key]);
-                        if (key === "match") {
-                            error = error.replace("{0}", el.name).replace("{1}", attr);
+                        if (key === 'match') {
+                            error = error.replace('{0}', el.name).replace('{1}', attr);
                         }
                         !~errors.indexOf(error) && errors.push(error);
                     }
@@ -186,9 +182,6 @@
             return errors;
         },
 
-        /**
-         * Run validation for the form.
-         */
         validate: function() {
             var inputs = this.inputSelector();
             var length = inputs.length, i = 0;
@@ -214,8 +207,8 @@
                 var errorElement = document.createElement('ul');
                 $.addClass(errorElement, 'list-unstyled');
 
-                var errHtml = '', i = 0; length = errors.length;
-                for (; i < length; i++) {
+                var errHtml = '', i = 0, len = errors.length;
+                for (; i < len; i++) {
                     errHtml += '<li>' + errors[i] + '</li>';
                 }
                 errorElement.innerHTML = errHtml;
