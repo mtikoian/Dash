@@ -87,13 +87,13 @@
          */
         view: function() {
             return m('.rd-dialog', { onkeydown: this.checkKey.bind(this), tabindex: 0 }, [
-                m('.rd-commands', [
-                    m('button.btn.btn-secondary.rd-close', { type: 'button', role: 'button', onclick: this.onCancel.bind(this) },
+                m('.rd-header.columns', [
+                    m('.col-8.mt-1.text-no-select.dialog-header', this.opts.title),
+                    m('.col-4.text-right', m('button.btn.btn-secondary.rd-close', { type: 'button', role: 'button', onclick: this.onCancel.bind(this) },
                         m('i.dash.dash-cancel.text-error', { title: this.opts.buttons.close })
-                    )
+                    ))
                 ]),
-                m('.rd-header.dialog-header', this.opts.title),
-                m('.rd-content.container', { class: this.opts.basic ? 'rd-no-footer' : '' }, m.trust(this.opts.content)),
+                m('.rd-content', { class: this.opts.basic ? 'rd-no-footer' : '' }, m.trust(this.opts.content)),
                 this.opts.basic ? null : m('.rd-footer', [
                     m('button.btn.btn-primary', {
                         type: 'button', role: 'button', onclick: this.onOkay.bind(this)
@@ -130,9 +130,6 @@
             setTimeout(this.onShow.bind(this), 25);
         },
 
-        /**
-         * Run the component and render the dialog.
-         */
         run: function() {
             this.elements.container = document.createElement('div');
             this.elements.container.id = 'dialog' + this.opts.id;
@@ -391,9 +388,6 @@
             return true;
         },
 
-        /**
-         * Clean up our mess.
-         */
         destroy: function() {
             this.checkEvent(this.elements.content, 'data-close-event');
 
