@@ -128,7 +128,7 @@
                 m('.form-group', [
                     m('select', attrs, this.withOptions(this.aggregators, this.aggregator, 'id', 'name'))
                 ]),
-                this.opts.allowEdit ? m('.row.mt-1', m('button.btn.btn-primary', {
+                this.opts.allowEdit ? m('.mt-1', m('button.btn.btn-primary', {
                     type: 'button', role: 'button', onclick: this.saveGroups.bind(this)
                 }, $.resx('save'))) : null
             ]),

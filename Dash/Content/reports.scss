@@ -1,11 +1,4 @@
-﻿.report-data-container {
-    .row {
-        margin-left: 0;
-        margin-right: 0;
-    }
-}
-
-.column-list {
+﻿.column-list {
     background: #dddddd;
     position: relative;
 }
@@ -26,7 +19,7 @@
 
     @for $i from 1 through 100 {
         &.column-item-y-#{$i} {
-            top : $i*2.5rem;
+            top: $i*2.5rem;
         }
     }
 }
@@ -35,4 +28,4 @@
     .input-group-btn .btn {
         padding-bottom: .30rem;
     }
- }
+}
