@@ -81,13 +81,16 @@
         for (var i = 0; i < this.opts.columns.length; i++) {
             var column = this.opts.columns[i];
             column.width = $.hasPositiveValue(column.width) ? column.width : this.store(column.field + '.width');
+            if (!($.isNull(column.links) || column.links.length === 0)) {
+                column.links = column.links.filter(function(link) {
+                    return !$.isNull(link);
+                });
+            }
 
-            var columnFunction = $.isNull(column.links) || column.links.length === 0 ?
+            this.columnRenderer[column.field] = $.isNull(column.links) || column.links.length === 0 ?
                 function(obj, column) { return self.getDisplayValue(obj[column.field], column.dataType.toLowerCase()); } :
                 function(obj, column) {
-                    return column.links.filter(function(link) {
-                        return !$.isNull(link);
-                    }).map(function(link) {
+                    return column.links.map(function(link) {
                         var label = $.coalesce(link.label, self.getDisplayValue(obj[column.field], column.dataType.toLowerCase()));
                         var attr = $.clone(link.attributes) || {};
                         var href = link.href || null;
@@ -117,7 +120,6 @@
                     });
                 };
 
-            this.columnRenderer[column.field] = columnFunction;
             this.colGroups.push(m('col'));
 
             var type = column.dataType.toLowerCase();
