@@ -18,9 +18,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Dash
 {
-    /// <summary>
-    /// Collection of extension methods related to data types.
-    /// </summary>
     public static class DataTypes
     {
         private const string RequestedWithHeader = "X-Requested-With";
@@ -203,16 +200,6 @@ namespace Dash
         }
 
         /// <summary>
-        /// Remove request data values from the dictionary that should not be saved - including any password, anti-forgery token, and timestamp.
-        /// </summary>
-        /// <param name="values">Dictionary of values to check.</param>
-        public static void FilterRequestData(this Dictionary<string, object> values)
-        {
-            values.Keys.Where(x => x.ToLower().Contains("password") || x.ToLower().Contains("__requestverificationtoken") || x.ToLower().Contains("_t")).ToList().ForEach(x => values.Remove(x));
-            values.Where(x => x.Value == null || x.Value.ToString().IsEmpty()).ToList().ForEach(x => values.Remove(x.Key));
-        }
-
-        /// <summary>
         /// Get an attribute for a property if it exists.
         /// </summary>
         /// <typeparam name="T">Attribute to check for.</typeparam>
@@ -232,9 +219,9 @@ namespace Dash
         /// <returns></returns>
         public static T GetPrivateField<T>(this object obj, string name)
         {
-            BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
-            Type type = obj.GetType();
-            FieldInfo field = type.GetField(name, flags);
+            var flags = BindingFlags.Instance | BindingFlags.NonPublic;
+            var type = obj.GetType();
+            var field = type.GetField(name, flags);
             return (T)field.GetValue(obj);
         }
 
@@ -279,7 +266,7 @@ namespace Dash
         /// <returns>True if string is not null or empty.</returns>
         public static bool IsEmpty(this string value)
         {
-            return String.IsNullOrWhiteSpace(value);
+            return string.IsNullOrWhiteSpace(value);
         }
 
         /// <summary>
@@ -290,7 +277,7 @@ namespace Dash
         /// <returns>Joined string.</returns>
         public static string Join(this IEnumerable<string> value, string separator = ", ")
         {
-            return String.Join(separator, value);
+            return string.Join(separator, value);
         }
 
         /// <summary>
@@ -443,6 +430,7 @@ namespace Dash
         /// <returns>Css class name string.</returns>
         public static string ToCssClass(this DashClasses val)
         {
+            // @todo switch to precompiled regex
             return Regex.Replace(val.ToString(), @"(?<!_)([A-Z])", "-$1").Trim('-').ToLower();
         }
 
@@ -453,7 +441,7 @@ namespace Dash
         /// <returns>Css class name string.</returns>
         public static string ToCssClassList(this IEnumerable<DashClasses> classes)
         {
-            return String.Join(" ", classes.Select(x => x.ToCssClass()));
+            return string.Join(" ", classes.Select(x => x.ToCssClass()));
         }
 
         /// <summary>
@@ -475,7 +463,7 @@ namespace Dash
         /// <returns>Integer value.</returns>
         public static double ToDouble(this string val)
         {
-            double.TryParse(val, out double res);
+            double.TryParse(val, out var res);
             return res;
         }
 
@@ -486,7 +474,7 @@ namespace Dash
         /// <returns>Space separated list of errors.</returns>
         public static string ToErrorString(this ModelStateDictionary state)
         {
-            return String.Join(" <br />", state.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToArray());
+            return string.Join(" <br />", state.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToArray());
         }
 
         /// <summary>
@@ -496,7 +484,7 @@ namespace Dash
         /// <returns>Space separated list of errors.</returns>
         public static string ToErrorString(this IEnumerable<ValidationResult> errors)
         {
-            return String.Join(" <br />", errors.Select(x => x.ErrorMessage).ToArray());
+            return string.Join(" <br />", errors.Select(x => x.ErrorMessage).ToArray());
         }
 
         /// <summary>
@@ -528,7 +516,7 @@ namespace Dash
             {
                 return 0;
             }
-            int.TryParse(val, out int res);
+            int.TryParse(val, out var res);
             return res;
         }
 
@@ -554,34 +542,34 @@ namespace Dash
             switch (dateInterval)
             {
                 case DateIntervals.Day:
-                    interval = String.Format("{0:yyyy-MM-dd}", dt);
+                    interval = string.Format("{0:yyyy-MM-dd}", dt);
                     break;
                 case DateIntervals.FifteenMinutes:
-                    interval = String.Format("{0:yyyy-MM-dd HH}:{1:00}", dt, (dt.Minute / 15) * 15);
+                    interval = string.Format("{0:yyyy-MM-dd HH}:{1:00}", dt, (dt.Minute / 15) * 15);
                     break;
                 case DateIntervals.FiveMinutes:
-                    interval = String.Format("{0:yyyy-MM-dd HH}:{1:00}", dt, (dt.Minute / 5) * 5);
+                    interval = string.Format("{0:yyyy-MM-dd HH}:{1:00}", dt, (dt.Minute / 5) * 5);
                     break;
                 case DateIntervals.Hour:
-                    interval = String.Format("{0:yyyy-MM-dd HH:00}", dt);
+                    interval = string.Format("{0:yyyy-MM-dd HH:00}", dt);
                     break;
                 case DateIntervals.Month:
-                    interval = String.Format("{0:yyyy-MM}", dt);
+                    interval = string.Format("{0:yyyy-MM}", dt);
                     break;
                 case DateIntervals.Quarter:
-                    interval = String.Format("{0} Q{1}", dt.Year, dt.Quarter());
+                    interval = string.Format("{0} Q{1}", dt.Year, dt.Quarter());
                     break;
                 case DateIntervals.TenMinutes:
-                    interval = String.Format("{0:yyyy-MM-dd HH}:{1:00}", dt, (dt.Minute / 10) * 10);
+                    interval = string.Format("{0:yyyy-MM-dd HH}:{1:00}", dt, (dt.Minute / 10) * 10);
                     break;
                 case DateIntervals.ThirtyMinutes:
-                    interval = String.Format("{0:yyyy-MM-dd HH}:{1:00}", dt, (dt.Minute / 30) * 30);
+                    interval = string.Format("{0:yyyy-MM-dd HH}:{1:00}", dt, (dt.Minute / 30) * 30);
                     break;
                 case DateIntervals.Week:
-                    interval = String.Format("{0} W{1}", dt.Year, dt.Week());
+                    interval = string.Format("{0} W{1}", dt.Year, dt.Week());
                     break;
                 case DateIntervals.Year:
-                    interval = String.Format("{0:yyyy}", dt);
+                    interval = string.Format("{0:yyyy}", dt);
                     break;
             }
             return interval;
@@ -654,18 +642,24 @@ namespace Dash
         /// <returns>Updated string.</returns>
         public static string UppercaseFirst(this string value)
         {
-            if (value.IsEmpty())
-            {
-                return String.Empty;
-            }
-            return char.ToUpper(value[0]) + value.Substring(1);
+            return value.IsEmpty() ? string.Empty : (char.ToUpper(value[0]) + value.Substring(1));
         }
 
+        /// <summary>
+        /// Get the user ID from the claims.
+        /// </summary>
+        /// <param name="claimsPrincipal">Claims principal for user.</param>
+        /// <returns>UserID if available, else null.</returns>
         public static int UserId(this ClaimsPrincipal claimsPrincipal)
         {
             return claimsPrincipal?.Claims.FirstOrDefault(x => x.Type == ClaimTypes.PrimarySid)?.Value.ToInt() ?? 0;
         }
 
+        /// <summary>
+        /// Check if user has help enabled.
+        /// </summary>
+        /// <param name="httpContext">Current request context.</param>
+        /// <returns>True if user enabled help, else false.</returns>
         public static bool WantsHelp(this HttpContext httpContext)
         {
             return httpContext.Session.GetString("ContextHelp").ToBool();
