@@ -134,6 +134,7 @@ namespace Dash.Models
         {
             using (var conn = GetConnection())
             {
+                conn.Open();
                 var res = new List<string>();
                 if (includeEmpty)
                 {
@@ -159,6 +160,7 @@ namespace Dash.Models
         {
             using (var conn = GetConnection())
             {
+                conn.Open();
                 var parts = tableName.Split('.');
                 if (parts.Any())
                 {
@@ -177,9 +179,7 @@ namespace Dash.Models
         {
             using (var conn = GetConnection())
             {
-                var obj = conn.Query(sql, parameters);
-                conn.Close();
-                return obj;
+                return conn.Query(sql, parameters);
             }
         }
 
@@ -187,9 +187,7 @@ namespace Dash.Models
         {
             using (var conn = GetConnection())
             {
-                var obj = conn.Query<T>(sql);
-                conn.Close();
-                return obj;
+                return conn.Query<T>(sql);
             }
         }
 
@@ -222,7 +220,6 @@ namespace Dash.Models
                 using (var conn = GetConnection())
                 {
                     conn.Query("SELECT 1");
-                    conn.Close();
                     errorMessage = "";
                     return true;
                 }
