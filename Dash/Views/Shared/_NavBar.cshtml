@@ -18,7 +18,6 @@
             @Html.AuthorizedMenu(Users.MenuItem, "Index", "User", "user", User.IsInRole("user.index"))
             @Html.AuthorizedMenu(Roles.MenuItem, "Index", "Role", "key", User.IsInRole("role.index"))
             <li class="divider"></li>
-            @Html.AuthorizedMenu(Core.GetStarted, "Start", "Dashboard", "lightbulb", User.IsInRole("dashboard.start"))
             <li>
                 <a href="@Url.Action("ToggleContextHelp","Account")" id="toggleContextHelpBtn" class="@Html.Raw(Context.Session.GetString("ContextHelp").ToBool() ? "help-active" : "")" title="@Core.ToggleHelp">
                     <i class="dash dash-help dash-lg"></i> <span>@Html.Raw(Core.ToggleHelp)</span>
