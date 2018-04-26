@@ -39,7 +39,6 @@ namespace Dash
         BtnSecondary,
         DashAjax,
         DashConfirm,
-        DashDialog,
         DashPrompt
     }
 
@@ -55,7 +54,7 @@ namespace Dash
     {
         private static List<DashClasses> Buttons = new List<DashClasses> { DashClasses.BtnError, DashClasses.BtnInfo, DashClasses.BtnPrimary,
             DashClasses.BtnSuccess, DashClasses.BtnWarning };
-        private static List<DashClasses> Dialogs = new List<DashClasses> { DashClasses.DashConfirm, DashClasses.DashDialog, DashClasses.DashPrompt };
+        private static List<DashClasses> Dialogs = new List<DashClasses> { DashClasses.DashConfirm, DashClasses.DashPrompt };
 
         public enum InputFieldType { Text, Email, Number, DateTime, Date, Tel, Password }
 
@@ -128,10 +127,8 @@ namespace Dash
             }
 
             var a = new TagBuilder("a");
-            a.AddCssClass(Classes(DashClasses.DashDialog)["class"].ToString());
-
-            var urlHelper = new UrlHelper(helper.ViewContext);
-            a.Attributes.Add("href", urlHelper.Action(action, controller));
+            a.AddCssClass(Classes(DashClasses.DashAjax)["class"].ToString());
+            a.Attributes.Add("href", new UrlHelper(helper.ViewContext).Action(action, controller));
             a.Attributes.Add("title", linkText);
             var span = new TagBuilder("span");
             span.InnerHtml.Append(linkText);

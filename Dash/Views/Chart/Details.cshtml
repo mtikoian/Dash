@@ -30,7 +30,7 @@
                         {
                             <li>
                                 @Html.AuthorizedActionLink(Charts.ChangeType, "ChangeType", "Chart", new { id = Model.Id }, new {
-                                    @class = "dropdown-item dash-ajax dash-dialog",
+                                    @class = "dropdown-item dash-ajax",
                                     @data_title = Charts.ChangeType
                                 })
                             </li>
@@ -50,7 +50,7 @@
                         {
                             <li>
                                 @Html.AuthorizedActionLink(Charts.ShareChart, "Share", "Chart", new { id = Model.Id }, new {
-                                    @class = "dropdown-item dash-ajax dash-dialog",
+                                    @class = "dropdown-item dash-ajax",
                                     @data_title = Charts.ShareChart
                                 })
                             </li>

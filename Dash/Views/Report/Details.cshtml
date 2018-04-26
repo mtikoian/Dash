@@ -29,7 +29,7 @@
             <div class="card text-white m-2 bg-warning">
                 <div class="card-body">
                     <p class="card-text">@Reports.ErrorNoColumnsSelected</p>
-                    @Html.AuthorizedButton(Reports.SelectColumns, "Report", "SelectColumns", new { id = Model.Id }, DashClasses.BtnPrimary, DashClasses.DashDialog, this.User.IsInRole("report.selectcolumns"))
+                    @Html.AuthorizedButton(Reports.SelectColumns, "Report", "SelectColumns", new { id = Model.Id }, DashClasses.BtnPrimary, DashClasses.DashAjax, this.User.IsInRole("report.selectcolumns"))
                 </div>
             </div>
         </div>
@@ -53,7 +53,7 @@
                             if (User.IsInRole("report.selectcolumns"))
                             {
                                 <li>
-                                    @Html.AuthorizedActionLink(Reports.SelectColumns, "SelectColumns", "Report", new { id = Model.Id }, new { @class = "dropdown-item dash-ajax dash-dialog" })
+                                    @Html.AuthorizedActionLink(Reports.SelectColumns, "SelectColumns", "Report", new { id = Model.Id }, new { @class = "dropdown-item dash-ajax" })
                                 </li>
                             }
                             if (User.IsInRole("report.rename"))
@@ -71,7 +71,7 @@
                             {
                                 <li>
                                     @Html.AuthorizedActionLink(Reports.ShareReport, "Share", "Report", new { id = Model.Id }, new {
-                                        @class = "dropdown-item dash-ajax dash-dialog",
+                                        @class = "dropdown-item dash-ajax",
                                         @data_title = Reports.ShareReport
                                     })
                                 </li>
