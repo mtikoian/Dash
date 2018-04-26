@@ -79,7 +79,7 @@ namespace Dash.Models
                         Sortable = true,
                         DataType = c.TableDataType,
                         Width = c.Width,
-                        Links = new List<TableLink>().AddLink(link, Html.Classes().Append("target", "_blank"), render: !link.IsEmpty())
+                        Links = new List<TableLink>().AddIf(new TableLink(link, Html.Classes().Append("target", "_blank")), !link.IsEmpty())
                     };
                 }) : null;
             }

@@ -156,7 +156,7 @@
             method: method || 'GET',
             url: url
         }, function(responseData) {
-            if (!responseData.content) {
+            if (!(responseData.content || responseData.component)) {
                 refreshTable();
                 return;
             }
@@ -181,7 +181,7 @@
                     }
                 }
             } else {
-                openDialog(responseData.content, target);
+                openDialog($.isNull(responseData.component) ? responseData.content : responseData, target);
             }
         });
     };
@@ -248,7 +248,11 @@
      * Refresh data for the table instance in the active dialog.
      */
     var refreshTable = function() {
-        var node = $.get('.dash-table', getActiveContent());
+        var content = getActiveContent();
+        if (!content) {
+            return;
+        }
+        var node = $.hasClass(content, 'dash-table') ? content : $.get('.dash-table', content);
         if (node && node.table) {
             node.table.refresh();
         }
@@ -297,7 +301,7 @@
      * @param {Node} node - Node to add events to.
      */
     var processContent = function(node) {
-        node = $.isEvent(node) ? null : node instanceof Table ? node.table : node;
+        node = $.isEvent(node) ? null : node;
         if (!node) {
             return;
         }

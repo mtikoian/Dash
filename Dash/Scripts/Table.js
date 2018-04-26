@@ -2,151 +2,11 @@
  * Mithril based table component. Supports ajax data, searching, sorting, paging, & resizing columns.
  */
 (function(root, factory) {
-    // Assume a traditional browser.
     root.Table = factory(root.m, root.$);
 })(this, function(m, $) {
     'use strict';
 
-    /**
-     * Declare Table class.
-     * @param {Object} opts - Table settings
-     */
-    function Table(opts) {
-        opts = opts || {};
-
-        var data = null;
-        if (opts.data) {
-            data = opts.data;
-            delete opts.data;
-        }
-
-        this.opts = $.extend({
-            content: null,
-            id: null,
-            columns: [],
-            url: '',
-            requestMethod: 'GET',
-            requestUsePascalCase: true,
-            requestParams: {},
-            searchable: true,
-            loadAllData: true,
-            inputTimeout: 200,
-            columnMinWidth: 50,
-            width: 100,
-            editable: true,
-            pageDropdown: true,
-            headerButtons: null,
-            storageFunction: null,
-            itemsPerPage: null,
-            searchQuery: null,
-            currentStartItem: null,
-            sorting: null,
-            dataCallback: null,
-            errorCallback: null,
-            dataDateFormat: 'YYYY-MM-DD HH:mm:ss',
-            displayDateFormat: 'YYYY-MM-DD HH:mm',
-            displayCurrencyFormat: '{s:$} {[t:,][d:.][p:2]}',
-            resources: {
-                firstPage: $.resx('firstPage'),
-                previousPage: $.resx('previousPage'),
-                nextPage: $.resx('nextPage'),
-                lastPage: $.resx('lastPage'),
-                noData: $.resx('noData'),
-                showing: $.resx('showing'),
-                page: $.resx('page') || 'Page',
-                perPage: $.resx('perPage'),
-                loadingError: $.resx('loadingError'),
-                tryAgain: $.resx('tryAgain')
-            }
-        }, opts);
-
-        this.content = $.get(this.opts.content);
-        this.layoutSet = false;
-        this.data = null;
-        this.loading = true;
-        this.loadingError = false;
-        this.filteredTotal = 0;
-        this.results = [];
-        this.pageTotal = 0;
-        this.totalDistance = 0;
-        this.lastSeenAt = { x: null, y: null };
-        this.columnRenderer = {};
-        this.colGroups = [];
-        this.events = {};
-        this.intColumns = [];
-        this.dateColumns = [];
-        this.currencyColumns = [];
-
-        var self = this;
-        for (var i = 0; i < this.opts.columns.length; i++) {
-            var column = this.opts.columns[i];
-            column.width = $.hasPositiveValue(column.width) ? column.width : this.store(column.field + '.width');
-            if (!($.isNull(column.links) || column.links.length === 0)) {
-                column.links = column.links.filter(function(link) {
-                    return !$.isNull(link);
-                });
-            }
-
-            this.columnRenderer[column.field] = $.isNull(column.links) || column.links.length === 0 ?
-                function(obj, column) { return self.getDisplayValue(obj[column.field], column.dataType.toLowerCase()); } :
-                function(obj, column) {
-                    return column.links.map(function(link) {
-                        var label = $.coalesce(link.label, self.getDisplayValue(obj[column.field], column.dataType.toLowerCase()));
-                        var attr = $.clone(link.attributes) || {};
-                        var href = link.href || null;
-                        if (href) {
-                            for (var prop in obj) {
-                                if (href.indexOf('{' + prop + '}') > -1 && obj.hasOwnProperty(prop)) {
-                                    href = href.replace(new RegExp('{' + prop + '}', 'g'), obj[prop]);
-                                }
-                            }
-                        }
-                        var classes = attr['class'].split(' ');
-                        var isBtn = classes.indexOf('btn') !== -1;
-                        if (isBtn) {
-                            attr['type'] = attr['role'] = 'button';
-                        } else {
-                            classes.push('btn');
-                            classes.push('btn-link');
-                        }
-                        if (classes.indexOf('dash-ajax') === -1) {
-                            classes.push('dash-ajax');
-                        }
-                        attr['class'] = classes.filter(function(x) { return x && x.length; }).join(' ');
-                        attr['data-method'] = link.method ? link.method.toUpperCase() : 'GET';
-                        attr['data-href'] = href;
-                        attr['title'] = label;
-                        return m(isBtn ? 'button' : 'a', attr, $.isNull(link.icon) ? label : m('i', { class: 'dash dash-' + link.icon.toLowerCase() }));
-                    });
-                };
-
-            this.colGroups.push(m('col'));
-
-            var type = column.dataType.toLowerCase();
-            if (type === 'int') {
-                this.intColumns.push(column.field);
-            } else if (type === 'date') {
-                this.dateColumns.push(column.field);
-            } else if (type === 'currency') {
-                this.currencyColumns.push(column.field);
-            }
-        }
-
-        this.itemsPerPage = this.store('itemsPerPage') * 1 || 10;
-        this.currentStartItem = this.store('currentStartItem') * 1 || 0;
-        this.searchQuery = this.store('searchQuery') || '';
-        this.width = this.store('width') * 1 || 100;
-        var sorting = this.store('sorting');
-        this.sorting = (typeof sorting === 'string' ? JSON.parse(sorting) : sorting) || [];
-
-        if (data) {
-            this.processData({ rows: data });
-        }
-
-        this.run();
-    }
-
-    Table.prototype = {
+    var Table = {
         pageOptions: [m('option', { value: '10' }, '10'), m('option', { value: '20' }, '20'), m('option', { value: '50' }, '50'), m('option', { value: '100' }, '100')],
 
         /**
@@ -344,6 +204,7 @@
                 // we're not loading all the data to begin with. so whatever data we have should be displayed.
                 this.results = this.data;
                 this.pageTotal = Math.ceil(this.filteredTotal / this.itemsPerPage);
+                m.redraw();
             } else {
                 // we're loading all the data to begin with. so figure out what data to display.
                 var filteredTotal = 0;
@@ -442,7 +303,6 @@
             }
 
             this.layoutSet = true;
-            this.content = $.get(this.opts.content);
             this.table = $.get('.table-data-table', this.content);
             this.table.style.tableLayout = 'fixed';
             this.tableHeaderRow = this.table.tHead.rows[0];
@@ -462,47 +322,7 @@
                     cells[i].style.width = x.width / 100 * tWidth + 'px';
                     ++i;
                 });
-
-                if (this.opts.editable) {
-                    this.events = {
-                        resize: $.debounce(this.onResize.bind(this), 50),
-                        move: this.onMouseMove.bind(this),
-                        up: this.onMouseUp.bind(this),
-                        touch: this.touchHandler.bind(this)
-                    };
-                    $.on(window, 'resize', this.events.resize);
-                    $.on(window, 'mousemove', this.events.move);
-                    $.on(window, 'mouseup', this.events.up);
-
-                    var header = $.get('thead', this.table);
-                    if (header) {
-                        $.on(header, 'touchstart', this.events.touch);
-                        $.on(header, 'touchmove', this.events.touch);
-                        $.on(header, 'touchend', this.events.touch);
-                        $.on(header, 'touchcancel', this.events.touch);
-                    }
-                }
             }
-        },
-
-        /**
-         * Clean up our mess.
-         */
-        destroy: function() {
-            if (this.opts.editable) {
-                $.off(window, 'resize', this.events.resize);
-                $.off(window, 'mousemove', this.events.move);
-                $.off(window, 'mouseup', this.events.up);
-
-                var header = $.get('thead', this.table);
-                if (header) {
-                    $.off(header, 'touchstart', this.events.touch);
-                    $.off(header, 'touchmove', this.events.touch);
-                    $.off(header, 'touchend', this.events.touch);
-                    $.off(header, 'touchcancel', this.events.touch);
-                }
-            }
-            m.mount(this.content, null);
         },
 
         /**
@@ -854,7 +674,11 @@
                                     m('input.form-input', { type: 'text', oninput: this.setSearchQuery.bind(this), value: this.searchQuery, disabled: this.loading })
                                 ]) : null
                             ),
-                            m('.col-4', this.opts.headerButtons ? m('.float-right', this.opts.headerButtons) : null),
+                            m('.col-4',
+                                m('.text-center', (this.opts.headerButtons || []).map(function(x) {
+                                    return m(x.type, x.attributes, x.label);
+                                }))
+                            ),
                             m('.col-4',
                                 m('.input-group.col-8.col-ml-auto', [
                                     m('span.input-group-addon.text-no-select', this.opts.resources.perPage),
@@ -970,22 +794,199 @@
             ]));
         },
 
-        /**
-         * Render the view.
-         */
-        run: function() {
-            var self = this;
-            if (!this.data) {
-                self.loadData();
+        oninit: function(vnode) {
+            var opts = vnode.attrs || {};
+
+            var data = null;
+            if (opts.data) {
+                data = opts.data;
+                delete opts.data;
             }
-            m.mount(self.content, {
-                view: self.view.bind(self),
-                onupdate: function() {
-                    self.setLayout();
-                    self.updateLayout();
-                    $.dialogs.processContent(self.table);
+
+            this.opts = $.extend({
+                content: null,
+                id: null,
+                columns: [],
+                url: '',
+                requestMethod: 'GET',
+                requestUsePascalCase: true,
+                requestParams: {},
+                searchable: true,
+                loadAllData: true,
+                inputTimeout: 200,
+                columnMinWidth: 50,
+                width: 100,
+                editable: true,
+                pageDropdown: true,
+                headerButtons: null,
+                storageFunction: null,
+                itemsPerPage: null,
+                searchQuery: null,
+                currentStartItem: null,
+                sorting: null,
+                dataCallback: null,
+                errorCallback: null,
+                dataDateFormat: 'YYYY-MM-DD HH:mm:ss',
+                displayDateFormat: 'YYYY-MM-DD HH:mm',
+                displayCurrencyFormat: '{s:$} {[t:,][d:.][p:2]}',
+                resources: {
+                    firstPage: $.resx('firstPage'),
+                    previousPage: $.resx('previousPage'),
+                    nextPage: $.resx('nextPage'),
+                    lastPage: $.resx('lastPage'),
+                    noData: $.resx('noData'),
+                    showing: $.resx('showing'),
+                    page: $.resx('page') || 'Page',
+                    perPage: $.resx('perPage'),
+                    loadingError: $.resx('loadingError'),
+                    tryAgain: $.resx('tryAgain')
                 }
-            });
+            }, opts);
+
+            this.layoutSet = false;
+            this.data = null;
+            this.loading = true;
+            this.loadingError = false;
+            this.filteredTotal = 0;
+            this.results = [];
+            this.pageTotal = 0;
+            this.totalDistance = 0;
+            this.lastSeenAt = { x: null, y: null };
+            this.columnRenderer = {};
+            this.colGroups = [];
+            this.events = {};
+            this.intColumns = [];
+            this.dateColumns = [];
+            this.currencyColumns = [];
+
+            var self = this;
+            for (var i = 0; i < this.opts.columns.length; i++) {
+                var column = this.opts.columns[i];
+                column.width = $.hasPositiveValue(column.width) ? column.width : this.store(column.field + '.width');
+                if (!($.isNull(column.links) || column.links.length === 0)) {
+                    column.links = column.links.filter(function(link) {
+                        return !$.isNull(link);
+                    });
+                }
+
+                this.columnRenderer[column.field] = $.isNull(column.links) || column.links.length === 0 ?
+                    function(obj, column) { return self.getDisplayValue(obj[column.field], column.dataType.toLowerCase()); } :
+                    function(obj, column) {
+                        return column.links.map(function(link) {
+                            var label = $.coalesce(link.label, self.getDisplayValue(obj[column.field], column.dataType.toLowerCase()));
+                            var attr = $.clone(link.attributes) || {};
+                            var href = link.href || null;
+                            if (href) {
+                                for (var prop in obj) {
+                                    if (href.indexOf('{' + prop + '}') > -1 && obj.hasOwnProperty(prop)) {
+                                        href = href.replace(new RegExp('{' + prop + '}', 'g'), obj[prop]);
+                                    }
+                                }
+                            }
+                            var classes = attr['class'].split(' ');
+                            var isBtn = classes.indexOf('btn') !== -1;
+                            if (isBtn) {
+                                attr['type'] = attr['role'] = 'button';
+                            } else {
+                                classes.push('btn');
+                                classes.push('btn-link');
+                            }
+                            if (classes.indexOf('dash-ajax') === -1) {
+                                classes.push('dash-ajax');
+                            }
+                            attr['class'] = classes.filter(function(x) { return x && x.length; }).join(' ');
+                            attr['data-method'] = link.method ? link.method.toUpperCase() : 'GET';
+                            attr['data-href'] = href;
+                            attr['title'] = label;
+                            return m(isBtn ? 'button' : 'a', attr, $.isNull(link.icon) ? label : m('i', { class: 'dash dash-' + link.icon.toLowerCase() }));
+                        });
+                    };
+
+                this.colGroups.push(m('col'));
+
+                var type = column.dataType.toLowerCase();
+                if (type === 'int') {
+                    this.intColumns.push(column.field);
+                } else if (type === 'date') {
+                    this.dateColumns.push(column.field);
+                } else if (type === 'currency') {
+                    this.currencyColumns.push(column.field);
+                }
+            }
+
+            if (this.opts.headerButtons) {
+                this.opts.headerButtons = this.opts.headerButtons.filter(function(x) {
+                    return !$.isNull(x);
+                });
+            }
+
+            this.itemsPerPage = this.store('itemsPerPage') * 1 || 10;
+            this.currentStartItem = this.store('currentStartItem') * 1 || 0;
+            this.searchQuery = this.store('searchQuery') || '';
+            this.width = this.store('width') * 1 || 100;
+            var sorting = this.store('sorting');
+            this.sorting = (typeof sorting === 'string' ? JSON.parse(sorting) : sorting) || [];
+
+            if (data) {
+                this.processData({ rows: data });
+            } else {
+                this.loadData();
+            }
+        },
+
+        oncreate: function(vnode) {
+            this.content = vnode.dom.parentNode;
+            if (this.opts.editable) {
+                this.events = {
+                    resize: $.debounce(this.onResize.bind(this), 50),
+                    move: this.onMouseMove.bind(this),
+                    up: this.onMouseUp.bind(this),
+                    touch: this.touchHandler.bind(this),
+                    refresh: this.refresh.bind(this),
+                    updateLayout: this.updateLayout.bind(this)
+                };
+                $.on(window, 'resize', this.events.resize);
+                $.on(window, 'mousemove', this.events.move);
+                $.on(window, 'mouseup', this.events.up);
+
+                var header = $.get('thead', this.table);
+                if (header) {
+                    $.on(header, 'touchstart', this.events.touch);
+                    $.on(header, 'touchmove', this.events.touch);
+                    $.on(header, 'touchend', this.events.touch);
+                    $.on(header, 'touchcancel', this.events.touch);
+                }
+            }
+            $.on(this.content, $.events.tableRefresh, this.events.refresh);
+            $.on(this.content, $.events.layoutUpdate, this.events.updateLayout);
+
+            this.setLayout();
+            this.updateLayout();
+            $.dialogs.processContent(this.table);
+        },
+
+        onupdate: function() {
+            this.setLayout();
+            this.updateLayout();
+            $.dialogs.processContent(this.table);
+        },
+
+        onremove: function() {
+            if (this.opts.editable) {
+                $.off(window, 'resize', this.events.resize);
+                $.off(window, 'mousemove', this.events.move);
+                $.off(window, 'mouseup', this.events.up);
+
+                var header = $.get('thead', this.table);
+                if (header) {
+                    $.off(header, 'touchstart', this.events.touch);
+                    $.off(header, 'touchmove', this.events.touch);
+                    $.off(header, 'touchend', this.events.touch);
+                    $.off(header, 'touchcancel', this.events.touch);
+                }
+            }
+            $.off(this.content, $.events.tableRefresh, this.events.refresh);
+            $.off(this.content, $.events.layoutUpdate, this.events.updateLayout);
         }
     };
 

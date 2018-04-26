@@ -59,27 +59,35 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly]
         public IActionResult Index()
         {
-            return PartialView(new Table("tableUsers", Url.Action("List"), new List<TableColumn> {
-                new TableColumn("uid", Users.UID, Table.EditLink($"{Url.Action("Edit")}/{{id}}", "User", hasAccess: User.IsInRole("user.edit"))),
-                new TableColumn("firstName", Users.FirstName),
-                new TableColumn("lastName", Users.LastName),
-                new TableColumn("email", Users.Email),
-                new TableColumn("actions", Core.Actions, sortable: false, links: new List<TableLink> {
-                    Table.EditButton($"{Url.Action("Edit")}/{{id}}", "User", hasAccess: User.IsInRole("user.edit")),
-                    Table.DeleteButton($"{Url.Action("Delete")}/{{id}}", "User", string.Format(Core.ConfirmDeleteBody, Users.UserLower), User.IsInRole("user.delete"))
-                })
-            }));
+            return JsonComponent(Component.Table, @Users.ViewAll, new Table("tableUsers", Url.Action("List"),
+                new List<TableColumn> {
+                    new TableColumn("uid", Users.UID, Table.EditLink($"{Url.Action("Edit")}/{{id}}", User.IsInRole("user.edit"))),
+                    new TableColumn("firstName", Users.FirstName),
+                    new TableColumn("lastName", Users.LastName),
+                    new TableColumn("email", Users.Email),
+                    new TableColumn("actions", Core.Actions, false, links: new List<TableLink>()
+                        .AddIf(Table.EditButton($"{Url.Action("Edit")}/{{id}}"), User.IsInRole("user.edit"))
+                        .AddIf(Table.DeleteButton($"{Url.Action("Delete")}/{{id}}", string.Format(Core.ConfirmDeleteBody, Users.UserLower)), User.IsInRole("user.delete")))
+                },
+                new List<TableHeaderButton>().AddIf(Table.CreateButton(Url.Action("Create"), Users.CreateUser), User.IsInRole("user.create")),
+                GetList()
+            ));
         }
 
         [HttpGet, AjaxRequestOnly]
         public IActionResult List()
         {
-            return JsonRows(DbContext.GetAll<User>().Select(x => new { x.Id, x.UID, x.FirstName, x.LastName, x.Email }));
+            return JsonRows(GetList());
         }
 
         private IActionResult CreateEditView(User model)
         {
             return PartialView("CreateEdit", model);
+        }
+
+        private IEnumerable<object> GetList()
+        {
+            return DbContext.GetAll<User>().Select(x => new { x.Id, x.UID, x.FirstName, x.LastName, x.Email });
         }
 
         private IActionResult Save(User model)

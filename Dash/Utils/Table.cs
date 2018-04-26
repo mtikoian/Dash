@@ -28,61 +28,62 @@ namespace Dash
         {
         }
 
-        public Table(string id, string url, List<TableColumn> columns)
+        public Table(string id, string url, IEnumerable<TableColumn> columns, IEnumerable<TableHeaderButton> headerButtons = null, IEnumerable<object> data = null)
         {
             Id = id;
             Url = url;
             Columns = columns;
+            HeaderButtons = headerButtons;
+            Data = data;
         }
 
-        public List<TableColumn> Columns { get; set; }
+        public IEnumerable<TableColumn> Columns { get; set; }
         public IEnumerable<object> Data { get; set; }
+        public IEnumerable<TableHeaderButton> HeaderButtons { get; set; }
         public string Id { get; set; }
         public bool LoadAllData { get; set; } = true;
         public bool Searchable { get; set; } = true;
 
         [JilDirective(true)]
-        public string ToJson { get { return JSON.Serialize(this, JilOutputFormatter.Options); } }
+        public string ToJson { get { return JSON.SerializeDynamic(this, JilOutputFormatter.Options); } }
 
         public string Url { get; set; }
 
-        public static TableLink CopyButton(string url, string controller, string body, bool hasAccess = true)
+        public static TableLink CopyButton(string href, string message, bool hasAccess = true)
         {
-            if (!hasAccess)
-            {
-                return null;
-            }
-            return new TableLink(url, Html.Classes(DashClasses.DashPrompt, DashClasses.BtnInfo)
-                .Merge("data-message", body), Core.Copy, TableIcon.Clone);
+            return !hasAccess ? null : new TableLink(href, Html.Classes(DashClasses.DashPrompt, DashClasses.BtnInfo)
+                .Merge("data-message", message), Core.Copy, TableIcon.Clone);
         }
 
-        public static TableLink DeleteButton(string url, string controller, string message, bool hasAccess = true)
+        public static TableHeaderButton CreateButton(string href, string label, bool hasAccess = true)
         {
             if (!hasAccess)
             {
                 return null;
             }
-            return new TableLink(url,
+            var attr = Html.Classes(DashClasses.BtnPrimary, DashClasses.DashAjax);
+            attr["type"] = "button";
+            attr["role"] = "button";
+            attr["data-href"] = href;
+            attr["data-method"] = "GET";
+            return new TableHeaderButton(attr, label);
+        }
+
+        public static TableLink DeleteButton(string href, string message, bool hasAccess = true)
+        {
+            return !hasAccess ? null : new TableLink(href,
                 Html.Classes(DashClasses.DashConfirm, DashClasses.BtnError).Merge("data-title", Core.ConfirmDelete).Merge("data-message", message),
                 Core.Delete, TableIcon.Trash, HttpVerbs.Delete);
         }
 
-        public static TableLink EditButton(string url, string controller, string action = "Edit", bool hasAccess = true)
+        public static TableLink EditButton(string href, bool hasAccess = true)
         {
-            if (!hasAccess)
-            {
-                return null;
-            }
-            return new TableLink(url, Html.Classes(DashClasses.DashDialog, DashClasses.BtnWarning), Core.Edit, TableIcon.Edit);
+            return !hasAccess ? null : new TableLink(href, Html.Classes(DashClasses.DashAjax, DashClasses.BtnWarning), Core.Edit, TableIcon.Edit);
         }
 
-        public static TableLink EditLink(string url, string controller, string action = "Edit", bool hasAccess = true)
+        public static TableLink EditLink(string href, bool hasAccess = true)
         {
-            if (!hasAccess)
-            {
-                return null;
-            }
-            return new TableLink(url, Html.Classes(DashClasses.DashDialog));
+            return !hasAccess ? null : new TableLink(href, Html.Classes(DashClasses.DashAjax));
         }
     }
 
@@ -92,7 +93,7 @@ namespace Dash
         {
         }
 
-        public TableColumn(string field, string label, bool sortable = true, TableDataType dataType = TableDataType.String, List<TableLink> links = null)
+        public TableColumn(string field, string label, bool sortable = true, TableDataType dataType = TableDataType.String, IEnumerable<TableLink> links = null)
         {
             Field = field;
             Label = label;
@@ -111,7 +112,7 @@ namespace Dash
         public TableDataType DataType { get; set; } = TableDataType.String;
         public string Field { get; set; }
         public string Label { get; set; }
-        public List<TableLink> Links { get; set; }
+        public IEnumerable<TableLink> Links { get; set; }
         public bool Sortable { get; set; } = true;
         public decimal Width { get; set; }
     }
@@ -120,6 +121,19 @@ namespace Dash
     {
         public string Field { get; set; }
         public decimal Width { get; set; }
+    }
+
+    public class TableHeaderButton
+    {
+        public TableHeaderButton(Dictionary<string, object> attributes = null, string label = null)
+        {
+            Attributes = attributes?.ToDictionary(k => k.Key, v => v.Value.ToString());
+            Label = label;
+        }
+
+        public Dictionary<string, string> Attributes { get; set; }
+        public string Label { get; set; }
+        public string Type { get; set; } = "button";
     }
 
     public class TableLink

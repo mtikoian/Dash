@@ -98,23 +98,25 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly]
         public IActionResult Index()
         {
-            return PartialView(new Table("tableDatasets", Url.Action("List"), new List<TableColumn> {
-                new TableColumn("name", Datasets.Name, Table.EditLink($"{Url.Action("Edit")}/{{id}}", "Dataset", hasAccess: User.IsInRole("dataset.edit"))),
-                new TableColumn("databaseName", Datasets.Database, Table.EditLink($"{Url.Action("Edit", "Database")}/{{databaseId}}", "Database", hasAccess: User.IsInRole("dataset.edit"))),
+            return JsonComponent(Component.Table, Datasets.ViewAll, new Table("tableDatasets", Url.Action("List"), new List<TableColumn> {
+                new TableColumn("name", Datasets.Name, Table.EditLink($"{Url.Action("Edit")}/{{id}}", User.IsInRole("dataset.edit"))),
+                new TableColumn("databaseName", Databases.DatabaseName, Table.EditLink($"{Url.Action("Edit", "Database")}/{{databaseId}}", User.IsInRole("database.edit"))),
                 new TableColumn("databaseHost", Datasets.Host),
                 new TableColumn("primarySource", Datasets.PrimarySource),
-                new TableColumn("actions", Core.Actions, sortable: false, links: new List<TableLink> {
-                    Table.EditButton($"{Url.Action("Edit")}/{{id}}", "Dataset", hasAccess: User.IsInRole("dataset.edit")),
-                    Table.DeleteButton($"{Url.Action("Delete")}/{{id}}", "Dataset", Datasets.ConfirmDelete, hasAccess: User.IsInRole("dataset.delete")),
-                    Table.CopyButton($"{Url.Action("Copy")}/{{id}}", "Dataset", Datasets.NewName, User.IsInRole("dataset.copy"))
-                }),
-            }));
+                new TableColumn("actions", Core.Actions, sortable: false, links: new List<TableLink>()
+                        .AddIf(Table.EditButton($"{Url.Action("Edit")}/{{id}}"), User.IsInRole("dataset.edit"))
+                        .AddIf(Table.DeleteButton($"{Url.Action("Delete")}/{{id}}", Datasets.ConfirmDelete), User.IsInRole("dataset.delete"))
+                        .AddIf(Table.CopyButton($"{Url.Action("Copy")}/{{id}}", Datasets.NewName), User.IsInRole("dataset.copy"))
+                )},
+                new List<TableHeaderButton>().AddIf(Table.CreateButton(Url.Action("Create"), Datasets.CreateDataset), User.IsInRole("dataset.create")),
+                GetList()
+            ));
         }
 
         [HttpGet, AjaxRequestOnly]
         public IActionResult List()
         {
-            return JsonRows(DbContext.GetAll<Dataset>().Select(x => new { x.Id, x.Name, x.DatabaseName, x.DatabaseHost, x.PrimarySource, x.DatabaseId }));
+            return JsonRows(GetList());
         }
 
         [HttpGet, AjaxRequestOnly]
@@ -154,6 +156,11 @@ namespace Dash.Controllers
                 model.Database = DbContext.Get<Database>(model.DatabaseId);
             }
             return PartialView("CreateEdit", model);
+        }
+
+        private IEnumerable<object> GetList()
+        {
+            return DbContext.GetAll<Dataset>().Select(x => new { x.Id, x.Name, x.DatabaseName, x.DatabaseHost, x.PrimarySource, x.DatabaseId });
         }
 
         private IActionResult Save(Dataset model)

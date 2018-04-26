@@ -200,21 +200,23 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly]
         public IActionResult Index()
         {
-            return PartialView(new Table("tableReports", Url.Action("List"), new List<TableColumn>() {
-                new TableColumn("name", Reports.Name, Table.EditLink($"{Url.Action("Details")}/{{id}}", "Report", "Details", User.IsInRole("report.details"))),
-                new TableColumn("datasetName", Reports.Dataset, Table.EditLink($"{Url.Action("Edit", "Dataset")}/{{datasetId}}", "Dataset", hasAccess: User.IsInRole("dataset.edit"))),
-                new TableColumn("actions", Core.Actions, sortable: false, links: new List<TableLink> {
-                    Table.EditButton($"{Url.Action("Details")}/{{id}}", "Report", "Details", User.IsInRole("report.details")),
-                    Table.DeleteButton($"{Url.Action("Delete")}/{{id}}", "Report", Reports.ConfirmDelete, User.IsInRole("report.delete")),
-                    Table.CopyButton($"{Url.Action("Copy")}/{{id}}", "Report", Reports.NewName, User.IsInRole("report.copy"))
-                })
-            }));
+            return JsonComponent(Component.Table, Reports.ViewAll, new Table("tableReports", Url.Action("List"), new List<TableColumn> {
+                new TableColumn("name", Reports.Name, Table.EditLink($"{Url.Action("Details")}/{{id}}", User.IsInRole("report.details"))),
+                new TableColumn("datasetName", Reports.Dataset, Table.EditLink($"{Url.Action("Edit", "Dataset")}/{{datasetId}}", User.IsInRole("dataset.edit"))),
+                new TableColumn("actions", Core.Actions, sortable: false, links: new List<TableLink>()
+                        .AddIf(Table.EditButton($"{Url.Action("Details")}/{{id}}"), User.IsInRole("report.details"))
+                        .AddIf(Table.DeleteButton($"{Url.Action("Delete")}/{{id}}", Reports.ConfirmDelete), User.IsInRole("report.delete"))
+                        .AddIf(Table.CopyButton($"{Url.Action("Copy")}/{{id}}", Reports.NewName), User.IsInRole("report.copy"))
+                )},
+                new List<TableHeaderButton>().AddIf(Table.CreateButton(Url.Action("Create"), Reports.CreateReport), User.IsInRole("report.create")),
+                GetList()
+            ));
         }
 
         [HttpGet, AjaxRequestOnly]
         public IActionResult List()
         {
-            return JsonRows(DbContext.GetAll<Report>(new { UserId = User.UserId() }));
+            return JsonRows(GetList());
         }
 
         [HttpPut, AjaxRequestOnly]
@@ -352,6 +354,11 @@ namespace Dash.Controllers
             }
             model.Update();
             return JsonSuccess();
+        }
+
+        private IEnumerable<Report> GetList()
+        {
+            return DbContext.GetAll<Report>(new { UserId = User.UserId() });
         }
     }
 }

@@ -28,33 +28,25 @@ namespace Dash
         private static Regex CsvRegex = new Regex(@"(?:^|(,\s?))(""(?:[^""]+|"""")*""|[^(,\s?)]*)", RegexOptions.Compiled);
 
         /// <summary>
+        /// Add an item to the list if `add` is true.
+        /// </summary>
+        /// <typeparam name="T">Type of item in the list.</typeparam>
+        /// <param name="list">List to update.</param>
+        /// <param name="add">Add to list if true.</param>
+        /// <returns>Returns updated list.</returns>
+        public static IEnumerable<T> AddIf<T>(this IEnumerable<T> list, T item, bool add)
+        {
+            return add ? list.Append(item) : list;
+        }
+
+        /// <summary>
         /// Add a line break to a string if not empty.
         /// </summary>
         /// <param name="value">String to update</param>
         /// <returns>Updated string.</returns>
         public static string AddLine(this string value)
         {
-            return String.IsNullOrWhiteSpace(value) ? "" : value + "\n";
-        }
-
-        /// <summary>
-        /// Add a link for an table column.
-        /// </summary>
-        /// <param name="list">List of links to add the new link to.</param>
-        /// <param name="url">URL for the new link.</param>
-        /// <param name="attributes">HTML attributes for the link.</param>
-        /// <param name="render">Render when true.</param>
-        /// <param name="label">Text for the link.</param>
-        /// <param name="icon">Icon for the link.</param>
-        /// <param name="method">Request method.</param>
-        /// <returns></returns>
-        public static List<TableLink> AddLink(this List<TableLink> list, string url, Dictionary<string, object> attributes = null, bool render = true, string label = null, TableIcon? icon = null, HttpVerbs method = HttpVerbs.Get)
-        {
-            if (render)
-            {
-                list.Add(new TableLink(url, attributes, label, icon, method));
-            }
-            return list;
+            return string.IsNullOrWhiteSpace(value) ? "" : value + "\n";
         }
 
         /// <summary>

@@ -22,6 +22,16 @@ namespace Dash.Controllers
             return Ok(data);
         }
 
+        public IActionResult JsonComponent(Component component, string title, object data, bool isBasic = true)
+        {
+            return Ok(new {
+                Component = component.ToString(),
+                Title = title,
+                Basic = isBasic,
+                Data = data
+            });
+        }
+
         public IActionResult JsonError(string error)
         {
             return Ok(new { error });

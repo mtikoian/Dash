@@ -73,25 +73,33 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly]
         public IActionResult Index()
         {
-            return PartialView(new Table("tableRoles", Url.Action("List"), new List<TableColumn> {
-                new TableColumn("name", Roles.Name, Table.EditLink($"{Url.Action("Edit")}/{{id}}", "Role", hasAccess: User.IsInRole("role.edit"))),
-                new TableColumn("actions", Core.Actions, sortable: false, links: new List<TableLink> {
-                    Table.EditButton($"{Url.Action("Edit")}/{{id}}", "Role", hasAccess: User.IsInRole("role.edit")),
-                    Table.DeleteButton($"{Url.Action("Delete")}/{{id}}", "Role", string.Format(Core.ConfirmDeleteBody, Roles.RoleLower), User.IsInRole("role.delete")),
-                    Table.CopyButton($"{Url.Action("Copy")}/{{id}}", "Role", Roles.CopyBody, User.IsInRole("role.copy"))
-                })
-            }));
+            return JsonComponent(Component.Table, @Roles.ViewAll, new Table("tableRoles", Url.Action("List"),
+                new List<TableColumn> {
+                    new TableColumn("name", Roles.Name, Table.EditLink($"{Url.Action("Edit")}/{{id}}", User.IsInRole("role.edit"))),
+                    new TableColumn("actions", Core.Actions, sortable: false, links: new List<TableLink>()
+                        .AddIf(Table.EditButton($"{Url.Action("Edit")}/{{id}}"), User.IsInRole("role.edit"))
+                        .AddIf(Table.DeleteButton($"{Url.Action("Delete")}/{{id}}", string.Format(Core.ConfirmDeleteBody, Roles.RoleLower)), User.IsInRole("role.delete"))
+                        .AddIf(Table.CopyButton($"{Url.Action("Copy")}/{{id}}", Roles.CopyBody), User.IsInRole("role.copy")))
+                },
+                new List<TableHeaderButton>().AddIf(Table.CreateButton(Url.Action("Create"), Roles.CreateRole), User.IsInRole("role.create")),
+                GetList()
+            ));
         }
 
         [HttpGet, AjaxRequestOnly]
         public IActionResult List()
         {
-            return JsonRows(DbContext.GetAll<Role>());
+            return JsonRows(GetList());
         }
 
         private IActionResult CreateEditView(Role model)
         {
             return PartialView("CreateEdit", model);
+        }
+
+        private IEnumerable<Role> GetList()
+        {
+            return DbContext.GetAll<Role>();
         }
 
         private IActionResult Save(Role model)

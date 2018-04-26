@@ -47,17 +47,8 @@
             this.initDate = new Date();
             this.dragMargin = 0;
 
-            this.render();
-
-            var container = this.getContainer();
-            this.rect = new Rect(opts.width, opts.height, opts.x, opts.y);
-            this.setupDraggie(container);
-
             if (opts.isData) {
-                $.show('#widgetData_' + opts.id);
-                $.hide('#widgetChart_' + opts.id);
-
-                this.table = new Table({
+                this.tableOpts = {
                     content: '#widgetData_' + opts.id,
                     id: 'widgetTable_' + opts.id,
                     url: opts.url,
@@ -75,10 +66,16 @@
                     errorCallback: this.onError.bind(this),
                     displayDateFormat: opts.displayDateFormat,
                     displayCurrencyFormat: opts.displayCurrencyFormat
-                });
-            } else {
-                $.hide('#widgetData_' + opts.id);
-                $.show('#widgetChart_' + opts.id);
+                };
+            }
+
+            this.render();
+
+            var container = this.getContainer();
+            this.rect = new Rect(opts.width, opts.height, opts.x, opts.y);
+            this.setupDraggie(container);
+
+            if (!opts.isData) {
                 this.chart = new DashChart(container, false, this.processJson.bind(this), this.onError.bind(this));
             }
             if (opts.refreshSeconds > 0) {
@@ -103,48 +100,53 @@
                 $.get('#dashboard').appendChild(parentNode);
             }
 
+            var self = this;
             // now render the rest of the widget content
-            m.render(parentNode, [
-                m('.grid-header.columns', [
-                    m('span.grid-title.col-8', this.opts.title),
-                    m('span.grid-buttons.col-4.text-right', [
-                        m('a.btn.btn-link.btn-refresh', { title: $.resx('refresh'), onclick: this.forceRefresh.bind(this) },
-                            m('i.dash.dash-arrows-cw')
-                        ),
-                        m('a.btn.btn-link.btn-fullscreen', { title: $.resx('toggleFullScreen'), onclick: this.toggleFullScreen.bind(this) },
-                            m('i.dash.dash-max')
-                        ),
-                        m('a.btn.btn-link.dash-ajax.dash-dialog.fs-disabled', {
-                            href: this.opts.baseUrl + (this.opts.isData ? 'Report' : 'Chart') + '/Details/' + (this.opts.isData ? this.opts.reportId : this.opts.chartId),
-                            title: $.resx(this.opts.isData ? 'viewReport' : 'viewChart')
-                        }, m('i.dash.dash-info')),
-                        m('a.btn.btn-link.dash-ajax.dash-dialog.fs-disabled', { href: this.opts.baseUrl + 'Dashboard/Edit/' + this.opts.id, title: $.resx('editWidget') },
-                            m('i.dash.dash-pencil')
-                        ),
-                        m('a.btn.btn-link.dash-ajax.dash-dialog.fs-disabled', { title: $.resx('deleteWidget'), onclick: this.deleteWidget.bind(this) },
-                            m('i.dash.dash-trash')
-                        )
-                    ])
-                ]),
-                m('.grid-body', [
-                    this.opts.isData ? m('.widget-data d-none', { id: 'widgetData_' + this.opts.id }) :
-                        m('.widget-chart d-none', { id: 'widgetChart_' + this.opts.id }, [
-                            m('.chart-spinner', m('.loading.loading-lg')),
-                            m('.chart-error.d-none.pl-1',
-                                m('div', [
-                                    m('p', $.resx('errorChartLoad')),
-                                    m('.btn.btn-info.btn-sm', { onclick: this.refresh.bind(this) }, $.resx('tryAgain'))
+            m.mount(parentNode, {
+                view: function() {
+                    return [
+                        m('.grid-header.columns', [
+                            m('span.grid-title.col-8', self.opts.title),
+                            m('span.grid-buttons.col-4.text-right', [
+                                m('a.btn.btn-link.btn-refresh', { title: $.resx('refresh'), onclick: self.forceRefresh.bind(self) },
+                                    m('i.dash.dash-arrows-cw')
+                                ),
+                                m('a.btn.btn-link.btn-fullscreen', { title: $.resx('toggleFullScreen'), onclick: self.toggleFullScreen.bind(self) },
+                                    m('i.dash.dash-max')
+                                ),
+                                m('a.btn.btn-link.dash-ajax.fs-disabled', {
+                                    href: self.opts.baseUrl + (self.opts.isData ? 'Report' : 'Chart') + '/Details/' + (self.opts.isData ? self.opts.reportId : self.opts.chartId),
+                                    title: $.resx(self.opts.isData ? 'viewReport' : 'viewChart')
+                                }, m('i.dash.dash-info')),
+                                m('a.btn.btn-link.dash-ajax.fs-disabled', { href: self.opts.baseUrl + 'Dashboard/Edit/' + self.opts.id, title: $.resx('editWidget') },
+                                    m('i.dash.dash-pencil')
+                                ),
+                                m('a.btn.btn-link.dash-ajax.fs-disabled', { title: $.resx('deleteWidget'), onclick: self.deleteWidget.bind(self) },
+                                    m('i.dash.dash-trash')
+                                )
+                            ])
+                        ]),
+                        m('.grid-body', [
+                            self.opts.isData ? m('.widget-data', { id: 'widgetData_' + self.opts.id }, m(Table, self.tableOpts)) :
+                                m('.widget-chart', { id: 'widgetChart_' + self.opts.id }, [
+                                    m('.chart-spinner', m('.loading.loading-lg')),
+                                    m('.chart-error.d-none.pl-1',
+                                        m('div', [
+                                            m('p', $.resx('errorChartLoad')),
+                                            m('.btn.btn-info.btn-sm', { onclick: self.refresh.bind(self) }, $.resx('tryAgain'))
+                                        ])
+                                    ),
+                                    m('.canvas-container', m('canvas.chart-canvas.d-none'))
                                 ])
-                            ),
-                            m('.canvas-container', m('canvas.chart-canvas.d-none'))
+                        ]),
+                        m('.grid-footer', [
+                            m('span.grid-updated-time', new Date().toLocaleTimeString()),
+                            m('span.resizable-handle.float-right', m('i.dash.dash-corner')),
+                            m('span.drag-handle.float-right', m('i.dash.dash-move'))
                         ])
-                ]),
-                m('.grid-footer', [
-                    m('span.grid-updated-time', new Date().toLocaleTimeString()),
-                    m('span.resizable-handle.float-right', m('i.dash.dash-corner')),
-                    m('span.drag-handle.float-right', m('i.dash.dash-move'))
-                ])
-            ]);
+                    ];
+                }
+            });
 
             if (firstRender) {
                 // add our system wide events
@@ -238,7 +240,8 @@
             this.opts.layoutCallback();
 
             if (this.opts.isData) {
-                this.table.updateLayout();
+                // @todo trigger update event
+                // this.table.updateLayout();
             }
 
             this.rect.updated = true;
@@ -303,7 +306,8 @@
             }
 
             if (this.opts.isData) {
-                this.table.refresh();
+                // @todo trigger refresh event
+                //this.table.refresh();
             } else {
                 this.chart.run();
             }
@@ -369,7 +373,7 @@
          * @param {bool} totalDestruction - Remove the container node and null out the widget object if true.
          */
         destroy: function(totalDestruction) {
-            $.destroy(this.table);
+            //$.destroy(this.table);
             $.destroy(this.chart);
             $.destroy(this.moveDraggie);
             $.destroy(this.resizeDraggie);
@@ -396,9 +400,10 @@
             $.getAll('.fs-disabled', container).forEach(function(x) { $.toggleClass(x, 'disabled', !isFullscreen); });
             this.isFullscreen = !this.isFullscreen;
 
-            if (this.table) {
-                this.table.updateLayout();
-            } else if (this.chart) {
+            if (this.opts.isData) {
+                // @todo trigger update event
+                // this.table.updateLayout();
+            } else {
                 this.chart.resize();
             }
         }

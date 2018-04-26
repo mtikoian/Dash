@@ -47,7 +47,7 @@
             searchable: false,
             loadAllData: opts.loadAllData,
             editable: opts.allowEdit,
-            headerButtons: [m('a.btn.btn-primary.mr-2', { href: opts.exportUrl, target: '_blank' }, $.resx('export'))],
+            headerButtons: [{ type: 'a', attributes: { class: 'btn btn-primary mr-2', href: opts.exportUrl, target: '_blank' }, label: $.resx('export') }],
             itemsPerPage: opts.rowLimit,
             currentStartItem: 0,
             sorting: opts.sortColumns || [],

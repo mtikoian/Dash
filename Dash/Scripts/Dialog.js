@@ -2,8 +2,8 @@
  * Dialog mithril component.
  */
 (function(root, factory) {
-    root.Dialog = factory(root.m, root.$, root.Alertify);
-})(this, function(m, $, Alertify) {
+    root.Dialog = factory(root.m, root.$, root.Alertify, root.Table);
+})(this, function(m, $, Alertify, Table) {
     'use strict';
 
     var _buttons = {
@@ -93,7 +93,7 @@
                         m('i.dash.dash-cancel.text-error', { title: this.opts.buttons.close })
                     ))
                 ]),
-                m('.rd-content', { class: this.opts.basic ? 'rd-no-footer' : '' }, m.trust(this.opts.content)),
+                m('.rd-content', { class: this.opts.basic ? 'rd-no-footer' : '' }, this.contentView()),
                 this.opts.basic ? null : m('.rd-footer', [
                     m('button.btn.btn-primary', {
                         type: 'button', role: 'button', onclick: this.onOkay.bind(this)
@@ -103,6 +103,18 @@
                     }, this.opts.buttons.cancel)
                 ])
             ]);
+        },
+
+        contentView: function() {
+            if (!this.opts.content.component) {
+                return m.trust(this.opts.content);
+            }
+
+            this.opts.title = this.opts.content.title;
+            this.opts.basic = this.opts.content.basic;
+            if (this.opts.content.component.toLowerCase() === 'table') {
+                return m('.col-12.dash-table', m(Table, this.opts.content.data));
+            }
         },
 
         /**
@@ -118,10 +130,11 @@
                 return;
             }
             node = node.firstElementChild;
-            this.opts.title = node.getAttribute('data-title');
-            this.opts.basic = node.hasAttribute('data-basic-dialog');
-            m.redraw();
-
+            if ($.isNull(this.opts.title)) {
+                this.opts.title = node.getAttribute('data-title');
+                this.opts.basic = node.hasAttribute('data-basic-dialog');
+                m.redraw();
+            }
             var self = this;
             $.on(node, 'change', function() {
                 self.changed = true;

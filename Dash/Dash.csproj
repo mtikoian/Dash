@@ -37,25 +37,18 @@
     <None Include="Views\Chart\ChangeType.cshtml"/>
     <None Include="Views\Chart\Create.cshtml"/>
     <None Include="Views\Chart\Details.cshtml"/>
-    <None Include="Views\Chart\Index.cshtml"/>
     <None Include="Views\Chart\Share.cshtml"/>
     <None Include="Views\Dashboard\CreateEdit.cshtml"/>
     <None Include="Views\Dashboard\Index.cshtml"/>
-    <None Include="Views\Dashboard\Start.cshtml"/>
     <None Include="Views\Database\CreateEdit.cshtml"/>
-    <None Include="Views\Database\Index.cshtml"/>
     <None Include="Views\Dataset\CreateEdit.cshtml"/>
-    <None Include="Views\Dataset\Index.cshtml"/>
     <None Include="Views\Report\Create.cshtml"/>
     <None Include="Views\Report\Details.cshtml"/>
-    <None Include="Views\Report\Index.cshtml"/>
     <None Include="Views\Report\SelectColumns.cshtml"/>
     <None Include="Views\Report\Share.cshtml"/>
     <None Include="Views\Role\CreateEdit.cshtml"/>
-    <None Include="Views\Role\Index.cshtml"/>
     <None Include="Views\Shared\Error.cshtml"/>
     <None Include="Views\User\CreateEdit.cshtml"/>
-    <None Include="Views\User\Index.cshtml"/>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="wwwroot\css\"/>
