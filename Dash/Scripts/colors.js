@@ -14,6 +14,22 @@
     };
 
     /**
+     * Convert RGB to hex string.
+     * @param {Object} color Object with r/g/b properties.
+     * @returns {string} hex - Hex string.
+     */
+    var rgb2hex = function(color) {
+        var hex = [
+            (color.r * 1).toString(16),
+            (color.g * 1).toString(16),
+            (color.b * 1).toString(16)
+        ];
+        return '#' + hex.map(function(x) {
+            return ('00' + x.toString()).slice(-2);
+        }).join('').toUpperCase();
+    };
+
+    /**
      * Converts an RGB color value to HSL. Conversion formula
      * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
      * Assumes r, g, and b are contained in the set [0, 255] and
@@ -45,6 +61,7 @@
 
     $.colors = {
         hex2rgb: hex2rgb,
+        rgb2hex: rgb2hex,
         rgb2hsl: rgb2hsl,
     };
 })(this.$);
