@@ -19,7 +19,6 @@
      */
     var _contentActions = [
         { selector: '[data-toggle="tab"], [data-toggle="pill"]', action: function() { new Tab(this); } },
-        { selector: '.dash-table', action: function() { tableLoad(this); } },
         { selector: '.dash-ajax', action: function() { $.on(this, 'click', handleAjaxRequest); } },
         { selector: '.dash-form', action: function() { $.on(this, 'submit', function(e) { e.preventDefault(); }, true); } },
         {
@@ -224,27 +223,6 @@
     };
 
     /**
-     * Initialize a table instance
-     * @param {Node} node - Node containing the data url for the table settings.
-     */
-    var tableLoad = function(node) {
-        var json = node.getAttribute('data-json');
-        if (json) {
-            var opts = JSON.parse(json);
-            opts.content = node;
-            node.table = new Table(opts);
-            node.removeAttribute('data-json');
-        } else {
-            $.ajax({
-                method: 'GET',
-                url: node.getAttribute('data-url')
-            }, function(opts) {
-                node.table = new Table(opts);
-            });
-        }
-    };
-
-    /**
      * Refresh data for the table instance in the active dialog.
      */
     var refreshTable = function() {
@@ -252,10 +230,7 @@
         if (!content) {
             return;
         }
-        var node = $.hasClass(content, 'dash-table') ? content : $.get('.dash-table', content);
-        if (node && node.table) {
-            node.table.refresh();
-        }
+        $.dispatch($.hasClass(content, 'dash-table') ? content : $.get('.dash-table', content), $.events.tableRefresh);
     };
 
     /**
@@ -334,6 +309,7 @@
         focusOnClose: focusOnClose,
         getActiveContent: getActiveContent,
         getActiveDialog: getActiveDialog,
+        handleAjaxRequest: handleAjaxRequest,
         hasOpenDialog: hasOpenDialog,
         processContent: processContent,
         refreshTable: refreshTable,

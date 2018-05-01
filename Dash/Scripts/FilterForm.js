@@ -36,7 +36,7 @@
         this.filterTypes = opts.filterTypes || {};
         this.dateOperators = opts.dateOperators || [];
         this.lookups = opts.lookups || [];
-        this.dataTable = opts.dataTable;
+        this.refreshFn = opts.refreshFn;
         this.columnFn = opts.columnFn;
     }
 
@@ -124,8 +124,8 @@
                     data.filters.forEach(function(x, i) { self.records[i].id = x.id; });
                 }
             }
-            if (self.dataTable) {
-                self.dataTable.loadData();
+            if (self.refreshFn) {
+                self.refreshFn();
             }
         });
     };

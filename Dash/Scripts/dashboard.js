@@ -114,9 +114,7 @@
     var resizeLayout = function() {
         var grid = makeWidgetOpts().grid;
         getWidgets().forEach(function(x) {
-            if (x.opts.isData) {
-                x.table.updateLayout();
-            }
+            x.updateLayout();
             x.setupDraggie(null, grid);
         });
     };

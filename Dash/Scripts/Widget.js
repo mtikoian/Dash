@@ -40,7 +40,6 @@
             this.opts = opts;
 
             this.id = opts.id;
-            this.table = null;
             this.chart = null;
             this.interval = null;
             this.isFullscreen = false;
@@ -49,7 +48,6 @@
 
             if (opts.isData) {
                 this.tableOpts = {
-                    content: '#widgetData_' + opts.id,
                     id: 'widgetTable_' + opts.id,
                     url: opts.url,
                     requestMethod: 'POST',
@@ -238,12 +236,7 @@
             }
 
             this.opts.layoutCallback();
-
-            if (this.opts.isData) {
-                // @todo trigger update event
-                // this.table.updateLayout();
-            }
-
+            this.updateLayout();
             this.rect.updated = true;
         },
 
@@ -306,8 +299,7 @@
             }
 
             if (this.opts.isData) {
-                // @todo trigger refresh event
-                //this.table.refresh();
+                $.dispatch($.get('.dash-table', this.getContainer()), $.events.tableRefresh);
             } else {
                 this.chart.run();
             }
@@ -315,6 +307,13 @@
             var updatedAt = $.get('.grid-updated-time', this.getContainer());
             if (updatedAt) {
                 updatedAt.innerText = new Date().toLocaleTimeString();
+        },
+
+        updateLayout: function() {
+            if (this.opts.isData) {
+                $.dispatch($.get('.dash-table', this.getContainer()), $.events.layoutUpdate);
+            } else {
+                this.chart.resize();
             }
         },
 
@@ -373,8 +372,12 @@
          * @param {bool} totalDestruction - Remove the container node and null out the widget object if true.
          */
         destroy: function(totalDestruction) {
-            //$.destroy(this.table);
-            $.destroy(this.chart);
+            if (this.opts.isData) {
+                $.dispatch($.get('.dash-table', this.getContainer()), $.events.tableDestroy);
+            } else {
+                $.destroy(this.chart);
+            }
+
             $.destroy(this.moveDraggie);
             $.destroy(this.resizeDraggie);
 
@@ -399,13 +402,7 @@
             var isFullscreen = this.isFullscreen;
             $.getAll('.fs-disabled', container).forEach(function(x) { $.toggleClass(x, 'disabled', !isFullscreen); });
             this.isFullscreen = !this.isFullscreen;
-
-            if (this.opts.isData) {
-                // @todo trigger update event
-                // this.table.updateLayout();
-            } else {
-                this.chart.resize();
-            }
+            this.updateLayout();
         }
     };
 

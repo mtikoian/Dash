@@ -105,6 +105,7 @@ gulp.task('min:js:modules', function() {
         paths.js + 'fecha.js',             // lightweight alternative to moment for date manipulation
         paths.js + 'accounting.js',        // number/currency formatting
         paths.js + 'Help.js',              // custom help component using mithril
+        paths.js + 'Table.js',             // custom table component using mithril
         paths.js + 'Dialog.js',            // custom dialog component using mithril
         paths.js + 'Autocomplete.js',      // custom autocomplete component using mithril
         paths.js + 'DatePicker.js',        // custom date component using mithril
@@ -116,7 +117,6 @@ gulp.task('min:js:modules', function() {
         paths.js + 'Validator.js',         // form validation using html5 and bootstrap
         paths.js + 'colors.js',            // color library
         paths.js + 'ColorPicker.js',       // custom color picker
-        paths.js + 'Table.js',             // custom table component using mithril
         paths.js + 'DashChart.js',         // chart wrapper
         paths.js + 'Form.js',              // custom form component using mithril
         paths.js + 'JoinForm.js',          // dataset joins form functionality

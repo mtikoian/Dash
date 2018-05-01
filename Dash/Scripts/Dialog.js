@@ -113,7 +113,7 @@
             this.opts.title = this.opts.content.title;
             this.opts.basic = this.opts.content.basic;
             if (this.opts.content.component.toLowerCase() === 'table') {
-                return m('.col-12.dash-table', m(Table, this.opts.content.data));
+                return m('.col-12', m(Table, this.opts.content.data));
             }
         },
 
@@ -153,8 +153,10 @@
                 oncreate: this.oncreate.bind(this),
             });
 
-            $.dialogs.processContent(this.elements.content);
-            setTimeout(this.checkEvent.bind(this, this.elements.content, 'data-event'), 25);
+            if (!this.opts.content.component) {
+                $.dialogs.processContent(this.elements.content);
+                setTimeout(this.checkEvent.bind(this, this.elements.content, 'data-event'), 25);
+            }
         },
 
         /**
@@ -403,12 +405,7 @@
 
         destroy: function() {
             this.checkEvent(this.elements.content, 'data-close-event');
-
-            var tableNode = $.get('.dash-table', this.elements.content);
-            if (tableNode) {
-                tableNode.table.destroy();
-            }
-
+            $.dispatch($.get('.dash-table', this.elements.content), $.events.tableDestroy);
             m.mount(this.elements.container, null);
             document.body.removeChild(this.elements.container);
             $.dialogs.removeDialog(this.opts.id);

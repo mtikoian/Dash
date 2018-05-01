@@ -32,7 +32,7 @@
         this.saveGroupsUrl = opts.saveGroupsUrl;
         this.aggregator = opts.aggregatorId === 0 ? '' : opts.aggregatorId;
         this.aggregators = opts.aggregators || [];
-        this.dataTable = opts.dataTable;
+        this.refreshFn = opts.refreshFn;
         this.columnFn = opts.columnFn;
     }
 
@@ -63,8 +63,8 @@
                     data.groups.forEach(function(x, i) { self.records[i].id = x.id; });
                 }
             }
-            if (self.dataTable) {
-                self.dataTable.loadData();
+            if (self.refreshFn) {
+                self.refreshFn();
             }
         });
     };

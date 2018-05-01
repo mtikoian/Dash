@@ -106,7 +106,6 @@
         refresh: function() {
             this.loading = true;
             this.loadingError = false;
-            m.redraw();
             this.loadData();
         },
 
@@ -171,8 +170,7 @@
             var query = val.target ? val.target.value : val;
             if (this.searchQuery !== query) {
                 this.searchQuery = query;
-                clearTimeout(this.requestTimer);
-                this.requestTimer = setTimeout(this.runSearch.bind(this, query), this.opts.inputTimeout);
+                this.runSearch(query);
             }
         },
 
@@ -185,7 +183,6 @@
             this.requestTimer = null;
             this.currentStartItem = 0;
             this.filterResults(true);
-            m.redraw();
         },
 
         /**
@@ -204,7 +201,6 @@
                 // we're not loading all the data to begin with. so whatever data we have should be displayed.
                 this.results = this.data;
                 this.pageTotal = Math.ceil(this.filteredTotal / this.itemsPerPage);
-                m.redraw();
             } else {
                 // we're loading all the data to begin with. so figure out what data to display.
                 var filteredTotal = 0;
@@ -303,7 +299,7 @@
             }
 
             this.layoutSet = true;
-            this.table = $.get('.table-data-table', this.content);
+            this.table = $.get('.table-data', this.content);
             this.table.style.tableLayout = 'fixed';
             this.tableHeaderRow = this.table.tHead.rows[0];
 
@@ -504,7 +500,8 @@
         },
 
         /**
-         * Make column resizing play nice with touch. http://stackoverflow.com/questions/28218888/touch-event-handler-overrides-click-handlers
+         * Make column resizing play nice with touch. 
+         * http://stackoverflow.com/questions/28218888/touch-event-handler-overrides-click-handlers
          * @param {Event} e Event that triggered the handler.
          */
         touchHandler: function(e) {
@@ -532,7 +529,7 @@
             }
 
             simulatedEvent.initMouseEvent(mouseEvent, true, true, window, 1, touch.screenX, touch.screenY, touch.clientX, touch.clientY, false, false, false, false, 0, null);
-            touch.target.dispatchEvent(simulatedEvent);
+            $.dispatch(touch.target, simulatedEvent);
             e.preventDefault();
         },
 
@@ -664,43 +661,53 @@
          * @returns {Object}  Mithril DIV node.
          */
         view: function() {
-            return m('.data-table', [
-                !this.opts.editable ? m('span#table-items-per-page') :
-                    m('.container',
-                        m('.columns.form-horizontal.m-2', [
-                            m('.col-4',
-                                this.opts.searchable ? m('.input-group.col-8.col-mr-auto', [
-                                    m('span.input-group-addon.text-no-select', m('i.dash.dash-search')),
-                                    m('input.form-input', { type: 'text', oninput: this.setSearchQuery.bind(this), value: this.searchQuery, disabled: this.loading })
-                                ]) : null
-                            ),
-                            m('.col-4',
-                                m('.text-center', (this.opts.headerButtons || []).map(function(x) {
-                                    return m(x.type, x.attributes, x.label);
-                                }))
-                            ),
-                            m('.col-4',
-                                m('.input-group.col-8.col-ml-auto', [
-                                    m('span.input-group-addon.text-no-select', this.opts.resources.perPage),
-                                    m('select.form-select', {
-                                        id: 'table-items-per-page', onchange: this.setItemsPerPage.bind(this),
-                                        value: this.itemsPerPage, disabled: this.loading
-                                    }, this.pageOptions)
-                                ])
-                            )
+            return m('.dash-table',
+                {
+                    ontableRefresh: this.refresh.bind(this),
+                    ontableDestroy: this.destroy.bind(this),
+                    onlayoutUpdate: this.updateLayout.bind(this)
+                }, [
+                    !this.opts.editable ? m('span#table-items-per-page') :
+                        m('.container',
+                            m('.columns.form-horizontal.m-2', [
+                                m('.col-4',
+                                    this.opts.searchable ? m('.input-group.col-8.col-mr-auto', [
+                                        m('span.input-group-addon.text-no-select', m('i.dash.dash-search')),
+                                        m('input.form-input', { type: 'text', oninput: this.setSearchQuery.bind(this), value: this.searchQuery, disabled: this.loading })
+                                    ]) : null
+                                ),
+                                m('.col-4',
+                                    m('.text-center', (this.opts.headerButtons || []).map(function(x) {
+                                        return m(x.type, x.attributes, x.label);
+                                    }))
+                                ),
+                                m('.col-4',
+                                    m('.input-group.col-8.col-ml-auto', [
+                                        m('span.input-group-addon.text-no-select', this.opts.resources.perPage),
+                                        m('select.form-select', {
+                                            id: 'table-items-per-page', onchange: this.setItemsPerPage.bind(this),
+                                            value: this.itemsPerPage, disabled: this.loading
+                                        }, this.pageOptions)
+                                    ])
+                                )
+                            ])
+                        ),
+                    m('.table-scrollable', { class: this.opts.editable ? '' : ' table-no-edit' }, [
+                        m('.table-area', { onscroll: this.onScroll.bind(this) }, [
+                            m('table.table.table-hover.table-sm.table-striped.table-data', [
+                                m('colgroup.table-column-group', this.colGroups),
+                                m('thead', {
+                                    ontouchstart: this.touchHandler.bind(this),
+                                    ontouchend: this.touchHandler.bind(this),
+                                    ontouchmove: this.touchHandler.bind(this),
+                                    ontouchcancel: this.touchHandler.bind(this)
+                                }, [m('tr', this.opts.columns.map(this.tableHeaders.bind(this)))]),
+                                m('tbody', this.tableBodyView())
+                            ])
                         ])
-                    ),
-                m('.table-scrollable', { class: this.opts.editable ? '' : ' table-no-edit' }, [
-                    m('.table-area', { onscroll: this.onScroll.bind(this) }, [
-                        m('table.table.table-hover.table-sm.table-striped.table-data-table', [
-                            m('colgroup.table-column-group', this.colGroups),
-                            m('thead', [m('tr', this.opts.columns.map(this.tableHeaders.bind(this)))]),
-                            m('tbody', this.tableBodyView())
-                        ])
-                    ])
-                ]),
-                this.tableFooterView()
-            ]);
+                    ]),
+                    this.tableFooterView()
+                ]);
         },
 
         /**
@@ -794,6 +801,14 @@
             ]));
         },
 
+        destroy: function() {
+            if (this.opts.editable) {
+                $.off(window, 'resize', this.events.resize);
+                $.off(window, 'mousemove', this.events.move);
+                $.off(window, 'mouseup', this.events.up);
+            }
+        },
+
         oninit: function(vnode) {
             var opts = vnode.attrs || {};
 
@@ -854,7 +869,6 @@
             this.lastSeenAt = { x: null, y: null };
             this.columnRenderer = {};
             this.colGroups = [];
-            this.events = {};
             this.intColumns = [];
             this.dateColumns = [];
             this.currencyColumns = [];
@@ -898,6 +912,7 @@
                             attr['data-method'] = link.method ? link.method.toUpperCase() : 'GET';
                             attr['data-href'] = href;
                             attr['title'] = label;
+                            attr['onclick'] = $.dialogs.handleAjaxRequest;
                             return m(isBtn ? 'button' : 'a', attr, $.isNull(link.icon) ? label : m('i', { class: 'dash dash-' + link.icon.toLowerCase() }));
                         });
                     };
@@ -915,8 +930,11 @@
             }
 
             if (this.opts.headerButtons) {
-                this.opts.headerButtons = this.opts.headerButtons.filter(function(x) {
-                    return !$.isNull(x);
+                this.opts.headerButtons = this.opts.headerButtons.filter(function(x) { return !$.isNull(x); });
+                this.opts.headerButtons.forEach(function(x) {
+                    if (!x.attributes.onclick && !x.attributes.target) {
+                        x.attributes.onclick = $.dialogs.handleAjaxRequest;
+                    }
                 });
             }
 
@@ -935,58 +953,24 @@
         },
 
         oncreate: function(vnode) {
-            this.content = vnode.dom.parentNode;
+            this.content = vnode.dom;
             if (this.opts.editable) {
                 this.events = {
                     resize: $.debounce(this.onResize.bind(this), 50),
                     move: this.onMouseMove.bind(this),
-                    up: this.onMouseUp.bind(this),
-                    touch: this.touchHandler.bind(this),
-                    refresh: this.refresh.bind(this),
-                    updateLayout: this.updateLayout.bind(this)
+                    up: this.onMouseUp.bind(this)
                 };
                 $.on(window, 'resize', this.events.resize);
                 $.on(window, 'mousemove', this.events.move);
                 $.on(window, 'mouseup', this.events.up);
-
-                var header = $.get('thead', this.table);
-                if (header) {
-                    $.on(header, 'touchstart', this.events.touch);
-                    $.on(header, 'touchmove', this.events.touch);
-                    $.on(header, 'touchend', this.events.touch);
-                    $.on(header, 'touchcancel', this.events.touch);
-                }
             }
-            $.on(this.content, $.events.tableRefresh, this.events.refresh);
-            $.on(this.content, $.events.layoutUpdate, this.events.updateLayout);
 
             this.setLayout();
             this.updateLayout();
-            $.dialogs.processContent(this.table);
         },
 
         onupdate: function() {
-            this.setLayout();
             this.updateLayout();
-            $.dialogs.processContent(this.table);
-        },
-
-        onremove: function() {
-            if (this.opts.editable) {
-                $.off(window, 'resize', this.events.resize);
-                $.off(window, 'mousemove', this.events.move);
-                $.off(window, 'mouseup', this.events.up);
-
-                var header = $.get('thead', this.table);
-                if (header) {
-                    $.off(header, 'touchstart', this.events.touch);
-                    $.off(header, 'touchmove', this.events.touch);
-                    $.off(header, 'touchend', this.events.touch);
-                    $.off(header, 'touchcancel', this.events.touch);
-                }
-            }
-            $.off(this.content, $.events.tableRefresh, this.events.refresh);
-            $.off(this.content, $.events.layoutUpdate, this.events.updateLayout);
         }
     };
 

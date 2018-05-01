@@ -19,12 +19,13 @@
             return;
         }
 
+        this.content = opts.content;
         this.isProc = opts.loadAllData;
 
         var self = this;
         var saveUrl = opts.saveColumnsUrl;
         var saveStorageFunc = $.debounce(!opts.allowEdit ? $.noop : function(settings) {
-            if ($.isNull(self.dataTable.previousColumnWidths) || !$.equals(settings.columnWidths, self.dataTable.previousColumnWidths)) {
+            if ($.isNull(self.previousColumnWidths) || !$.equals(settings.columnWidths, self.previousColumnWidths)) {
                 $.ajax({
                     method: 'PUT',
                     url: saveUrl,
@@ -35,31 +36,35 @@
                     },
                     block: false
                 });
-                self.dataTable.previousColumnWidths = settings.columnWidths;
+                self.previousColumnWidths = settings.columnWidths;
             }
         }, 250);
 
-        this.dataTable = new Table({
-            content: $.get('.report-data-container', opts.content),
-            url: opts.dataUrl,
-            requestMethod: 'POST',
-            requestParams: { Id: opts.reportId, Save: true },
-            searchable: false,
-            loadAllData: opts.loadAllData,
-            editable: opts.allowEdit,
-            headerButtons: [{ type: 'a', attributes: { class: 'btn btn-primary mr-2', href: opts.exportUrl, target: '_blank' }, label: $.resx('export') }],
-            itemsPerPage: opts.rowLimit,
-            currentStartItem: 0,
-            sorting: opts.sortColumns || [],
-            storageFunction: saveStorageFunc,
-            width: opts.width,
-            columns: opts.reportColumns || [],
-            displayDateFormat: opts.dateFormat,
-            displayCurrencyFormat: opts.currencyFormat,
-            dataCallback: this.processJson.bind(this),
-            errorCallback: this.processJson.bind(this)
+        var callback = this.processJson.bind(this);
+        m.mount($.get('.report-data-container', opts.content), {
+            view: function() {
+                return m(Table, {
+                    url: opts.dataUrl,
+                    requestMethod: 'POST',
+                    requestParams: { Id: opts.reportId, Save: true },
+                    searchable: false,
+                    loadAllData: opts.loadAllData,
+                    editable: opts.allowEdit,
+                    headerButtons: [{ type: 'a', attributes: { class: 'btn btn-primary mr-2', href: opts.exportUrl, target: '_blank' }, label: $.resx('export') }],
+                    itemsPerPage: opts.rowLimit,
+                    currentStartItem: 0,
+                    sorting: opts.sortColumns || [],
+                    storageFunction: saveStorageFunc,
+                    width: opts.width,
+                    columns: opts.reportColumns || [],
+                    displayDateFormat: opts.dateFormat,
+                    displayCurrencyFormat: opts.currencyFormat,
+                    dataCallback: callback,
+                    errorCallback: callback
+                });
+            }
         });
-        this.dataTable.previousColumnWidths = opts.reportColumns.map(function(x) { return { field: x.field, width: x.width * 1.0 }; });
+        this.previousColumnWidths = opts.reportColumns.map(function(x) { return { field: x.field, width: x.width * 1.0 }; });
 
         this.filterForm = new FilterForm({
             reportId: opts.reportId,
@@ -84,7 +89,7 @@
             dateOperators: opts.dateOperators,
             lookups: opts.lookups,
             isProc: opts.isProc,
-            dataTable: this.dataTable,
+            refreshFn: this.refresh.bind(this),
             columnFn: this.getColumnList.bind(this)
         });
         this.filterForm.run();
@@ -100,7 +105,7 @@
             aggregator: opts.aggregator,
             aggregators: opts.aggregators,
             isProc: opts.isProc,
-            dataTable: this.dataTable,
+            refreshFn: this.refresh.bind(this),
             columnFn: this.getColumnList.bind(this)
         });
         this.groupForm.run();
@@ -138,8 +143,12 @@
         return true;
     };
 
+    ReportDetails.prototype.refresh = function() {
+        $.dispatch($.get('.dash-table', this.content), $.events.tableRefresh);
+    };
+
     ReportDetails.prototype.destroy = function() {
-        $.destroy(this.dataTable);
+        $.dispatch($.get('.dash-table', this.content), $.events.tableDestroy);
         $.destroy(this.filterForm);
         $.destroy(this.groupForm);
     };
