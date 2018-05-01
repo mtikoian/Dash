@@ -205,8 +205,7 @@
                 m('button.header-button.next', { onclick: prevNext.bind(null, props, 1) }, [
                     prevNextTitles[props.view],
                     m('i.dash.dash-to-end')
-                ]),
-                m('button.btn.btn-secondary.btn-sm', { onclick: dismissAndCommit.bind(null, props) }, m('i.dash.dash-cancel'))
+                ])
             );
         }
     };
@@ -276,7 +275,7 @@
                                 props.date = pushToLastDay(props.date, newDate);
                                 props.view = 0;
                             }
-                        }, m('.number', month.substring(0, 3)));
+                        }, m('.number', month));
                     })
                 )
             );

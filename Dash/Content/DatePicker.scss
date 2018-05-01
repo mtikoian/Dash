@@ -1,13 +1,5 @@
 ﻿@import "spectre/variables";
 
-$calendar-head-background: $primary-color;
-$calendar-head-foreground: white;
-$calendar-body-background: $gray-color-light;
-$calendar-body-foreground: #555555;
-$chosen-day-stroke: #222222;
-$chosen-day-fill: white;
-$other-months-foreground: #999999;
-
 .mithril-date-picker-container {
     width: 100%;
     position: relative;
@@ -49,7 +41,8 @@ $other-months-foreground: #999999;
         position: relative;
         display: flex;
         justify-content: space-between;
-        background: $info-color;
+        background: $gray-color-light;
+        color: $primary-color;
 
         .header-button {
             position: relative;
@@ -62,8 +55,8 @@ $other-months-foreground: #999999;
         }
 
         button.prev, button.next {
-            color: white;
             white-space: nowrap;
+            color: $info-color;
         }
 
         button.prev {
@@ -77,9 +70,7 @@ $other-months-foreground: #999999;
         }
 
         .segment {
-            position: relative;
-            width: 20%;
-            color: white;
+            flex: auto;
         }
     }
 
@@ -120,9 +111,9 @@ $other-months-foreground: #999999;
 
     .day, .month, .year {
         position: relative;
-        background: $calendar-body-background;
+        background: $bg-color-light;
         border: 0;
-        color: $calendar-body-foreground;
+        color: $primary-color;
         cursor: pointer;
         z-index: 0;
 
@@ -131,21 +122,18 @@ $other-months-foreground: #999999;
         }
 
         &:hover {
-            background: darken($calendar-body-background, 10);
+            background: $gray-color-light;
         }
 
         &.dummy {
-            background: $calendar-head-background;
-            color: $calendar-head-foreground;
+            background: $gray-color-light;
+            color: $primary-color;
             border: 0;
             cursor: default;
             display: flex;
             justify-content: center;
             align-items: center;
-
-            &:hover {
-                background: $calendar-head-background;
-            }
+            border-bottom: 1px solid $gray-color;
         }
 
         .number {
@@ -154,8 +142,7 @@ $other-months-foreground: #999999;
         }
 
         &.chosen {
-            background: $chosen-day-fill;
-            border: 2px solid $calendar-head-background;
+            border: 2px solid $info-color;
             font-weight: 700;
         }
     }
@@ -181,6 +168,6 @@ $other-months-foreground: #999999;
     }
 
     .other-scope {
-        color: $other-months-foreground;
+        color: $gray-color;
     }
 }
