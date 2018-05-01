@@ -69,7 +69,6 @@ gulp.task('watch', function() {
 });
 
 gulp.task('sass', function() {
-    //return gulp.src([paths.css + 'bootstrap/bootstrap.scss', paths.css + '*.scss'])
     return gulp.src([paths.css + 'spectre/spectre.scss', paths.css + '*.scss'])
         .pipe(plumber())
         .pipe(sourcemaps.init())
