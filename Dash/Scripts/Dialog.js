@@ -302,7 +302,7 @@
             }
             var ev = node.getAttribute(attrName);
             if ($.events.hasOwnProperty(ev)) {
-                document.dispatchEvent($.events[ev]);
+                $.dispatch(document, $.events[ev]);
             }
         },
 
@@ -388,7 +388,7 @@
                 $.removeClass(x, 'tab-validation-error');
             });
 
-            form.dispatchEvent($.events.formValidate);
+            $.dispatch(form, $.events.formValidate);
 
             var mErrors = $.getAll('.mform-control-error', form);
             if (mErrors.length) {

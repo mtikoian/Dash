@@ -125,7 +125,7 @@
             report.destroy();
         }
         delete _reports[dlg.getId()];
-        document.dispatchEvent($.events.dashboardReload);
+        $.dispatch(document, $.events.dashboardReload);
     });
 
     /**

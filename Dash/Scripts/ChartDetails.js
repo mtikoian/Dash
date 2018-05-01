@@ -53,7 +53,7 @@
             var updateDate = new Date(json.updatedDate);
             if (updateDate && updateDate > this.initDate) {
                 // chart has been modified - warn the user to refresh
-                document.dispatchEvent($.events.chartLoad);
+                $.dispatch(document, $.events.chartLoad);
                 Alertify.success($.resx('chartModified'));
                 return false;
             }

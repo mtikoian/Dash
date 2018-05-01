@@ -35,10 +35,10 @@
             if (data) {
                 _resx = data;
             }
-            document.dispatchEvent($.events.resxLoaded);
+            $.dispatch(document, $.events.resxLoaded);
             $.resxLoaded = true;
         }, function() {
-            document.dispatchEvent($.events.resxLoaded);
+            $.dispatch(document, $.events.resxLoaded);
             $.resxLoaded = true;
         });
     }

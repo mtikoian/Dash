@@ -227,7 +227,7 @@
 
         $.on('#menuBtn', 'click', $.toggleClass.bind(null, 'body', 'toggled', null));
 
-        document.dispatchEvent($.events.dashboardLoad);
+        $.dispatch(document, $.events.dashboardLoad);
     };
 
     /**

@@ -47,7 +47,7 @@
             chart.destroy();
         }
         delete _charts[dlg.getId()];
-        document.dispatchEvent($.events.dashboardReload);
+        $.dispatch(document, $.events.dashboardReload);
     });
 
     /**
