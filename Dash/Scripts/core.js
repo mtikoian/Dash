@@ -160,6 +160,18 @@
     };
 
     /**
+     * Dispatch event to an element.
+     * @param {Node} element - Element to dispatch the event to.
+     * @param {string} event - Event name to dispatch.
+     */
+    var dispatch = function(element, event) {
+        var node = get(element);
+        if (node) {
+            node.dispatchEvent(event);
+        }
+    };
+
+    /**
      * Deep equality comparer for objects.
      * @param {Object} x - First object to compare.
      * @param {Object} y - Object to compare to x.
@@ -673,6 +685,7 @@
         createNode: createNode,
         debounce: debounce,
         destroy: destroy,
+        dispatch: dispatch,
         equals: equals,
         extend: extend,
         get: get,
