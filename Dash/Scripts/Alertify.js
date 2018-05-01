@@ -89,9 +89,7 @@
          */
         close: function(elem, wait) {
             if (this.closeLogOnClick) {
-                $.on(elem, 'click', function() {
-                    _hideElement(elem);
-                });
+                $.on(elem, 'click', _hideElement.bind(null, elem));
             }
 
             wait = wait && !isNaN(+wait) ? +wait : this.delay;
@@ -99,9 +97,7 @@
             if (wait < 0) {
                 _hideElement(elem);
             } else if (wait > 0) {
-                setTimeout(function() {
-                    _hideElement(elem);
-                }, wait);
+                setTimeout(_hideElement.bind(null, elem), wait);
             }
         },
 
