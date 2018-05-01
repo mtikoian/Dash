@@ -45,6 +45,7 @@
             this.isFullscreen = false;
             this.initDate = new Date();
             this.dragMargin = 0;
+            this.updatedDate = new Date();
 
             if (opts.isData) {
                 this.tableOpts = {
@@ -138,7 +139,7 @@
                                 ])
                         ]),
                         m('.grid-footer', [
-                            m('span.grid-updated-time', new Date().toLocaleTimeString()),
+                            m('span.grid-updated-time', self.updatedDate.toLocaleTimeString()),
                             m('span.resizable-handle.float-right', m('i.dash.dash-corner')),
                             m('span.drag-handle.float-right', m('i.dash.dash-move'))
                         ])
@@ -304,9 +305,7 @@
                 this.chart.run();
             }
 
-            var updatedAt = $.get('.grid-updated-time', this.getContainer());
-            if (updatedAt) {
-                updatedAt.innerText = new Date().toLocaleTimeString();
+            this.updatedDate = new Date();
         },
 
         updateLayout: function() {
