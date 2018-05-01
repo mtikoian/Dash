@@ -21,6 +21,7 @@
         reportShareLoad: new CustomEvent('reportShareLoad'),
         reportShareUnload: new CustomEvent('reportShareUnload'),
         resxLoaded: new CustomEvent('resxLoaded'),
+        tableDestroy: new CustomEvent('tableDestroy'),
         tableRefresh: new CustomEvent('tableRefresh')
     };
 
