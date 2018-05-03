@@ -802,6 +802,7 @@
         },
 
         destroy: function() {
+            // @todo Test and make sure this is firing correctly
             if (this.opts.editable) {
                 $.off(window, 'resize', this.events.resize);
                 $.off(window, 'mousemove', this.events.move);

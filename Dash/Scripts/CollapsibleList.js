@@ -6,7 +6,7 @@
  * Modified to work with bootstrap/fontAwesome and incorporate cascading checkboxes.
  */
 (function(root, factory) {
-    window.CollapsibleList = factory(root.$);
+    root.CollapsibleList = factory(root.$);
 })(this, function($) {
     'use strict';
 
@@ -60,8 +60,9 @@
         createClickListener: function(node) {
             var self = this;
             return function(e) {
-                // ensure the event object is defined
-                e = $.coalesce(e, window.event);
+                if (!e) {
+                    return;
+                }
 
                 // find the list item containing the target of the event
                 var elem = $.coalesce(e.target, e.srcElement);

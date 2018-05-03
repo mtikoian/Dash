@@ -62,7 +62,7 @@ function sortXml(file, encoding, callback) {
 gulp.task('watch', function() {
     gulp.watch(paths.css + '**/*.scss', ['sass']);
     gulp.watch(paths.css + 'fontello/font/dash.*', ['fonts']);
-    gulp.watch(paths.js + '**/*.js', ['min:js:core', 'min:js:modules']);
+    gulp.watch(paths.js + '**/*.js', ['js']);
     gulp.watch('*.csproj', ['webFixer']);
     gulp.watch('../Dash.Database/*.sqlproj', ['dbFixer']);
     gulp.watch('../Dash.I18n/*.csproj', ['i18nFixer']);
@@ -81,64 +81,40 @@ gulp.task('sass', function() {
         .pipe(gulp.dest(paths.dist + 'css/'));
 });
 
-gulp.task('min:js:core', function() {
+gulp.task('js', function() {
     return gulp.src([
-        paths.js + 'CustomEvent.js',       // customEvent polyfill for ie
+        // core libraries and helpers
         paths.js + 'mithril.js',           // mithril rendering library, includes promise polyfill for ie
         paths.js + 'core.js',              // common js functions for the site
         paths.js + 'Alertify.js',          // alerts/modals
-        paths.js + 'ajax.js',              // ajax request handling
-        paths.js + 'events.js',            // custom events
-        paths.js + 'resx.js'               // resource handling
-    ])
-        .pipe(plumber())
-        .pipe(sourcemaps.init())
-        .pipe(concat('bundle.js'))
-        .pipe(uglify())
-        .pipe(sourcemaps.write('.'))
-        .pipe(gulp.dest(paths.dist + 'js/'));
-});
-
-gulp.task('min:js:modules', function() {
-    return gulp.src([
-        paths.js + 'native.bootstrap.js',  // custom build of the native bootstrap project with just the functionality needed
-        paths.js + 'fecha.js',             // lightweight alternative to moment for date manipulation
-        paths.js + 'accounting.js',        // number/currency formatting
-        paths.js + 'Help.js',              // custom help component using mithril
-        paths.js + 'Table.js',             // custom table component using mithril
-        paths.js + 'Dialog.js',            // custom dialog component using mithril
+        paths.js + 'helpers.js',           // commonly used helper libraries
+        // re-used components
         paths.js + 'Autocomplete.js',      // custom autocomplete component using mithril
-        paths.js + 'DatePicker.js',        // custom date component using mithril
-        paths.js + 'Rect.js',              // library for rectangle geometry
-        paths.js + 'Draggabilly.js',       // drag-n-drop functionality
         paths.js + 'Chart.js',             // charting
-        paths.js + 'Prism.js',             // syntax highlighting for sql
         paths.js + 'CollapsibleList.js',   // lightweight library for treeviews
-        paths.js + 'Validator.js',         // form validation using html5 and bootstrap
-        paths.js + 'colors.js',            // color library
         paths.js + 'ColorPicker.js',       // custom color picker
         paths.js + 'DashChart.js',         // chart wrapper
+        paths.js + 'DatePicker.js',        // custom date component using mithril
+        paths.js + 'Draggabilly.js',       // drag-n-drop functionality
+        paths.js + 'Help.js',              // custom help component using mithril
+        paths.js + 'Rect.js',              // library for rectangle geometry
+        paths.js + 'Tab.js',               // Tab component
+        paths.js + 'Table.js',             // custom table component using mithril
+        paths.js + 'Prism.js',             // syntax highlighting for sql
+        paths.js + 'Validator.js',         // form validation
+        paths.js + 'Widget.js',            // widget component using mithril
+        // functional areas
         paths.js + 'Form.js',              // custom form component using mithril
-        paths.js + 'JoinForm.js',          // dataset joins form functionality
-        paths.js + 'ColumnForm.js',        // dataset columns form functionality
-        paths.js + 'ShareForm.js',         // share report form functionality
-        paths.js + 'FilterForm.js',        // report filter form functionality
-        paths.js + 'GroupForm.js',         // report filter form functionality
-        paths.js + 'RangeForm.js',         // chart range form functionality
-        paths.js + 'Dataset.js',           // dataset functionality
-        paths.js + 'BaseDetails.js',       // report/chart details shared functionality
-        paths.js + 'ReportDetails.js',     // report functionality
-        paths.js + 'ChartDetails.js',      // chart functionality
-        paths.js + 'Widget.js',            // custom classes
-        paths.js + 'dialogs.js',           // custom alerts/modals functionality
-        paths.js + 'datasets.js',          // dataset interfaces
-        paths.js + 'reports.js',           // report interfaces
-        paths.js + 'charts.js',            // chart interfaces
+        paths.js + 'shared.js',            // functionality shared for reports and charts
+        paths.js + 'dialogs.js',           // dialog functionality
+        paths.js + 'datasets.js',          // dataset functionality
+        paths.js + 'reports.js',           // report functionality
+        paths.js + 'charts.js',            // chart functionality
         paths.js + 'dashboard.js'          // dashboard functionality
     ])
         .pipe(plumber())
         .pipe(sourcemaps.init())
-        .pipe(concat('modules.js'))
+        .pipe(concat('bundle.js'))
         .pipe(uglify())
         .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest(paths.dist + 'js/'));
@@ -152,7 +128,7 @@ gulp.task('fonts', function() {
         .pipe(gulp.dest(paths.dist + 'font/'));
 });
 
-gulp.task('build', ['clean', 'min:js:core', 'min:js:modules', 'sass', 'fonts', 'favicon']);
+gulp.task('build', ['clean', 'js', 'sass', 'fonts', 'favicon']);
 
 gulp.task('clean', function() {
     return del.sync(paths.dist + 'css', paths.dist + 'js', paths.dist + 'font');

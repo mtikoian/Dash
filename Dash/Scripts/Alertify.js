@@ -14,18 +14,17 @@
             return;
         }
 
-        var removeThis = function() {
-            if (el && el.parentNode) {
-                el.parentNode.removeChild(el);
-            }
-        };
-
         $.removeClass(el, 'show');
         $.hide(el);
-        $.on(el, 'transitionend', removeThis);
 
-        // Fallback for no transitions.
-        setTimeout(removeThis, 500);
+        if (el.parentNode) {
+            var removeThis = function() {
+                el.parentNode.removeChild(el);
+            }
+            $.on(el, 'transitionend', removeThis);
+            // Fallback for no transitions.
+            setTimeout(removeThis, 500);
+        };
     };
 
     /**
@@ -34,7 +33,6 @@
      */
     var _alertify = {
         parent: document.body,
-        version: '1.0.11',
         defaultOkLabel: 'Okay',
         okLabel: 'Okay',
         defaultCancelLabel: 'Cancel',
@@ -327,13 +325,8 @@
     };
 
     var Alertify = {
-        _$$alertify: _alertify,
         parent: function(elem) {
             _alertify.parent = elem;
-        },
-        reset: function() {
-            _alertify.reset();
-            return this;
         },
         alert: function(message, onOkay, onCancel) {
             return _alertify.dialog(message, 'alert', onOkay, onCancel) || this;
