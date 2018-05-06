@@ -7,13 +7,22 @@
     <meta charset="utf-8">
     <title>Error - Dash</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="~/Dist/core.css" />
+    <link rel="stylesheet" href="~/css/bundle.css" />
 </head>
 <body>
     <div class="container">
-        <div class="jumbotron">
+        <div class="card p-2 m-2">
             <h1><i class="dash dash-frown text-error"></i> Error</h1>
-            <p class="lead">An error occurred trying to find what you're looking for.</p>
+            <p class="lead">
+                @if (!((string)ViewBag.Error).IsEmpty())
+                {
+                    @Html.ToCard((string)ViewBag.Error, CardTypes.Error)
+                }
+                else
+                {
+                    @Html.ToCard("An error occurred trying to find what you're looking for.", CardTypes.Error)
+                }
+            </p>
         </div>
     </div>
 </body>

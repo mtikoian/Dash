@@ -1,0 +1,4 @@
+﻿@if (!((string)ViewBag.Error).IsEmpty())
+{
+    @Html.ToCard((string)ViewBag.Error, CardTypes.Error)
+}

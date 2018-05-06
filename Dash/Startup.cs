@@ -60,6 +60,8 @@ namespace Dash
                 .BuildPolicy()
             );
 
+            app.UseStatusCodePagesWithReExecute("/Error", "?code={0}");
+
             // force all requests to https
             app.UseRewriter(new RewriteOptions().AddRedirectToHttps());
 

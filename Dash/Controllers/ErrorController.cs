@@ -2,40 +2,32 @@
 using Dash.Configuration;
 using Dash.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Diagnostics;
 
 namespace Dash.Controllers
 {
-    /// <summary>
-    /// Controller for displaying errors.
-    /// </summary>
     public class ErrorController : BaseController
     {
         public ErrorController(IDbContext dbContext, AppConfiguration appConfig) : base(dbContext, appConfig)
         {
         }
 
-        /// <summary>
-        /// Displays error message.
-        /// </summary>
-        /// <returns>Returns the dashboard page.</returns>
-        public IActionResult Index()
+        public IActionResult Index(string code = null)
         {
+            if (!code.IsEmpty())
+            {
+                var statusFeature = HttpContext.Features.Get<IStatusCodeReExecuteFeature>();
+                Serilog.Log.Error("Unhandled error code `{0}` for request `{1}`.", code, statusFeature?.OriginalPath);
+            }
             return View("Error");
         }
 
-        /// <summary>
-        /// Log javascript errors to elmah.
-        /// </summary>
-        /// <param name="message"></param>
         public void LogJavascriptError(string message)
         {
             Serilog.Log.Error(new JavaScriptException(message), "Javascript Exception");
         }
     }
 
-    /// <summary>
-    /// For saving front-end errors to ELMAH.
-    /// </summary>
     [Serializable]
     public class JavaScriptException : Exception
     {
