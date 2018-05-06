@@ -10,14 +10,7 @@
                     <h4>@Account.Login</h4>
                 </div>
 
-                @if (!((string)ViewBag.Error).IsEmpty())
-                {
-                    @Html.ToCard((string)ViewBag.Error, BootstrapTypes.Warning)
-                }
-                @if (!((string)TempData["Error"]).IsEmpty())
-                {
-                    @Html.ToCard((string)TempData["Error"], BootstrapTypes.Warning)
-                }
+                @Html.Partial("_Error")
 
                 <div class="col-12 pt-2">
                     <div class="col-6">
