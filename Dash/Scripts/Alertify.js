@@ -19,7 +19,7 @@
 
         if (el.parentNode) {
             var removeThis = function() {
-                el.parentNode.removeChild(el);
+                el && el.parentNode && el.parentNode.removeChild(el);
             }
             $.on(el, 'transitionend', removeThis);
             // Fallback for no transitions.
