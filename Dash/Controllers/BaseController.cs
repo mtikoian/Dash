@@ -34,7 +34,13 @@ namespace Dash.Controllers
 
         public IActionResult JsonError(string error)
         {
-            return Ok(new { error });
+            if (Request.IsAjaxRequest())
+            {
+                return Ok(new { error });
+            }
+            // this shouldn't happen, but its possible (IE if someone opens a reset password link while logged in), so show a safe error page as a fallback
+            ViewBag.Error = error;
+            return View("Error");
         }
 
         public IActionResult JsonRows(IEnumerable<object> rows)
