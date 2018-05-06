@@ -18,7 +18,7 @@ using Microsoft.Extensions.Options;
 
 namespace Dash
 {
-    public enum BootstrapTypes
+    public enum CardTypes
     {
         Success,
         Warning,
@@ -452,11 +452,11 @@ namespace Dash
             return formGroup;
         }
 
-        public static IHtmlContent ToCard(this IHtmlHelper helper, string cardText, BootstrapTypes cardType = BootstrapTypes.Primary)
+        public static IHtmlContent ToCard(this IHtmlHelper helper, string cardText, CardTypes cardType = CardTypes.Primary)
         {
             var inner = new TagBuilder("div");
             inner.AddCssClass("card-body");
-            inner.InnerHtml.Append(cardText);
+            inner.InnerHtml.AppendHtml(cardText);
 
             var div = new TagBuilder("div");
             div.AddCssClass("card text-white m-2 bg-" + cardType.ToString().ToLower());

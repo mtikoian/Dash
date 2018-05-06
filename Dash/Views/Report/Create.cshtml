@@ -4,7 +4,7 @@
 
 @using (Html.BeginCustomForm("Create", "Report", null, Reports.CreateReport, null, null))
 {
-    @Html.ToCard(Reports.CreateReportExplain, BootstrapTypes.Primary)
+    @Html.ToCard(Reports.CreateReportExplain, CardTypes.Primary)
 
     <div class="col-6 pt-1">
         @Html.LabelDropDownListFor(model => model.DatasetId, Model.GetDatasetsForUser().ToSelectList(d => d.Name, d => d.Id.ToString()))
