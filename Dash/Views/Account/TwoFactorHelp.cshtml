@@ -1,0 +1,31 @@
+﻿@using Dash.I18n;
+@model Dash.Utils.SetupCode
+
+<div class="container">
+    <div class="columns">
+        <div class="col-11 col-ml-auto pt-2">
+            @using (Html.BeginCustomForm("TwoFactorLogin", "Account", ajaxForm: false))
+            {
+                <div class="col-12 pb-2">
+                    <h4>@Account.TwoFactor</h4>
+                </div>
+
+                @Html.ToCard(Account.FactorText, CardTypes.Primary)
+
+                <div>
+                    <img src="@Model.QrCode" />
+                </div>
+
+                <div class="col-12 pt-2">
+                    <div class="col-6">
+                        <div class="columns">
+                            <span class="form-buttons col-8 col-ml-auto">
+                                @Html.ActionLink(Account.Done, "Login", "Account", null, new { @class = "btn btn-info dash-ajax" })
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

@@ -3,12 +3,14 @@ using System.Security.Claims;
 using Dash.Configuration;
 using Dash.I18n;
 using Dash.Models;
+using Dash.Utils;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Logging;
 
 namespace Dash.Controllers
@@ -20,17 +22,17 @@ namespace Dash.Controllers
         }
 
         [HttpGet, AjaxRequestOnly]
-        public IActionResult ForgotPassword([FromServices] IActionContextAccessor actionContextAccessor)
+        public IActionResult ForgotPassword()
         {
             if (User.Identity.IsAuthenticated)
             {
                 return JsonError(Core.ErrorAlreadyLoggedIn);
             }
-            return PartialView(new ForgotPassword(actionContextAccessor));
+            return PartialView(new ForgotPassword());
         }
 
         [HttpPost, AjaxRequestOnly]
-        public IActionResult ForgotPassword(ForgotPassword model)
+        public IActionResult ForgotPassword([FromBody] ForgotPassword model)
         {
             if (User.Identity.IsAuthenticated)
             {
@@ -38,7 +40,7 @@ namespace Dash.Controllers
             }
             if (ModelState.IsValid)
             {
-                if (model.Send(out var error))
+                if (model.Send(out var error, HttpContext, new UrlHelper(ControllerContext)))
                 {
                     return JsonSuccess(Account.ForgotPasswordEmailSentText);
                 }
@@ -58,7 +60,7 @@ namespace Dash.Controllers
         }
 
         [HttpPost, ValidateAntiForgeryToken]
-        public IActionResult Login(LogOn model, [FromServices] ILogger<LogOn> logger)
+        public IActionResult Login(LogOn model)
         {
             if (User.Identity.IsAuthenticated)
             {
@@ -70,15 +72,16 @@ namespace Dash.Controllers
                 return View(model);
             }
 
-            if (!model.DoLogOn(out var error, DbContext, HttpContext, logger))
+            if (!model.DoLogOn(out var error, DbContext, AppConfig, HttpContext))
             {
                 ViewBag.Error = error;
                 return View(model);
             }
-            // remove any errors from previous request
-            ViewBag.Error = null;
-            TempData.Remove("Error");
-            return RedirectToAction("Index", "Dashboard");
+            if (model.Membership.AllowSingleFactor)
+            {
+                return RedirectToAction("Index", "Dashboard");
+            }
+            return View("TwoFactorLogin", model.Membership);
         }
 
         [HttpGet]
@@ -90,7 +93,7 @@ namespace Dash.Controllers
         }
 
         [HttpGet]
-        public IActionResult ResetPassword(ResetPassword model)
+        public IActionResult ResetPassword([FromQuery] ResetPassword model)
         {
             if (User.Identity.IsAuthenticated)
             {
@@ -98,13 +101,14 @@ namespace Dash.Controllers
             }
             if (!ModelState.IsValid)
             {
-                return RedirectWithError("Account", "Login", ModelState.ToErrorString());
+                ViewBag.Error = ModelState.ToErrorString();
+                return View("Login", new LogOn());
             }
             return View(model);
         }
 
         [HttpPost]
-        public IActionResult ResetPassword(ResetPassword model, bool resetting = false)
+        public IActionResult ResetPassword([FromForm] ResetPassword model, bool resetting = false)
         {
             if (User.Identity.IsAuthenticated)
             {
@@ -112,9 +116,10 @@ namespace Dash.Controllers
             }
             if (ModelState.IsValid)
             {
-                if (model.Reset(out var error, User.Claims.First(x => x.Type == ClaimTypes.PrimarySid).Value.ToInt()))
+                if (model.Reset(out var error))
                 {
-                    return RedirectWithError("Account", "Login", Account.PasswordChangedText);
+                    ViewBag.Error = ModelState.ToErrorString();
+                    return View("Login", new LogOn());
                 }
                 ViewBag.Error = error;
             }
@@ -135,10 +140,44 @@ namespace Dash.Controllers
             return Json(new { message = wantsHelp ? Core.HelpEnabled : Core.HelpDisabled, enabled = wantsHelp });
         }
 
+        [HttpGet]
+        public IActionResult TwoFactorHelp(string username)
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                return JsonError(Core.ErrorAlreadyLoggedIn);
+            }
+            var membership = DbContext.GetAll<UserMembership>(new { username }).FirstOrDefault();
+            return View(new TwoFactorAuthenticator().GenerateSetupCode(AppConfig.Membership.AuthenticatorAppName, membership.Email, AppConfig.Membership.AuthenticatorKey, true, 2));
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public IActionResult TwoFactorLogin(TwoFactorLogin model)
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                return JsonError(Core.ErrorAlreadyLoggedIn);
+            }
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Error = ModelState.ToErrorString();
+                return View(model);
+            }
+
+            if (!model.Validate(out var error, DbContext, AppConfig))
+            {
+                ViewBag.Error = error;
+                return View(model);
+            }
+
+            model.Membership.DoLogOn(DbContext, HttpContext);
+            return RedirectToAction("Index", "Dashboard");
+        }
+
         [HttpGet, Authorize]
         public IActionResult Update()
         {
-            return PartialView(DbContext.GetAll<User>(new { UID = User.Identity.Name }).First());
+            return PartialView(DbContext.GetAll<User>(new { UserName = User.Identity.Name }).First());
         }
 
         [HttpPost, Authorize, ValidateAntiForgeryToken]

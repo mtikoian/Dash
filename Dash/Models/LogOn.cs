@@ -1,87 +1,74 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Globalization;
 using System.Linq;
-using System.Security.Claims;
+using Dash.Configuration;
 using Dash.I18n;
 using Dash.Utils;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 
 namespace Dash.Models
 {
     public class LogOn : BaseModel
     {
-        public LogOn()
-        {
-        }
+        public UserMembership Membership;
 
-        [Display(Name = "Password", ResourceType = typeof(I18n.Users))]
-        [Required(ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorRequired")]
+        [Display(Name = "Password", ResourceType = typeof(Users))]
+        [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         [MaxLength(250), StringLength(250)]
         [DataType(System.ComponentModel.DataAnnotations.DataType.Password)]
         public string Password { get; set; }
 
-        [Display(Name = "UID", ResourceType = typeof(I18n.Users))]
-        [Required(ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorRequired")]
-        [MaxLength(250, ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorMaxLength")]
+        [Display(Name = "UserName", ResourceType = typeof(Users))]
+        [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
+        [MaxLength(100, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string UserName { get; set; }
 
-        /// <summary>
-        /// Attempt to log the user on.
-        /// </summary>
-        /// <param name="error">Error message if any.</param>
-        /// <returns>True on success, else false.</returns>
-        public bool DoLogOn(out string error, IDbContext dbContext, HttpContext httpContext, ILogger<LogOn> logger)
+        public bool DoLogOn(out string error, IDbContext dbContext, IAppConfiguration appConfig, HttpContext httpContext)
         {
             error = "";
             try
             {
-                var user = dbContext.GetAll<User>(new { UID = UserName, IsActive = true }).FirstOrDefault();
-                if (user?.IsActive != true)
+                Membership = dbContext.GetAll<UserMembership>(new { UserName }).FirstOrDefault();
+                if (Membership?.IsActive != true)
                 {
                     error = Account.ErrorCannotValidate;
+                    return false;
                 }
 
-                if (Hasher.VerifyPassword(user.Password, Password, user.Salt))
+                if (Membership.DateUnlocks > DateTimeOffset.Now)
                 {
-                    var claims = new List<Claim> {
-                        new Claim(ClaimTypes.Name, user.UID),
-                        new Claim(ClaimTypes.PrimarySid, user.Id.ToString()),
-                        new Claim("FullName", user.FullName)
-                    };
-                    claims.AddRange(dbContext.GetAll<UserClaim>(new { user.Id })
-                        .Select(x => new Claim(ClaimTypes.Role, $"{x.ControllerName}.{x.ActionName}".ToLower())));
+                    error = string.Format(Account.ErrorAccountLocked, appConfig.Membership.LoginAttemptsLockDuration);
+                    return false;
+                }
 
-                    var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                    var authProperties = new AuthenticationProperties {
-                        IsPersistent = true
-                    };
-
-                    var language = dbContext.Get<Language>(user.LanguageId);
-                    if (language != null)
+                if (!Hasher.VerifyPassword(Membership.Password, Password, Membership.Salt))
+                {
+                    // if the user's lock period has expired but they still entered the wrong password reset the count, otherwise increment the count
+                    Membership.LoginAttempts = Membership.LoginAttempts > appConfig.Membership.MaxLoginAttempts ? 1 : Membership.LoginAttempts + 1;
+                    if (Membership.LoginAttempts > appConfig.Membership.MaxLoginAttempts)
                     {
-                        var cultureInfo = new CultureInfo(language.LanguageCode);
-                        CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
-                        CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+                        Membership.DateUnlocks = DateTimeOffset.Now.AddMinutes(appConfig.Membership.LoginAttemptsLockDuration);
+                        error = string.Format(Account.ErrorAccountLocked, appConfig.Membership.LoginAttemptsLockDuration);
+                    }
+                    else
+                    {
+                        Membership.DateUnlocks = DateTimeOffset.MinValue;
+                        error = Account.ErrorCannotValidate;
                     }
 
-                    httpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
-                        new ClaimsPrincipal(claimsIdentity), authProperties);
+                    dbContext.Execute("UserLoginAttemptsSave", new { Membership.Id, Membership.LoginAttempts, Membership.DateUnlocks });
+                    return false;
+                }
 
-                    return true;
-                }
-                else
+                if (Membership.AllowSingleFactor)
                 {
-                    error = Account.ErrorCannotValidate;
+                    Membership.DoLogOn(dbContext, httpContext);
                 }
+                return true;
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, Account.ErrorCannotValidate);
+                Serilog.Log.Error(ex, Account.ErrorCannotValidate);
                 error = Account.ErrorCannotValidate;
             }
             return false;

@@ -141,8 +141,8 @@
   <data name="Password" xml:space="preserve">
     <value>Password</value>
   </data>
-  <data name="UID" xml:space="preserve">
-    <value>UserID</value>
+  <data name="UserName" xml:space="preserve">
+    <value>UserName</value>
   </data>
   <data name="Roles" xml:space="preserve">
     <value>Roles</value>
@@ -167,5 +167,11 @@
   </data>
   <data name="MenuItem" xml:space="preserve">
     <value>Users</value>
+  </data>
+  <data name="AllowSingleFactor" xml:space="preserve">
+    <value>Allow Single Factor Login</value>
+  </data>
+  <data name="IsLocked" xml:space="preserve">
+    <value>Locked</value>
   </data>
 </root>

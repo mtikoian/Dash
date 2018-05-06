@@ -7,12 +7,14 @@
     @Html.HiddenFor(model => model.Id)
     <div class="columns">
         <div class="col-6">
-            @Html.LabelInputFor(model => model.UID)
+            @Html.LabelInputFor(model => model.UserName)
             @Html.LabelInputFor(model => model.FirstName)
             @Html.LabelInputFor(model => model.LastName)
-            @Html.LabelCheckBoxFor(model => model.IsActive)
             @Html.LabelPasswordFor(model => model.Password, new { data_match = "ConfirmPassword", required = Model.Id == 0 })
             @Html.LabelPasswordFor(model => model.ConfirmPassword, new { required = Model.Id == 0 })
+            @Html.LabelCheckBoxFor(model => model.IsActive)
+            @Html.LabelCheckBoxFor(model => model.AllowSingleFactor)
+            @Html.LabelCheckBoxFor(model => model.IsLocked)
         </div>
 
         <div class="col-6">

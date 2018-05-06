@@ -15,6 +15,7 @@ namespace Dash.Models
     public class User : BaseModel, IValidatableObject
     {
         private List<Role> _AllRoles;
+        private bool? _IsLocked;
         private List<UserRole> _UserRole;
 
         public User()
@@ -26,6 +27,9 @@ namespace Dash.Models
             DbContext = dbContext;
         }
 
+        [Display(Name = "AllowSingleFactor", ResourceType = typeof(Users))]
+        public bool AllowSingleFactor { get; set; } = false;
+
         [JilDirective(true)]
         [BindNever, ValidateNever]
         public List<Role> AllRoles { get { return _AllRoles ?? (_AllRoles = DbContext.GetAll<Role>().ToList()); } }
@@ -35,9 +39,6 @@ namespace Dash.Models
         [DataType(System.ComponentModel.DataAnnotations.DataType.Password)]
         [Ignore]
         public string ConfirmPassword { get; set; }
-
-        [Ignore, JilDirective(true)]
-        public DateTimeOffset? DateReset { get; set; }
 
         [Display(Name = "Email", ResourceType = typeof(Users))]
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
@@ -60,6 +61,21 @@ namespace Dash.Models
         [Display(Name = "IsActive", ResourceType = typeof(Users))]
         public bool IsActive { get; set; } = false;
 
+        [Display(Name = "IsLocked", ResourceType = typeof(Users))]
+        [Ignore]
+        public bool IsLocked
+        {
+            get
+            {
+                if (!_IsLocked.HasValue)
+                {
+                    _IsLocked = LoginAttempts > AppConfig.Membership.MaxLoginAttempts;
+                }
+                return _IsLocked.Value;
+            }
+            set { _IsLocked = value; }
+        }
+
         [Ignore, JilDirective(true)]
         public string LanguageCode { get; set; }
 
@@ -72,26 +88,25 @@ namespace Dash.Models
         [StringLength(100, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string LastName { get; set; }
 
+        [Ignore, JilDirective(true)]
+        public int LoginAttempts { get; set; }
+
+        [Ignore, JilDirective(true)]
+        public string LoginHash { get; set; }
+
         [StringLength(250, MinimumLength = 0, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMinMaxLength")]
         [Display(Name = "Password", ResourceType = typeof(Users))]
         [DataType(System.ComponentModel.DataAnnotations.DataType.Password)]
         [Ignore]
         public string Password { get; set; }
 
-        [Ignore, JilDirective(true)]
-        public string ResetHash { get; set; }
-
         [Ignore]
         public List<int> RoleIds { get; set; }
 
-        [Ignore, JilDirective(true)]
-        public string Salt { get; set; }
-
-        [Display(Name = "UID", ResourceType = typeof(Users))]
+        [Display(Name = "UserName", ResourceType = typeof(Users))]
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         [StringLength(100, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
-        [JilDirective(Name = "UID")]
-        public string UID { get; set; }
+        public string UserName { get; set; }
 
         [JilDirective(true)]
         [BindNever, ValidateNever]
@@ -138,8 +153,24 @@ namespace Dash.Models
             DbContext.Save(this);
             if (!Password.IsEmpty())
             {
-                Salt = Hasher.GenerateSalt();
-                DbContext.Execute("UserPasswordSave", new { Id = Id, Password = Hasher.HashPassword(Password, Salt), Salt = Salt, RequestUserId = RequestUserId });
+                var salt = Hasher.GenerateSalt();
+                DbContext.Execute("UserPasswordSave", new { Id = Id, Password = Hasher.HashPassword(Password, salt), Salt = salt, RequestUserId = RequestUserId });
+            }
+
+            if (IsLocked)
+            {
+                DbContext.Execute("UserLoginAttemptsSave", new {
+                    Id = Id, LoginAttempts = AppConfig.Membership.MaxLoginAttempts + 1,
+                    DateUnlocks = DateTimeOffset.Now.AddMinutes(AppConfig.Membership.LoginAttemptsLockDuration)
+                });
+            }
+            else
+            {
+                // only update if the account is currently locked
+                if (DbContext.GetAll<UserMembership>(new { UserName }).FirstOrDefault()?.LoginAttempts > AppConfig.Membership.MaxLoginAttempts)
+                {
+                    DbContext.Execute("UserLoginAttemptsSave", new { Id = Id, LoginAttempts = 0, DateUnlocks = DateTimeOffset.MinValue });
+                }
             }
 
             return true;
@@ -183,9 +214,9 @@ namespace Dash.Models
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if (DbContext.GetAll<User>(new { UID }).Any(x => x.Id != Id))
+            if (DbContext.GetAll<User>(new { UserName }).Any(x => x.Id != Id))
             {
-                yield return new ValidationResult(Users.ErrorDuplicateName, new[] { "UID" });
+                yield return new ValidationResult(Users.ErrorDuplicateName, new[] { "UserName" });
             }
 
             if (Id == 0)

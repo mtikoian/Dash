@@ -61,6 +61,15 @@ namespace Dash.I18n {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You are required to use two factor authentication to login. If you have set up Google Authenticator before, enter the authentication code. If you have not, use the Help button to configure it..
+        /// </summary>
+        public static string Account_AuthCode {
+            get {
+                return ResourceManager.GetString("Account_AuthCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select how you want the data for this range to be aggregated together when calculating the Y value..
         /// </summary>
         public static string Chart_RangeAggregator {
@@ -529,11 +538,11 @@ namespace Dash.I18n {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The UserID is login name for the user..
+        ///   Looks up a localized string similar to The login name for the user..
         /// </summary>
-        public static string User_UID {
+        public static string User_UserName {
             get {
-                return ResourceManager.GetString("User_UID", resourceCulture);
+                return ResourceManager.GetString("User_UserName", resourceCulture);
             }
         }
         

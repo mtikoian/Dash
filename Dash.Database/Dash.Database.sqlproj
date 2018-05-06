@@ -125,6 +125,9 @@
     <Build Include="Stored Procedures\UserDelete.sql"/>
     <Build Include="Stored Procedures\UserGet.sql"/>
     <Build Include="Stored Procedures\UserHasDatasetAccess.sql"/>
+    <Build Include="Stored Procedures\UserLoginAttemptsSave.sql"/>
+    <Build Include="Stored Procedures\UserLoginSave.sql"/>
+    <Build Include="Stored Procedures\UserMembershipGet.sql"/>
     <Build Include="Stored Procedures\UserMembershipSave.sql"/>
     <Build Include="Stored Procedures\UserPasswordSave.sql"/>
     <Build Include="Stored Procedures\UserResetSave.sql"/>

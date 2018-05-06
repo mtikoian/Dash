@@ -61,7 +61,7 @@ namespace Dash.Controllers
         {
             return JsonComponent(Component.Table, @Users.ViewAll, new Table("tableUsers", Url.Action("List"),
                 new List<TableColumn> {
-                    new TableColumn("uid", Users.UID, Table.EditLink($"{Url.Action("Edit")}/{{id}}", User.IsInRole("user.edit"))),
+                    new TableColumn("userName", Users.UserName, Table.EditLink($"{Url.Action("Edit")}/{{id}}", User.IsInRole("user.edit"))),
                     new TableColumn("firstName", Users.FirstName),
                     new TableColumn("lastName", Users.LastName),
                     new TableColumn("email", Users.Email),
@@ -87,7 +87,7 @@ namespace Dash.Controllers
 
         private IEnumerable<object> GetList()
         {
-            return DbContext.GetAll<User>().Select(x => new { x.Id, x.UID, x.FirstName, x.LastName, x.Email });
+            return DbContext.GetAll<User>().Select(x => new { x.Id, x.UserName, x.FirstName, x.LastName, x.Email });
         }
 
         private IActionResult Save(User model)

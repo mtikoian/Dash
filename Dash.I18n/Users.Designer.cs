@@ -61,6 +61,15 @@ namespace Dash.I18n {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Allow Single Factor Login.
+        /// </summary>
+        public static string AllowSingleFactor {
+            get {
+                return ResourceManager.GetString("AllowSingleFactor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Confirm Password.
         /// </summary>
         public static string ConfirmPassword {
@@ -120,6 +129,15 @@ namespace Dash.I18n {
         public static string IsActive {
             get {
                 return ResourceManager.GetString("IsActive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Locked.
+        /// </summary>
+        public static string IsLocked {
+            get {
+                return ResourceManager.GetString("IsLocked", resourceCulture);
             }
         }
         
@@ -187,20 +205,20 @@ namespace Dash.I18n {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to UserID.
-        /// </summary>
-        public static string UID {
-            get {
-                return ResourceManager.GetString("UID", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to user.
         /// </summary>
         public static string UserLower {
             get {
                 return ResourceManager.GetString("UserLower", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UserName.
+        /// </summary>
+        public static string UserName {
+            get {
+                return ResourceManager.GetString("UserName", resourceCulture);
             }
         }
         

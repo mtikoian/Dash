@@ -2,53 +2,49 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Dash.I18n;
-using FluentEmail;
+using MailKit.Net.Smtp;
+using MailKit.Security;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
+using MimeKit;
 
 namespace Dash.Models
 {
     public class ForgotPassword : BaseModel
     {
-        private ActionContext _ActionContext;
-
-        public ForgotPassword(IActionContextAccessor actionContextAccessor)
-        {
-            _ActionContext = actionContextAccessor.ActionContext;
-        }
-
-        [Display(Name = "UID", ResourceType = typeof(I18n.Users))]
-        [Required(ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorRequired")]
-        [MaxLength(250, ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorMaxLength")]
+        [Display(Name = "UserName", ResourceType = typeof(Users))]
+        [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
+        [MaxLength(250, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string UserName { get; set; }
 
-        /// <summary>
-        /// Send an email with a password reset link.
-        /// </summary>
-        /// <param name="error">Error message if any.</param>
-        /// <returns>True on success, else false.</returns>
-        public bool Send(out string error)
+        public bool Send(out string error, HttpContext httpContext, UrlHelper urlHelper)
         {
             error = "";
             try
             {
-                var myUser = DbContext.GetAll<User>(new { UID = UserName }).FirstOrDefault();
+                var myUser = DbContext.GetAll<User>(new { UserName }).FirstOrDefault();
                 if (myUser != null)
                 {
                     var hash = Guid.NewGuid().ToString();
                     DbContext.Execute("UserResetSave", new { Id = myUser.Id, ResetHash = hash, DateReset = DateTimeOffset.Now });
 
-                    // email reset link to user
-                    var helper = new UrlHelper(_ActionContext);
-                    var email = Email.FromDefault()
-                        .To(myUser.Email)
-                        .Subject(Account.EmailTitlePasswordReset)
-                        .UsingTemplate(Account.EmailTextPasswordReset, new {
-                            Url = helper.Action("ResetPassword", "Account", new { myUser.Email, hash },
-                            _ActionContext.HttpContext.Request.Scheme)
-                        });
-                    email.Send();
+                    var emailMessage = new MimeMessage();
+                    emailMessage.From.Add(new MailboxAddress(AppConfig.Mail.FromName, AppConfig.Mail.FromAddress));
+                    emailMessage.To.Add(new MailboxAddress($"{myUser.FirstName} {myUser.LastName}".Trim(), myUser.Email));
+                    emailMessage.Subject = Account.EmailTitlePasswordReset;
+                    emailMessage.Body = new TextPart("html") {
+                        Text = string.Format(Account.EmailTextPasswordReset,
+                            urlHelper.Action("ResetPassword", "Account", new { Email = myUser.Email, Hash = hash }, httpContext.Request.Scheme, httpContext.Request.Host.ToUriComponent()))
+                    };
+
+                    using (var client = new SmtpClient())
+                    {
+                        client.Connect(AppConfig.Mail.Smtp.Host, AppConfig.Mail.Smtp.Port, SecureSocketOptions.None);
+                        client.Authenticate(AppConfig.Mail.Smtp.Username, AppConfig.Mail.Smtp.Password);
+                        client.Send(emailMessage);
+                        client.Disconnect(true);
+                    }
 
                     return true;
                 }

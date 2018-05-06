@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using Dash.Configuration;
 using Dash.I18n;
 using Dash.Utils;
 
@@ -31,22 +32,21 @@ namespace Dash.Models
         [Ignore]
         public string Password { get; set; }
 
-        public User User { get; set; }
+        private UserMembership Membership { get; set; }
 
         /// <summary>
         /// Reset a user's password.
         /// </summary>
         /// <param name="error">Error message if any.</param>
-        /// <param name="userId">Requesting user ID.</param>
         /// <returns>True on success, else false.</returns>
-        public bool Reset(out string error, int userId)
+        public bool Reset(out string error)
         {
             error = "";
             try
             {
                 var salt = Hasher.GenerateSalt();
-                DbContext.Execute("UserPasswordSave", new { Id = User.Id, Password = Hasher.HashPassword(Password, salt), Salt = salt, RequestUserId = userId });
-                DbContext.Execute("UserResetSave", new { User.Id });
+                DbContext.Execute("UserPasswordSave", new { Id = Membership.Id, Password = Hasher.HashPassword(Password, salt), Salt = salt, RequestUserId = Membership.Id });
+                DbContext.Execute("UserResetSave", new { Membership.Id });
                 return true;
             }
             catch (Exception ex)
@@ -64,10 +64,12 @@ namespace Dash.Models
         /// <returns></returns>
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            User = DbContext.GetAll<User>(new { Email = Email, IsActive = true }).FirstOrDefault();
-            if (User == null || User.ResetHash != Hash || User.DateReset == null || User.DateReset.Value < DateTimeOffset.Now.AddMinutes(-15))
+            DbContext = (IDbContext)validationContext.GetService(typeof(IDbContext));
+            AppConfig = (AppConfiguration)validationContext.GetService(typeof(AppConfiguration));
+            Membership = DbContext.GetAll<UserMembership>(new { Email }).FirstOrDefault();
+            if (Membership == null || Membership.ResetHash != Hash || Membership.DateReset == null || Membership.DateReset.Value < DateTimeOffset.Now.AddMinutes(-15))
             {
-                User = null;
+                Membership = null;
                 yield return new ValidationResult(Account.ErrorResetPassword);
             }
 

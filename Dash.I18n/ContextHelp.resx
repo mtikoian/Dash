@@ -270,8 +270,8 @@
   <data name="User_LanguageId" xml:space="preserve">
     <value>This will be the default language in which this user will see the site.</value>
   </data>
-  <data name="User_UID" xml:space="preserve">
-    <value>The UserID is login name for the user.</value>
+  <data name="User_UserName" xml:space="preserve">
+    <value>The login name for the user.</value>
   </data>
   <data name="User_UserRole" xml:space="preserve">
     <value>A user will be able to login, but not do anything if they don't have any roles assigned.</value>
@@ -281,5 +281,8 @@
   </data>
   <data name="DatasetColumn_IsParam" xml:space="preserve">
     <value>Check this if this is an input parameter for the procedure. Parameter columns will be visible for use when filtering a report, but will not be viewable as a column in the report.</value>
+  </data>
+  <data name="Account_AuthCode" xml:space="preserve">
+    <value>You are required to use two factor authentication to login. If you have set up Google Authenticator before, enter the authentication code. If you have not, use the Help button to configure it.</value>
   </data>
 </root>

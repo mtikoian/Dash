@@ -50,11 +50,5 @@ namespace Dash.Controllers
             }
             return Ok(new { message });
         }
-
-        protected RedirectToActionResult RedirectWithError(string controller, string action, string error, object routeValues = null)
-        {
-            TempData["Error"] = error;
-            return RedirectToAction(action, routeValues);
-        }
     }
 }

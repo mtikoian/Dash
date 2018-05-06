@@ -141,8 +141,8 @@
   <data name="Password" xml:space="preserve">
     <value>Contraseña</value>
   </data>
-  <data name="UID" xml:space="preserve">
-    <value>ID de Usuario</value>
+  <data name="UserName" xml:space="preserve">
+    <value>UserName</value>
   </data>
   <data name="Roles" xml:space="preserve">
     <value>Roles</value>
