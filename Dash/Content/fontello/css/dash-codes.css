@@ -1,6 +1,7 @@
 
 .dash-frown:before { content: '\e800'; } /* '' */
 .dash-help:before { content: '\e801'; } /* '' */
+.dash-unlock:before { content: '\e802'; } /* '' */
 .dash-up-big:before { content: '\e804'; } /* '' */
 .dash-down-big:before { content: '\e805'; } /* '' */
 .dash-cancel:before { content: '\e806'; } /* '' */

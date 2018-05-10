@@ -157,23 +157,12 @@ namespace Dash.Models
                 DbContext.Execute("UserPasswordSave", new { Id = Id, Password = Hasher.HashPassword(Password, salt), Salt = salt, RequestUserId = RequestUserId });
             }
 
-            if (IsLocked)
-            {
-                DbContext.Execute("UserLoginAttemptsSave", new {
-                    Id = Id, LoginAttempts = AppConfig.Membership.MaxLoginAttempts + 1,
-                    DateUnlocks = DateTimeOffset.Now.AddMinutes(AppConfig.Membership.LoginAttemptsLockDuration)
-                });
-            }
-            else
-            {
-                // only update if the account is currently locked
-                if (DbContext.GetAll<UserMembership>(new { UserName }).FirstOrDefault()?.LoginAttempts > AppConfig.Membership.MaxLoginAttempts)
-                {
-                    DbContext.Execute("UserLoginAttemptsSave", new { Id = Id, LoginAttempts = 0, DateUnlocks = DateTimeOffset.MinValue });
-                }
-            }
-
             return true;
+        }
+
+        public void Unlock()
+        {
+            DbContext.Execute("UserLoginAttemptsSave", new { Id = Id, LoginAttempts = 0, DateUnlocks = DateTimeOffset.MinValue });
         }
 
         public bool UpdateProfile(out string errorMsg)

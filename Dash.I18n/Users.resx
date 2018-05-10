@@ -174,4 +174,10 @@
   <data name="IsLocked" xml:space="preserve">
     <value>Locked</value>
   </data>
+  <data name="SuccessUnlockingUser" xml:space="preserve">
+    <value>User unlocked successfully.</value>
+  </data>
+  <data name="Unlock" xml:space="preserve">
+    <value>Unlock</value>
+  </data>
 </root>

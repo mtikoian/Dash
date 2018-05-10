@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Dash.I18n;
-using Jil;
 
 namespace Dash
 {
@@ -19,7 +18,8 @@ namespace Dash
         Trash,
         Clone,
         HeartBeat,
-        Database
+        Database,
+        Unlock
     }
 
     public class Table
@@ -43,9 +43,6 @@ namespace Dash
         public string Id { get; set; }
         public bool LoadAllData { get; set; } = true;
         public bool Searchable { get; set; } = true;
-
-        [JilDirective(true)]
-        public string ToJson { get { return JSON.SerializeDynamic(this, JilOutputFormatter.Options); } }
 
         public string Url { get; set; }
 
@@ -138,18 +135,20 @@ namespace Dash
 
     public class TableLink
     {
-        public TableLink(string href, Dictionary<string, object> attributes = null, string label = null, TableIcon? icon = null, HttpVerbs method = HttpVerbs.Get)
+        public TableLink(string href, Dictionary<string, object> attributes = null, string label = null, TableIcon? icon = null, HttpVerbs method = HttpVerbs.Get, object jsonLogic = null)
         {
             Href = href;
             Attributes = attributes?.ToDictionary(k => k.Key, v => v.Value.ToString());
             Label = label;
             Icon = icon;
             Method = method;
+            JsonLogic = jsonLogic;
         }
 
         public Dictionary<string, string> Attributes { get; set; }
         public string Href { get; set; }
         public TableIcon? Icon { get; set; }
+        public object JsonLogic { get; set; }
         public string Label { get; set; }
         public HttpVerbs Method { get; set; } = HttpVerbs.Get;
     }

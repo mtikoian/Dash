@@ -205,6 +205,24 @@ namespace Dash.I18n {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to User unlocked successfully..
+        /// </summary>
+        public static string SuccessUnlockingUser {
+            get {
+                return ResourceManager.GetString("SuccessUnlockingUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unlock.
+        /// </summary>
+        public static string Unlock {
+            get {
+                return ResourceManager.GetString("Unlock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to user.
         /// </summary>
         public static string UserLower {

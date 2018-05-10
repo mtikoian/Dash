@@ -72,7 +72,7 @@ namespace Dash
         /// <param name="dict">Dictionary to update</param>
         /// <param name="key">Key for the new value</param>
         /// <param name="value">Value to append.</param>
-        public static Dictionary<string, object> Append(this Dictionary<string, object> dictionary, string key, string value, string separator = " ")
+        public static Dictionary<string, string> Append(this Dictionary<string, string> dictionary, string key, string value, string separator = " ")
         {
             if (dictionary.ContainsKey(key))
             {
@@ -82,6 +82,18 @@ namespace Dash
             {
                 dictionary[key] = value;
             }
+            return dictionary;
+        }
+
+        /// <summary>
+        /// Add/replace a value in a dictionary.
+        /// </summary>
+        /// <param name="dict">Dictionary to update</param>
+        /// <param name="key">Key for the new value</param>
+        /// <param name="value">Value to append.</param>
+        public static Dictionary<string, object> Append(this Dictionary<string, object> dictionary, string key, object value)
+        {
+            dictionary[key] = value;
             return dictionary;
         }
 

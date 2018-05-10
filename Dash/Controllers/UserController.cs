@@ -67,7 +67,12 @@ namespace Dash.Controllers
                     new TableColumn("email", Users.Email),
                     new TableColumn("actions", Core.Actions, false, links: new List<TableLink>()
                         .AddIf(Table.EditButton($"{Url.Action("Edit")}/{{id}}"), User.IsInRole("user.edit"))
-                        .AddIf(Table.DeleteButton($"{Url.Action("Delete")}/{{id}}", string.Format(Core.ConfirmDeleteBody, Users.UserLower)), User.IsInRole("user.delete")))
+                        .AddIf(Table.DeleteButton($"{Url.Action("Delete")}/{{id}}", string.Format(Core.ConfirmDeleteBody, Users.UserLower)), User.IsInRole("user.delete"))
+                        .AddIf(new TableLink($"{Url.Action("Unlock")}/{{id}}", Html.Classes(DashClasses.DashAjax, DashClasses.BtnInfo),
+                            Users.Unlock, TableIcon.Unlock, HttpVerbs.Put,
+                            new Dictionary<string, object>().Append("!!", new object[] { new Dictionary<string, object>().Append("var", "isLocked") })
+                        ), User.IsInRole("user.unlock"))
+                    )
                 },
                 new List<TableHeaderButton>().AddIf(Table.CreateButton(Url.Action("Create"), Users.CreateUser), User.IsInRole("user.create")),
                 GetList()
@@ -80,6 +85,18 @@ namespace Dash.Controllers
             return JsonRows(GetList());
         }
 
+        [HttpPut, AjaxRequestOnly]
+        public IActionResult Unlock(int id)
+        {
+            var model = DbContext.Get<User>(id);
+            if (model == null)
+            {
+                return JsonError(Core.ErrorInvalidId);
+            }
+            model.Unlock();
+            return JsonSuccess(Users.SuccessUnlockingUser);
+        }
+
         private IActionResult CreateEditView(User model)
         {
             return PartialView("CreateEdit", model);
@@ -87,7 +104,7 @@ namespace Dash.Controllers
 
         private IEnumerable<object> GetList()
         {
-            return DbContext.GetAll<User>().Select(x => new { x.Id, x.UserName, x.FirstName, x.LastName, x.Email });
+            return DbContext.GetAll<User>().Select(x => new { x.Id, x.UserName, x.FirstName, x.LastName, x.Email, x.IsLocked });
         }
 
         private IActionResult Save(User model)
