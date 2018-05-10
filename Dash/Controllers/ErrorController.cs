@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Linq;
 using Dash.Configuration;
+using Dash.I18n;
 using Dash.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Dash.Controllers
 {
@@ -19,6 +21,8 @@ namespace Dash.Controllers
                 var statusFeature = HttpContext.Features.Get<IStatusCodeReExecuteFeature>();
                 Serilog.Log.Error("Unhandled error code `{0}` for request `{1}`.", code, statusFeature?.OriginalPath);
             }
+            if (Request.IsAjaxRequest())
+                return JsonError(new string[] { "403" }.Contains(code) ? Core.ErrorAuthorization : Core.ErrorGeneric);
             return View("Error");
         }
 
