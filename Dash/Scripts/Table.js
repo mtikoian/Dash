@@ -888,6 +888,9 @@
                     function(obj, column) { return self.getDisplayValue(obj[column.field], column.dataType.toLowerCase()); } :
                     function(obj, column) {
                         return column.links.map(function(link) {
+                            if (link.jsonLogic && !$.jsonLogic.apply(link.jsonLogic, obj)) {
+                                return null;
+                            }
                             var label = $.coalesce(link.label, self.getDisplayValue(obj[column.field], column.dataType.toLowerCase()));
                             var attr = $.clone(link.attributes) || {};
                             var href = link.href || null;
@@ -898,7 +901,7 @@
                                     }
                                 }
                             }
-                            var classes = attr['class'].split(' ');
+                            var classes = (attr['class'] || '').split(' ');
                             var isBtn = classes.indexOf('btn') !== -1;
                             if (isBtn) {
                                 attr['type'] = attr['role'] = 'button';
