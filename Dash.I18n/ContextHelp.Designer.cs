@@ -520,15 +520,6 @@ namespace Dash.I18n {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Check this box if you want this user to be able to login..
-        /// </summary>
-        public static string User_IsActive {
-            get {
-                return ResourceManager.GetString("User_IsActive", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to This will be the default language in which this user will see the site..
         /// </summary>
         public static string User_LanguageId {

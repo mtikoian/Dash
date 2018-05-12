@@ -129,9 +129,6 @@
   <data name="FirstName" xml:space="preserve">
     <value>Nombre</value>
   </data>
-  <data name="IsActive" xml:space="preserve">
-    <value>Activado!</value>
-  </data>
   <data name="Language" xml:space="preserve">
     <value>Idioma</value>
   </data>

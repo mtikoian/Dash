@@ -17,27 +17,25 @@ namespace Dash.Models
 
         [Display(Name = "AuthCode", ResourceType = typeof(Account))]
         public string AuthCode { get; set; }
-        public DateTimeOffset? DateLogin { get; set; }
-        public DateTimeOffset? DateUnlocks { get; set; }
+        public DateTimeOffset? DateLoginWindow { get; set; }
         public DateTimeOffset? DateReset { get; set; }
+        public DateTimeOffset? DateUnlocks { get; set; }
         public string Email { get; set; }
         public string FirstName { get; set; }
         public string FullName { get { return $"{FirstName.Trim()} {LastName}".Trim(); } }
-        public bool IsActive { get; set; }
         public int LanguageId { get; set; }
         public string LastName { get; set; }
         public int LoginAttempts { get; set; }
         public string LoginHash { get; set; }
-        public string ResetHash { get; set; }
         public string Password { get; set; }
+        public string ResetHash { get; set; }
         public string Salt { get; set; }
         public string UserName { get; set; }
 
         public string CreateHash()
         {
             LoginHash = Guid.NewGuid().ToString();
-            // @todo rename to something like DateLoginWindow to make more sense
-            DbContext.Execute("UserLoginSave", new { Id = Id, LoginHash = LoginHash, DateLogin = DateTimeOffset.Now.AddMinutes(5) });
+            DbContext.Execute("UserLoginSave", new { Id = Id, LoginHash = LoginHash, DateLoginWindow = DateTimeOffset.Now.AddMinutes(5) });
             return LoginHash;
         }
 

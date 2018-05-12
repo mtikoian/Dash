@@ -11,6 +11,12 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace Dash.Models
 {
+    public enum UserStatus
+    {
+        Active = 1,
+        Deleted = 0
+    }
+
     [HasMany(typeof(UserRole))]
     public class User : BaseModel, IValidatableObject
     {
@@ -58,10 +64,6 @@ namespace Dash.Models
         [Ignore, JilDirective(true)]
         public string FullName { get { return $"{FirstName.Trim()} {LastName}".Trim(); } }
 
-        [Display(Name = "IsActive", ResourceType = typeof(Users))]
-        public bool IsActive { get; set; } = false;
-
-        [Display(Name = "IsLocked", ResourceType = typeof(Users))]
         [Ignore]
         public bool IsLocked
         {

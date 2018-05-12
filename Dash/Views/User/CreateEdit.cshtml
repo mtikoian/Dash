@@ -12,7 +12,6 @@
             @Html.LabelInputFor(model => model.LastName)
             @Html.LabelPasswordFor(model => model.Password, new { data_match = "ConfirmPassword", required = Model.Id == 0 })
             @Html.LabelPasswordFor(model => model.ConfirmPassword, new { required = Model.Id == 0 })
-            @Html.LabelCheckBoxFor(model => model.IsActive)
             @Html.LabelCheckBoxFor(model => model.AllowSingleFactor)
         </div>
 

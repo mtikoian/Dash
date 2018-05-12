@@ -35,15 +35,15 @@ namespace Dash.Controllers
             var widget = DbContext.Get<Widget>(id);
             if (widget == null)
             {
-                return JsonError(Core.ErrorInvalidId);
+                return Error(Core.ErrorInvalidId);
             }
             if (!widget.AllowEdit)
             {
-                return JsonError(Core.ErrorInvalidId);
+                return Error(Core.ErrorInvalidId);
             }
 
             DbContext.Delete(widget);
-            return JsonSuccess(Widgets.SuccessDeletingWidget);
+            return Success(Widgets.SuccessDeletingWidget);
         }
 
         [HttpGet, AjaxRequestOnly]
@@ -52,11 +52,11 @@ namespace Dash.Controllers
             var widget = DbContext.Get<Widget>(id);
             if (widget == null)
             {
-                return JsonError(Core.ErrorInvalidId);
+                return Error(Core.ErrorInvalidId);
             }
             if (!widget.AllowEdit)
             {
-                return JsonError(Core.ErrorInvalidId);
+                return Error(Core.ErrorInvalidId);
             }
 
             return CreateEditView(widget);
@@ -76,7 +76,7 @@ namespace Dash.Controllers
         [HttpGet]
         public IActionResult IndexOptions()
         {
-            return JsonData(new WidgetList(DbContext, _ActionContextAccessor, User.UserId()).Widgets);
+            return Data(new WidgetList(DbContext, _ActionContextAccessor, User.UserId()).Widgets);
         }
 
         [HttpPost, AjaxRequestOnly]
@@ -84,14 +84,14 @@ namespace Dash.Controllers
         {
             if (model == null)
             {
-                return JsonError(Core.ErrorGeneric);
+                return Error(Core.ErrorGeneric);
             }
             if (!ModelState.IsValid)
             {
-                return JsonError(ModelState.ToErrorString());
+                return Error(ModelState.ToErrorString());
             }
             model.Update();
-            return JsonSuccess();
+            return Success();
         }
 
         [AjaxRequestOnly]
@@ -106,9 +106,9 @@ namespace Dash.Controllers
             var model = DbContext.Get<Widget>(id);
             if (model == null)
             {
-                return JsonError(Core.ErrorInvalidId);
+                return Error(Core.ErrorInvalidId);
             }
-            return JsonData(model);
+            return Data(model);
         }
 
         private IActionResult CreateEditView(Widget model)
@@ -120,14 +120,14 @@ namespace Dash.Controllers
         {
             if (model == null)
             {
-                return JsonError(Core.ErrorGeneric);
+                return Error(Core.ErrorGeneric);
             }
             if (!ModelState.IsValid)
             {
-                return JsonError(ModelState.ToErrorString());
+                return Error(ModelState.ToErrorString());
             }
             model.Save();
-            return JsonSuccess(Widgets.SuccessSavingWidget);
+            return Success(Widgets.SuccessSavingWidget);
         }
     }
 }

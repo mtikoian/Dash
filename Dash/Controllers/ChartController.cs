@@ -22,11 +22,11 @@ namespace Dash.Controllers
             var chart = DbContext.Get<Chart>(id);
             if (chart == null)
             {
-                return JsonError(Core.ErrorInvalidId);
+                return Error(Core.ErrorInvalidId);
             }
             if (!chart.IsOwner)
             {
-                return JsonError(Charts.ErrorOwnerOnly);
+                return Error(Charts.ErrorOwnerOnly);
             }
             return PartialView(chart);
         }
@@ -36,14 +36,14 @@ namespace Dash.Controllers
         {
             if (model == null)
             {
-                return JsonError(Core.ErrorGeneric);
+                return Error(Core.ErrorGeneric);
             }
             if (!ModelState.IsValid)
             {
-                return JsonError(ModelState.ToErrorString());
+                return Error(ModelState.ToErrorString());
             }
             model.Update();
-            return JsonData(new {
+            return Data(new {
                 message = Charts.SuccessSavingChart,
                 closeParent = true,
                 parentTarget = true,
@@ -56,10 +56,10 @@ namespace Dash.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return JsonError(ModelState.ToErrorString());
+                return Error(ModelState.ToErrorString());
             }
             model.Save();
-            return JsonSuccess();
+            return Success();
         }
 
         [HttpGet, AjaxRequestOnly]
@@ -73,16 +73,16 @@ namespace Dash.Controllers
         {
             if (model == null)
             {
-                return JsonError(Core.ErrorGeneric);
+                return Error(Core.ErrorGeneric);
             }
             if (!ModelState.IsValid)
             {
-                return JsonError(ModelState.ToErrorString());
+                return Error(ModelState.ToErrorString());
             }
 
             var newChart = Chart.Create(model, User.UserId());
             DbContext.Save(newChart, false);
-            return JsonData(new { message = Charts.SuccessSavingChart, dialogUrl = Url.Action("Details", new { @id = newChart.Id }) });
+            return Data(new { message = Charts.SuccessSavingChart, dialogUrl = Url.Action("Details", new { @id = newChart.Id }) });
         }
 
         [HttpPost, AjaxRequestOnly]
@@ -91,18 +91,18 @@ namespace Dash.Controllers
             var chart = DbContext.Get<Chart>(id);
             if (chart == null)
             {
-                return JsonError(Core.ErrorInvalidId);
+                return Error(Core.ErrorInvalidId);
             }
             var user = DbContext.Get<User>(User.UserId());
             if (!user.CanViewChart(chart))
             {
-                return JsonError(Charts.ErrorPermissionDenied);
+                return Error(Charts.ErrorPermissionDenied);
             }
             if ((chart.ChartRange?.Count ?? 0) == 0)
             {
-                return JsonError(Charts.ErrorNoRanges);
+                return Error(Charts.ErrorNoRanges);
             }
-            return JsonData(chart.GetData(User.IsInRole("dataset.create")));
+            return Data(chart.GetData(User.IsInRole("dataset.create")));
         }
 
         [HttpDelete, AjaxRequestOnly]
@@ -111,14 +111,14 @@ namespace Dash.Controllers
             var chart = DbContext.Get<Chart>(id);
             if (chart == null)
             {
-                return JsonError(Core.ErrorInvalidId);
+                return Error(Core.ErrorInvalidId);
             }
             if (!chart.IsOwner)
             {
-                return JsonError(Charts.ErrorOwnerOnly);
+                return Error(Charts.ErrorOwnerOnly);
             }
             DbContext.Delete(chart);
-            return JsonSuccess(Charts.SuccessDeletingChart);
+            return Success(Charts.SuccessDeletingChart);
         }
 
         [HttpGet, AjaxRequestOnly]
@@ -127,12 +127,12 @@ namespace Dash.Controllers
             var chart = DbContext.Get<Chart>(id);
             if (chart == null)
             {
-                return JsonError(Core.ErrorInvalidId);
+                return Error(Core.ErrorInvalidId);
             }
             var user = DbContext.Get<User>(User.UserId());
             if (!user.CanViewChart(chart))
             {
-                return JsonError(Charts.ErrorPermissionDenied);
+                return Error(Charts.ErrorPermissionDenied);
             }
             return PartialView("Details", chart);
         }
@@ -143,12 +143,12 @@ namespace Dash.Controllers
             var chart = DbContext.Get<Chart>(id);
             if (chart == null)
             {
-                return JsonError(Core.ErrorInvalidId);
+                return Error(Core.ErrorInvalidId);
             }
             var user = DbContext.Get<User>(User.UserId());
             if (!user.CanViewChart(chart))
             {
-                return JsonError(Charts.ErrorPermissionDenied);
+                return Error(Charts.ErrorPermissionDenied);
             }
 
             var columns = new Dictionary<int, List<RangeColumn>>();
@@ -160,7 +160,7 @@ namespace Dash.Controllers
                 columns[x.ReportId].Add(x);
             });
 
-            return JsonData(new {
+            return Data(new {
                 chartId = chart.Id,
                 dateIntervals = chart.DateIntervalList.Prepend(new { Id = 0, Name = Charts.DateInterval }),
                 aggregators = chart.AggregatorList.Prepend(new { Id = 0, Name = Charts.Aggregator }),
@@ -185,11 +185,11 @@ namespace Dash.Controllers
         {
             if (model == null)
             {
-                return JsonError(Core.ErrorGeneric);
+                return Error(Core.ErrorGeneric);
             }
             if (!ModelState.IsValid)
             {
-                return JsonError(ModelState.ToErrorString());
+                return Error(ModelState.ToErrorString());
             }
             return File(model.Stream(), model.ContentType, model.FormattedFileName);
         }
@@ -197,7 +197,7 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly]
         public IActionResult Index()
         {
-            return JsonComponent(Component.Table, Charts.ViewAll, new Table("tableCharts", Url.Action("List"), new List<TableColumn> {
+            return Component(Dash.Component.Table, Charts.ViewAll, new Table("tableCharts", Url.Action("List"), new List<TableColumn> {
                 new TableColumn("name", Charts.Name, Table.EditLink($"{Url.Action("Details")}/{{id}}", User.IsInRole("chart.details"))),
                 new TableColumn("actions", Core.Actions, sortable: false, links: new List<TableLink>()
                         .AddIf(Table.EditButton($"{Url.Action("Details")}/{{id}}"), User.IsInRole("chart.details"))
@@ -212,7 +212,7 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly]
         public IActionResult List()
         {
-            return JsonRows(GetList());
+            return Rows(GetList());
         }
 
         [HttpGet, AjaxRequestOnly]
@@ -221,20 +221,20 @@ namespace Dash.Controllers
             var chart = DbContext.Get<Chart>(id);
             if (chart == null)
             {
-                return JsonError(Core.ErrorInvalidId);
+                return Error(Core.ErrorInvalidId);
             }
             if (!chart.IsOwner)
             {
-                return JsonError(Charts.ErrorOwnerOnly);
+                return Error(Charts.ErrorOwnerOnly);
             }
             if (prompt.IsEmpty())
             {
-                return JsonError(Charts.ErrorNameRequired);
+                return Error(Charts.ErrorNameRequired);
             }
 
             chart.Name = prompt.Trim();
             DbContext.Save(chart, false);
-            return JsonData(new { message = Charts.NameSaved, content = prompt });
+            return Data(new { message = Charts.NameSaved, content = prompt });
         }
 
         [HttpPost, AjaxRequestOnly]
@@ -242,13 +242,13 @@ namespace Dash.Controllers
         {
             if (model == null)
             {
-                return JsonError(Core.ErrorInvalidId);
+                return Error(Core.ErrorInvalidId);
             }
             if (!ModelState.IsValid)
             {
-                return JsonError(ModelState.ToErrorString());
+                return Error(ModelState.ToErrorString());
             }
-            return JsonData(new { ranges = model.Update() });
+            return Data(new { ranges = model.Update() });
         }
 
         [HttpGet, AjaxRequestOnly]
@@ -257,11 +257,11 @@ namespace Dash.Controllers
             var chart = DbContext.Get<Chart>(id);
             if (chart == null)
             {
-                return JsonError(Core.ErrorInvalidId);
+                return Error(Core.ErrorInvalidId);
             }
             if (!chart.IsOwner)
             {
-                return JsonError(Charts.ErrorOwnerOnly);
+                return Error(Charts.ErrorOwnerOnly);
             }
             return PartialView(chart);
         }
@@ -271,14 +271,14 @@ namespace Dash.Controllers
         {
             if (model == null)
             {
-                return JsonError(Core.ErrorInvalidId);
+                return Error(Core.ErrorInvalidId);
             }
             if (!ModelState.IsValid)
             {
-                return JsonError(ModelState.ToErrorString());
+                return Error(ModelState.ToErrorString());
             }
             model.Update();
-            return JsonSuccess(Charts.SuccessSavingChart);
+            return Success(Charts.SuccessSavingChart);
         }
 
         private IEnumerable<Chart> GetList()

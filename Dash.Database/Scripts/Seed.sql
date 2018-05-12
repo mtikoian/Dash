@@ -109,7 +109,7 @@ INSERT [RolePermission] ([RoleId], [PermissionId])
 	SELECT @RoleId, Id FROM [Permission]
 
 DECLARE @UserId INT
-INSERT [User] (UserName, [FirstName], [LastName], [LanguageId], [IsActive], [Email], [Password], [Salt]) 
+INSERT [User] (UserName, [FirstName], [LastName], [LanguageId], [Status], [Email], [Password], [Salt]) 
 	VALUES (N'admin', N'Admin', N'User', @LanguageId, 1, @AdminEmail, NULL, NULL)
 SET @UserId = SCOPE_IDENTITY()
 

@@ -4,7 +4,7 @@
  AS
 	SET NOCOUNT ON
 
-	SELECT Id, UserName, FirstName, LastName, LanguageId, [Password], Salt, IsActive, LoginAttempts, DateUnlocks, AllowSingleFactor, Email, DateReset, ResetHash
+	SELECT Id, UserName, FirstName, LastName, LanguageId, [Password], Salt, LoginAttempts, DateUnlocks, AllowSingleFactor, Email, DateReset, ResetHash, DateLoginWindow, LoginHash
     FROM [User] 
     WHERE ((@UserName IS NOT NULL AND UserName = @UserName ) OR (@Email IS NOT NULL AND Email = @Email ))
-        AND [Status] = 1 AND IsDeleted = 0
+        AND [Status] = 1

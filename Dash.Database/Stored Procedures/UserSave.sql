@@ -4,7 +4,6 @@
 	@FirstName NVARCHAR(100),
 	@LastName NVARCHAR(100),
 	@LanguageId INT,
-	@IsActive BIT,
 	@Email NVARCHAR(100),
     @AllowSingleFactor BIT,
 	@RequestUserId INT = NULL
@@ -13,13 +12,13 @@ AS
 
 	IF ISNULL(@Id, 0) = 0
 		BEGIN
-			INSERT INTO [User] (UserName, FirstName, LastName, [LanguageId], IsActive, Email, AllowSingleFactor, UserCreated)
-				VALUES (@UserName, @FirstName, @LastName, @LanguageId, @IsActive, @Email, @AllowSingleFactor, @RequestUserId)
+			INSERT INTO [User] (UserName, FirstName, LastName, [LanguageId], Email, AllowSingleFactor, UserCreated)
+				VALUES (@UserName, @FirstName, @LastName, @LanguageId, @Email, @AllowSingleFactor, @RequestUserId)
 			SET @Id = SCOPE_IDENTITY()
 		END
 	ELSE
 		BEGIN
-			UPDATE [User] SET UserName = @UserName, FirstName = @FirstName, LastName = @LastName, [LanguageId] = @LanguageId, IsActive = @IsActive, 
+			UPDATE [User] SET UserName = @UserName, FirstName = @FirstName, LastName = @LastName, [LanguageId] = @LanguageId, 
 				Email = @Email, AllowSingleFactor = @AllowSingleFactor, UserUpdated = @RequestUserId, DateUpdated = SYSDATETIMEOFFSET() WHERE Id = @Id
 		END
 	RETURN 0

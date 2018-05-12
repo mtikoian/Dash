@@ -8,7 +8,7 @@
  AS
 	SET NOCOUNT ON
 
-	SELECT @Id = Id FROM [User] WHERE UserName = @UserName AND IsDeleted = 0
+	SELECT @Id = Id FROM [User] WHERE UserName = @UserName AND [Status] = 1
 
 	IF ISNULL(@Id, 0) = 0
 		BEGIN

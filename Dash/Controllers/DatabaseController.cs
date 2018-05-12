@@ -33,10 +33,10 @@ namespace Dash.Controllers
             var model = DbContext.Get<Database>(id);
             if (model == null)
             {
-                return JsonError(Core.ErrorInvalidId);
+                return Error(Core.ErrorInvalidId);
             }
             DbContext.Delete(model);
-            return JsonSuccess(Databases.SuccessDeletingDatabase);
+            return Success(Databases.SuccessDeletingDatabase);
         }
 
         [HttpGet, AjaxRequestOnly]
@@ -45,7 +45,7 @@ namespace Dash.Controllers
             var model = DbContext.Get<Database>(id);
             if (model == null)
             {
-                return JsonError(Core.ErrorInvalidId);
+                return Error(Core.ErrorInvalidId);
             }
             model.ConnectionString = model.ConnectionString.IsEmpty() ? null : new Crypt(AppConfig).Decrypt(model.ConnectionString);
             return CreateEditView(model);
@@ -60,7 +60,7 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly]
         public IActionResult Index()
         {
-            return JsonComponent(Component.Table, Databases.ViewAll, new Table("tableDatabases", Url.Action("List"), new List<TableColumn> {
+            return Component(Dash.Component.Table, Databases.ViewAll, new Table("tableDatabases", Url.Action("List"), new List<TableColumn> {
                 new TableColumn("name", Databases.Name, Table.EditLink($"{Url.Action("Edit")}/{{id}}", User.IsInRole("database.edit"))),
                 new TableColumn("databaseName", Databases.DatabaseName),
                 new TableColumn("host", Databases.Host),
@@ -79,7 +79,7 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly]
         public IActionResult List()
         {
-            return JsonRows(GetList());
+            return Rows(GetList());
         }
 
         [HttpGet, AjaxRequestOnly]
@@ -88,9 +88,9 @@ namespace Dash.Controllers
             var model = DbContext.Get<Database>(id);
             if (model == null)
             {
-                return JsonError(Core.ErrorInvalidId);
+                return Error(Core.ErrorInvalidId);
             }
-            return model.TestConnection(out var errorMsg) ? JsonSuccess(Databases.SuccessTestingConnection) : JsonError(errorMsg);
+            return model.TestConnection(out var errorMsg) ? Success(Databases.SuccessTestingConnection) : Error(errorMsg);
         }
 
         private IActionResult CreateEditView(Database model)
@@ -107,14 +107,14 @@ namespace Dash.Controllers
         {
             if (model == null)
             {
-                return JsonError(Core.ErrorGeneric);
+                return Error(Core.ErrorGeneric);
             }
             if (!ModelState.IsValid)
             {
-                return JsonError(ModelState.ToErrorString());
+                return Error(ModelState.ToErrorString());
             }
             model.Save();
-            return JsonSuccess(Databases.SuccessSavingDatabase);
+            return Success(Databases.SuccessSavingDatabase);
         }
     }
 }

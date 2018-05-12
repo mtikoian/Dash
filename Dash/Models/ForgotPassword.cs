@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using Dash.Configuration;
 using Dash.I18n;
 using MailKit.Net.Smtp;
 using MailKit.Security;
@@ -18,19 +19,19 @@ namespace Dash.Models
         [MaxLength(250, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string UserName { get; set; }
 
-        public bool Send(out string error, HttpContext httpContext, UrlHelper urlHelper)
+        public bool Send(out string error, IDbContext dbContext, HttpContext httpContext, IAppConfiguration appConfig, UrlHelper urlHelper)
         {
             error = "";
             try
             {
-                var myUser = DbContext.GetAll<User>(new { UserName }).FirstOrDefault();
+                var myUser = dbContext.GetAll<User>(new { UserName }).FirstOrDefault();
                 if (myUser != null)
                 {
                     var hash = Guid.NewGuid().ToString();
-                    DbContext.Execute("UserResetSave", new { Id = myUser.Id, ResetHash = hash, DateReset = DateTimeOffset.Now });
+                    dbContext.Execute("UserResetSave", new { Id = myUser.Id, ResetHash = hash, DateReset = DateTimeOffset.Now });
 
                     var emailMessage = new MimeMessage();
-                    emailMessage.From.Add(new MailboxAddress(AppConfig.Mail.FromName, AppConfig.Mail.FromAddress));
+                    emailMessage.From.Add(new MailboxAddress(appConfig.Mail.FromName, appConfig.Mail.FromAddress));
                     emailMessage.To.Add(new MailboxAddress($"{myUser.FirstName} {myUser.LastName}".Trim(), myUser.Email));
                     emailMessage.Subject = Account.EmailTitlePasswordReset;
                     emailMessage.Body = new TextPart("html") {
@@ -40,8 +41,8 @@ namespace Dash.Models
 
                     using (var client = new SmtpClient())
                     {
-                        client.Connect(AppConfig.Mail.Smtp.Host, AppConfig.Mail.Smtp.Port, SecureSocketOptions.None);
-                        client.Authenticate(AppConfig.Mail.Smtp.Username, AppConfig.Mail.Smtp.Password);
+                        client.Connect(appConfig.Mail.Smtp.Host, appConfig.Mail.Smtp.Port, SecureSocketOptions.None);
+                        client.Authenticate(appConfig.Mail.Smtp.Username, appConfig.Mail.Smtp.Password);
                         client.Send(emailMessage);
                         client.Disconnect(true);
                     }

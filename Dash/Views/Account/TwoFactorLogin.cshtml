@@ -7,7 +7,7 @@
             @using (Html.BeginCustomForm("TwoFactorLogin", "Account", ajaxForm: false))
             {
                 @Html.HiddenFor(m => m.UserName)
-                @Html.Hidden("LoginHash", Model.CreateHash())
+                @Html.Hidden("LoginHash", Model.LoginHash)
 
                 <div class="col-12 pb-2">
                     <h4>@Account.TwoFactor</h4>
@@ -17,7 +17,7 @@
 
                 <div class="col-12 pt-2">
                     <div class="col-6">
-                        @Html.LabelInputFor(m => m.AuthCode)
+                        @Html.LabelInputFor(m => m.AuthCode, new { required = true })
                     </div>
                 </div>
 
@@ -26,8 +26,8 @@
                         <div class="columns">
                             <span class="form-buttons col-8 col-ml-auto">
                                 <input type="submit" value="@Account.Login" class="btn btn-primary" />
-                                @Html.ActionLink(Core.Cancel, "Login", "Account", null, new { @class = "btn btn-warning dash-ajax" })
-                                @Html.ActionLink(Account.Help, "TwoFactorHelp", "Account", null, new { @class = "btn btn-info dash-ajax" })
+                                @Html.ActionLink(Core.Cancel, "Login", "Account", null, new { @class = "btn btn-warning" })
+                                @Html.ActionLink(Account.Help, "TwoFactorHelp", "Account", new { Username = Model.UserName }, new { @class = "btn btn-info" })
                             </span>
                         </div>
                     </div>

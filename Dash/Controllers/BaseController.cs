@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Dash.Configuration;
 using Dash.Models;
+using Dash.I18n;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dash.Controllers
@@ -17,12 +18,12 @@ namespace Dash.Controllers
         protected IDbContext DbContext { get; set; }
         protected int ID { get; set; }
 
-        public IActionResult JsonData(object data)
+        public IActionResult Data(object data)
         {
             return Ok(data);
         }
 
-        public IActionResult JsonComponent(Component component, string title, object data, bool isBasic = true)
+        public IActionResult Component(Component component, string title, object data, bool isBasic = true)
         {
             return Ok(new {
                 Component = component.ToString(),
@@ -32,7 +33,7 @@ namespace Dash.Controllers
             });
         }
 
-        public IActionResult JsonError(string error)
+        public IActionResult Error(string error)
         {
             if (Request.IsAjaxRequest())
             {
@@ -43,13 +44,19 @@ namespace Dash.Controllers
             return View("Error");
         }
 
-        public IActionResult JsonRows(IEnumerable<object> rows)
+        public IActionResult Rows(IEnumerable<object> rows)
         {
             return Ok(new { Rows = rows });
         }
 
-        public IActionResult JsonSuccess(string message = "")
+        public IActionResult Success(string message = "")
         {
+            if (!Request.IsAjaxRequest())
+            {
+                // this shouldn't happen
+                ViewBag.Error = Core.ErrorGeneric;
+                return View("Error");
+            }
             if (message.IsEmpty())
             {
                 return Ok(new { result = true });

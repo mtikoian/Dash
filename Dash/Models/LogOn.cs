@@ -29,12 +29,6 @@ namespace Dash.Models
             try
             {
                 Membership = dbContext.GetAll<UserMembership>(new { UserName }).FirstOrDefault();
-                if (Membership?.IsActive != true)
-                {
-                    error = Account.ErrorCannotValidate;
-                    return false;
-                }
-
                 if (Membership.DateUnlocks > DateTimeOffset.Now)
                 {
                     error = string.Format(Account.ErrorAccountLocked, appConfig.Membership.LoginAttemptsLockDuration);

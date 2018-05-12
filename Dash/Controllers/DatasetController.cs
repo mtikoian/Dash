@@ -27,14 +27,14 @@ namespace Dash.Controllers
         {
             if (model == null)
             {
-                return JsonError(Core.ErrorGeneric);
+                return Error(Core.ErrorGeneric);
             }
             if (!ModelState.IsValid)
             {
-                return JsonError(ModelState.ToErrorString());
+                return Error(ModelState.ToErrorString());
             }
             model.Save();
-            return JsonSuccess(Datasets.SuccessCopyingDataset);
+            return Success(Datasets.SuccessCopyingDataset);
         }
 
         [HttpGet, AjaxRequestOnly]
@@ -56,10 +56,10 @@ namespace Dash.Controllers
             var model = DbContext.Get<Dataset>(id);
             if (model == null)
             {
-                return JsonError(Core.ErrorInvalidId);
+                return Error(Core.ErrorInvalidId);
             }
             DbContext.Delete(model);
-            return JsonSuccess(Datasets.SuccessDeletingDataset);
+            return Success(Datasets.SuccessDeletingDataset);
         }
 
         [HttpGet, AjaxRequestOnly]
@@ -68,7 +68,7 @@ namespace Dash.Controllers
             var model = DbContext.Get<Dataset>(id);
             if (model == null)
             {
-                return JsonError(Core.ErrorInvalidId);
+                return Error(Core.ErrorInvalidId);
             }
             return CreateEditView(model);
         }
@@ -98,7 +98,7 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly]
         public IActionResult Index()
         {
-            return JsonComponent(Component.Table, Datasets.ViewAll, new Table("tableDatasets", Url.Action("List"), new List<TableColumn> {
+            return Component(Dash.Component.Table, Datasets.ViewAll, new Table("tableDatasets", Url.Action("List"), new List<TableColumn> {
                 new TableColumn("name", Datasets.Name, Table.EditLink($"{Url.Action("Edit")}/{{id}}", User.IsInRole("dataset.edit"))),
                 new TableColumn("databaseName", Databases.DatabaseName, Table.EditLink($"{Url.Action("Edit", "Database")}/{{databaseId}}", User.IsInRole("database.edit"))),
                 new TableColumn("databaseHost", Datasets.Host),
@@ -116,19 +116,19 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly]
         public IActionResult List()
         {
-            return JsonRows(GetList());
+            return Rows(GetList());
         }
 
         [HttpGet, AjaxRequestOnly]
         public IActionResult ReadSchema(int databaseId, List<string> sources)
         {
-            return JsonData(new { columns = new Dataset(DbContext).ImportSchema(databaseId, sources) });
+            return Data(new { columns = new Dataset(DbContext).ImportSchema(databaseId, sources) });
         }
 
         [HttpGet, AjaxRequestOnly]
         public IActionResult Sources(int databaseId, int typeId)
         {
-            return JsonData(DbContext.Get<Database>(databaseId)?.GetSourceList(true, typeId == (int)DatasetTypes.Proc));
+            return Data(DbContext.Get<Database>(databaseId)?.GetSourceList(true, typeId == (int)DatasetTypes.Proc));
         }
 
         [HttpPost, AjaxRequestOnly]
@@ -136,17 +136,17 @@ namespace Dash.Controllers
         {
             if (model == null)
             {
-                return JsonError(Core.ErrorGeneric);
+                return Error(Core.ErrorGeneric);
             }
             if (!ModelState.IsValid)
             {
-                return JsonError(ModelState.ToErrorString());
+                return Error(ModelState.ToErrorString());
             }
             if (model.Tables?.Any() != true)
             {
-                return JsonData("");
+                return Data("");
             }
-            return JsonData(model.GetList());
+            return Data(model.GetList());
         }
 
         private IActionResult CreateEditView(Dataset model)
@@ -167,14 +167,14 @@ namespace Dash.Controllers
         {
             if (model == null)
             {
-                return JsonError(Core.ErrorGeneric);
+                return Error(Core.ErrorGeneric);
             }
             if (!ModelState.IsValid)
             {
-                return JsonError(ModelState.ToErrorString());
+                return Error(ModelState.ToErrorString());
             }
             model.Save();
-            return JsonSuccess(Datasets.SuccessSavingDataset);
+            return Success(Datasets.SuccessSavingDataset);
         }
     }
 }

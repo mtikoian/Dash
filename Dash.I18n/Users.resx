@@ -129,9 +129,6 @@
   <data name="FirstName" xml:space="preserve">
     <value>First Name</value>
   </data>
-  <data name="IsActive" xml:space="preserve">
-    <value>Active</value>
-  </data>
   <data name="Language" xml:space="preserve">
     <value>Language</value>
   </data>
@@ -170,9 +167,6 @@
   </data>
   <data name="AllowSingleFactor" xml:space="preserve">
     <value>Allow Single Factor Login</value>
-  </data>
-  <data name="IsLocked" xml:space="preserve">
-    <value>Locked</value>
   </data>
   <data name="SuccessUnlockingUser" xml:space="preserve">
     <value>User unlocked successfully.</value>

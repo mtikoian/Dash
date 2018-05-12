@@ -12,7 +12,8 @@ namespace Dash.Models
     /// </summary>
     public class TwoFactorLogin : BaseModel
     {
-        [Required]
+        [Display(Name = "AuthCode", ResourceType = typeof(Account))]
+        [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public string AuthCode { get; set; }
 
         [Required]
@@ -33,7 +34,7 @@ namespace Dash.Models
                 return false;
             }
 
-            if (Membership.DateLogin < DateTimeOffset.Now || LoginHash != Membership.LoginHash)
+            if (Membership.DateLoginWindow < DateTimeOffset.Now || LoginHash != Membership.LoginHash)
             {
                 error = Account.ErrorFactorExpired;
                 return false;
@@ -46,7 +47,7 @@ namespace Dash.Models
                 return false;
             }
 
-            dbContext.Execute("UserLoginSave", new { Id = Membership.Id, LoginHash = (string)null, DateLogin = (DateTimeOffset?)null });
+            dbContext.Execute("UserLoginSave", new { Id = Membership.Id, LoginHash = (string)null, DateLoginWindow = (DateTimeOffset?)null });
             // reload updated membership info
             Membership = dbContext.GetAll<UserMembership>(new { Username }).FirstOrDefault();
             return true;

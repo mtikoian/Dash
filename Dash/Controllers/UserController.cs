@@ -33,10 +33,10 @@ namespace Dash.Controllers
             var model = DbContext.Get<User>(id);
             if (model == null)
             {
-                return JsonError(Core.ErrorInvalidId);
+                return Error(Core.ErrorInvalidId);
             }
             DbContext.Delete(model);
-            return JsonSuccess(Users.SuccessDeletingUser);
+            return Success(Users.SuccessDeletingUser);
         }
 
         [HttpGet, AjaxRequestOnly]
@@ -45,7 +45,7 @@ namespace Dash.Controllers
             var model = DbContext.Get<User>(id);
             if (model == null)
             {
-                return JsonError(Core.ErrorInvalidId);
+                return Error(Core.ErrorInvalidId);
             }
             return CreateEditView(model);
         }
@@ -59,7 +59,7 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly]
         public IActionResult Index()
         {
-            return JsonComponent(Component.Table, @Users.ViewAll, new Table("tableUsers", Url.Action("List"),
+            return Component(Dash.Component.Table, Users.ViewAll, new Table("tableUsers", Url.Action("List"),
                 new List<TableColumn> {
                     new TableColumn("userName", Users.UserName, Table.EditLink($"{Url.Action("Edit")}/{{id}}", User.IsInRole("user.edit"))),
                     new TableColumn("firstName", Users.FirstName),
@@ -82,7 +82,7 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly]
         public IActionResult List()
         {
-            return JsonRows(GetList());
+            return Rows(GetList());
         }
 
         [HttpPut, AjaxRequestOnly]
@@ -91,10 +91,10 @@ namespace Dash.Controllers
             var model = DbContext.Get<User>(id);
             if (model == null)
             {
-                return JsonError(Core.ErrorInvalidId);
+                return Error(Core.ErrorInvalidId);
             }
             model.Unlock();
-            return JsonSuccess(Users.SuccessUnlockingUser);
+            return Success(Users.SuccessUnlockingUser);
         }
 
         private IActionResult CreateEditView(User model)
@@ -111,17 +111,17 @@ namespace Dash.Controllers
         {
             if (model == null)
             {
-                return JsonError(Core.ErrorGeneric);
+                return Error(Core.ErrorGeneric);
             }
             if (!ModelState.IsValid)
             {
-                return JsonError(ModelState.ToErrorString());
+                return Error(ModelState.ToErrorString());
             }
             if (!model.Save())
             {
-                return JsonError(model.Error);
+                return Error(model.Error);
             }
-            return JsonSuccess(Users.SuccessSavingUser);
+            return Success(Users.SuccessSavingUser);
         }
     }
 }

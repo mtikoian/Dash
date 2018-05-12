@@ -1,8 +1,7 @@
 ﻿CREATE PROCEDURE UserGet
 	@Id INT = NULL,
 	@UserName NVARCHAR(100) = NULL,
-	@Email NVARCHAR(100) = NULL,
-	@IsActive BIT = NULL
+	@Email NVARCHAR(100) = NULL
 AS
 	SET NOCOUNT ON
 	
@@ -16,9 +15,9 @@ AS
 	ELSE
 		INSERT INTO @Ids SELECT ID FROM [User]
 
-	SELECT u.Id, UserName, FirstName, LastName, LanguageId, IsActive, Email, AllowSingleFactor, l.LanguageCode, LoginAttempts 
+	SELECT u.Id, UserName, FirstName, LastName, LanguageId, Email, AllowSingleFactor, l.LanguageCode, LoginAttempts 
 	FROM @Ids i
 	INNER JOIN [User] u ON u.Id = i.Id
 	LEFT JOIN [Language] l ON l.Id = u.LanguageId
-	WHERE ISNULL(@IsActive, IsActive) = IsActive AND IsDeleted = 0
+	WHERE [Status] = 1
 	ORDER BY UserName

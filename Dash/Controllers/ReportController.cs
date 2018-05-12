@@ -22,14 +22,14 @@ namespace Dash.Controllers
         {
             if (model == null)
             {
-                return JsonError(Core.ErrorGeneric);
+                return Error(Core.ErrorGeneric);
             }
             if (!ModelState.IsValid)
             {
-                return JsonError(ModelState.ToErrorString());
+                return Error(ModelState.ToErrorString());
             }
             model.Save();
-            return JsonSuccess();
+            return Success();
         }
 
         [HttpGet, AjaxRequestOnly]
@@ -43,11 +43,11 @@ namespace Dash.Controllers
         {
             if (model == null)
             {
-                return JsonError(Core.ErrorGeneric);
+                return Error(Core.ErrorGeneric);
             }
             if (!ModelState.IsValid)
             {
-                return JsonError(ModelState.ToErrorString());
+                return Error(ModelState.ToErrorString());
             }
 
             var userId = User.UserId();
@@ -59,7 +59,7 @@ namespace Dash.Controllers
                 RequestUserId = userId
             };
             DbContext.Save(newReport, false);
-            return JsonData(new { message = Reports.SuccessSavingReport, dialogUrl = Url.Action("SelectColumns", new { @id = newReport.Id, @closeParent = false }) });
+            return Data(new { message = Reports.SuccessSavingReport, dialogUrl = Url.Action("SelectColumns", new { @id = newReport.Id, @closeParent = false }) });
         }
 
         [HttpPost, AjaxRequestOnly]
@@ -67,14 +67,14 @@ namespace Dash.Controllers
         {
             if (model == null)
             {
-                return JsonError(Core.ErrorGeneric);
+                return Error(Core.ErrorGeneric);
             }
             if (!ModelState.IsValid)
             {
-                return JsonError(ModelState.ToErrorString());
+                return Error(ModelState.ToErrorString());
             }
             model.Update();
-            return JsonData(model.GetResult());
+            return Data(model.GetResult());
         }
 
         [HttpDelete, AjaxRequestOnly]
@@ -83,14 +83,14 @@ namespace Dash.Controllers
             var report = DbContext.Get<Report>(id);
             if (report == null)
             {
-                return JsonError(Core.ErrorInvalidId);
+                return Error(Core.ErrorInvalidId);
             }
             if (!report.IsOwner)
             {
-                return JsonError(Reports.ErrorOwnerOnly);
+                return Error(Reports.ErrorOwnerOnly);
             }
             DbContext.Delete(report);
-            return JsonSuccess(Reports.SuccessDeletingReport);
+            return Success(Reports.SuccessDeletingReport);
         }
 
         [HttpGet, AjaxRequestOnly]
@@ -99,17 +99,17 @@ namespace Dash.Controllers
             var report = DbContext.Get<Report>(id);
             if (report == null)
             {
-                return JsonError(Core.ErrorInvalidId);
+                return Error(Core.ErrorInvalidId);
             }
             var user = DbContext.Get<User>(User.UserId());
             if (!user.CanViewReport(report))
             {
-                return JsonError(Reports.ErrorPermissionDenied);
+                return Error(Reports.ErrorPermissionDenied);
             }
 
             if ((report.Dataset?.DatasetColumn?.Count ?? 0) == 0 || !user.CanAccessDataset(report.Dataset.Id))
             {
-                return JsonError(Reports.ErrorGeneric);
+                return Error(Reports.ErrorGeneric);
             }
 
             if (report.ReportColumn.Count > 0 && !report.ReportColumn.Any(x => x.SortDirection != null))
@@ -127,15 +127,15 @@ namespace Dash.Controllers
             var report = DbContext.Get<Report>(id);
             if (report == null)
             {
-                return JsonError(Core.ErrorInvalidId);
+                return Error(Core.ErrorInvalidId);
             }
             var user = DbContext.Get<User>(User.UserId());
             if (!user.CanViewReport(report))
             {
-                return JsonError(Reports.ErrorPermissionDenied);
+                return Error(Reports.ErrorPermissionDenied);
             }
 
-            return JsonData(new {
+            return Data(new {
                 reportId = report.Id,
                 allowEdit = report.IsOwner,
                 loadAllData = report.Dataset.IsProc,
@@ -181,16 +181,16 @@ namespace Dash.Controllers
             var report = DbContext.Get<Report>(id);
             if (report == null)
             {
-                return JsonError(Core.ErrorInvalidId);
+                return Error(Core.ErrorInvalidId);
             }
             var user = DbContext.Get<User>(User.UserId());
             if (!user.CanViewReport(report))
             {
-                return JsonError(Reports.ErrorPermissionDenied);
+                return Error(Reports.ErrorPermissionDenied);
             }
             if (report.Dataset?.DatasetColumn.Any() != true)
             {
-                return JsonError(Reports.ErrorNoColumnsSelected);
+                return Error(Reports.ErrorNoColumnsSelected);
             }
 
             var export = new ExportData { Report = report, HttpContext = HttpContext, AppConfig = AppConfig };
@@ -200,7 +200,7 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly]
         public IActionResult Index()
         {
-            return JsonComponent(Component.Table, Reports.ViewAll, new Table("tableReports", Url.Action("List"), new List<TableColumn> {
+            return Component(Dash.Component.Table, Reports.ViewAll, new Table("tableReports", Url.Action("List"), new List<TableColumn> {
                 new TableColumn("name", Reports.Name, Table.EditLink($"{Url.Action("Details")}/{{id}}", User.IsInRole("report.details"))),
                 new TableColumn("datasetName", Reports.Dataset, Table.EditLink($"{Url.Action("Edit", "Dataset")}/{{datasetId}}", User.IsInRole("dataset.edit"))),
                 new TableColumn("actions", Core.Actions, sortable: false, links: new List<TableLink>()
@@ -216,7 +216,7 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly]
         public IActionResult List()
         {
-            return JsonRows(GetList());
+            return Rows(GetList());
         }
 
         [HttpPut, AjaxRequestOnly]
@@ -225,20 +225,20 @@ namespace Dash.Controllers
             var report = DbContext.Get<Report>(id);
             if (report == null)
             {
-                return JsonError(Core.ErrorInvalidId);
+                return Error(Core.ErrorInvalidId);
             }
             if (!report.IsOwner)
             {
-                return JsonError(Reports.ErrorOwnerOnly);
+                return Error(Reports.ErrorOwnerOnly);
             }
             if (prompt.IsEmpty())
             {
-                return JsonError(Reports.ErrorNameRequired);
+                return Error(Reports.ErrorNameRequired);
             }
 
             report.Name = prompt.Trim();
             DbContext.Save(report, false);
-            return JsonData(new { message = Reports.NameSaved, content = prompt });
+            return Data(new { message = Reports.NameSaved, content = prompt });
         }
 
         [HttpPut, AjaxRequestOnly]
@@ -246,13 +246,13 @@ namespace Dash.Controllers
         {
             if (model == null)
             {
-                return JsonError(Core.ErrorGeneric);
+                return Error(Core.ErrorGeneric);
             }
             if (!ModelState.IsValid)
             {
-                return JsonError(ModelState.ToErrorString());
+                return Error(ModelState.ToErrorString());
             }
-            return JsonData(new { filters = model.Update() });
+            return Data(new { filters = model.Update() });
         }
 
         [HttpPut, AjaxRequestOnly]
@@ -260,13 +260,13 @@ namespace Dash.Controllers
         {
             if (model == null)
             {
-                return JsonError(Core.ErrorGeneric);
+                return Error(Core.ErrorGeneric);
             }
             if (!ModelState.IsValid)
             {
-                return JsonError(ModelState.ToErrorString());
+                return Error(ModelState.ToErrorString());
             }
-            return JsonData(new { groups = model.Update() });
+            return Data(new { groups = model.Update() });
         }
 
         [HttpGet, AjaxRequestOnly]
@@ -275,16 +275,16 @@ namespace Dash.Controllers
             var report = DbContext.Get<Report>(id);
             if (report == null)
             {
-                return JsonError(Core.ErrorInvalidId);
+                return Error(Core.ErrorInvalidId);
             }
             if (!report.IsOwner)
             {
-                return JsonError(Reports.ErrorOwnerOnly);
+                return Error(Reports.ErrorOwnerOnly);
             }
             var user = DbContext.Get<User>(User.UserId());
             if (!user.CanAccessDataset(report.DatasetId))
             {
-                return JsonError(Reports.ErrorInvalidDatasetId);
+                return Error(Reports.ErrorInvalidDatasetId);
             }
             report.AllowCloseParent = closeParent;
             return PartialView(report);
@@ -295,14 +295,14 @@ namespace Dash.Controllers
         {
             if (model == null)
             {
-                return JsonError(Core.ErrorGeneric);
+                return Error(Core.ErrorGeneric);
             }
             if (!ModelState.IsValid)
             {
-                return JsonError(ModelState.ToErrorString());
+                return Error(ModelState.ToErrorString());
             }
             model.Update();
-            return JsonData(new {
+            return Data(new {
                 message = Reports.SuccessSavingReport,
                 closeParent = model.AllowCloseParent,
                 parentTarget = true,
@@ -316,11 +316,11 @@ namespace Dash.Controllers
             var report = DbContext.Get<Report>(id);
             if (report == null)
             {
-                return JsonError(Core.ErrorInvalidId);
+                return Error(Core.ErrorInvalidId);
             }
             if (!report.IsOwner)
             {
-                return JsonError(Reports.ErrorOwnerOnly);
+                return Error(Reports.ErrorOwnerOnly);
             }
 
             return PartialView(report);
@@ -331,14 +331,14 @@ namespace Dash.Controllers
         {
             if (model == null)
             {
-                return JsonError(Core.ErrorGeneric);
+                return Error(Core.ErrorGeneric);
             }
             if (!ModelState.IsValid)
             {
-                return JsonError(ModelState.ToErrorString());
+                return Error(ModelState.ToErrorString());
             }
             model.Update();
-            return JsonSuccess(Reports.SuccessSavingReport);
+            return Success(Reports.SuccessSavingReport);
         }
 
         [HttpPut, AjaxRequestOnly]
@@ -346,14 +346,14 @@ namespace Dash.Controllers
         {
             if (model == null)
             {
-                return JsonError(Core.ErrorGeneric);
+                return Error(Core.ErrorGeneric);
             }
             if (!ModelState.IsValid)
             {
-                return JsonError(ModelState.ToErrorString());
+                return Error(ModelState.ToErrorString());
             }
             model.Update();
-            return JsonSuccess();
+            return Success();
         }
 
         private IEnumerable<Report> GetList()

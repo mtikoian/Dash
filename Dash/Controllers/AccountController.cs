@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using System.Security.Claims;
 using Dash.Configuration;
 using Dash.I18n;
 using Dash.Models;
@@ -9,9 +8,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.Extensions.Logging;
 
 namespace Dash.Controllers
 {
@@ -21,32 +18,35 @@ namespace Dash.Controllers
         {
         }
 
-        [HttpGet, AjaxRequestOnly]
+        [HttpGet]
         public IActionResult ForgotPassword()
         {
             if (User.Identity.IsAuthenticated)
             {
-                return JsonError(Core.ErrorAlreadyLoggedIn);
+                return Error(Core.ErrorAlreadyLoggedIn);
             }
-            return PartialView(new ForgotPassword());
+            return View(new ForgotPassword());
         }
 
-        [HttpPost, AjaxRequestOnly]
-        public IActionResult ForgotPassword([FromBody] ForgotPassword model)
+        [HttpPost, ValidateAntiForgeryToken]
+        public IActionResult ForgotPassword([FromForm] ForgotPassword model)
         {
             if (User.Identity.IsAuthenticated)
             {
-                return JsonError(Core.ErrorAlreadyLoggedIn);
+                return Error(Core.ErrorAlreadyLoggedIn);
             }
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                if (model.Send(out var error, HttpContext, new UrlHelper(ControllerContext)))
-                {
-                    return JsonSuccess(Account.ForgotPasswordEmailSentText);
-                }
-                return JsonError(error);
+                ViewBag.Error = ModelState.ToErrorString();
+                return View(model);
             }
-            return JsonError(ModelState.ToErrorString());
+            if (!model.Send(out var error, DbContext, HttpContext, AppConfig, new UrlHelper(ControllerContext)))
+            {
+                ViewBag.Error = error;
+                return View(model);
+            }
+            ViewBag.Error = Account.ForgotPasswordEmailSentText;
+            return View("Login", new LogOn());
         }
 
         [HttpGet]
@@ -54,7 +54,7 @@ namespace Dash.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                return JsonError(Core.ErrorAlreadyLoggedIn);
+                return Error(Core.ErrorAlreadyLoggedIn);
             }
             return View(new LogOn());
         }
@@ -64,7 +64,7 @@ namespace Dash.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                return JsonError(Core.ErrorAlreadyLoggedIn);
+                return Error(Core.ErrorAlreadyLoggedIn);
             }
             if (!ModelState.IsValid)
             {
@@ -81,10 +81,11 @@ namespace Dash.Controllers
             {
                 return RedirectToAction("Index", "Dashboard");
             }
+            model.Membership.CreateHash();
             return View("TwoFactorLogin", model.Membership);
         }
 
-        [HttpGet]
+        [HttpGet, AjaxRequestOnly]
         public IActionResult LogOff()
         {
             HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
@@ -97,7 +98,7 @@ namespace Dash.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                return JsonError(Core.ErrorAlreadyLoggedIn);
+                return Error(Core.ErrorAlreadyLoggedIn);
             }
             if (!ModelState.IsValid)
             {
@@ -107,12 +108,12 @@ namespace Dash.Controllers
             return View(model);
         }
 
-        [HttpPost]
+        [HttpPost, ValidateAntiForgeryToken]
         public IActionResult ResetPassword([FromForm] ResetPassword model, bool resetting = false)
         {
             if (User.Identity.IsAuthenticated)
             {
-                return JsonError(Core.ErrorAlreadyLoggedIn);
+                return Error(Core.ErrorAlreadyLoggedIn);
             }
             if (ModelState.IsValid)
             {
@@ -145,18 +146,22 @@ namespace Dash.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                return JsonError(Core.ErrorAlreadyLoggedIn);
+                return Error(Core.ErrorAlreadyLoggedIn);
             }
             var membership = DbContext.GetAll<UserMembership>(new { username }).FirstOrDefault();
+            if (membership == null)
+            {
+                return Error(Core.ErrorGeneric);
+            }
             return View(new TwoFactorAuthenticator().GenerateSetupCode(AppConfig.Membership.AuthenticatorAppName, membership.Email, AppConfig.Membership.AuthenticatorKey, true, 2));
         }
 
         [HttpPost, ValidateAntiForgeryToken]
-        public IActionResult TwoFactorLogin(TwoFactorLogin model)
+        public IActionResult TwoFactorLogin([FromForm] TwoFactorLogin model)
         {
             if (User.Identity.IsAuthenticated)
             {
-                return JsonError(Core.ErrorAlreadyLoggedIn);
+                return Error(Core.ErrorAlreadyLoggedIn);
             }
             if (!ModelState.IsValid)
             {
@@ -167,27 +172,27 @@ namespace Dash.Controllers
             if (!model.Validate(out var error, DbContext, AppConfig))
             {
                 ViewBag.Error = error;
-                return View(model);
+                return View(model.Membership);
             }
 
             model.Membership.DoLogOn(DbContext, HttpContext);
             return RedirectToAction("Index", "Dashboard");
         }
 
-        [HttpGet, Authorize]
+        [HttpGet, AjaxRequestOnly, Authorize]
         public IActionResult Update()
         {
             return PartialView(DbContext.GetAll<User>(new { UserName = User.Identity.Name }).First());
         }
 
-        [HttpPost, Authorize, ValidateAntiForgeryToken]
+        [HttpPost, AjaxRequestOnly, Authorize, ValidateAntiForgeryToken]
         public IActionResult Update([FromBody] User model)
         {
             if (model.UpdateProfile(out var errorMsg))
             {
-                return JsonSuccess(Account.AccountUpdated);
+                return Success(Account.AccountUpdated);
             }
-            return JsonError(errorMsg);
+            return Error(errorMsg);
         }
     }
 }

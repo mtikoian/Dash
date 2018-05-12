@@ -1,7 +1,6 @@
 ﻿@import "spectre/variables";
 
 html, body {
-    height: 100%;
     width: 100%;
     background: #000;
 }
@@ -84,6 +83,7 @@ body.toggled {
 #dashboard {
     position: relative;
     height: 100%;
+    background-color: white;
 
     .widget-data {
         .container-fluid {
