@@ -85,8 +85,8 @@
             return;
         }
 
-        if (this.dashChart && this.dashChart.chart) {
-            this.dashChart.chart.destroy();
+        if (this.dashChart) {
+            this.dashChart.destroy();
         }
 
         this.dashChart = new DashChart(chartContent, true, this.processJsonFn, null, this.toggleExportFn);

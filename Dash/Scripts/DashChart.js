@@ -84,7 +84,7 @@
 
             $.show($.get('.chart-spinner', self.content));
             $.hide($.get('.chart-error', self.content));
-            $.hide(self.canvas);
+            $.hide(self.canvas.parentNode);
             if (self.toggleExportFn) {
                 self.toggleExportFn(false);
             }
@@ -109,7 +109,7 @@
 
                 $.hide($.get('.chart-spinner', self.content));
                 $.hide($.get('.chart-error', self.content));
-                $.show(self.canvas);
+                $.show(self.canvas.parentNode);
                 if (self.toggleExportFn) {
                     self.toggleExportFn(true);
                 }

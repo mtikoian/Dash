@@ -135,7 +135,7 @@
                                             m('.btn.btn-info.btn-sm', { onclick: self.refresh.bind(self) }, $.resx('tryAgain'))
                                         ])
                                     ),
-                                    m('.canvas-container', m('canvas.chart-canvas.d-none'))
+                                    m('.canvas-container.d-none', m('canvas.chart-canvas'))
                                 ])
                         ]),
                         m('.grid-footer', [
