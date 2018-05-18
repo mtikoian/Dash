@@ -94,7 +94,7 @@ namespace Dash
         /// <param name="value">Value to append.</param>
         public static Dictionary<string, object> Append(this Dictionary<string, object> dictionary, string key, object value)
         {
-            dictionary[key] = value;
+            dictionary[key] = dictionary.ContainsKey(key) ? dictionary[key] + " " + value : value;
             return dictionary;
         }
 
