@@ -123,7 +123,7 @@ namespace Dash.Models
             {
                 return JSON.SerializeDynamic(new {
                     reportId = Id,
-                    userList = DbContext.GetAll<User>(new { Status = (int)UserStatus.Active }).OrderBy(x => x.LastName).ThenBy(x => x.FirstName)
+                    userList = DbContext.GetAll<User>().OrderBy(x => x.LastName).ThenBy(x => x.FirstName)
                         .Select(x => new { x.Id, x.FullName }).Prepend(new { Id = 0, FullName = Core.SelectUser }),
                     roleList = DbContext.GetAll<Role>().OrderBy(x => x.Name).Select(x => new { x.Id, x.Name })
                         .Prepend(new { Id = 0, Name = Core.SelectRole }),

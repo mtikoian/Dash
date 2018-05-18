@@ -11,12 +11,6 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace Dash.Models
 {
-    public enum UserStatus
-    {
-        Active = 1,
-        Deleted = 0
-    }
-
     [HasMany(typeof(UserRole))]
     public class User : BaseModel, IValidatableObject
     {
