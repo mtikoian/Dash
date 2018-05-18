@@ -43,7 +43,7 @@
         }
         if (isObject(src)) {
             cpy = {};
-            // copy dialog pototype over definition.
+            // copy dialog prototype over definition.
             for (var prop in src) {
                 if (src.hasOwnProperty(prop)) {
                     cpy[prop] = clone(src[prop]);
@@ -287,11 +287,14 @@
         if (container) {
             return container.querySelector(selector);
         }
-        var sel = selector.charAt(0);
         var simple = selector.indexOf(' ', 1) === -1 && selector.indexOf('.', 1) === -1;
-        if (sel === '#' && simple) {
+        if (!simple) {
+            return document.querySelector(selector);
+        }
+        var sel = selector.charAt(0);
+        if (sel === '#') {
             return document.getElementById(selector.substr(1));
-        } else if (sel === '.' && simple) {
+        } else if (sel === '.') {
             var res = document.getElementsByClassName(selector.substr(1));
             return res.length ? res[0] : null;
         } else {
@@ -542,7 +545,7 @@
     };
 
     /**
-     * Run afunction when page is loaded
+     * Run a function when page is loaded
      * @param {Function} fn - Function to run.
      */
     var ready = function(fn) {
