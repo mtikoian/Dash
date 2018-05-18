@@ -262,7 +262,6 @@
         return this.records.map(function(x, index) {
             var column = $.hasPositiveValue(x.columnId) ? $.findByKey(self.columnFn(), 'id', x.columnId) : null;
 
-            // @todo this isn't setting the `placeholder` default value correctly anymore it seems
             var attrs = {
                 name: 'ReportFilter[' + index + '].ColumnId', class: 'form-select required' + self.withError(x.columnId, true),
                 placeholder: $.resx('report.filterColumn'), onchange: self.setColumnId.bind(self, index), value: x.columnId

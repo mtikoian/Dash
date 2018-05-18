@@ -16,7 +16,6 @@ namespace Dash.Controllers
         {
         }
 
-        // @todo test and see which, if any, methods i could antiforgery to
         [HttpGet, AjaxRequestOnly]
         public IActionResult Copy(CopyReport model)
         {
@@ -38,7 +37,7 @@ namespace Dash.Controllers
             return PartialView(new CreateReport(DbContext, User.UserId()));
         }
 
-        [HttpPost, AjaxRequestOnly, ValidateAntiForgeryToken]
+        [AjaxRequestOnly, ValidateAntiForgeryToken]
         public IActionResult Create([FromBody] CreateReport model)
         {
             if (model == null)

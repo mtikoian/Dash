@@ -23,6 +23,7 @@ namespace Dash
         private const string RequestedWithHeader = "X-Requested-With";
         private const string XmlHttpRequest = "XMLHttpRequest";
         private static Regex CsvRegex = new Regex(@"(?:^|(,\s?))(""(?:[^""]+|"""")*""|[^(,\s?)]*)", RegexOptions.Compiled);
+        private static Regex CssRegex = new Regex(@"(?<!_)([A-Z])", RegexOptions.Compiled);
 
         /// <summary>
         /// Add an item to the list if `add` is true.
@@ -442,8 +443,7 @@ namespace Dash
         /// <returns>Css class name string.</returns>
         public static string ToCssClass(this DashClasses val)
         {
-            // @todo switch to precompiled regex
-            return Regex.Replace(val.ToString(), @"(?<!_)([A-Z])", "-$1").Trim('-').ToLower();
+            return CssRegex.Replace(val.ToString(), "-$1").Trim('-').ToLower();
         }
 
         /// <summary>

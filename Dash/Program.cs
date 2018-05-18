@@ -17,7 +17,6 @@ namespace Dash
                     config.AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
                     config.AddEnvironmentVariables();
 
-                    // @todo Add more enrichers, including a exception stack trace
                     Log.Logger = new LoggerConfiguration()
                         .ReadFrom.Configuration(config.Build())
                         .Enrich.FromLogContext()

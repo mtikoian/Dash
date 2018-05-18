@@ -125,8 +125,6 @@ namespace Dash.Models
 
         public override void Save<T>(T model, bool lazySave = true, bool forceSaveNulls = false)
         {
-            // @todo modify to return a bool instead of void
-
             var myType = model.GetType();
             using (var conn = GetConnection())
             {
@@ -136,14 +134,16 @@ namespace Dash.Models
                 var accessor = Cached(myType.Name, () => { return TypeAccessor.Create(myType); });
 
                 // iterate through all the properties of the object adding to param list
-                accessor.GetMembers().Where(x => (SavableTypes.Contains(x.Type) || SavableTypes.Contains(x.Type.GetTypeInfo().BaseType)) && !x.HasAttribute<Ignore>()).ToList().ForEach(x => {
-                    var val = accessor[model, x.Name];
-                    if (x.Type.GetTypeInfo().BaseType == typeof(Enum))
-                    {
-                        val = Enum.GetName(x.Type, val) ?? val.ToString();
-                    }
-                    paramList.Add(x.Name, val, null, x.Name.ToLower() == "id" ? ParameterDirection.InputOutput : ParameterDirection.Input);
-                });
+                accessor.GetMembers()
+                    .Where(x => (SavableTypes.Contains(x.Type) || SavableTypes.Contains(x.Type.GetTypeInfo().BaseType)) && !x.HasAttribute<Ignore>())
+                    .ToList().ForEach(x => {
+                        var val = accessor[model, x.Name];
+                        if (x.Type.GetTypeInfo().BaseType == typeof(Enum))
+                        {
+                            val = Enum.GetName(x.Type, val) ?? val.ToString();
+                        }
+                        paramList.Add(x.Name, val, null, x.Name.ToLower() == "id" ? ParameterDirection.InputOutput : ParameterDirection.Input);
+                    });
 
                 conn.Execute($"{myType.Name}Save", paramList, commandType: CommandType.StoredProcedure);
                 var id = paramList.Get<int>("Id");
@@ -197,11 +197,6 @@ namespace Dash.Models
                 });
                 conn.Close();
             }
-        }
-
-        public override void SetCache(IMemoryCache cache)
-        {
-            _Cache = cache;
         }
 
         protected T Cached<T>(string key, Func<T> onCreate) where T : class

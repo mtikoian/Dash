@@ -249,7 +249,7 @@
         },
 
         /**
-         * @todo Eventually this may not be necessary, but responsive functionality for Chart.js does not seem to work correctly.
+         * Eventually this may not be necessary, but responsive functionality for Chart.js does not seem to work correctly.
          */
         resize: function() {
             if (this.chart) {

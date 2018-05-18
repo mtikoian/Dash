@@ -24,7 +24,5 @@ namespace Dash.Models
         public abstract IEnumerable<T> Query<T>(string procName, object parameters = null);
 
         public abstract void Save<T>(T model, bool lazySave = true, bool forceSaveNulls = false) where T : BaseModel;
-
-        public abstract void SetCache(IMemoryCache cache);
     }
 }

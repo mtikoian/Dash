@@ -15,7 +15,6 @@ namespace Dash.Models
         [StringLength(100, ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string Prompt { get; set; }
 
-        // @todo Look at creating a ReportBaseModel to abstract some common functionality
         [BindNever, ValidateNever]
         public Report Report
         {

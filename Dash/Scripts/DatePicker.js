@@ -52,7 +52,6 @@
                 }
             }
         }
-        // @todo this probably needs more testing to make sure it triggers correctly
         if (props.onchange) {
             props.onchange(props.date);
         }

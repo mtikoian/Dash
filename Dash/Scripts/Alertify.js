@@ -20,11 +20,11 @@
         if (el.parentNode) {
             var removeThis = function() {
                 el && el.parentNode && el.parentNode.removeChild(el);
-            }
+            };
             $.on(el, 'transitionend', removeThis);
             // Fallback for no transitions.
             setTimeout(removeThis, 500);
-        };
+        }
     };
 
     /**

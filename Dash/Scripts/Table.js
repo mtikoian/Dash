@@ -802,7 +802,6 @@
         },
 
         destroy: function() {
-            // @todo Test and make sure this is firing correctly
             if (this.opts.editable) {
                 $.off(window, 'resize', this.events.resize);
                 $.off(window, 'mousemove', this.events.move);
@@ -829,7 +828,6 @@
                 requestParams: {},
                 searchable: true,
                 loadAllData: true,
-                inputTimeout: 200,
                 columnMinWidth: 50,
                 width: 100,
                 editable: true,
