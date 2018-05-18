@@ -228,7 +228,7 @@
                 }),
                 self.opts.active && m('ul', self.opts.filteredList.map(function(x, index) {
                     return m('li', {
-                        'aria-selected': self.opts.selectedIndex == index,
+                        key: x, 'aria-selected': self.opts.selectedIndex == index,
                         onmousedown: self.selectItem.bind(self, x)
                     }, m.trust(self.highlightItem(x, self.opts.value)));
                 }))

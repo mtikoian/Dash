@@ -272,7 +272,7 @@
 
             var filterColumns = self.isProc ? self.columnFn().filter(function(x) { return x.isParam; }) : self.columnFn();
 
-            return m('.columns.wrapper-row', { class: index % 2 === 1 ? 'odd' : 'even' }, [
+            return m('.columns.wrapper-row', { class: index % 2 === 1 ? 'odd' : 'even', key: x._index }, [
                 m('input', { type: 'hidden', name: 'ReportFilter[' + index + '].Id', value: x.id }),
                 m('input', { type: 'hidden', name: 'ReportFilter[' + index + '].DisplayOrder', value: index }),
                 m('.col-4',
@@ -417,7 +417,7 @@
             if (!self.opts.allowEdit) {
                 attrs.disabled = true;
             }
-            return m('.columns.wrapper-row', { class: index % 2 === 1 ? 'odd' : 'even' }, [
+            return m('.columns.wrapper-row', { class: index % 2 === 1 ? 'odd' : 'even', key: x._index }, [
                 m('input', { type: 'hidden', name: 'ReportGroup[' + index + '].Id', value: x.id }),
                 m('input', { type: 'hidden', name: 'ReportGroup[' + index + '].DisplayOrder', value: index }),
                 m('.col-10', [
