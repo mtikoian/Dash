@@ -35,7 +35,7 @@
                         searchQuery: this.searchQuery,
                         width: this.width,
                         sorting: this.sorting,
-                        columnWidths: this.opts.columns.map(function(c) { return { field: c.field, width: c.width * 1.0 }; })
+                        columnWidths: $.map(this.opts.columns, function(c) { return { field: c.field, width: c.width * 1.0 }; })
                     });
                 }
             }
@@ -114,7 +114,7 @@
          * @returns {Object} Request parameters.
          */
         buildParams: function() {
-            var sort = this.sorting.length > 0 ? this.sorting.map(function(obj, i) { return { field: obj.field, dir: obj.dir, index: i }; }) : null;
+            var sort = this.sorting.length > 0 ? $.map(this.sorting, function(obj, i) { return { field: obj.field, dir: obj.dir, index: i }; }) : null;
             if (this.opts.requestUsePascalCase) {
                 return $.extend(this.opts.requestParams, {
                     StartItem: this.currentStartItem,
@@ -311,7 +311,7 @@
                 var tWidth = this.table.offsetWidth;
                 var i = 0;
                 var cells = this.tableHeaderRow.cells;
-                this.opts.columns.forEach(function(x) {
+                $.forEach(this.opts.columns, function(x) {
                     if (!x.width) {
                         x.width = cells[i].offsetWidth / hWidth * 100;
                     }
@@ -677,7 +677,7 @@
                                     ]) : null
                                 ),
                                 m('.col-4',
-                                    m('.text-center', (this.opts.headerButtons || []).map(function(x) {
+                                    m('.text-center', $.map(this.opts.headerButtons || [], function(x) {
                                         return m(x.type, x.attributes, x.label);
                                     }))
                                 ),
@@ -701,7 +701,7 @@
                                     ontouchend: this.touchHandler.bind(this),
                                     ontouchmove: this.touchHandler.bind(this),
                                     ontouchcancel: this.touchHandler.bind(this)
-                                }, [m('tr', this.opts.columns.map(this.tableHeaders.bind(this)))]),
+                                }, [m('tr', $.map(this.opts.columns, this.tableHeaders, this))]),
                                 m('tbody', this.tableBodyView())
                             ])
                         ])
@@ -722,16 +722,6 @@
         },
 
         /**
-         * Build a table row.
-         * @param {Object} obj - Table record to build row for.
-         * @param {number} index - Row index of this row.
-         * @returns {Object} Mithril TR node.
-         */
-        tableRowView: function(obj, index) {
-            return m('tr', { key: obj._index }, this.opts.columns.map(this.tableCellView.bind(this, obj, index)));
-        },
-
-        /**
          * Build the table footer nodes
          * @returns {Object} Mithril TR node(s).
          */
@@ -748,7 +738,12 @@
             if (this.filteredTotal === 0) {
                 return m('tr', [m('td', { colspan: this.opts.columns.length }, this.opts.resources.noData)]);
             }
-            return this.results.map(this.tableRowView.bind(this));
+            var self = this;
+            return $.map(self.results, function(row, index) {
+                return m('tr', { key: row._index }, $.map(self.opts.columns, function(column) {
+                    return m('td', self.columnRenderer[column.field](row, column, index));
+                }));
+            });
         },
 
         /**
@@ -885,7 +880,7 @@
                 this.columnRenderer[column.field] = $.isNull(column.links) || column.links.length === 0 ?
                     function(obj, column) { return self.getDisplayValue(obj[column.field], column.dataType.toLowerCase()); } :
                     function(obj, column) {
-                        return column.links.map(function(link) {
+                        return $.map(column.links, function(link) {
                             if (link.jsonLogic && !$.jsonLogic.apply(link.jsonLogic, obj)) {
                                 return null;
                             }
@@ -933,7 +928,7 @@
 
             if (this.opts.headerButtons) {
                 this.opts.headerButtons = this.opts.headerButtons.filter(function(x) { return !$.isNull(x); });
-                this.opts.headerButtons.forEach(function(x) {
+                $.forEach(this.opts.headerButtons, function(x) {
                     if (!x.attributes.onclick && !x.attributes.target) {
                         x.attributes.onclick = $.dialogs.handleAjaxRequest;
                     }

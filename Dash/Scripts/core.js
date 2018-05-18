@@ -259,6 +259,22 @@
     };
 
     /**
+     * A fast `.forEach()` implementation.
+     * See https://github.com/codemix/fast.js
+     * @param {Array} subject - The array (or array-like) to iterate over.
+     * @param {Function} fn - The visitor function.
+     * @param {Object} thisContext - The context for the visitor.
+     */
+    var forEach = function(subject, fn, thisContext) {
+        var length = subject.length,
+            iterator = thisContext !== undefined ? fn.bind(thisContext) : fn,
+            i;
+        for (i = 0; i < length; i++) {
+            iterator(subject[i], i, subject);
+        }
+    };
+
+    /**
      * Get an element matching selector.
      * @param {string} selector - ID, class name, or any valid query selector.
      * @param {Node} container - Only search within this node.
@@ -441,6 +457,25 @@
      */
     var isVisible = function(node) {
         return node.offsetParent !== null;
+    };
+
+    /**
+     * A fast `.map()` implementation.
+     * See https://github.com/codemix/fast.js
+     * @param {Array} subject - The array (or array-like) to map over.
+     * @param {Function} fn - The mapper function.
+     * @param {Object} thisContext - The context for the mapper.
+     * @return {Array} The array containing the results.
+     */
+    var map = function(subject, fn, thisContext) {
+        var length = subject.length,
+            result = new Array(length),
+            iterator = thisContext !== undefined ? fn.bind(thisContext) : fn,
+            i;
+        for (i = 0; i < length; i++) {
+            result[i] = iterator(subject[i], i, subject);
+        }
+        return result;
     };
 
     /**
@@ -691,6 +726,7 @@
         get: get,
         getAll: getAll,
         findByKey: findByKey,
+        forEach: forEach,
         hasClass: hasClass,
         hasPositiveValue: hasPositiveValue,
         hasValue: hasValue,
@@ -706,6 +742,7 @@
         isString: isString,
         isUndefined: isUndefined,
         isVisible: isVisible,
+        map: map,
         matches: matches,
         noop: noop,
         off: off,
