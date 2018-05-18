@@ -352,30 +352,6 @@
             })
             return args.background === true ? promise0 : finalize(promise0)
         }
-        function jsonp(args, extra) {
-            var finalize = finalizer()
-            args = normalize(args, extra)
-            var promise0 = new Promise(function(resolve, reject) {
-                var callbackName = args.callbackName || "_mithril_" + Math.round(Math.random() * 1e16) + "_" + callbackCount++
-                var script = $window.document.createElement("script")
-                $window[callbackName] = function(data) {
-                    script.parentNode.removeChild(script)
-                    resolve(cast(args.type, data))
-                    delete $window[callbackName]
-                }
-                script.onerror = function() {
-                    script.parentNode.removeChild(script)
-                    reject(new Error("JSONP request failed"))
-                    delete $window[callbackName]
-                }
-                if (args.data == null) args.data = {}
-                args.url = interpolate(args.url, args.data)
-                args.data[args.callbackKey || "callback"] = callbackName
-                script.src = assemble(args.url, args.data)
-                $window.document.documentElement.appendChild(script)
-            })
-            return args.background === true ? promise0 : finalize(promise0)
-        }
         function interpolate(url, data) {
             if (data == null) return url
             var tokens = url.match(/:[^\/]+/gi) || []
@@ -411,7 +387,7 @@
             }
             return data
         }
-        return { request: request, jsonp: jsonp, setCompletionCallback: setCompletionCallback }
+        return { request: request, setCompletionCallback: setCompletionCallback }
     }
     var requestService = _9(window, PromisePolyfill)
     var coreRenderer = function($window) {
@@ -1179,201 +1155,6 @@
     }
     m.mount = _17(redrawService)
     var Promise = PromisePolyfill
-    var parseQueryString = function(string) {
-        if (string === "" || string == null) return {}
-        if (string.charAt(0) === "?") string = string.slice(1)
-        var entries = string.split("&"), data0 = {}, counters = {}
-        for (var i = 0; i < entries.length; i++) {
-            var entry = entries[i].split("=")
-            var key5 = decodeURIComponent(entry[0])
-            var value = entry.length === 2 ? decodeURIComponent(entry[1]) : ""
-            if (value === "true") value = true
-            else if (value === "false") value = false
-            var levels = key5.split(/\]\[?|\[/)
-            var cursor = data0
-            if (key5.indexOf("[") > -1) levels.pop()
-            for (var j = 0; j < levels.length; j++) {
-                var level = levels[j], nextLevel = levels[j + 1]
-                var isNumber = nextLevel == "" || !isNaN(parseInt(nextLevel, 10))
-                var isValue = j === levels.length - 1
-                if (level === "") {
-                    var key5 = levels.slice(0, j).join()
-                    if (counters[key5] == null) counters[key5] = 0
-                    level = counters[key5]++
-                }
-                if (cursor[level] == null) {
-                    cursor[level] = isValue ? value : isNumber ? [] : {}
-                }
-                cursor = cursor[level]
-            }
-        }
-        return data0
-    }
-    var coreRouter = function($window) {
-        var supportsPushState = typeof $window.history.pushState === "function"
-        var callAsync0 = typeof setImmediate === "function" ? setImmediate : setTimeout
-        function normalize1(fragment0) {
-            var data = $window.location[fragment0].replace(/(?:%[a-f89][a-f0-9])+/gim, decodeURIComponent)
-            if (fragment0 === "pathname" && data[0] !== "/") data = "/" + data
-            return data
-        }
-        var asyncId
-        function debounceAsync(callback) {
-            return function() {
-                if (asyncId != null) return
-                asyncId = callAsync0(function() {
-                    asyncId = null
-                    callback()
-                })
-            }
-        }
-        function parsePath(path, queryData, hashData) {
-            var queryIndex = path.indexOf("?")
-            var hashIndex = path.indexOf("#")
-            var pathEnd = queryIndex > -1 ? queryIndex : hashIndex > -1 ? hashIndex : path.length
-            if (queryIndex > -1) {
-                var queryEnd = hashIndex > -1 ? hashIndex : path.length
-                var queryParams = parseQueryString(path.slice(queryIndex + 1, queryEnd))
-                for (var key4 in queryParams) queryData[key4] = queryParams[key4]
-            }
-            if (hashIndex > -1) {
-                var hashParams = parseQueryString(path.slice(hashIndex + 1))
-                for (var key4 in hashParams) hashData[key4] = hashParams[key4]
-            }
-            return path.slice(0, pathEnd)
-        }
-        var router = { prefix: "#!" }
-        router.getPath = function() {
-            var type2 = router.prefix.charAt(0)
-            switch (type2) {
-                case "#": return normalize1("hash").slice(router.prefix.length)
-                case "?": return normalize1("search").slice(router.prefix.length) + normalize1("hash")
-                default: return normalize1("pathname").slice(router.prefix.length) + normalize1("search") + normalize1("hash")
-            }
-        }
-        router.setPath = function(path, data, options) {
-            var queryData = {}, hashData = {}
-            path = parsePath(path, queryData, hashData)
-            if (data != null) {
-                for (var key4 in data) queryData[key4] = data[key4]
-                path = path.replace(/:([^\/]+)/g, function(match2, token) {
-                    delete queryData[token]
-                    return data[token]
-                })
-            }
-            var query = buildQueryString(queryData)
-            if (query) path += "?" + query
-            var hash = buildQueryString(hashData)
-            if (hash) path += "#" + hash
-            if (supportsPushState) {
-                var state = options ? options.state : null
-                var title = options ? options.title : null
-                $window.onpopstate()
-                if (options && options.replace) $window.history.replaceState(state, title, router.prefix + path)
-                else $window.history.pushState(state, title, router.prefix + path)
-            }
-            else $window.location.href = router.prefix + path
-        }
-        router.defineRoutes = function(routes, resolve, reject) {
-            function resolveRoute() {
-                var path = router.getPath()
-                var params = {}
-                var pathname = parsePath(path, params, params)
-                var state = $window.history.state
-                if (state != null) {
-                    for (var k in state) params[k] = state[k]
-                }
-                for (var route0 in routes) {
-                    var matcher = new RegExp("^" + route0.replace(/:[^\/]+?\.{3}/g, "(.*?)").replace(/:[^\/]+/g, "([^\\/]+)") + "\/?$")
-                    if (matcher.test(pathname)) {
-                        pathname.replace(matcher, function() {
-                            var keys = route0.match(/:[^\/]+/g) || []
-                            var values = [].slice.call(arguments, 1, -2)
-                            for (var i = 0; i < keys.length; i++) {
-                                params[keys[i].replace(/:|\./g, "")] = decodeURIComponent(values[i])
-                            }
-                            resolve(routes[route0], params, path, route0)
-                        })
-                        return
-                    }
-                }
-                reject(path, params)
-            }
-            if (supportsPushState) $window.onpopstate = debounceAsync(resolveRoute)
-            else if (router.prefix.charAt(0) === "#") $window.onhashchange = resolveRoute
-            resolveRoute()
-        }
-        return router
-    }
-    var _21 = function($window, redrawService0) {
-        var routeService = coreRouter($window)
-        var identity = function(v) { return v }
-        var render1, component, attrs3, currentPath, lastUpdate
-        var route = function(root, defaultRoute, routes) {
-            if (root == null) throw new Error("Ensure the DOM element that was passed to `m.route` is not undefined")
-            function run1() {
-                if (render1 != null) redrawService0.render(root, render1(Vnode(component, attrs3.key, attrs3)))
-            }
-            var redraw2 = function() {
-                run1()
-                redraw2 = redrawService0.redraw
-            }
-            redrawService0.subscribe(root, run1)
-            var bail = function(path) {
-                if (path !== defaultRoute) routeService.setPath(defaultRoute, null, { replace: true })
-                else throw new Error("Could not resolve default route " + defaultRoute)
-            }
-            routeService.defineRoutes(routes, function(payload, params, path) {
-                var update = lastUpdate = function(routeResolver, comp) {
-                    if (update !== lastUpdate) return
-                    component = comp != null && (typeof comp.view === "function" || typeof comp === "function") ? comp : "div"
-                    attrs3 = params, currentPath = path, lastUpdate = null
-                    render1 = (routeResolver.render || identity).bind(routeResolver)
-                    redraw2()
-                }
-                if (payload.view || typeof payload === "function") update({}, payload)
-                else {
-                    if (payload.onmatch) {
-                        Promise.resolve(payload.onmatch(params, path)).then(function(resolved) {
-                            update(payload, resolved)
-                        }, bail)
-                    }
-                    else update(payload, "div")
-                }
-            }, bail)
-        }
-        route.set = function(path, data, options) {
-            if (lastUpdate != null) {
-                options = options || {}
-                options.replace = true
-            }
-            lastUpdate = null
-            routeService.setPath(path, data, options)
-        }
-        route.get = function() { return currentPath }
-        route.prefix = function(prefix0) { routeService.prefix = prefix0 }
-        var link = function(options, vnode1) {
-            vnode1.dom.setAttribute("href", routeService.prefix + vnode1.attrs.href)
-            vnode1.dom.onclick = function(e) {
-                if (e.ctrlKey || e.metaKey || e.shiftKey || e.which === 2) return
-                e.preventDefault()
-                e.redraw = false
-                var href = this.getAttribute("href")
-                if (href.indexOf(routeService.prefix) === 0) href = href.slice(routeService.prefix.length)
-                route.set(href, undefined, options)
-            }
-        }
-        route.link = function(args0) {
-            if (args0.tag == null) return link.bind(link, args0)
-            return link({}, args0)
-        }
-        route.param = function(key3) {
-            if (typeof attrs3 !== "undefined" && typeof key3 !== "undefined") return attrs3[key3]
-            return attrs3
-        }
-        return route
-    }
-    m.route = _21(window, redrawService)
     m.withAttr = function(attrName, callback, context) {
         return function(e) {
             callback.call(context || this, attrName in e.currentTarget ? e.currentTarget[attrName] : e.currentTarget.getAttribute(attrName))
@@ -1383,8 +1164,6 @@
     m.render = _29.render
     m.redraw = redrawService.redraw
     m.request = requestService.request
-    m.jsonp = requestService.jsonp
-    m.parseQueryString = parseQueryString
     m.buildQueryString = buildQueryString
     m.version = "1.1.3"
     m.vnode = Vnode
