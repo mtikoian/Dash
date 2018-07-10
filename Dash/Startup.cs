@@ -1,9 +1,12 @@
 ﻿using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Claims;
 using Dash.Configuration;
 using Dash.Models;
 using Dash.Utils;
+using Hangfire;
+using Hangfire.Dashboard;
 using HardHat;
 using Jil;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -22,6 +25,15 @@ using Serilog;
 
 namespace Dash
 {
+    public class HangfireAuthorizeFilter : IDashboardAuthorizationFilter
+    {
+        public bool Authorize(DashboardContext context)
+        {
+            var httpcontext = context.GetHttpContext();
+            return httpcontext.User.Identity.IsAuthenticated && httpcontext.User.HasClaim(x => x.Type == ClaimTypes.Role && x.Value.ToLower() == "hangfire.dashboard");
+        }
+    }
+
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -102,6 +114,13 @@ namespace Dash
             app.UseAuthentication();
 
             app.UseRequestLocalization();
+
+            // Configure hangfire to use the new JobActivator we defined.
+            app.UseHangfireDashboard("/hangfire", new DashboardOptions() {
+                Authorization = new[] { new HangfireAuthorizeFilter() }
+            });
+            app.UseHangfireServer();
+
             app.UseMvc(routes => {
                 routes.MapRoute(
                     name: "default",
@@ -110,6 +129,9 @@ namespace Dash
 
             // use reflection to check for added/removed permissions and update db accordingly
             UpdatePermissions(dbContext);
+
+            // start hangfire background job
+            RecurringJob.AddOrUpdate<JobHelper>(x => x.ProcessAlerts(), Cron.Minutely);
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -125,6 +147,8 @@ namespace Dash
                 x.Cookie.HttpOnly = true;
                 x.SessionStore = new MemoryCacheTicketStore();
             });
+
+            services.AddHangfire(x => x.UseSqlServerStorage(appConfig.Database.ConnectionString));
 
             services.AddMvc(options => {
                 options.InputFormatters.Insert(0, new JilInputFormatter());
@@ -164,6 +188,8 @@ namespace Dash
                 .Select(x => $"{x.DeclaringType.FullName.Split('.').Last().Replace("Controller", "")}.{x.Name}")
                 .Distinct()
                 .ToDictionary(x => x.ToLower(), x => x);
+
+            actionList.Add("hangfire.dashboard", "Hangfire.Dashboard");
             // query all permissions from db
             var permissions = dbContext.GetAll<Permission>().ToDictionary(x => x.FullName.ToLower(), x => x);
 

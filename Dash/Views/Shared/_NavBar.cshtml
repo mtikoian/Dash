@@ -15,9 +15,19 @@
             @Html.AuthorizedMenu(Datasets.MenuItem, "Index", "Dataset", "th", User.IsInRole("dataset.index"))
             @Html.AuthorizedMenu(Reports.MenuItem, "Index", "Report", "list-alt", User.IsInRole("report.index"))
             @Html.AuthorizedMenu(Charts.MenuItem, "Index", "Chart", "chart-bar", User.IsInRole("chart.index"))
+            @Html.AuthorizedMenu(Alerts.MenuItem, "Index", "Alert", "bell-alt", User.IsInRole("alert.index"))
             @Html.AuthorizedMenu(Users.MenuItem, "Index", "User", "user", User.IsInRole("user.index"))
             @Html.AuthorizedMenu(Roles.MenuItem, "Index", "Role", "key", User.IsInRole("role.index"))
-            <li class="divider"></li>
+            if (User.IsInRole("hangfire.dashboard"))
+            {
+                <li class="divider"></li>
+                <li>
+                    <a href="~/hangfire" title="@Core.Hangfire">
+                        <i class="dash dash-fire dash-lg"></i> <span>@Html.Raw(Core.Hangfire)</span>
+                    </a>
+                </li>
+                <li class="divider"></li>
+            }
             <li>
                 <a href="@Url.Action("ToggleContextHelp","Account")" id="toggleContextHelpBtn" class="@Html.Raw(Context.Session.GetString("ContextHelp").ToBool() ? "help-active" : "")" title="@Core.ToggleHelp">
                     <i class="dash dash-help dash-lg"></i> <span>@Html.Raw(Core.ToggleHelp)</span>

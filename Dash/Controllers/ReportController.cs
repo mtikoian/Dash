@@ -192,7 +192,7 @@ namespace Dash.Controllers
                 return Error(Reports.ErrorNoColumnsSelected);
             }
 
-            var export = new ExportData { Report = report, HttpContext = HttpContext, AppConfig = AppConfig };
+            var export = new ExportData { Report = report, AppConfig = AppConfig };
             return File(export.Stream(), export.ContentType, export.FormattedFileName);
         }
 

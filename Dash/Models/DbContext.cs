@@ -20,7 +20,7 @@ namespace Dash.Models
         /// Specifies the type of properties that should be included when building sql parameters to save an object.
         /// </summary>
         private static readonly Type[] SavableTypes = { typeof(string), typeof(bool), typeof(int), typeof(long), typeof(DateTime), typeof(DateTimeOffset),
-            typeof(decimal), typeof(int?), typeof(long?), typeof(byte[]), typeof(Enum), typeof(double) };
+            typeof(decimal), typeof(int?), typeof(long?), typeof(byte[]), typeof(Enum), typeof(double), typeof(DateTimeOffset?) };
 
         private AppConfiguration _AppConfig;
         private IMemoryCache _Cache;
@@ -77,7 +77,10 @@ namespace Dash.Models
                 {
                     res.DbContext = this;
                     res.AppConfig = _AppConfig;
-                    res.RequestUserId = _HttpContextAccessor.HttpContext.User.UserId();
+                    if (_HttpContextAccessor?.HttpContext != null)
+                    {
+                        res.RequestUserId = _HttpContextAccessor.HttpContext.User.UserId();
+                    }
                 }
                 return res;
             }
@@ -91,7 +94,10 @@ namespace Dash.Models
                     .Each(x => {
                         x.DbContext = this;
                         x.AppConfig = _AppConfig;
-                        x.RequestUserId = _HttpContextAccessor?.HttpContext?.User?.UserId();
+                        if (_HttpContextAccessor?.HttpContext != null)
+                        {
+                            x.RequestUserId = _HttpContextAccessor.HttpContext.User.UserId();
+                        }
                     }).ToArray();
             }
         }

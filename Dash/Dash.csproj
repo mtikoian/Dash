@@ -13,6 +13,8 @@
     <PackageReference Include="Dapper" Version="1.50.5"/>
     <PackageReference Include="EPPlus" Version="4.5.2.1"/>
     <PackageReference Include="FastMember.NetCore" Version="1.1.0"/>
+    <PackageReference Include="HangFire" Version="1.6.19"/>
+    <PackageReference Include="HangFire.SqlServer" Version="1.6.19"/>
     <PackageReference Include="HardHat" Version="1.1.0"/>
     <PackageReference Include="Jil" Version="2.16.0"/>
     <PackageReference Include="MailKit" Version="2.0.4"/>
@@ -27,6 +29,7 @@
     <PackageReference Include="Serilog.Sinks.MSSqlServer" Version="5.1.2"/>
     <PackageReference Include="System.Drawing.Common" Version="4.5.0"/>
     <PackageReference Include="System.Security.Cryptography.Algorithms" Version="4.3.1"/>
+    <PackageReference Include="ncrontab" Version="3.3.0"/>
   </ItemGroup>
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.2"/>
@@ -36,6 +39,7 @@
     <None Include="Views\Account\Login.cshtml"/>
     <None Include="Views\Account\ResetPassword.cshtml"/>
     <None Include="Views\Account\Update.cshtml"/>
+    <None Include="Views\Alert\CreateEdit.cshtml"/>
     <None Include="Views\Chart\ChangeType.cshtml"/>
     <None Include="Views\Chart\Create.cshtml"/>
     <None Include="Views\Chart\Details.cshtml"/>

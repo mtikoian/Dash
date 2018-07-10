@@ -25,9 +25,12 @@
      */
     var tryGetValue = function(field, val) {
         var fieldName = field.name.split('.').pop();
-        if ((fieldName.substring(0, 2) === 'Is' || fieldName.substring(0, 5) === 'Allow') && (field.value.toLowerCase() === 'true' || field.value.toLowerCase() === 'false')) {
+        var typeHint = (field.getAttribute('typehint') || '').toLowerCase(); // might be able to remove this typeHint stuff later when cron is working correctly
+        if (typeHint === 'text') {
+            return val;
+        } else if (typeHint === 'bool' || (fieldName.substring(0, 2) === 'Is' || fieldName.substring(0, 5) === 'Allow') && (field.value.toLowerCase() === 'true' || field.value.toLowerCase() === 'false')) {
             return field.value.toLowerCase() === 'true';
-        } else if (field.type.toLowerCase() === 'number' || field.name.slice(-2) === 'Id' || !($.isNull(val) || val.length == 0 || isNaN(val))) {
+        } else if (typeHint === 'number' || field.type.toLowerCase() === 'number' || field.name.slice(-2) === 'Id' || !($.isNull(val) || val.length == 0 || isNaN(val))) {
             return val.length ? parseInt(val) : null;
         }
         return val;

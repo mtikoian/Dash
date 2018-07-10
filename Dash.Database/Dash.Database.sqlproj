@@ -67,6 +67,10 @@
     <Build Include="Security\Dash.sql"/>
     <Build Include="Security\Dash_1.sql"/>
     <Build Include="Security\RoleMemberships.sql"/>
+    <Build Include="Stored Procedures\AlertDelete.sql"/>
+    <Build Include="Stored Procedures\AlertGet.sql"/>
+    <Build Include="Stored Procedures\AlertGetActive.sql"/>
+    <Build Include="Stored Procedures\AlertSave.sql"/>
     <Build Include="Stored Procedures\ChartCheckUserAccess.sql"/>
     <Build Include="Stored Procedures\ChartDelete.sql"/>
     <Build Include="Stored Procedures\ChartGet.sql"/>
@@ -138,6 +142,7 @@
     <Build Include="Stored Procedures\WidgetDelete.sql"/>
     <Build Include="Stored Procedures\WidgetGet.sql"/>
     <Build Include="Stored Procedures\WidgetSave.sql"/>
+    <Build Include="Tables\Alert.sql"/>
     <Build Include="Tables\Chart.sql"/>
     <Build Include="Tables\ChartRange.sql"/>
     <Build Include="Tables\ChartShare.sql"/>

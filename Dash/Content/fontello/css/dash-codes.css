@@ -2,6 +2,7 @@
 .dash-frown:before { content: '\e800'; } /* '' */
 .dash-help:before { content: '\e801'; } /* '' */
 .dash-unlock:before { content: '\e802'; } /* '' */
+.dash-fire:before { content: '\e803'; } /* '' */
 .dash-up-big:before { content: '\e804'; } /* '' */
 .dash-down-big:before { content: '\e805'; } /* '' */
 .dash-cancel:before { content: '\e806'; } /* '' */
@@ -36,3 +37,4 @@
 .dash-trash:before { content: '\e83d'; } /* '' */
 .dash-menu:before { content: '\f0c9'; } /* '' */
 .dash-list-numbered:before { content: '\f0cb'; } /* '' */
+.dash-bell-alt:before { content: '\f0f3'; } /* '' */

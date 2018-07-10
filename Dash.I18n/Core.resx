@@ -339,4 +339,13 @@
   <data name="ErrorGeneric" xml:space="preserve">
     <value>An unhandled error occurred.</value>
   </data>
+  <data name="No" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="Hangfire" xml:space="preserve">
+    <value>Hangfire Dashboard</value>
+  </data>
 </root>

@@ -4,15 +4,20 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Update="Account.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Account.resx</DependentUpon>
-    </Compile>
     <Compile Update="Charts.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Charts.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Users.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Users.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Account.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Account.resx</DependentUpon>
     </Compile>
     <Compile Update="ContextHelp.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -54,10 +59,10 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Roles.resx</DependentUpon>
     </Compile>
-    <Compile Update="Users.Designer.cs">
+    <Compile Update="Alerts.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>Users.resx</DependentUpon>
+      <DependentUpon>Alerts.resx</DependentUpon>
     </Compile>
     <Compile Update="Widgets.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -121,6 +126,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Update="Widgets.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Widgets.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Account.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Account.Designer.cs</LastGenOutput>
@@ -165,9 +174,9 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Users.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Update="Widgets.resx">
+    <EmbeddedResource Update="Alerts.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Widgets.Designer.cs</LastGenOutput>
+      <LastGenOutput>Alerts.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Account.es.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

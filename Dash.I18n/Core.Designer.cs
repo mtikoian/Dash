@@ -430,6 +430,15 @@ namespace Dash.I18n {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hangfire Dashboard.
+        /// </summary>
+        public static string Hangfire {
+            get {
+                return ResourceManager.GetString("Hangfire", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Help - .
         /// </summary>
         public static string Help {
@@ -516,6 +525,15 @@ namespace Dash.I18n {
         public static string NextPage {
             get {
                 return ResourceManager.GetString("NextPage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No.
+        /// </summary>
+        public static string No {
+            get {
+                return ResourceManager.GetString("No", resourceCulture);
             }
         }
         
@@ -723,6 +741,15 @@ namespace Dash.I18n {
         public static string ViewSql {
             get {
                 return ResourceManager.GetString("ViewSql", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yes.
+        /// </summary>
+        public static string Yes {
+            get {
+                return ResourceManager.GetString("Yes", resourceCulture);
             }
         }
     }

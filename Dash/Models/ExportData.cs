@@ -12,8 +12,7 @@ namespace Dash.Models
     public class ExportData : BaseModel
     {
         public string ContentType { get; } = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-        public string FileName { get; private set; }
-        public HttpContext HttpContext { get; set; }
+        public string FileName { get; set; }
         public Report Report { get; set; }
 
         public string FormattedFileName
@@ -45,7 +44,7 @@ namespace Dash.Models
                 var columns = Report.Dataset.DatasetColumn.ToDictionary(j => j.Id, j => j);
                 var table = new DataTable();
                 Report.ReportColumn.ForEach(x => table.Columns.Add(columns[x.ColumnId]?.Title ?? "", typeof(string)));
-                FileName = Report.Name;
+                FileName = FileName.IsEmpty() ? Report.Name : FileName;
 
                 dynamic result = Report.GetData(AppConfig, 0, Int32.MaxValue, false);
                 foreach (IDictionary<string, object> row in result.Rows)
