@@ -480,10 +480,10 @@ namespace Dash.Models
                         {
                             Parameters.AddRange(newParameters);
 
-                            // if there are multiple filters for one column OR them together
+                            // if there are multiple filters for one column AND them together
                             if (filterSql.ContainsKey(filter.ColumnId))
                             {
-                                filterSql[filter.ColumnId] += " OR ";
+                                filterSql[filter.ColumnId] += " AND ";
                             }
                             else
                             {
