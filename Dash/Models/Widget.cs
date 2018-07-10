@@ -52,6 +52,7 @@ namespace Dash.Models
         public int? ChartId { get; set; }
 
         [Ignore]
+        [BindNever, ValidateNever]
         public IEnumerable<object> Columns
         {
             get
@@ -61,6 +62,11 @@ namespace Dash.Models
                     _Columns = DbContext.Query<Column>("ColumnGetForReport", new { ReportId })
                         .Each(x => x.DbContext = DbContext).ToList();
                 }
+                if (ReportId.HasPositiveValue() && DatasetId == 0)
+                {
+                    DatasetId = DbContext.Get<Report>(ReportId.Value)?.DatasetId ?? 0;
+                }
+
                 // may want to rework how i query columns since i have to make another query for datasetcolumns anyway
                 if (_DatasetColumns == null && DatasetId > 0)
                 {
