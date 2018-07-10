@@ -175,7 +175,7 @@ namespace Dash.Models
                 }
                 else
                 {
-                    querySql = $"SELECT {String.Join(", ", NeededAliases.Values)} FROM \n(SELECT {ColumnSql}, ROW_NUMBER() OVER ({OrderBySql}) AS RowNum \n{JoinSql.AddLine()} {WhereSql.AddLine()} {GroupBySql.AddLine()}) a WHERE RowNum > {start} AND RowNum <= {start + rows}";
+                    querySql = $"SELECT {string.Join(", ", NeededAliases.Values)} FROM \n(SELECT {ColumnSql}, ROW_NUMBER() OVER ({OrderBySql}) AS RowNum \n{JoinSql.AddLine()} {WhereSql.AddLine()} {GroupBySql.AddLine()}) a WHERE RowNum > {start} AND RowNum <= {start + rows}";
                 }
             }
 
@@ -238,7 +238,7 @@ namespace Dash.Models
             else
             {
                 // get the table name from the column name
-                string table = column.Table;
+                var table = column.Table;
                 if (!table.IsEmpty() && Joins.ContainsKey(table))
                 {
                     // get the tables required to join this one in
@@ -252,7 +252,7 @@ namespace Dash.Models
         /// </summary>
         private void BuildColumnSql()
         {
-            string sql = "";
+            var sql = "";
 
             if (Report.Dataset.IsProc)
             {
@@ -313,7 +313,7 @@ namespace Dash.Models
                 }
 
                 // iterate through all the columns in the dataset and see which ones we actually need
-                foreach (DatasetColumn column in Report.Dataset.DatasetColumn)
+                foreach (var column in Report.Dataset.DatasetColumn)
                 {
                     if (!NeededColumns.ContainsKey(column.Id) && (ReportColumns.ContainsKey(column.Id) || UsedInLink(column)))
                     {
@@ -349,7 +349,7 @@ namespace Dash.Models
                 }
             }
 
-            ColumnSql = NeededColumns.Count > 0 ? String.Join(", ", NeededColumns.Values.ToArray()) : "";
+            ColumnSql = NeededColumns.Count > 0 ? string.Join(", ", NeededColumns.Values.ToArray()) : "";
         }
 
         /// <summary>
@@ -370,7 +370,7 @@ namespace Dash.Models
                 {
                     if (DatasetColumns.ContainsKey(group.ColumnId))
                     {
-                        string sql = DatasetColumns[group.ColumnId].BuildSql(false);
+                        var sql = DatasetColumns[group.ColumnId].BuildSql(false);
                         if (sql.Length > 0)
                         {
                             Grouping.Add(sql);
@@ -401,7 +401,7 @@ namespace Dash.Models
             }
 
             var orderedJoins = new Dictionary<int, string>();
-            foreach (string key in NeededTables.Keys)
+            foreach (var key in NeededTables.Keys)
             {
                 if (key == Report.Dataset.PrimarySource)
                 {
@@ -466,14 +466,12 @@ namespace Dash.Models
             if (Report.ReportFilter != null && Report.ReportFilter.Count > 0)
             {
                 var filterSql = new Dictionary<int, string>();
-
                 foreach (var filter in Report.ReportFilter)
                 {
                     if (DatasetColumns.ContainsKey(filter.ColumnId))
                     {
                         // build the sql for this piece
-                        Dictionary<string, object> newParameters;
-                        string sql = filter.BuildFilterSql(DatasetColumns[filter.ColumnId], filter, out newParameters);
+                        var sql = filter.BuildFilterSql(DatasetColumns[filter.ColumnId], filter, out var newParameters);
                         if (DatasetColumns[filter.ColumnId].IsParam)
                         {
                             Parameters.AddRange(newParameters);
