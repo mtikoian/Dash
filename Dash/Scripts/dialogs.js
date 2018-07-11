@@ -418,7 +418,7 @@
      * Selectors and callback function to create events.
      */
     var _contentActions = [
-        { selector: '[data-toggle="tab"], [data-toggle="pill"]', action: function() { new Tab(this); } },
+        { selector: '[data-toggle="tab"]', action: function() { new Tab(this); } },
         { selector: '.dash-ajax', action: function() { $.on(this, 'click', handleAjaxRequest); } },
         { selector: '.dash-form', action: function() { $.on(this, 'submit', function(e) { e.preventDefault(); }, true); } },
         {
