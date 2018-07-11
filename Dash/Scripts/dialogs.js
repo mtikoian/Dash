@@ -367,38 +367,17 @@
         },
 
         /**
-         * Set tab status when validating form.
-         * @param {Node} el - Node that has a validation error.
-         */
-        setTabStatus: function(el) {
-            var tab = $.closest('.tab-pane', el);
-            if (tab) {
-                // add error class to tab
-                var id = tab.getAttribute('aria-labelledby');
-                if (id) {
-                    $.toggleClass($.get('#' + id), 'tab-validation-error', $.hasClass(el, 'mform-control-error'));
-                }
-            }
-        },
-
-        /**
-         * Run the form validator and display an error if needed.
+         * Check form state and display an error if needed.
          * @returns {bool} Return true if form is valid, else false.
          */
         validateForm: function() {
             var form = this.findForm();
-            $.getAll('.tab-validation-error', form).forEach(function(x) {
-                $.removeClass(x, 'tab-validation-error');
-            });
-
-            $.dispatch(form, $.events.formValidate);
-
-            var mErrors = $.getAll('.mform-control-error', form);
-            if (mErrors.length) {
-                mErrors.forEach(this.setTabStatus);
+            if (!form.checkValidity()) {
+                form.reportValidity(); // triggers browser validation ui
+                Alertify.error($.resx('fixIt'));
+                return false;
             }
-
-            if (mErrors.length || $.getAll('.form-control-error', form).length) {
+            if ($.getAll('.mform-control-error', form).length) {
                 Alertify.error($.resx('fixIt'));
                 return false;
             }
@@ -422,7 +401,7 @@
 /*!
  * Wraps dialog functionality.
  */
-(function($, Alertify, Dialog, Table, Tab, CollapsibleList, Validator, DatePicker) {
+(function($, Alertify, Dialog, Table, Tab, CollapsibleList, DatePicker) {
     'use strict';
 
     /**
@@ -450,11 +429,6 @@
             }
         },
         { selector: '.dash-collapsible-list', action: function() { new CollapsibleList(this); } },
-        {
-            selector: '[data-toggle="validator"]', action: function() {
-                new Validator(this, { match: $.resx('errorMatch'), minlength: $.resx('errorMinLength') });
-            }
-        },
         { selector: '.dash-input-replace', action: function() { $.on(this, 'click', inputReplace); } }
     ];
 
@@ -737,4 +711,4 @@
         removeDialog: removeDialog,
         sendAjaxRequest: sendAjaxRequest
     };
-})(this.$, this.Alertify, this.Dialog, this.Table, this.Tab, this.CollapsibleList, this.Validator, this.DatePicker);
+})(this.$, this.Alertify, this.Dialog, this.Table, this.Tab, this.CollapsibleList, this.DatePicker);

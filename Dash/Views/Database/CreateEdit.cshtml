@@ -16,7 +16,7 @@
 
         <div class="col-6">
             @Html.LabelInputFor(model => model.User)
-            @Html.LabelPasswordFor(model => model.Password, new { data_match = "ConfirmPassword" })
+            @Html.LabelPasswordFor(model => model.Password)
             @Html.LabelPasswordFor(model => model.ConfirmPassword)
             @Html.LabelCheckBoxFor(model => model.IsEmptyPassword)
             @Html.LabelTextAreaFor(model => model.ConnectionString, new { rows = 4 })

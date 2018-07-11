@@ -147,12 +147,7 @@ namespace Dash
             {
                 htmlAttr["class"] = "";
             }
-            if (!htmlAttr.ContainsKey("data-toggle"))
-            {
-                htmlAttr["data-toggle"] = "";
-            }
             htmlAttr["class"] = MergedList(htmlAttr.ContainsKey("class") ? htmlAttr["class"] : "", new string[] { (ajaxForm ? "dash-form" : ""), "container form-horizontal pt-1 mx-1" }).Combine();
-            htmlAttr["data-toggle"] = MergedList(htmlAttr.ContainsKey("data-toggle") ? htmlAttr["data-toggle"] : "", new[] { "validator" }).Combine();
             if (!title.IsEmpty())
             {
                 htmlAttr["data-title"] = title.Trim();
@@ -380,7 +375,6 @@ namespace Dash
             rowDiv.AddCssClass("col-12");
             rowDiv.InnerHtml.AppendHtml(checkboxDiv);
             rowDiv.InnerHtml.AppendHtml(helper.HelpFor(expression, false, true));
-            rowDiv.InnerHtml.AppendHtml(ErrorDiv());
 
             var innerDiv = new TagBuilder("div");
             innerDiv.AddCssClass("col-" + inputWidth);
@@ -478,13 +472,6 @@ namespace Dash
             return String.Join(separator, list);
         }
 
-        private static TagBuilder ErrorDiv()
-        {
-            var errorDiv = new TagBuilder("div");
-            errorDiv.AddCssClass("help-block with-errors");
-            return errorDiv;
-        }
-
         private static TagBuilder FormGroup()
         {
             var formGroup = new TagBuilder("div");
@@ -519,10 +506,6 @@ namespace Dash
             {
                 attrs.Append("required", "true");
             }
-            if (attrs.ContainsKey("required") && attrs["required"].ToString().ToLower() == "false")
-            {
-                attrs.Remove("required");
-            }
             attrs.Append("class", "form-input");
 
             return attrs;
@@ -546,7 +529,6 @@ namespace Dash
                 inputGroup.InnerHtml.AppendHtml(help);
                 innerDiv.InnerHtml.AppendHtml(inputGroup);
             }
-            innerDiv.InnerHtml.AppendHtml(ErrorDiv());
             return innerDiv;
         }
 

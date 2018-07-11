@@ -20,6 +20,8 @@ legend {
     display: block;
     line-height: $line-height;
     padding: $control-padding-y + $border-width 0;
+    text-align: right;
+    padding-right: 1rem;
 
     &.label-sm {
         font-size: $font-size-sm;
@@ -29,6 +31,10 @@ legend {
     &.label-lg {
         font-size: $font-size-lg;
         padding: $control-padding-y-lg + $border-width 0;
+    }
+
+    &.required {
+        color: $error-color;
     }
 }
 
@@ -477,19 +483,16 @@ textarea.form-input {
     }
 }
 
-// validation based on :placeholder-shown (Edge doesn't support it yet)
 .form-input {
-    &:not(:placeholder-shown) {
-        &:invalid {
-            border-color: $error-color;
+    &:invalid {
+        border-color: $error-color;
 
-            &:focus {
-                @include control-shadow($error-color);
-            }
+        &:focus {
+            @include control-shadow($error-color);
+        }
 
-            & + .form-input-hint {
-                color: $error-color;
-            }
+        & + .form-input-hint {
+            color: $error-color;
         }
     }
 }

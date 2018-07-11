@@ -112,29 +112,7 @@ label {
     }
 }
 
-/*
-* Form validation
-*/
-.form-label {
-    text-align: right;
-    padding-right: 1rem;
-
-    &.required {
-        color: $error-color;
-    }
-}
-
-.help-block.with-errors {
-    width: 100%;
-    color: $error-color;
-    text-align: left;
-    font-weight: normal;
-    font-style: italic;
-    display: block;
-    padding-top: 3px;
-}
-
-.form-control-error, .mform-control-error {
+.mform-control-error {
     border-color: $error-color;
 }
 
@@ -170,10 +148,6 @@ label {
             margin-right: 0;
         }
     }
-}
-
-.tab-validation-error {
-    color: $error-color !important;
 }
 
 .form-buttons .btn {

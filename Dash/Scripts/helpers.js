@@ -14,7 +14,6 @@
         dashboardReload: new CustomEvent('dashboardReload'),
         datasetFormLoad: new CustomEvent('datasetFormLoad'),
         datasetFormUnload: new CustomEvent('datasetFormUnload'),
-        formValidate: new CustomEvent('formValidate'),
         layoutUpdate: new CustomEvent('layoutUpdate'),
         reportLoad: new CustomEvent('reportLoad'),
         reportUnload: new CustomEvent('reportUnload'),
