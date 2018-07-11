@@ -100,7 +100,6 @@ gulp.task('js', function() {
         paths.js + 'Rect.js',              // library for rectangle geometry
         paths.js + 'Tab.js',               // Tab component
         paths.js + 'Table.js',             // custom table component using mithril
-        paths.js + 'Prism.js',             // syntax highlighting for sql
         paths.js + 'Validator.js',         // form validation
         paths.js + 'Widget.js',            // widget component using mithril
         // functional areas

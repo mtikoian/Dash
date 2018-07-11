@@ -2,8 +2,8 @@
  * Wraps shared functionality for report and chart detail pages.
  */
 (function(root, factory) {
-    root.BaseDetails = factory(root.$, root.Alertify, root.Prism);
-})(this, function($, Alertify, Prism) {
+    root.BaseDetails = factory(root.$, root.Alertify);
+})(this, function($, Alertify) {
     'use strict';
 
     /**
@@ -65,7 +65,6 @@
                 var elem = $.get('.sql-text', node);
                 if (elem) {
                     elem.textContent = sql;
-                    Prism.highlightElement(elem);
                 }
                 elem = $.get('.sql-error', node);
                 if (elem) {
