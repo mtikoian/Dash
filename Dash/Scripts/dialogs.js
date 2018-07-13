@@ -401,7 +401,7 @@
 /*!
  * Wraps dialog functionality.
  */
-(function($, Alertify, Dialog, Table, Tab, CollapsibleList, DatePicker) {
+(function(m, $, Alertify, Dialog, Table, Tab, CollapsibleList, DatePicker) {
     'use strict';
 
     /**
@@ -420,6 +420,7 @@
     var _contentActions = [
         { selector: '[data-toggle="tab"]', action: function() { new Tab(this); } },
         { selector: '.dash-ajax', action: function() { $.on(this, 'click', handleAjaxRequest); } },
+        { selector: '.dash-table', action: function() { tableLoad(this); } },
         { selector: '.dash-form', action: function() { $.on(this, 'submit', function(e) { e.preventDefault(); }, true); } },
         {
             selector: '.dash-context-help', action: function() {
@@ -429,7 +430,7 @@
             }
         },
         { selector: '.dash-collapsible-list', action: function() { new CollapsibleList(this); } },
-        { selector: '.dash-input-replace', action: function() { $.on(this, 'click', inputReplace); } }
+        { selector: '.dash-input-replace', action: function() { $.on(this, 'click', inputReplace); } },
     ];
 
     var _dialogs = [];
@@ -482,7 +483,7 @@
             setTimeout(activeDialog.onShow.bind(activeDialog), 25);
         } else {
             // back to dashboard so set title
-            var dashboard = $.get('#dashboard');
+            var dashboard = $.get('#bodyContent');
             if (dashboard) {
                 document.title = dashboard.getAttribute('data-title');
             }
@@ -575,6 +576,17 @@
                     }
                 }
             } else {
+                var newNode = $.createNode(responseData.content);
+                if (newNode && newNode.id) {
+                    var targetNode = $.get('#' + newNode.id);
+                    if (targetNode) {
+                        // @todo do some sort of destroy logic here
+                        targetNode.parentNode.replaceChild(newNode, targetNode);
+                        processContent(newNode);
+                    }
+                    return;
+                }
+
                 openDialog($.isNull(responseData.component) ? responseData.content : responseData, target);
             }
         });
@@ -615,6 +627,26 @@
             return false;
         }
         sendAjaxRequest.call(this, url, method, target, e, promptValue);
+    };
+
+    /**
+     * Initialize a table instance
+     * @param {Node} node - Node containing the data for the table.
+     */
+    var tableLoad = function(node) {
+        var json = node.getAttribute('data-json');
+        if (json) {
+            var opts = JSON.parse(json);
+            m.mount(node.parentElement, {
+                view: function() {
+                    return m(Table, opts);
+                }
+            });
+            /*
+            // @todo when destroying content that contains a table, i need to unmount it.
+            m.mount(node, null);
+            */
+        }
     };
 
     /**
@@ -711,4 +743,4 @@
         removeDialog: removeDialog,
         sendAjaxRequest: sendAjaxRequest
     };
-})(this.$, this.Alertify, this.Dialog, this.Table, this.Tab, this.CollapsibleList, this.DatePicker);
+})(this.m, this.$, this.Alertify, this.Dialog, this.Table, this.Tab, this.CollapsibleList, this.DatePicker);

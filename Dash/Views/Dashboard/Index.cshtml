@@ -1,5 +1,9 @@
 ﻿@model Dash.Models.WidgetList
 
-<div id="dashboard" data-title="@Dash.I18n.Core.Dashboard" data-event="dashboardLoad"
+<div id="bodyContent" class="dashboard" data-title="@Dash.I18n.Core.Dashboard" data-event="dashboardLoad"
      data-url="@Url.Action("IndexOptions")" data-save-url="@Url.Action("SaveDashboard")" data-json="@Model.ToJson">
+    @foreach (var widget in Model.Widgets)
+    {
+        @Html.Partial("_Widget", widget)
+    }
 </div>

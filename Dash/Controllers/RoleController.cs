@@ -73,7 +73,7 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly]
         public IActionResult Index()
         {
-            return Component(Dash.Component.Table, Roles.ViewAll, new Table("tableRoles", Url.Action("List"),
+            return PartialView(new Table("tableRoles", Url.Action("List"),
                 new List<TableColumn> {
                     new TableColumn("name", Roles.Name, Table.EditLink($"{Url.Action("Edit")}/{{id}}", User.IsInRole("role.edit"))),
                     new TableColumn("actions", Core.Actions, sortable: false, links: new List<TableLink>()
@@ -81,8 +81,7 @@ namespace Dash.Controllers
                         .AddIf(Table.DeleteButton($"{Url.Action("Delete")}/{{id}}", string.Format(Core.ConfirmDeleteBody, Roles.RoleLower)), User.IsInRole("role.delete"))
                         .AddIf(Table.CopyButton($"{Url.Action("Copy")}/{{id}}", Roles.CopyBody), User.IsInRole("role.copy")))
                 },
-                new List<TableHeaderButton>().AddIf(Table.CreateButton(Url.Action("Create"), Roles.CreateRole), User.IsInRole("role.create")),
-                GetList()
+                new List<TableHeaderButton>().AddIf(Table.CreateButton(Url.Action("Create"), Roles.CreateRole), User.IsInRole("role.create"))
             ));
         }
 

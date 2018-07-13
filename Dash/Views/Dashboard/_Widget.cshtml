@@ -1,0 +1,37 @@
+﻿@model Dash.Models.Widget
+@using Dash.I18n;
+
+<div id="widget_@Model.Id" class="grid-item grid-item-width-@Model.Width grid-item-height-@Model.Height grid-item-x-@Model.X grid-item-y-@Model.Y"
+     data-id="@Model.Id" data-report-id="@Model.ReportId" data-options-url="@Url.Action("WidgetOptions", new { id = Model.Id })"
+     data-delete-url="@Url.Action("Delete", new { id = Model.Id })">
+
+    <div class="grid-header columns">
+        <span class="grid-title col-8">@Model.Title</span>
+        <span class="grid-buttons col-4 text-right">
+            <a title="@Widgets.Refresh" class="btn btn-link btn-refresh"><i class="dash dash-arrows-cw"></i></a>
+            <a title="@Widgets.ToggleFullScreen" class="btn btn-link btn-fullscreen"><i class="dash dash-max"></i></a>
+            <a href="@Url.Action("Details", "Report", new {@id = Model.ReportId})" title="@Widgets.Report" class="btn btn-link dash-ajax fs-disabled" data-title="@Widgets.ViewReport">
+                <i class="dash dash-info"></i>
+            </a>
+            <a href="@Url.Action("Edit", "Dashboard", new {@id = Model.Id})" title="@Widgets.EditWidget" class="btn btn-link dash-ajax fs-disabled"><i class="dash dash-pencil"></i></a>
+            <a title="@Widgets.DeleteWidget" class="btn btn-link btn-delete fs-disabled"><i class="dash dash-trash"></i></a>
+        </span>
+    </div>
+    <div class="grid-body">
+        @if (Model.IsData)
+        {
+            <div class="widget-data" id="widgetData_@Model.Id"></div>
+        }
+        else
+        {
+            <div class="widget-chart" id="widgetChart_@Model.Id" data-url="@Url.Action("Data", "Chart", new { id = Model.ChartId })">
+                @Html.Partial("_Chart")
+            </div>
+        }
+    </div>
+    <div class="grid-footer">
+        <span class="grid-updated-time">@DateTime.Now.ToLongTimeString()</span>
+        <span class="resizable-handle float-right"><i class="dash dash-corner"></i></span>
+        <span class="drag-handle float-right"><i class="dash dash-move"></i></span>
+    </div>
+</div>

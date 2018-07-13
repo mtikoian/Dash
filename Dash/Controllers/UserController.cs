@@ -59,7 +59,7 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly]
         public IActionResult Index()
         {
-            return Component(Dash.Component.Table, Users.ViewAll, new Table("tableUsers", Url.Action("List"),
+            return PartialView(new Table("tableUsers", Url.Action("List"),
                 new List<TableColumn> {
                     new TableColumn("userName", Users.UserName, Table.EditLink($"{Url.Action("Edit")}/{{id}}", User.IsInRole("user.edit"))),
                     new TableColumn("firstName", Users.FirstName),
@@ -74,8 +74,7 @@ namespace Dash.Controllers
                         ), User.IsInRole("user.unlock"))
                     )
                 },
-                new List<TableHeaderButton>().AddIf(Table.CreateButton(Url.Action("Create"), Users.CreateUser), User.IsInRole("user.create")),
-                GetList()
+                new List<TableHeaderButton>().AddIf(Table.CreateButton(Url.Action("Create"), Users.CreateUser), User.IsInRole("user.create"))
             ));
         }
 

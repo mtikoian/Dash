@@ -9,6 +9,7 @@
 
         @if (User.Identity.IsAuthenticated)
         {
+            @Html.AuthorizedMenu(Core.Dashboard, "Index", "Dashboard", "gauge", User.IsInRole("dashboard.index"))
             @Html.AuthorizedMenu(Widgets.LinkAdd, "Create", "Dashboard", "plus", User.IsInRole("dashboard.create"))
             <li class="divider"></li>
             @Html.AuthorizedMenu(Databases.MenuItem, "Index", "Database", "database", User.IsInRole("database.index"))
@@ -36,6 +37,11 @@
             <li class="divider"></li>
             @Html.AuthorizedMenu(Account.UpdateAccount, "Update", "Account", "asterisk", User.IsInRole("account.update"))
             @Html.AuthorizedMenu(Account.Logout, "LogOff", "Account", "logout", User.Identity.IsAuthenticated)
+        }
+        else
+        {
+            @Html.AuthorizedMenu(Account.Login, "Login", "Account", "login", true)
+            @Html.AuthorizedMenu(Account.ForgotPassword, "ForgotPassword", "Account", "lamp", true)
         }
     </ul>
 </div>

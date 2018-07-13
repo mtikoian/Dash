@@ -75,7 +75,7 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly]
         public IActionResult Index()
         {
-            return Component(Dash.Component.Table, Alerts.ViewAll, new Table("tableAlerts", Url.Action("List"),
+            return PartialView(new Table("tableAlerts", Url.Action("List"),
                 new List<TableColumn> {
                     new TableColumn("name", Alerts.Name, Table.EditLink($"{Url.Action("Edit")}/{{id}}", User.IsInRole("alert.edit"))),
                     new TableColumn("subject", Alerts.Subject),
@@ -87,8 +87,7 @@ namespace Dash.Controllers
                         .AddIf(Table.DeleteButton($"{Url.Action("Delete")}/{{id}}", string.Format(Core.ConfirmDeleteBody, Alerts.AlertLower)), User.IsInRole("alert.delete"))
                         .AddIf(Table.CopyButton($"{Url.Action("Copy")}/{{id}}", Alerts.CopyBody), User.IsInRole("alert.copy")))
                 },
-                new List<TableHeaderButton>().AddIf(Table.CreateButton(Url.Action("Create"), Alerts.CreateAlert), User.IsInRole("alert.create")),
-                GetList()
+                new List<TableHeaderButton>().AddIf(Table.CreateButton(Url.Action("Create"), Alerts.CreateAlert), User.IsInRole("alert.create"))
             ));
         }
 

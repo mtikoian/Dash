@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Dash.I18n;
+using Jil;
 
 namespace Dash
 {
@@ -45,6 +46,9 @@ namespace Dash
         public bool Searchable { get; set; } = true;
 
         public string Url { get; set; }
+
+        [JilDirective(true)]
+        public string ToJson { get { return JSON.SerializeDynamic(this, JilOutputFormatter.Options); } }
 
         public static TableLink CopyButton(string href, string message, bool hasAccess = true)
         {

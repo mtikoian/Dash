@@ -23,16 +23,6 @@ namespace Dash.Controllers
             return Ok(data);
         }
 
-        public IActionResult Component(Component component, string title, object data, bool isBasic = true)
-        {
-            return Ok(new {
-                Component = component.ToString(),
-                Title = title,
-                Basic = isBasic,
-                Data = data
-            });
-        }
-
         public IActionResult Error(string error)
         {
             if (Request.IsAjaxRequest())

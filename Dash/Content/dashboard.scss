@@ -2,7 +2,6 @@
 
 html, body {
     width: 100%;
-    background: #000;
 }
 
 .sidebar-wrapper {
@@ -56,11 +55,10 @@ html, body {
     top: 0;
     left: 2.8rem;
     right: 0;
-    bottom: .1rem;
+    bottom: 0;
     position: absolute;
 
     .container {
-        background: #fff;
         height: 100%;
     }
 }
@@ -78,9 +76,13 @@ body.toggled {
             }
         }
     }
+
+    .content-wrapper {
+        left: 12rem;
+    }
 }
 
-#dashboard {
+.dashboard {
     position: relative;
     height: 100%;
     background-color: white;

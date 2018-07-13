@@ -75,7 +75,7 @@
             this.setupDraggie(container);
 
             if (!opts.isData) {
-                this.chart = new DashChart(container, false, this.processJson.bind(this), this.onError.bind(this));
+                this.chart = new DashChart($.get('.widget-chart', container), false, this.processJson.bind(this), this.onError.bind(this));
             }
             if (opts.refreshSeconds > 0) {
                 this.interval = setInterval(this.refresh.bind(this), opts.refreshSeconds * 1000);
@@ -88,17 +88,28 @@
 
         render: function() {
             var parentNode = $.get('#widget_' + this.opts.id);
-            var firstRender = !parentNode;
 
-            if (firstRender) {
-                // have to create the parent node by hand first - rendering multiple views to the same parentNode with mithril causes an overwrite
-                parentNode = $.createNode();
-                parentNode.id = 'widget_' + this.opts.id;
-                parentNode.setAttribute('data-url', this.opts.url);
-                parentNode.className = buildClassList(this.opts);
-                $.get('#dashboard').appendChild(parentNode);
+            var self = this;
+            if (this.opts.isData) {
+                var tableNode = $.get('.widget-data', parentNode);
+                if (tableNode) {
+                    m.mount(tableNode, {
+                        view: function() {
+                            return m(Table, self.tableOpts);
+                        }
+                    });
+                }
             }
 
+            // add our system wide events
+            $.dialogs.processContent($.get('#widget_' + this.opts.id));
+
+            // @todo set up events for forceRefresh, toggleFullScreen, deleteWidget
+            $.on($.get('.btn-refresh', parentNode), 'click', self.forceRefresh.bind(self));
+            $.on($.get('.btn-fullscreen', parentNode), 'click', self.toggleFullScreen.bind(self));
+            $.on($.get('.btn-delete', parentNode), 'click', self.deleteWidget.bind(self));
+
+            /*
             var self = this;
             // now render the rest of the widget content
             m.mount(parentNode, {
@@ -146,11 +157,7 @@
                     ];
                 }
             });
-
-            if (firstRender) {
-                // add our system wide events
-                $.dialogs.processContent($.get('#widget_' + this.opts.id));
-            }
+            */
         },
 
         /**

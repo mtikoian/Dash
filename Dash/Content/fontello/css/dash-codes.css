@@ -13,10 +13,12 @@
 .dash-sort-down:before { content: '\e80b'; } /* '' */
 .dash-to-start-alt:before { content: '\e80c'; } /* '' */
 .dash-to-end-alt:before { content: '\e80d'; } /* '' */
+.dash-login:before { content: '\e80e'; } /* '' */
 .dash-arrows-cw:before { content: '\e80f'; } /* '' */
 .dash-info:before { content: '\e810'; } /* '' */
 .dash-pencil:before { content: '\e811'; } /* '' */
 .dash-move:before { content: '\e812'; } /* '' */
+.dash-lamp:before { content: '\e813'; } /* '' */
 .dash-database:before { content: '\e816'; } /* '' */
 .dash-list-alt:before { content: '\e817'; } /* '' */
 .dash-user:before { content: '\e818'; } /* '' */
@@ -37,4 +39,5 @@
 .dash-trash:before { content: '\e83d'; } /* '' */
 .dash-menu:before { content: '\f0c9'; } /* '' */
 .dash-list-numbered:before { content: '\f0cb'; } /* '' */
+.dash-gauge:before { content: '\f0e4'; } /* '' */
 .dash-bell-alt:before { content: '\f0f3'; } /* '' */

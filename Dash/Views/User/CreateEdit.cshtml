@@ -10,8 +10,8 @@
             @Html.LabelInputFor(model => model.UserName)
             @Html.LabelInputFor(model => model.FirstName)
             @Html.LabelInputFor(model => model.LastName)
-            @Html.LabelPasswordFor(model => model.Password, new { required = Model.Id == 0 })
-            @Html.LabelPasswordFor(model => model.ConfirmPassword, new { required = Model.Id == 0 })
+            @Html.LabelPasswordFor(model => model.Password, Model.Id == 0 ? new { required = true } : null)
+            @Html.LabelPasswordFor(model => model.ConfirmPassword, Model.Id == 0 ? new { required = true } : null)
             @Html.LabelCheckBoxFor(model => model.AllowSingleFactor)
         </div>
 

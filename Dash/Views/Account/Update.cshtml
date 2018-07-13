@@ -2,18 +2,32 @@
 @using Dash.Models
 @model User
 
-@using (Html.BeginCustomForm("Update", "Account", null, Account.UpdateAccount))
-{
-    @Html.HiddenFor(model => model.Id)
+<div id="bodyContent" class="p-5">
+    <ul class="breadcrumb">
+        <li class="breadcrumb-item">
+            @Html.AuthorizedActionLink(Core.Dashboard, "Index", "Dashboard", hasAccess: User.IsInRole("dashboard.index"))
+        </li>
+        <li class="breadcrumb-item">
+            @Html.AuthorizedActionLink(Account.UpdateAccount, "Update", "Account", hasAccess: User.IsInRole("account.update"))
+        </li>
+    </ul>
+    <div class="divider"></div>
 
-    <div class="col-6">
-        @Html.LabelInputFor(model => model.FirstName)
-        @Html.LabelInputFor(model => model.LastName)
-        @Html.LabelPasswordFor(model => model.Password, new { required = Model.Id == 0 })
-        @Html.LabelPasswordFor(model => model.ConfirmPassword, new { required = Model.Id == 0 })
-    </div>
-    <div class="col-6">
-        @Html.LabelInputFor(model => model.Email, inputType: Dash.Html.InputFieldType.Email)
-        @Html.LabelDropDownListFor(model => model.LanguageId, new SelectList(Model.DbContext.GetAll<Language>(), "Id", "Name"))
-    </div>
-}
+    @using (Html.BeginCustomForm("Update", "Account", null, Account.UpdateAccount))
+    {
+        @Html.HiddenFor(model => model.Id)
+
+        <div class="columns">
+            <div class="col-6">
+                @Html.LabelInputFor(model => model.FirstName)
+                @Html.LabelInputFor(model => model.LastName)
+                @Html.LabelPasswordFor(model => model.Password)
+                @Html.LabelPasswordFor(model => model.ConfirmPassword)
+            </div>
+            <div class="col-6">
+                @Html.LabelInputFor(model => model.Email, inputType: Dash.Html.InputFieldType.Email)
+                @Html.LabelDropDownListFor(model => model.LanguageId, new SelectList(Model.DbContext.GetAll<Language>(), "Id", "Name"))
+            </div>
+        </div>
+    }
+</div>

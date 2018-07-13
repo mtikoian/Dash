@@ -147,7 +147,7 @@ namespace Dash
             {
                 htmlAttr["class"] = "";
             }
-            htmlAttr["class"] = MergedList(htmlAttr.ContainsKey("class") ? htmlAttr["class"] : "", new string[] { (ajaxForm ? "dash-form" : ""), "container form-horizontal pt-1 mx-1" }).Combine();
+            htmlAttr["class"] = MergedList(htmlAttr.ContainsKey("class") ? htmlAttr["class"] : "", new string[] { (ajaxForm ? "dash-form" : ""), "container form-horizontal p-5" }).Combine();
             if (!title.IsEmpty())
             {
                 htmlAttr["data-title"] = title.Trim();

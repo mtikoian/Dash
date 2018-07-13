@@ -197,15 +197,14 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly]
         public IActionResult Index()
         {
-            return Component(Dash.Component.Table, Charts.ViewAll, new Table("tableCharts", Url.Action("List"), new List<TableColumn> {
+            return PartialView(new Table("tableCharts", Url.Action("List"), new List<TableColumn> {
                 new TableColumn("name", Charts.Name, Table.EditLink($"{Url.Action("Details")}/{{id}}", User.IsInRole("chart.details"))),
                 new TableColumn("actions", Core.Actions, sortable: false, links: new List<TableLink>()
                         .AddIf(Table.EditButton($"{Url.Action("Details")}/{{id}}"), User.IsInRole("chart.details"))
                         .AddIf(Table.DeleteButton($"{Url.Action("Delete")}/{{id}}", Charts.ConfirmDelete), User.IsInRole("chart.delete"))
                         .AddIf(Table.CopyButton($"{Url.Action("Copy")}/{{id}}", Charts.NewName), User.IsInRole("chart.copy"))
                 )},
-                new List<TableHeaderButton>().AddIf(Table.CreateButton(Url.Action("Create"), Charts.CreateChart), User.IsInRole("chart.create")),
-                GetList()
+                new List<TableHeaderButton>().AddIf(Table.CreateButton(Url.Action("Create"), Charts.CreateChart), User.IsInRole("chart.create"))
             ));
         }
 

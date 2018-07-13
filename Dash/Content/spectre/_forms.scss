@@ -94,23 +94,6 @@ textarea.form-input {
     height: auto;
 }
 
-// Form element: Input hint
-.form-input-hint {
-    color: $gray-color;
-    font-size: $font-size-sm;
-    margin-top: $unit-1;
-
-    .has-success &,
-    .is-success + & {
-        color: $success-color;
-    }
-
-    .has-error &,
-    .is-error + & {
-        color: $error-color;
-    }
-}
-
 // Form element: Select
 .form-select {
     appearance: none;
@@ -439,50 +422,6 @@ textarea.form-input {
 }
 
 // Form validation states
-.form-input,
-.form-select {
-    .has-success &,
-    &.is-success {
-        border-color: $success-color;
-
-        &:focus {
-            @include control-shadow($success-color);
-        }
-    }
-
-    .has-error &,
-    &.is-error {
-        border-color: $error-color;
-
-        &:focus {
-            @include control-shadow($error-color);
-        }
-    }
-}
-
-.form-checkbox,
-.form-radio,
-.form-switch {
-    .has-error &,
-    &.is-error {
-        .form-icon {
-            border-color: $error-color;
-        }
-
-        input {
-            &:checked + .form-icon {
-                background: $error-color;
-                border-color: $error-color;
-            }
-
-            &:focus + .form-icon {
-                @include control-shadow($error-color);
-                border-color: $error-color;
-            }
-        }
-    }
-}
-
 .form-input {
     &:invalid {
         border-color: $error-color;

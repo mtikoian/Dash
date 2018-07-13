@@ -199,7 +199,7 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly]
         public IActionResult Index()
         {
-            return Component(Dash.Component.Table, Reports.ViewAll, new Table("tableReports", Url.Action("List"), new List<TableColumn> {
+            return PartialView(new Table("tableReports", Url.Action("List"), new List<TableColumn> {
                 new TableColumn("name", Reports.Name, Table.EditLink($"{Url.Action("Details")}/{{id}}", User.IsInRole("report.details"))),
                 new TableColumn("datasetName", Reports.Dataset, Table.EditLink($"{Url.Action("Edit", "Dataset")}/{{datasetId}}", User.IsInRole("dataset.edit"))),
                 new TableColumn("actions", Core.Actions, sortable: false, links: new List<TableLink>()
@@ -207,8 +207,7 @@ namespace Dash.Controllers
                         .AddIf(Table.DeleteButton($"{Url.Action("Delete")}/{{id}}", Reports.ConfirmDelete), User.IsInRole("report.delete"))
                         .AddIf(Table.CopyButton($"{Url.Action("Copy")}/{{id}}", Reports.NewName), User.IsInRole("report.copy"))
                 )},
-                new List<TableHeaderButton>().AddIf(Table.CreateButton(Url.Action("Create"), Reports.CreateReport), User.IsInRole("report.create")),
-                GetList()
+                new List<TableHeaderButton>().AddIf(Table.CreateButton(Url.Action("Create"), Reports.CreateReport), User.IsInRole("report.create"))
             ));
         }
 

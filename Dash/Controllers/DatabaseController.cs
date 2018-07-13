@@ -60,7 +60,7 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly]
         public IActionResult Index()
         {
-            return Component(Dash.Component.Table, Databases.ViewAll, new Table("tableDatabases", Url.Action("List"), new List<TableColumn> {
+            return PartialView(new Table("tableDatabases", Url.Action("List"), new List<TableColumn> {
                 new TableColumn("name", Databases.Name, Table.EditLink($"{Url.Action("Edit")}/{{id}}", User.IsInRole("database.edit"))),
                 new TableColumn("databaseName", Databases.DatabaseName),
                 new TableColumn("host", Databases.Host),
@@ -71,8 +71,7 @@ namespace Dash.Controllers
                         .AddIf(new TableLink($"{Url.Action("TestConnection")}/{{id}}", Html.Classes(DashClasses.DashAjax, DashClasses.BtnInfo), Databases.TestConnection, TableIcon.HeartBeat),
                             User.IsInRole("database.testconnection"))
                 )},
-                new List<TableHeaderButton>().AddIf(Table.CreateButton(Url.Action("Create"), Databases.CreateDatabase), User.IsInRole("database.create")),
-                GetList()
+                new List<TableHeaderButton>().AddIf(Table.CreateButton(Url.Action("Create"), Databases.CreateDatabase), User.IsInRole("database.create"))
             ));
         }
 

@@ -1,39 +1,39 @@
 // Position
 .clearfix {
-  @include clearfix();
+    @include clearfix();
 }
 
 .float-left {
-  float: left !important;
+    float: left !important;
 }
 
 .float-right {
-  float: right !important;
+    float: right !important;
 }
 
 .relative {
-  position: relative;
+    position: relative;
 }
 
 .absolute {
-  position: absolute;
+    position: absolute;
 }
 
 .fixed {
-  position: fixed;
+    position: fixed;
 }
 
 .centered {
-  display: block;
-  float: none;
-  margin-left: auto;
-  margin-right: auto;
+    display: block;
+    float: none;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .flex-centered {
-  align-items: center;
-  display: flex;
-  justify-content: center;
+    align-items: center;
+    display: flex;
+    justify-content: center;
 }
 
 // Spacing
@@ -48,3 +48,5 @@
 @include padding-variant(1, $unit-1);
 
 @include padding-variant(2, $unit-2);
+
+@include padding-variant(5, $unit-5);

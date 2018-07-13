@@ -13,7 +13,7 @@
      * @param {Object} widgets - Widgets options.
      */
     var create = function(widgets) {
-        var dashboard = $.get('#dashboard');
+        var dashboard = $.get('#bodyContent');
         widgets = $.coalesce(widgets, []);
 
         var opts = makeWidgetOpts(dashboard);
@@ -30,7 +30,7 @@
      * @returns {Object} Object with grid and layoutCallback.
      */
     var makeWidgetOpts = function(dashboard) {
-        dashboard = $.coalesce(dashboard, $.get('#dashboard'));
+        dashboard = $.coalesce(dashboard, $.get('#bodyContent'));
         return {
             grid: { columns: _columns, rows: _rows, columnWidth: dashboard.parentNode.offsetWidth / _columns, rowHeight: dashboard.parentNode.offsetHeight / _rows },
             layoutCallback: $.debounce(updatePosition, 100)
@@ -41,7 +41,7 @@
      * Get the config for the dashboard from the server.
      */
     $.on(document, 'dashboardLoad', function() {
-        var dash = $.get('#dashboard');
+        var dash = $.get('#bodyContent');
         if (!dash) {
             return;
         }
@@ -49,13 +49,6 @@
         if (json) {
             dash.removeAttribute('data-json');
             create(JSON.parse(json));
-        } else if (dash.hasAttribute('data-url')) {
-            $.ajax({
-                method: 'GET',
-                url: dash.getAttribute('data-url')
-            }, function(data) {
-                create(data);
-            });
         }
     });
 
@@ -63,7 +56,7 @@
      * Fetch widget settings from server and add/reload/delete widgets as needed.
      */
     $.on(document, 'dashboardReload', function() {
-        var dash = $.get('#dashboard');
+        var dash = $.get('#bodyContent');
         if (!(dash && dash.hasAttribute('data-url'))) {
             return;
         }
@@ -189,7 +182,7 @@
         }
         _currentPositions = positions;
 
-        var dash = $.get('#dashboard');
+        var dash = $.get('#bodyContent');
         $.ajax({
             method: 'POST',
             url: dash.getAttribute('data-save-url'),
