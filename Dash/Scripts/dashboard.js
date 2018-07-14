@@ -94,6 +94,22 @@
     });
 
     /**
+     * Destory dashboard.
+     */
+    $.on(document, 'dashboardUnload', function() {
+        var dash = $.get('#bodyContent.dashboard');
+        if (!(dash)) {
+            return;
+        }
+
+        var widgets = getWidgets();
+        if (widgets.length) {
+            // any widgets still left need to be deleted
+            widgets.forEach(function(x) { x.destroy(true); });
+        }
+    });
+
+    /**
      * Get the widget objects for the dashboard.
      * @returns {Widget[]} Array of widgets.
      */

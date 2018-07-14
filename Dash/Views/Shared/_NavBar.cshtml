@@ -9,7 +9,7 @@
 
         @if (User.Identity.IsAuthenticated)
         {
-            @Html.AuthorizedMenu(Core.Dashboard, "Index", "Dashboard", "gauge", User.IsInRole("dashboard.index"))
+            @Html.AuthorizedMenu(Core.Dashboard, "WidgetContent", "Dashboard", "gauge", User.IsInRole("dashboard.widgetcontent"))
             @Html.AuthorizedMenu(Widgets.LinkAdd, "Create", "Dashboard", "plus", User.IsInRole("dashboard.create"))
             <li class="divider"></li>
             @Html.AuthorizedMenu(Databases.MenuItem, "Index", "Database", "database", User.IsInRole("database.index"))

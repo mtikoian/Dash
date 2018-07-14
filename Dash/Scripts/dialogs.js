@@ -421,7 +421,7 @@
         { selector: '[data-toggle="tab"]', action: function() { new Tab(this); } },
         { selector: '.dash-ajax', action: function() { $.on(this, 'click', handleAjaxRequest); } },
         { selector: '.dash-table', action: function() { tableLoad(this); } },
-        { selector: '.dash-form', action: function() { $.on(this, 'submit', function(e) { e.preventDefault(); }, true); } },
+        { selector: '.dash-form', action: function() { $.on(this, 'submit', handleFormSubmit, true); } },
         {
             selector: '.dash-context-help', action: function() {
                 $.on(this, 'click', function(e) {
@@ -488,6 +488,145 @@
                 document.title = dashboard.getAttribute('data-title');
             }
         }
+    };
+
+    /**
+     * Convert a value for a field to the correct data type.
+     * @param {Node} field - Input that we are converting value for.
+     * @param {string} val - Value to convert.
+     * @returns {string|number|bool} Returns correctly casted value.
+     */
+    var tryGetValue = function(field, val) {
+        var fieldName = field.name.split('.').pop();
+        var typeHint = (field.getAttribute('typehint') || '').toLowerCase(); // might be able to remove this typeHint stuff later when cron is working correctly
+        if (typeHint === 'text') {
+            return val;
+        } else if (typeHint === 'bool' || (fieldName.substring(0, 2) === 'Is' || fieldName.substring(0, 5) === 'Allow') && (field.value.toLowerCase() === 'true' || field.value.toLowerCase() === 'false')) {
+            return field.value.toLowerCase() === 'true';
+        } else if (typeHint === 'number' || field.type.toLowerCase() === 'number' || field.name.slice(-2) === 'Id' || !($.isNull(val) || val.length == 0 || isNaN(val))) {
+            return val.length ? parseInt(val) : null;
+        }
+        return val;
+    };
+
+    /**
+     * Try to set a value in an object.
+     * @param {Object} obj - Object to add value to.
+     * @param {Node} field - Input that we are converting value for.
+     * @param {string} name - Name of property.
+     * @param {string} val - Value to set.
+     * @returns {Object} Returns correctly updated object.
+     */
+    var trySetValue = function(obj, field, name, val) {
+        if (obj.hasOwnProperty(name) || $.hasClass(field, 'custom-control-input-multiple')) {
+            if (!$.isArray(obj[name])) {
+                obj[name] = $.isNull(obj[name]) ? [] : [obj[name]];
+            }
+            if (!$.isNull(val)) {
+                obj[name].push(val);
+            }
+        } else if (!$.isNull(val)) {
+            obj[name] = val;
+        }
+        return obj;
+    };
+
+    /**
+     * Convert form data into an object.
+     * @returns {Object} Form data.
+     */
+    var serializeForm = function(form) {
+        if (!form) {
+            return {};
+        }
+
+        var field, data = {};
+        var len = form.elements.length;
+        var bracketRegEx = /\[([^\]]+)\]/;
+        for (var i = 0; i < len; i++) {
+            field = form.elements[i];
+            if (!field.name || field.disabled || ['file', 'reset', 'submit', 'button'].indexOf(field.type) > -1) {
+                continue;
+            }
+
+            var value = null;
+            if (field.type === 'select' && field.hasAttribute('multiple')) {
+                value = Array.apply(null, form.elements[i].options).filter(function(x) {
+                    return x.selected;
+                }).map(function(x) {
+                    return tryGetValue(field, x.value);
+                });
+            } else if (field.type === 'checkbox') {
+                if (field.checked) {
+                    value = tryGetValue(field, field.value);
+                }
+            } else if (field.type !== 'radio' || field.checked) {
+                value = tryGetValue(field, field.value);
+            }
+
+            var pieces = field.name.split('.');
+            var name = field.name;
+            if (pieces.length > 1) {
+                var matches = bracketRegEx.exec(pieces[0]);
+                name = matches.length > 1 ? pieces[0].replace(matches[0], '') : pieces[0];
+                if (!data.hasOwnProperty(name)) {
+                    data[name] = [];
+                }
+                if (matches.length > 1) {
+                    if (!data[name].hasOwnProperty(matches[1])) {
+                        data[name][matches[1]] = {};
+                    }
+                    data[name][matches[1]] = trySetValue(data[name][matches[1]], field, pieces[1], value);
+                } else {
+                    data[name][matches[0]] = trySetValue(data[name][matches[0]], field, pieces[1], value);
+                }
+            } else {
+                data = trySetValue(data, field, name, value);
+            }
+        }
+        return data;
+    };
+
+    var handleFormSubmit = function(e) {
+        e.preventDefault();
+
+        var form = e.target;
+        if (!form) {
+            return;
+        }
+        /*
+        if (!this.validateForm()) {
+            return;
+        }
+        */
+
+        var formData = serializeForm(form);
+        $.ajax({
+            method: form.hasAttribute('data-method') ? form.getAttribute('data-method') : 'POST',
+            url: form.getAttribute('action'),
+            data: formData,
+            token: formData.__RequestVerificationToken
+        }, function(responseData) {
+            handleResponseContent(responseData);
+
+            /*
+            var target = self.opts.target;
+            var parentDlg = $.dialogs.findDialogById(self.opts.parent);
+            if (responseData.parentTarget && parentDlg) {
+                target = parentDlg.getTarget();
+            }
+
+            self.destroy();
+            if (responseData.closeParent && parentDlg) {
+                parentDlg.destroy();
+            }
+            if (responseData.dialogUrl) {
+                $.dialogs.sendAjaxRequest(responseData.dialogUrl, 'GET', target);
+            }
+            */
+
+            // @todo add new response handler - probably want backend to return html for whatever page should be displayed
+        });
     };
 
     /**
@@ -576,20 +715,39 @@
                     }
                 }
             } else {
-                var newNode = $.createNode(responseData.content);
-                if (newNode && newNode.id) {
-                    var targetNode = $.get('#' + newNode.id);
-                    if (targetNode) {
-                        // @todo do some sort of destroy logic here
-                        targetNode.parentNode.replaceChild(newNode, targetNode);
-                        processContent(newNode);
-                    }
-                    return;
-                }
-
-                openDialog($.isNull(responseData.component) ? responseData.content : responseData, target);
+                handleResponseContent(responseData);
             }
         });
+    };
+
+    var handleResponseContent = function(responseData) {
+        var newNode = $.createNode(responseData.content);
+        if (newNode && newNode.id) {
+            var targetNode = $.get('#' + newNode.id);
+            if (targetNode) {
+                // @todo this code is duplicated above.  gotta streamline that
+                var ev;
+                $.getAll('[dash-unload-event]', targetNode, true).forEach(function(x) {
+                    ev = x.getAttribute('dash-unload-event');
+                    if ($.events.hasOwnProperty(ev)) {
+                        $.dispatch(document, $.events[ev]);
+                    }
+                });
+
+                targetNode.parentNode.replaceChild(newNode, targetNode);
+                processContent(newNode);
+
+                $.getAll('[dash-load-event]', newNode, true).forEach(function(x) {
+                    ev = x.getAttribute('dash-load-event');
+                    if ($.events.hasOwnProperty(ev)) {
+                        $.dispatch(document, $.events[ev]);
+                    }
+                });
+                return;
+            }
+        }
+
+        openDialog($.isNull(responseData.component) ? responseData.content : responseData, target);
     };
 
     /**

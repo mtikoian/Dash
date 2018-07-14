@@ -25,7 +25,7 @@
         else
         {
             <div class="widget-chart" id="widgetChart_@Model.Id" data-url="@Url.Action("Data", "Chart", new { id = Model.ChartId })">
-                @Html.Partial("_Chart")
+                <partial name="Chart" />
             </div>
         }
     </div>

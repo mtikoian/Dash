@@ -11,16 +11,18 @@
     <link rel="icon" href="~/favicon.ico">
 </head>
 <body data-base-url="@Url.Content("~")" data-resx="@Url.Action("Index", "Resx", null)" data-lang="@(CultureInfo.DefaultThreadCurrentCulture?.TwoLetterISOLanguageName ?? "en")">
-    @{ Html.RenderPartial("_NavBar"); }
+    <div id="fullPageBody">
+        <partial name="_NavBar" />
 
-    <div class="content-wrapper">
-        @RenderBody()
-
-        <div id="loader" class="dialog-loading">
-            <div class="loading loading-lg"></div>
+        <div class="content-wrapper">
+            @RenderBody()
         </div>
-
-        <script type="text/javascript" src="~/js/bundle.js"></script>
     </div>
+
+    <div id="loader" class="dialog-loading">
+        <div class="loading loading-lg"></div>
+    </div>
+
+    <script type="text/javascript" src="~/js/bundle.js"></script>
 </body>
 </html>

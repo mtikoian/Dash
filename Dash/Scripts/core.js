@@ -306,16 +306,21 @@
      * Get all elements matching selector.
      * @param {string} selector - ID, class name, or any valid query selector.
      * @param {Node} container - Only search within this node.
+     * @param {bool} includeContainer - If true check if container matches selector and add it to resultset.
      * @returns {Node[]} Non-live array of matched nodes.
      */
-    var getAll = function(selector, container) {
+    var getAll = function(selector, container, includeContainer) {
         var list;
         if (selector.charAt(0) === '.' && selector.indexOf(',') === -1 && selector.indexOf('>') === -1) {
             list = (container || document).getElementsByClassName(selector.substr(1));
         } else {
             list = (container || document).querySelectorAll(selector);
         }
-        return Array.prototype.slice.call(list);
+        var res = Array.prototype.slice.call(list);
+        if (includeContainer && matches(container, selector)) {
+            res.unshift(container);
+        }
+        return res;
     };
 
     /**

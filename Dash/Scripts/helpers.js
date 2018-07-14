@@ -11,6 +11,7 @@
         chartUnload: new CustomEvent('chartUnload'),
         columnSelectorLoad: new CustomEvent('columnSelectorLoad'),
         dashboardLoad: new CustomEvent('dashboardLoad'),
+        dashboardUnload: new CustomEvent('dashboardUnload'),
         dashboardReload: new CustomEvent('dashboardReload'),
         datasetFormLoad: new CustomEvent('datasetFormLoad'),
         datasetFormUnload: new CustomEvent('datasetFormUnload'),

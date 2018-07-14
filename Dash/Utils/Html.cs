@@ -4,7 +4,9 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Text.Encodings.Web;
 using Dash.I18n;
+using Dash.Models;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Internal;
@@ -172,6 +174,77 @@ namespace Dash
             var mvcForm = helper.BeginForm(action, controller, new RouteValueDictionary(routeValues), FormMethod.Post, true, htmlAttr);
             helper.ViewContext.Writer.Write(helper.AntiForgeryToken());
             return mvcForm;
+        }
+
+        public static IDisposable BeginBodyContent(this IHtmlHelper helper, string title = null, string loadEvent = null, string unloadEvent = null)
+        {
+            var div = new TagBuilder("div");
+            div.Attributes.Add("id", "bodyContent");
+            div.AddCssClass("p-5");
+            if (!title.IsEmpty())
+            {
+                div.Attributes.Add("dash-title", title);
+            }
+            if (!loadEvent.IsEmpty())
+            {
+                div.Attributes.Add("dash-load-event", loadEvent);
+            }
+            if (!unloadEvent.IsEmpty())
+            {
+                div.Attributes.Add("dash-unload-event", unloadEvent);
+            }
+
+            var writer = helper.ViewContext.Writer;
+            div.RenderStartTag().WriteTo(writer, HtmlEncoder.Default);
+            return new BodyContent(writer);
+        }
+
+        public static IHtmlContent Breadcrumbs(this IHtmlHelper helper, List<Breadcrumb> breadcrumbs)
+        {
+            var ul = new TagBuilder("ul");
+            ul.AddCssClass("breadcrumb");
+            breadcrumbs.Each(x => {
+                var li = new TagBuilder("li");
+                li.AddCssClass("breadcrumb-item");
+                li.InnerHtml.AppendHtml(AuthorizedActionLink(helper, x.Label, x.Action, x.Controller, x.RouteValues, returnEmpty: false, hasAccess: x.HasAccess));
+                ul.InnerHtml.AppendHtml(li);
+            });
+
+            var divider = new TagBuilder("div");
+            divider.AddCssClass("divider");
+
+            var div = new TagBuilder("div");
+            div.InnerHtml.AppendHtml(ul);
+            div.InnerHtml.AppendHtml(divider);
+            return div;
+        }
+
+        public static IHtmlContent FormButtons(this IHtmlHelper helper, string submitLabel = null, IHtmlContent extraButtons = null)
+        {
+            var submit = new TagBuilder("input");
+            submit.MergeAttribute("type", "submit");
+            submit.MergeAttribute("value", submitLabel ?? Core.Save);
+            submit.AddCssClass("btn btn-primary");
+            var span = new TagBuilder("span");
+            span.AddCssClass("form-buttons col-8 col-ml-auto");
+            span.InnerHtml.AppendHtml(submit);
+            if (extraButtons != null)
+            {
+                span.InnerHtml.AppendHtml(extraButtons);
+            }
+
+            var columnDiv = new TagBuilder("div");
+            columnDiv.AddCssClass("columns");
+            columnDiv.InnerHtml.AppendHtml(span);
+
+            var colDiv = new TagBuilder("div");
+            colDiv.AddCssClass("col-6");
+            colDiv.InnerHtml.AppendHtml(columnDiv);
+
+            var div = new TagBuilder("div");
+            div.AddCssClass("columns pt-5");
+            div.InnerHtml.AppendHtml(colDiv);
+            return div;
         }
 
         public static IDisposable BeginToolbar(this IHtmlHelper helper)
@@ -578,6 +651,20 @@ namespace Dash
             public void Dispose()
             {
                 _writer.Write("</div></div>");
+            }
+        }
+        private class BodyContent : IDisposable
+        {
+            private readonly TextWriter _writer;
+
+            public BodyContent(TextWriter writer)
+            {
+                _writer = writer;
+            }
+
+            public void Dispose()
+            {
+                _writer.Write("</div>");
             }
         }
     }

@@ -44,6 +44,7 @@
     <None Include="Views\Chart\Create.cshtml"/>
     <None Include="Views\Chart\Details.cshtml"/>
     <None Include="Views\Chart\Share.cshtml"/>
+    <None Include="Views\Dashboard\Body.cshtml"/>
     <None Include="Views\Dashboard\CreateEdit.cshtml"/>
     <None Include="Views\Dashboard\Index.cshtml"/>
     <None Include="Views\Database\CreateEdit.cshtml"/>
@@ -66,12 +67,12 @@
   <ItemGroup>
     <None Include="Views\Alert\Index.cshtml"/>
     <None Include="Views\Chart\Index.cshtml"/>
-    <None Include="Views\Dashboard\_Widget.cshtml"/>
+    <None Include="Views\Dashboard\Widget.cshtml"/>
     <None Include="Views\Database\Index.cshtml"/>
     <None Include="Views\Dataset\Index.cshtml"/>
     <None Include="Views\Report\Index.cshtml"/>
     <None Include="Views\Role\Index.cshtml"/>
-    <None Include="Views\Shared\_Chart.cshtml"/>
+    <None Include="Views\Shared\Chart.cshtml"/>
     <None Include="Views\User\Index.cshtml"/>
   </ItemGroup>
 </Project>

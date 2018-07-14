@@ -2,16 +2,12 @@
 @using Dash.Models
 @model User
 
-<div id="bodyContent" class="p-5">
-    <ul class="breadcrumb">
-        <li class="breadcrumb-item">
-            @Html.AuthorizedActionLink(Core.Dashboard, "Index", "Dashboard", hasAccess: User.IsInRole("dashboard.index"))
-        </li>
-        <li class="breadcrumb-item">
-            @Html.AuthorizedActionLink(Account.UpdateAccount, "Update", "Account", hasAccess: User.IsInRole("account.update"))
-        </li>
-    </ul>
-    <div class="divider"></div>
+@using (Html.BeginBodyContent(Account.UpdateAccount))
+{
+    @Html.Breadcrumbs(new List<Breadcrumb> {
+        new Breadcrumb(Core.Dashboard, "Index", "Dashboard", hasAccess: User.IsInRole("dashboard.index")),
+        new Breadcrumb(Account.UpdateAccount, "Update", "Account", hasAccess: User.IsInRole("account.update"))
+    });
 
     @using (Html.BeginCustomForm("Update", "Account", null, Account.UpdateAccount))
     {
@@ -23,11 +19,12 @@
                 @Html.LabelInputFor(model => model.LastName)
                 @Html.LabelPasswordFor(model => model.Password)
                 @Html.LabelPasswordFor(model => model.ConfirmPassword)
-            </div>
-            <div class="col-6">
                 @Html.LabelInputFor(model => model.Email, inputType: Dash.Html.InputFieldType.Email)
                 @Html.LabelDropDownListFor(model => model.LanguageId, new SelectList(Model.DbContext.GetAll<Language>(), "Id", "Name"))
             </div>
         </div>
+
+        @Html.FormButtons()
     }
-</div>
+}
+

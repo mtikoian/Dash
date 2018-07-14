@@ -68,9 +68,18 @@ namespace Dash.Controllers
             return Save(model);
         }
 
-        public IActionResult Index()
+        public IActionResult Index(bool withMenu = false)
         {
-            return View(new WidgetList(DbContext, _ActionContextAccessor, User.UserId()));
+            var widgets = new WidgetList(DbContext, _ActionContextAccessor, User.UserId());
+            if (Request.IsAjaxRequest())
+            {
+                if (withMenu)
+                {
+                    return PartialView("Body", widgets);
+                }
+                return PartialView(widgets);
+            }
+            return View(widgets);
         }
 
         [HttpGet]
@@ -109,6 +118,11 @@ namespace Dash.Controllers
                 return Error(Core.ErrorInvalidId);
             }
             return Data(model);
+        }
+
+        public IActionResult WidgetContent()
+        {
+            return PartialView("Index", new WidgetList(DbContext, _ActionContextAccessor, User.UserId()));
         }
 
         private IActionResult CreateEditView(Widget model)

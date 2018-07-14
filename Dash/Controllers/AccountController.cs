@@ -54,13 +54,15 @@ namespace Dash.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
+                return RedirectToAction("Index", "Dashboard", new { WithMenu = true });
+
                 return Error(Core.ErrorAlreadyLoggedIn);
             }
             return View(new LogOn());
         }
 
-        [HttpPost, ValidateAntiForgeryToken]
-        public IActionResult Login(LogOn model)
+        [HttpPost, AjaxRequestOnly, ValidateAntiForgeryToken]
+        public IActionResult Login([FromBody] LogOn model)
         {
             if (User.Identity.IsAuthenticated)
             {
@@ -68,21 +70,18 @@ namespace Dash.Controllers
             }
             if (!ModelState.IsValid)
             {
-                ViewBag.Error = ModelState.ToErrorString();
-                return View(model);
+                return Error(ModelState.ToErrorString());
             }
-
             if (!model.DoLogOn(out var error, DbContext, AppConfig, HttpContext))
             {
-                ViewBag.Error = error;
-                return View(model);
+                return Error(error);
             }
             if (model.Membership.AllowSingleFactor)
             {
-                return RedirectToAction("Index", "Dashboard");
+                return RedirectToAction("Index", "Dashboard", new { WithMenu = true });
             }
             model.Membership.CreateHash();
-            return View("TwoFactorLogin", model.Membership);
+            return PartialView("TwoFactorLogin", model.Membership);
         }
 
         [HttpGet, AjaxRequestOnly]
@@ -188,6 +187,10 @@ namespace Dash.Controllers
         [HttpPost, AjaxRequestOnly, Authorize, ValidateAntiForgeryToken]
         public IActionResult Update([FromBody] User model)
         {
+            if (!ModelState.IsValid)
+            {
+                return Error(ModelState.ToErrorString());
+            }
             if (model.UpdateProfile(out var errorMsg))
             {
                 return Success(Account.AccountUpdated);
