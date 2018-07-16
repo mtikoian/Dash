@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace Dash.Controllers
 {
+    [Pjax]
     public class AccountController : BaseController
     {
         public AccountController(IDbContext dbContext, AppConfiguration appConfig) : base(dbContext, appConfig)
@@ -61,8 +62,8 @@ namespace Dash.Controllers
             return View(new LogOn());
         }
 
-        [HttpPost, AjaxRequestOnly, ValidateAntiForgeryToken]
-        public IActionResult Login([FromBody] LogOn model)
+        [HttpPost, ValidateAntiForgeryToken]
+        public IActionResult Login([FromForm] LogOn model)
         {
             if (User.Identity.IsAuthenticated)
             {
@@ -184,8 +185,8 @@ namespace Dash.Controllers
             return PartialView(DbContext.GetAll<User>(new { UserName = User.Identity.Name }).First());
         }
 
-        [HttpPost, AjaxRequestOnly, Authorize, ValidateAntiForgeryToken]
-        public IActionResult Update([FromBody] User model)
+        [HttpPost, Authorize, ValidateAntiForgeryToken]
+        public IActionResult Update([FromForm] User model)
         {
             if (!ModelState.IsValid)
             {

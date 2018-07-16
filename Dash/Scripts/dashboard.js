@@ -1,7 +1,7 @@
 ﻿/*!
  * Wraps functionality for displaying/moving/resizing widgets and their contents.
  */
-(function($, Widget) {
+(function($, pjax, Widget) {
     'use strict';
 
     var _columns = 20;
@@ -222,6 +222,7 @@
      * Set up content after page has loaded.
      */
     var pageLoaded = function() {
+        pjax.connect();
         $.dialogs.processContent($.get('body'));
 
         $.on('#toggleContextHelpBtn', 'click', function(e) {
@@ -247,4 +248,4 @@
     } else {
         $.on(document, 'resxLoaded', pageLoaded);
     }
-})(this.$, this.Widget);
+})(this.$, this.pjax, this.Widget);

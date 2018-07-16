@@ -171,6 +171,9 @@ namespace Dash
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddScoped<IDbContext, DbContext>();
+
+            // @todo add model binder
+            // https://stackoverflow.com/questions/39276939/how-to-inject-dependencies-into-models-in-asp-net-core
         }
 
         /// <summary>

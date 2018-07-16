@@ -84,6 +84,7 @@ gulp.task('sass', function() {
 gulp.task('js', function() {
     return gulp.src([
         // core libraries and helpers
+        paths.js + 'pjax.js',              // pjax library
         paths.js + 'mithril.js',           // mithril rendering library, includes promise polyfill for ie
         paths.js + 'core.js',              // common js functions for the site
         paths.js + 'Alertify.js',          // alerts/modals

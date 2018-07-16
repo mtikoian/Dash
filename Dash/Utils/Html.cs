@@ -129,9 +129,10 @@ namespace Dash
             }
 
             var a = new TagBuilder("a");
-            a.AddCssClass(Classes(DashClasses.DashAjax)["class"].ToString());
-            a.Attributes.Add("href", new UrlHelper(helper.ViewContext).Action(action, controller));
-            a.Attributes.Add("title", linkText);
+            //a.AddCssClass(Classes(DashClasses.DashAjax)["class"].ToString());
+            a.MergeAttribute("href", new UrlHelper(helper.ViewContext).Action(action, controller));
+            a.MergeAttribute("title", linkText);
+            a.MergeAttribute("data-pjax", "contentWrapper");
             var span = new TagBuilder("span");
             span.InnerHtml.Append(linkText);
             a.InnerHtml.AppendHtml(helper.Icon(icon));
@@ -149,7 +150,7 @@ namespace Dash
             {
                 htmlAttr["class"] = "";
             }
-            htmlAttr["class"] = MergedList(htmlAttr.ContainsKey("class") ? htmlAttr["class"] : "", new string[] { (ajaxForm ? "dash-form" : ""), "container form-horizontal p-5" }).Combine();
+            htmlAttr["class"] = MergedList(htmlAttr.ContainsKey("class") ? htmlAttr["class"] : "", new string[] { "container form-horizontal p-5" }).Combine();
             if (!title.IsEmpty())
             {
                 htmlAttr["data-title"] = title.Trim();

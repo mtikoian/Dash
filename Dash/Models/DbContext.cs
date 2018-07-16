@@ -38,7 +38,7 @@ namespace Dash.Models
             using (var conn = GetConnection())
             {
                 conn.Execute($"{type.Name}Delete", new {
-                    RequestUserId = requestUserId ?? _HttpContextAccessor.HttpContext.User.UserId(),
+                    RequestUserId = requestUserId ?? _HttpContextAccessor.HttpContext?.User.UserId(),
                     Id = id
                 }, commandType: CommandType.StoredProcedure);
             }
@@ -50,7 +50,7 @@ namespace Dash.Models
             using (var conn = GetConnection())
             {
                 conn.Execute($"{myType.Name}Delete", new {
-                    RequestUserId = model.RequestUserId ?? _HttpContextAccessor.HttpContext.User.UserId(),
+                    RequestUserId = model.RequestUserId ?? _HttpContextAccessor.HttpContext?.User.UserId(),
                     Id = myType.GetProperty("Id").GetValue(model)
                 }, commandType: CommandType.StoredProcedure);
             }

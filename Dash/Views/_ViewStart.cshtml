@@ -1,3 +1,8 @@
-﻿@{
+﻿@if (ViewBag.IsPjaxRequest ?? false)
+{
+    Layout = null;
+}
+else
+{
     Layout = "_Layout";
 }
