@@ -9,7 +9,7 @@
 
         @if (User.Identity.IsAuthenticated)
         {
-            @Html.AuthorizedMenu(Core.Dashboard, "WidgetContent", "Dashboard", "gauge", User.IsInRole("dashboard.widgetcontent"))
+            @Html.AuthorizedMenu(Core.Dashboard, "Index", "Dashboard", "gauge", User.IsInRole("dashboard.index"))
             @Html.AuthorizedMenu(Widgets.LinkAdd, "Create", "Dashboard", "plus", User.IsInRole("dashboard.create"))
             <li class="divider"></li>
             @Html.AuthorizedMenu(Databases.MenuItem, "Index", "Database", "database", User.IsInRole("database.index"))
@@ -23,7 +23,7 @@
             {
                 <li class="divider"></li>
                 <li>
-                    <a href="~/hangfire" title="@Core.Hangfire">
+                    <a href="~/hangfire" title="@Core.Hangfire" class="pjax-no-follow">
                         <i class="dash dash-fire dash-lg"></i> <span>@Html.Raw(Core.Hangfire)</span>
                     </a>
                 </li>

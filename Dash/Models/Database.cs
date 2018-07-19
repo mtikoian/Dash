@@ -11,6 +11,7 @@ using Jil;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Dash.Configuration;
 
 namespace Dash.Models
 {
@@ -26,9 +27,10 @@ namespace Dash.Models
         {
         }
 
-        public Database(IDbContext dbContext)
+        public Database(IDbContext dbContext, AppConfiguration appConfig)
         {
             DbContext = dbContext;
+            AppConfig = appConfig;
         }
 
         [BindNever, ValidateNever]

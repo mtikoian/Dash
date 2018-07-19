@@ -7,8 +7,10 @@
         new Breadcrumb(Account.Login, "Login", "Account")
     });
 
-    @using (Html.BeginCustomForm("Login", "Account"))
+    @using (Html.BeginCustomForm("Login", "Account", htmlAttributes: new { @class = "pjax-no-follow" }))
     {
+        <partial name="_Toast" />
+
         <div class="columns">
             <div class="col-6">
                 @Html.LabelInputFor(m => m.UserName, new { Autofocus = true })

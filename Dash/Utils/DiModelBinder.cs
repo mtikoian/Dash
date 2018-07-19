@@ -1,0 +1,51 @@
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
+using Microsoft.Extensions.Logging;
+using System;
+
+namespace Dash
+{
+    public class DiModelBinder : ComplexTypeModelBinder
+    {
+        public DiModelBinder(IDictionary<ModelMetadata, IModelBinder> propertyBinders, ILoggerFactory loggerFactory) : base(propertyBinders, loggerFactory)
+        {
+        }
+
+        protected override object CreateModel(ModelBindingContext bindingContext)
+        {
+            var services = bindingContext.HttpContext.RequestServices;
+            var modelType = bindingContext.ModelType;
+            var ctors = modelType.GetConstructors().OrderByDescending(x => x.GetParameters().Length);
+            foreach (var ctor in ctors)
+            {
+                var paramTypes = ctor.GetParameters().Select(p => p.ParameterType).ToList();
+                var parameters = paramTypes.Select(p => services.GetService(p)).ToArray();
+                if (parameters.All(p => p != null))
+                {
+                    var model = ctor.Invoke(parameters);
+                    return model;
+                }
+            }
+
+            return null;
+        }
+    }
+
+    public class DiModelBinderProvider : IModelBinderProvider
+    {
+        public IModelBinder GetBinder(ModelBinderProviderContext context)
+        {
+            if (context == null) { throw new ArgumentNullException(nameof(context)); }
+
+            if (context.Metadata.IsComplexType && !context.Metadata.IsCollectionType)
+            {
+                var propertyBinders = context.Metadata.Properties.ToDictionary(property => property, context.CreateBinder);
+                return new DiModelBinder(propertyBinders, (ILoggerFactory)context.Services.GetService(typeof(ILoggerFactory)));
+            }
+
+            return null;
+        }
+    }
+}

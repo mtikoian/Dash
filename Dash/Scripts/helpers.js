@@ -9,6 +9,7 @@
         chartShareLoad: new CustomEvent('chartShareLoad'),
         chartShareUnload: new CustomEvent('chartShareUnload'),
         chartUnload: new CustomEvent('chartUnload'),
+        collapsibleListLoad: new CustomEvent('collapsibleListLoad'),
         columnSelectorLoad: new CustomEvent('columnSelectorLoad'),
         dashboardLoad: new CustomEvent('dashboardLoad'),
         dashboardUnload: new CustomEvent('dashboardUnload'),
@@ -21,6 +22,8 @@
         reportShareLoad: new CustomEvent('reportShareLoad'),
         reportShareUnload: new CustomEvent('reportShareUnload'),
         resxLoaded: new CustomEvent('resxLoaded'),
+        tableLoad: new CustomEvent('tableLoad'),
+        tableUnload: new CustomEvent('tableUnload'),
         tableDestroy: new CustomEvent('tableDestroy'),
         tableRefresh: new CustomEvent('tableRefresh')
     };

@@ -132,7 +132,6 @@ namespace Dash
             //a.AddCssClass(Classes(DashClasses.DashAjax)["class"].ToString());
             a.MergeAttribute("href", new UrlHelper(helper.ViewContext).Action(action, controller));
             a.MergeAttribute("title", linkText);
-            a.MergeAttribute("data-pjax", "contentWrapper");
             var span = new TagBuilder("span");
             span.InnerHtml.Append(linkText);
             a.InnerHtml.AppendHtml(helper.Icon(icon));
@@ -143,7 +142,7 @@ namespace Dash
             return li;
         }
 
-        public static MvcForm BeginCustomForm(this IHtmlHelper helper, string action, string controller, object routeValues = null, string title = null, string dataEvent = null, string dataUrl = null, object htmlAttributes = null, bool ajaxForm = true, HttpVerbs method = HttpVerbs.Post)
+        public static MvcForm BeginCustomForm(this IHtmlHelper helper, string action, string controller, object routeValues = null, string title = null, string dataLoadEvent = null, string dataUrl = null, object htmlAttributes = null, bool ajaxForm = true, HttpVerbs method = HttpVerbs.Post)
         {
             var htmlAttr = HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes);
             if (!htmlAttr.ContainsKey("class"))
@@ -159,9 +158,9 @@ namespace Dash
             {
                 htmlAttr["id"] = $"{action.ToLower()}{controller.UppercaseFirst()}Form";
             }
-            if (!htmlAttr.ContainsKey("data-event") && !dataEvent.IsEmpty())
+            if (!htmlAttr.ContainsKey("data-load-event") && !dataLoadEvent.IsEmpty())
             {
-                htmlAttr["data-event"] = dataEvent;
+                htmlAttr["data-load-event"] = dataLoadEvent;
             }
             if (!htmlAttr.ContainsKey("data-url") && !dataUrl.IsEmpty())
             {
@@ -169,6 +168,7 @@ namespace Dash
             }
             if (method != HttpVerbs.Post && method != HttpVerbs.Get)
             {
+                // @todo can we switch to just using method later?
                 htmlAttr["data-method"] = method;
             }
 
@@ -184,15 +184,15 @@ namespace Dash
             div.AddCssClass("p-5");
             if (!title.IsEmpty())
             {
-                div.Attributes.Add("dash-title", title);
+                div.Attributes.Add("data-title", title);
             }
             if (!loadEvent.IsEmpty())
             {
-                div.Attributes.Add("dash-load-event", loadEvent);
+                div.Attributes.Add("data-load-event", loadEvent);
             }
             if (!unloadEvent.IsEmpty())
             {
-                div.Attributes.Add("dash-unload-event", unloadEvent);
+                div.Attributes.Add("data-unload-event", unloadEvent);
             }
 
             var writer = helper.ViewContext.Writer;
@@ -204,6 +204,7 @@ namespace Dash
         {
             var ul = new TagBuilder("ul");
             ul.AddCssClass("breadcrumb");
+            breadcrumbs = breadcrumbs.Prepend(new Breadcrumb(Core.Dashboard, "Index", "Dashboard")).ToList();
             breadcrumbs.Each(x => {
                 var li = new TagBuilder("li");
                 li.AddCssClass("breadcrumb-item");

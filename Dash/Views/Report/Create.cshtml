@@ -1,13 +1,27 @@
 ﻿@model Dash.Models.CreateReport
 @using Dash.I18n
-@using System.Security.Claims;
 
-@using (Html.BeginCustomForm("Create", "Report", null, Reports.CreateReport, null, null))
+@using (Html.BeginBodyContent(Reports.CreateReport))
 {
-    @Html.ToCard(Reports.CreateReportExplain, CardTypes.Primary)
+    @Html.Breadcrumbs(new List<Breadcrumb> {
+        new Breadcrumb(Reports.ViewAll, "Index", "Report"),
+        new Breadcrumb(Reports.CreateReport, Model.FormAction, "Report")
+    });
 
-    <div class="col-6 pt-1">
-        @Html.LabelDropDownListFor(model => model.DatasetId, Model.GetDatasetsForUser().ToSelectList(d => d.Name, d => d.Id.ToString()))
-        @Html.LabelInputFor(model => model.Name)
-    </div>
+    @using (Html.BeginCustomForm(Model.FormAction, "Report", method: Model.FormMethod))
+    {
+        @Html.HiddenFor(model => model.Id)
+        @Html.HiddenFor(model => model.RequestUserId)
+
+        <partial name="_Toast" />
+
+        <div class="columns">
+            <div class="col-6">
+                @Html.LabelDropDownListFor(model => model.DatasetId, Model.GetDatasetsForUser().ToSelectList(d => d.Name, d => d.Id.ToString()))
+                @Html.LabelInputFor(model => model.Name)
+            </div>
+        </div>
+
+        @Html.FormButtons()
+    }
 }

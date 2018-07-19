@@ -1,7 +1,7 @@
 ﻿/*!
  * Wraps functionality for displaying/moving/resizing widgets and their contents.
  */
-(function($, pjax, Widget) {
+(function($, pjax, Widget, m, Table, CollapsibleList) {
     'use strict';
 
     var _columns = 20;
@@ -50,7 +50,7 @@
             dash.removeAttribute('data-json');
             create(JSON.parse(json));
         }
-    });
+    }, true);
 
     /**
      * Fetch widget settings from server and add/reload/delete widgets as needed.
@@ -218,11 +218,64 @@
         }
     };
 
+
+    /**
+     * Initialize a table instance
+     * @param {Event} e - Event that triggered the load
+     */
+    $.on(document, 'tableLoad', function(e) {
+        var node = $.isNode(e) ? e : e.target;
+        var json = node.getAttribute('data-json');
+        if (json) {
+            var opts = JSON.parse(json);
+            m.mount(node.parentElement, {
+                view: function() {
+                    return m(Table, opts);
+                }
+            });
+            /*
+            // @todo when destroying content that contains a table, i need to unmount it.
+            m.mount(node, null);
+            */
+        }
+    }, true);
+
+    /**
+     * Destroy a table instance
+     * @param {Event} e - Event that triggered the unload
+     */
+    $.on(document, 'tableUnload', function(e) {
+        var node = $.isNode(e) ? e : e.target;
+        if (node && $.hasClass(node, 'dash-table')) {
+            $.dispatch(node, $.events.tableDestroy);
+            m.mount(node, null);
+        }
+    }, true);
+
+    /**
+     * Initialize a collapsible list instance
+     * @param {Event} e - Event that triggered the load
+     */
+    /*
+    $.on(document, 'collapsibleListLoad', function(e) {
+        var node = $.isNode(e) ? e : e.target;
+        if (node) {
+            new CollapsibleList(node);
+        }
+    }, true);
+    */
+
+    $.on('#menuBtn', 'click', function() {
+        $.toggleClass('body', 'toggled', null);
+        $.dispatch(window, new Event('resize'));
+    });
+
+    // window.dispatchEvent(new Event('resize'));
     /**
      * Set up content after page has loaded.
      */
     var pageLoaded = function() {
-        pjax.connect();
+        pjax.connect({ container: 'contentWrapper', excludeClass: 'pjax-no-follow' });
         $.dialogs.processContent($.get('body'));
 
         $.on('#toggleContextHelpBtn', 'click', function(e) {
@@ -235,8 +288,6 @@
             });
         });
 
-        $.on('#menuBtn', 'click', $.toggleClass.bind(null, 'body', 'toggled', null));
-
         $.dispatch(document, $.events.dashboardLoad);
     };
 
@@ -248,4 +299,4 @@
     } else {
         $.on(document, 'resxLoaded', pageLoaded);
     }
-})(this.$, this.pjax, this.Widget);
+})(this.$, this.pjax, this.Widget, this.m, this.Table, this.CollapsibleList);

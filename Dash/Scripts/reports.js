@@ -730,13 +730,15 @@
         $.getAll('.column-item').forEach(function(x) {
             new Draggabilly(x).on('dragStart', startDrag).on('dragEnd', stopDrag);
         });
-    });
+    }, true);
+
+    // @todo implement columnSelectorUnload
 
     /**
      * Request settings to display a report and call the method to initialize it.
      */
-    $.on(document, 'reportLoad', function() {
-        var form = $.dialogs.getActiveContent();
+    $.on(document, 'reportLoad', function(e) {
+        var form = $.isNode(e) ? e : e.target;
         if (!$.hasClass(form, 'report-form')) {
             return;
         }
@@ -745,24 +747,23 @@
             method: 'GET',
             url: form.getAttribute('data-url')
         }, function(data) {
-            var dlg = $.dialogs.getActiveDialog();
-            data.content = dlg.getContent();
-            _reports[dlg.getId()] = new ReportDetails(data);
+            data.content = form;
+            _reports[form.getAttribute('data-id')] = new ReportDetails(data);
         });
-    });
+    }, true);
 
     /**
      * Clean up when closing the report dialog.
      */
-    $.on(document, 'reportUnload', function() {
-        var dlg = $.dialogs.getActiveDialog();
-        var report = _reports[dlg.getId()];
+    $.on(document, 'reportUnload', function(e) {
+        var form = $.isNode(e) ? e : e.target;
+        var id = form.getAttribute('data-id');
+        var report = _reports[id];
         if (report) {
             report.destroy();
         }
-        delete _reports[dlg.getId()];
-        $.dispatch(document, $.events.dashboardReload);
-    });
+        delete _reports[id];
+    }, true);
 
     /**
      * Load the settings to display the report share form.
@@ -776,7 +777,7 @@
         var dlg = $.dialogs.getActiveDialog();
         _shares[dlg.getId()] = new ShareForm({ content: dlg.getContent(), formName: 'Shares' });
         _shares[dlg.getId()].run();
-    });
+    }, true);
 
     /**
      * Clean up when the report share dialog closes.
@@ -788,5 +789,5 @@
             share.destroy();
         }
         delete _shares[dlg.getId()];
-    });
+    }, true);
 })(this.$, this.Draggabilly, this.ShareForm, this.ReportDetails);

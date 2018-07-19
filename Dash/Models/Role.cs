@@ -98,19 +98,13 @@ namespace Dash.Models
 
         public void Save()
         {
-            if (PermissionIds != null)
-            {
-                var keyedRolePermissions = DbContext.GetAll<RolePermission>(new { RoleId = Id }).ToDictionary(x => x.PermissionId, x => x);
-                RolePermission = PermissionIds?.Where(x => x > 0)
-                    .Select(id => keyedRolePermissions.ContainsKey(id) ? keyedRolePermissions[id] : new RolePermission { PermissionId = id, RoleId = Id }).ToList()
-                    ?? new List<RolePermission>();
-            }
-            if (UserIds != null)
-            {
-                var keyedUserRoles = DbContext.GetAll<UserRole>(new { RoleId = Id }).ToDictionary(x => x.UserId, x => x);
-                UserRole = UserIds?.Where(x => x > 0).Select(id => keyedUserRoles.ContainsKey(id) ? keyedUserRoles[id] : new UserRole { UserId = id, RoleId = Id }).ToList()
-                    ?? new List<UserRole>();
-            }
+            var keyedRolePermissions = DbContext.GetAll<RolePermission>(new { RoleId = Id }).ToDictionary(x => x.PermissionId, x => x);
+            RolePermission = PermissionIds?.Where(x => x > 0)
+                .Select(id => keyedRolePermissions.ContainsKey(id) ? keyedRolePermissions[id] : new RolePermission { PermissionId = id, RoleId = Id }).ToList()
+                ?? new List<RolePermission>();
+            var keyedUserRoles = DbContext.GetAll<UserRole>(new { RoleId = Id }).ToDictionary(x => x.UserId, x => x);
+            UserRole = UserIds?.Where(x => x > 0).Select(id => keyedUserRoles.ContainsKey(id) ? keyedUserRoles[id] : new UserRole { UserId = id, RoleId = Id }).ToList()
+                ?? new List<UserRole>();
             DbContext.Save(this, forceSaveNulls: true);
         }
 

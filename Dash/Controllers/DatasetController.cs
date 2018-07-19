@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Dash.Controllers
 {
-    [Authorize(Policy = "HasPermission")]
+    [Authorize(Policy = "HasPermission"), Pjax]
     public class DatasetController : BaseController
     {
         public DatasetController(IDbContext dbContext, AppConfiguration appConfig) : base(dbContext, appConfig)
@@ -22,30 +22,32 @@ namespace Dash.Controllers
             return Json(new { columns = DbContext.Get<Dataset>(id)?.AvailableColumns(tables.Split(',')) ?? new List<object>() });
         }
 
-        [HttpGet, AjaxRequestOnly]
+        [HttpGet]
         public IActionResult Copy(CopyDataset model)
         {
             if (model == null)
             {
-                return Error(Core.ErrorGeneric);
+                ViewBag.Error = Core.ErrorGeneric;
+                return Index();
             }
             if (!ModelState.IsValid)
             {
-                return Error(ModelState.ToErrorString());
+                ViewBag.Error = ModelState.ToErrorString();
+                return Index();
             }
             model.Save();
-            return Success(Datasets.SuccessCopyingDataset);
+            ViewBag.Message = Datasets.SuccessCopyingDataset;
+            return Index();
         }
 
-        [HttpGet, AjaxRequestOnly]
+        [HttpGet]
         public IActionResult Create()
         {
             return CreateEditView(new Dataset(DbContext));
         }
 
-        [HttpPost, AjaxRequestOnly]
-        [IgnoreModelErrors("Database.*"), ValidateAntiForgeryToken]
-        public IActionResult Create([FromBody] Dataset model)
+        [HttpPost, IgnoreModelErrors("Database.*"), ValidateAntiForgeryToken]
+        public IActionResult Create(Dataset model)
         {
             return Save(model);
         }
@@ -56,26 +58,28 @@ namespace Dash.Controllers
             var model = DbContext.Get<Dataset>(id);
             if (model == null)
             {
-                return Error(Core.ErrorInvalidId);
+                ViewBag.Error = Core.ErrorInvalidId;
+                return Index();
             }
             DbContext.Delete(model);
-            return Success(Datasets.SuccessDeletingDataset);
+            ViewBag.Message = Datasets.SuccessDeletingDataset;
+            return Index();
         }
 
-        [HttpGet, AjaxRequestOnly]
+        [HttpGet]
         public IActionResult Edit(int id)
         {
             var model = DbContext.Get<Dataset>(id);
             if (model == null)
             {
-                return Error(Core.ErrorInvalidId);
+                ViewBag.Error = Core.ErrorInvalidId;
+                return Index();
             }
             return CreateEditView(model);
         }
 
-        [HttpPut, AjaxRequestOnly, ValidateAntiForgeryToken]
-        [IgnoreModelErrors("Database.*")]
-        public IActionResult Edit([FromBody] Dataset model)
+        [HttpPut, IgnoreModelErrors("Database.*"), ValidateAntiForgeryToken]
+        public IActionResult Edit(Dataset model)
         {
             return Save(model);
         }
@@ -95,10 +99,11 @@ namespace Dash.Controllers
             });
         }
 
-        [HttpGet, AjaxRequestOnly]
+        [HttpGet]
         public IActionResult Index()
         {
-            return PartialView(new Table("tableDatasets", Url.Action("List"), new List<TableColumn> {
+            RouteData.Values.Remove("id");
+            return View("Index", new Table("tableDatasets", Url.Action("List"), new List<TableColumn> {
                 new TableColumn("name", Datasets.Name, Table.EditLink($"{Url.Action("Edit")}/{{id}}", User.IsInRole("dataset.edit"))),
                 new TableColumn("databaseName", Databases.DatabaseName, Table.EditLink($"{Url.Action("Edit", "Database")}/{{databaseId}}", User.IsInRole("database.edit"))),
                 new TableColumn("databaseHost", Datasets.Host),
@@ -115,7 +120,7 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly]
         public IActionResult List()
         {
-            return Rows(GetList());
+            return Rows(DbContext.GetAll<Dataset>().Select(x => new { x.Id, x.Name, x.DatabaseName, x.DatabaseHost, x.PrimarySource, x.DatabaseId }));
         }
 
         [HttpGet, AjaxRequestOnly]
@@ -154,26 +159,24 @@ namespace Dash.Controllers
             {
                 model.Database = DbContext.Get<Database>(model.DatabaseId);
             }
-            return PartialView("CreateEdit", model);
-        }
-
-        private IEnumerable<object> GetList()
-        {
-            return DbContext.GetAll<Dataset>().Select(x => new { x.Id, x.Name, x.DatabaseName, x.DatabaseHost, x.PrimarySource, x.DatabaseId });
+            return View("CreateEdit", model);
         }
 
         private IActionResult Save(Dataset model)
         {
             if (model == null)
             {
-                return Error(Core.ErrorGeneric);
+                ViewBag.Error = Core.ErrorGeneric;
+                return CreateEditView(model);
             }
             if (!ModelState.IsValid)
             {
-                return Error(ModelState.ToErrorString());
+                ViewBag.Error = ModelState.ToErrorString();
+                return CreateEditView(model);
             }
             model.Save();
-            return Success(Datasets.SuccessSavingDataset);
+            ViewBag.Message = Datasets.SuccessSavingDataset;
+            return Index();
         }
     }
 }

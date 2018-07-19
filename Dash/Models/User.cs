@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
 using Dash.I18n;
+using Dash.Configuration;
 using Dash.Utils;
 using Jil;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -22,9 +23,10 @@ namespace Dash.Models
         {
         }
 
-        public User(IDbContext dbContext)
+        public User(IDbContext dbContext, AppConfiguration appConfig)
         {
             DbContext = dbContext;
+            AppConfig = appConfig;
         }
 
         [Display(Name = "AllowSingleFactor", ResourceType = typeof(Users))]
@@ -58,7 +60,7 @@ namespace Dash.Models
         [Ignore, JilDirective(true)]
         public string FullName { get { return $"{FirstName.Trim()} {LastName}".Trim(); } }
 
-        [Ignore]
+        [Ignore, BindNever, ValidateNever]
         public bool IsLocked
         {
             get
@@ -139,12 +141,9 @@ namespace Dash.Models
 
         public bool Save(bool lazySave = true)
         {
-            if (RoleIds != null)
-            {
-                var keyedUserRoles = DbContext.GetAll<UserRole>(new { UserId = Id }).ToDictionary(x => x.RoleId, x => x);
-                UserRole = RoleIds?.Where(x => x > 0).Select(id => keyedUserRoles.ContainsKey(id) ? keyedUserRoles[id] : new UserRole { UserId = Id, RoleId = id }).ToList()
-                    ?? new List<UserRole>();
-            }
+            var keyedUserRoles = DbContext.GetAll<UserRole>(new { UserId = Id }).ToDictionary(x => x.RoleId, x => x);
+            UserRole = RoleIds?.Where(x => x > 0).Select(id => keyedUserRoles.ContainsKey(id) ? keyedUserRoles[id] : new UserRole { UserId = Id, RoleId = id }).ToList()
+                ?? new List<UserRole>();
 
             DbContext.Save(this);
             if (!Password.IsEmpty())

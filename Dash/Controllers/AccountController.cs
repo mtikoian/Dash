@@ -55,34 +55,35 @@ namespace Dash.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("Index", "Dashboard", new { WithMenu = true });
-
-                return Error(Core.ErrorAlreadyLoggedIn);
+                return RedirectToAction("Index", "Dashboard");
             }
             return View(new LogOn());
         }
 
         [HttpPost, ValidateAntiForgeryToken]
-        public IActionResult Login([FromForm] LogOn model)
+        public IActionResult Login(LogOn model)
         {
             if (User.Identity.IsAuthenticated)
             {
-                return Error(Core.ErrorAlreadyLoggedIn);
+                ViewBag.Error = Core.ErrorAlreadyLoggedIn;
+                return View("Login", model);
             }
             if (!ModelState.IsValid)
             {
-                return Error(ModelState.ToErrorString());
+                ViewBag.Error = ModelState.ToErrorString();
+                return View("Login", model);
             }
             if (!model.DoLogOn(out var error, DbContext, AppConfig, HttpContext))
             {
-                return Error(error);
+                ViewBag.Error = error;
+                return View("Login", model);
             }
             if (model.Membership.AllowSingleFactor)
             {
                 return RedirectToAction("Index", "Dashboard", new { WithMenu = true });
             }
             model.Membership.CreateHash();
-            return PartialView("TwoFactorLogin", model.Membership);
+            return View("TwoFactorLogin", model.Membership);
         }
 
         [HttpGet, AjaxRequestOnly]
@@ -186,7 +187,7 @@ namespace Dash.Controllers
         }
 
         [HttpPost, Authorize, ValidateAntiForgeryToken]
-        public IActionResult Update([FromForm] User model)
+        public IActionResult Update(User model)
         {
             if (!ModelState.IsValid)
             {

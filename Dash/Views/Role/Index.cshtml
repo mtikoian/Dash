@@ -1,8 +1,15 @@
 ﻿@using Dash.I18n
 @model Table
-﻿
-<div data-title="@Roles.ViewAll" data-basic-dialog="true">
+
+@using (Html.BeginBodyContent(Roles.ViewAll))
+{
+    @Html.Breadcrumbs(new List<Breadcrumb> {
+        new Breadcrumb(Roles.ViewAll, "Index", "Role")
+    });
+
+    <partial name="_Toast" />
+
     <div class="col-12">
-        <div class="dash-table" data-json="@Model.ToJson"></div>
+        <div class="dash-table" data-load-event="tableLoad" data-unload-event="tableUnload" data-json="@Model.ToJson"></div>
     </div>
-</div>
+}

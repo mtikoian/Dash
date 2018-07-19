@@ -8,58 +8,62 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Dash.Controllers
 {
-    [Authorize(Policy = "HasPermission")]
+    [Authorize(Policy = "HasPermission"), Pjax]
     public class UserController : BaseController
     {
         public UserController(IDbContext dbContext, AppConfiguration appConfig) : base(dbContext, appConfig)
         {
         }
 
-        [HttpGet, AjaxRequestOnly]
+        [HttpGet]
         public IActionResult Create()
         {
-            return CreateEditView(new User(DbContext));
+            return CreateEditView(new User(DbContext, (AppConfiguration)AppConfig));
         }
 
-        [HttpPost, AjaxRequestOnly, ValidateAntiForgeryToken]
-        public IActionResult Create([FromBody] User model)
+        [HttpPost, ValidateAntiForgeryToken]
+        public IActionResult Create(User model)
         {
             return Save(model);
         }
 
-        [HttpDelete, AjaxRequestOnly]
+        [HttpDelete]
         public IActionResult Delete(int id)
         {
             var model = DbContext.Get<User>(id);
             if (model == null)
             {
-                return Error(Core.ErrorInvalidId);
+                ViewBag.Error = Core.ErrorInvalidId;
+                return Index();
             }
             DbContext.Delete(model);
-            return Success(Users.SuccessDeletingUser);
+            ViewBag.Message = Users.SuccessDeletingUser;
+            return Index();
         }
 
-        [HttpGet, AjaxRequestOnly]
+        [HttpGet]
         public IActionResult Edit(int id)
         {
             var model = DbContext.Get<User>(id);
             if (model == null)
             {
-                return Error(Core.ErrorInvalidId);
+                ViewBag.Error = Core.ErrorInvalidId;
+                return Index();
             }
             return CreateEditView(model);
         }
 
-        [HttpPut, AjaxRequestOnly, ValidateAntiForgeryToken]
-        public IActionResult Edit([FromBody] User model)
+        [HttpPut, ValidateAntiForgeryToken]
+        public IActionResult Edit(User model)
         {
             return Save(model);
         }
 
-        [HttpGet, AjaxRequestOnly]
+        [HttpGet]
         public IActionResult Index()
         {
-            return PartialView(new Table("tableUsers", Url.Action("List"),
+            RouteData.Values.Remove("id");
+            return View("Index", new Table("tableUsers", Url.Action("List"),
                 new List<TableColumn> {
                     new TableColumn("userName", Users.UserName, Table.EditLink($"{Url.Action("Edit")}/{{id}}", User.IsInRole("user.edit"))),
                     new TableColumn("firstName", Users.FirstName),
@@ -81,46 +85,47 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly]
         public IActionResult List()
         {
-            return Rows(GetList());
+            return Rows(DbContext.GetAll<User>().Select(x => new { x.Id, x.UserName, x.FirstName, x.LastName, x.Email, x.IsLocked }));
         }
 
-        [HttpPut, AjaxRequestOnly]
+        [HttpPut]
         public IActionResult Unlock(int id)
         {
             var model = DbContext.Get<User>(id);
             if (model == null)
             {
-                return Error(Core.ErrorInvalidId);
+                ViewBag.Error = Core.ErrorInvalidId;
+                return Index();
             }
             model.Unlock();
-            return Success(Users.SuccessUnlockingUser);
+            ViewBag.Message = Users.SuccessUnlockingUser;
+            return Index();
         }
 
         private IActionResult CreateEditView(User model)
         {
-            return PartialView("CreateEdit", model);
-        }
-
-        private IEnumerable<object> GetList()
-        {
-            return DbContext.GetAll<User>().Select(x => new { x.Id, x.UserName, x.FirstName, x.LastName, x.Email, x.IsLocked });
+            return View("CreateEdit", model);
         }
 
         private IActionResult Save(User model)
         {
             if (model == null)
             {
-                return Error(Core.ErrorGeneric);
+                ViewBag.Error = Core.ErrorGeneric;
+                return CreateEditView(model);
             }
             if (!ModelState.IsValid)
             {
-                return Error(ModelState.ToErrorString());
+                ViewBag.Error = ModelState.ToErrorString();
+                return CreateEditView(model);
             }
             if (!model.Save())
             {
-                return Error(model.Error);
+                ViewBag.Error = model.Error;
+                return CreateEditView(model);
             }
-            return Success(Users.SuccessSavingUser);
+            ViewBag.Message = Users.SuccessSavingUser;
+            return Index();
         }
     }
 }

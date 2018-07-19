@@ -2,8 +2,8 @@
  * Mithril based table component. Supports ajax data, searching, sorting, paging, & resizing columns.
  */
 (function(root, factory) {
-    root.Table = factory(root.m, root.$);
-})(this, function(m, $) {
+    root.Table = factory(root.m, root.$, root.pjax, root.Alertify);
+})(this, function(m, $, pjax, Alertify) {
     'use strict';
 
     var Table = {
@@ -665,7 +665,8 @@
                 {
                     ontableRefresh: this.refresh.bind(this),
                     ontableDestroy: this.destroy.bind(this),
-                    onlayoutUpdate: this.updateLayout.bind(this)
+                    onlayoutUpdate: this.updateLayout.bind(this),
+                    'data-unload-event': 'tableUnload'
                 }, [
                     !this.opts.editable ? m('span#table-items-per-page') :
                         m('.container',
@@ -902,14 +903,35 @@
                                 classes.push('btn');
                                 classes.push('btn-link');
                             }
-                            if (classes.indexOf('dash-ajax') === -1) {
-                                classes.push('dash-ajax');
-                            }
                             attr['class'] = classes.filter(function(x) { return x && x.length; }).join(' ');
                             attr['data-method'] = link.method ? link.method.toUpperCase() : 'GET';
                             attr['data-href'] = href;
                             attr['title'] = label;
-                            attr['onclick'] = $.dialogs.handleAjaxRequest;
+                            attr['onclick'] = function() {
+                                var node = this.getAttribute('data-href') ? this : this.parentNode;
+                                var options = {
+                                    url: node.getAttribute('data-href'), container: 'contentWrapper', method: node.getAttribute('data-method')
+                                };
+                                if (node.getAttribute('data-confirm')) {
+                                    options.history = false;
+                                    Alertify.dismissAll();
+                                    Alertify.confirm(node.getAttribute('data-confirm'), pjax.invoke.bind(null, options));
+                                } else if (node.getAttribute('data-prompt')) {
+                                    options.history = false;
+                                    Alertify.dismissAll();
+                                    Alertify.prompt(node.getAttribute('data-prompt'), function(promptValue) {
+                                        if (!$.hasValue(promptValue)) {
+                                            Alertify.error($.resx('errorNameRequired'));
+                                            return false;
+                                        }
+                                        options.url += ((!/[?&]/.test(options.url)) ? '?prompt' : '&prompt') + '=' + encodeURIComponent(promptValue);
+                                        pjax.invoke(options);
+                                    });
+                                } else {
+                                    options.history = node.getAttribute('data-method') === 'GET';
+                                    pjax.invoke(options);
+                                }
+                            };
                             return m(isBtn ? 'button' : 'a', attr, $.isNull(link.icon) ? label : m('i', { class: 'dash dash-' + link.icon.toLowerCase() }));
                         });
                     };
@@ -930,7 +952,7 @@
                 this.opts.headerButtons = this.opts.headerButtons.filter(function(x) { return !$.isNull(x); });
                 $.forEach(this.opts.headerButtons, function(x) {
                     if (!x.attributes.onclick && !x.attributes.target) {
-                        x.attributes.onclick = $.dialogs.handleAjaxRequest;
+                        x.attributes.onclick = pjax.invoke.bind(null, { url: x.attributes['data-href'], container: 'contentWrapper' });
                     }
                 });
             }

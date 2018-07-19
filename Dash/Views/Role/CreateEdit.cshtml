@@ -1,51 +1,64 @@
 ﻿@using Dash.Models
+@using Dash.I18n;
 @model Role
 
-@using (Html.BeginCustomForm(Model.FormAction, "Role", null, Model.IsCreate ? Dash.I18n.Roles.CreateRole : Dash.I18n.Roles.EditRole, method: Model.FormMethod))
+@using (Html.BeginBodyContent(Model.IsCreate ? Roles.CreateRole : Roles.EditRole))
 {
-    @Html.HiddenFor(model => model.Id)
+    @Html.Breadcrumbs(new List<Breadcrumb> {
+        new Breadcrumb(Roles.ViewAll, "Index", "Role"),
+        new Breadcrumb(Model.IsCreate ? Roles.CreateRole : Roles.EditRole, Model.FormAction, "Role", Model.IsCreate ? null : new { id = Model.Id })
+    });
 
-    <div class="columns">
-        <div class="col-6">
-            @Html.LabelInputFor(model => model.Name)
+    @using (Html.BeginCustomForm(Model.FormAction, "Role", method: Model.FormMethod))
+    {
+        @Html.HiddenFor(model => model.Id)
+
+        <partial name="_Toast" />
+
+        <div class="columns">
+            <div class="col-6">
+                @Html.LabelInputFor(model => model.Name, new { autofocus = true })
+            </div>
         </div>
-    </div>
 
-    <div class="columns">
-        <div class="col-6">
-            <div class="form-group">
-                @Html.ControlLabel("PermissionIds", Dash.I18n.Roles.Permissions)
-                <div class="col-8 dash-collapsible-list c-hand">
-                    @foreach (var controller in Model.ControllerPermissions.Keys)
-                    {
-                        <ul class="collapsible-list">
-                            <li>
-                                @Html.CustomCheckbox("Controller", false, "", controller, inputId: $"controller_{controller}", isFullWidth: false, isMultiple: true)
-                                <ul class="collapsible-list">
-                                    @foreach (var permission in Model.ControllerPermissions[controller])
-                                    {
-                                        <li>
-                                            @Html.CustomCheckbox("PermissionIds", Html.IsChecked(Model.RolePermission, x => x.PermissionId == permission.Id, ((int[])ViewBag.SelectedPermissionIds), permission.Id), permission.Id.ToString(), permission.ActionName, isFullWidth: false, isMultiple: true)
-                                        </li>
-                                    }
-                                </ul>
-                            </li>
-                        </ul>
-                    }
+        <div class="columns">
+            <div class="col-6">
+                <div class="form-group">
+                    @Html.ControlLabel("PermissionIds", Dash.I18n.Roles.Permissions)
+                    <div class="col-8 dash-collapsible-list c-hand" data-load-event="collapsibleListLoad">
+                        @foreach (var controller in Model.ControllerPermissions.Keys)
+                        {
+                            <ul class="collapsible-list">
+                                <li>
+                                    @Html.CustomCheckbox("Controller", false, "", controller, inputId: $"controller_{controller}", isFullWidth: false, isMultiple: true)
+                                    <ul class="collapsible-list">
+                                        @foreach (var permission in Model.ControllerPermissions[controller])
+                                        {
+                                            <li>
+                                                @Html.CustomCheckbox("PermissionIds", Html.IsChecked(Model.RolePermission, x => x.PermissionId == permission.Id, ((int[])ViewBag.SelectedPermissionIds), permission.Id), permission.Id.ToString(), permission.ActionName, isFullWidth: false, isMultiple: true)
+                                            </li>
+                                        }
+                                    </ul>
+                                </li>
+                            </ul>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group columns">
+                    @Html.ControlLabel("UserIds", Dash.I18n.Roles.Users)
+                    <div class="col-8 checkbox-block">
+                        @foreach (var user in Model.AllUsers)
+                        {
+                            @Html.CustomCheckbox("UserIds", Html.IsChecked(Model.UserRole, x => x.UserId == user.Id, ((int[])ViewBag.SelectedUserIds), user.Id), user.Id.ToString(), user.FullName, isMultiple: true)
+                        }
+                        @Html.Help("Role", "Users", false, true)
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-6">
-            <div class="form-group columns">
-                @Html.ControlLabel("UserIds", Dash.I18n.Roles.Users)
-                <div class="col-8 checkbox-block">
-                    @foreach (var user in Model.AllUsers)
-                    {
-                        @Html.CustomCheckbox("UserIds", Html.IsChecked(Model.UserRole, x => x.UserId == user.Id, ((int[])ViewBag.SelectedUserIds), user.Id), user.Id.ToString(), user.FullName, isMultiple: true)
-                    }
-                    @Html.Help("Role", "Users", false, true)
-                </div>
-            </div>
-        </div>
-    </div>
+
+        @Html.FormButtons()
+    }
 }

@@ -1,14 +1,22 @@
 ﻿@model Dash.Models.Report
 @using Dash.I18n
 
-@using (Html.BeginCustomForm("SelectColumns", "Report", null, Reports.SelectColumns, "columnSelectorLoad",
-method: HttpVerbs.Put))
+@using (Html.BeginBodyContent(Reports.SelectColumns))
 {
-    @Html.HiddenFor(model => model.Id)
-    @Html.HiddenFor(model => model.AllowCloseParent)
-    @Html.ToCard(Reports.SelectColumnsExplain, CardTypes.Primary)
+    @Html.Breadcrumbs(new List<Breadcrumb> {
+        new Breadcrumb(Reports.ViewAll, "Index", "Report"),
+        new Breadcrumb(Reports.SelectColumns, "SelectColumns", "Report", new { id = Model.Id })
+    });
 
-    <div class="col-12">
+    @using (Html.BeginCustomForm("SelectColumns", "Report", null, null, "columnSelectorLoad", htmlAttributes: new { @data_unload_event = "columnSelectorUnload" }, method: HttpVerbs.Put))
+    {
+        @Html.HiddenFor(model => model.Id)
+        @Html.HiddenFor(model => model.AllowCloseParent)
+
+        <partial name="_Toast" />
+
+        @Html.ToCard(Reports.SelectColumnsExplain, CardTypes.Primary)
+
         <div class="columns">
             <div class="col-6"><h4>@Reports.Available</h4></div>
             <div class="col-6"><h4>@Reports.Selected</h4></div>
@@ -42,5 +50,7 @@ method: HttpVerbs.Put))
                 }
             }
         </div>
-    </div>
+
+        @Html.FormButtons()
+    }
 }

@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -172,8 +173,14 @@ namespace Dash
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddScoped<IDbContext, DbContext>();
 
-            // @todo add model binder
             // https://stackoverflow.com/questions/39276939/how-to-inject-dependencies-into-models-in-asp-net-core
+            services.AddMvc().AddMvcOptions(options => {
+                // replace ComplexTypeModelBinderProvider with its descendent - IoCModelBinderProvider
+                var provider = options.ModelBinderProviders.FirstOrDefault(x => x.GetType() == typeof(ComplexTypeModelBinderProvider));
+                var binderIndex = options.ModelBinderProviders.IndexOf(provider);
+                options.ModelBinderProviders.Remove(provider);
+                options.ModelBinderProviders.Insert(binderIndex, new DiModelBinderProvider());
+            });
         }
 
         /// <summary>

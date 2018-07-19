@@ -1,6 +1,6 @@
 ﻿@model Dash.Models.WidgetList
 
-<div id="bodyContent" class="dashboard" data-title="@Dash.I18n.Core.Dashboard" dash-load-event="dashboardLoad" dash-unload-event="dashboardUnload"
+<div id="bodyContent" class="dashboard" data-title="@Dash.I18n.Core.Dashboard" data-load-event="dashboardLoad" data-unload-event="dashboardUnload"
      data-url="@Url.Action("IndexOptions")" data-save-url="@Url.Action("SaveDashboard")" data-json="@Model.ToJson">
     @foreach (var widget in Model.Widgets)
     {

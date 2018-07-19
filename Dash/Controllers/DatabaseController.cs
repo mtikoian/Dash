@@ -8,59 +8,63 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Dash.Controllers
 {
-    [Authorize(Policy = "HasPermission")]
+    [Authorize(Policy = "HasPermission"), Pjax]
     public class DatabaseController : BaseController
     {
         public DatabaseController(IDbContext dbContext, AppConfiguration appConfig) : base(dbContext, appConfig)
         {
         }
 
-        [HttpGet, AjaxRequestOnly]
+        [HttpGet]
         public IActionResult Create()
         {
-            return CreateEditView(new Database());
+            return CreateEditView(new Database(DbContext, (AppConfiguration)AppConfig));
         }
 
-        [HttpPost, AjaxRequestOnly, ValidateAntiForgeryToken]
-        public IActionResult Create([FromBody] Database model)
+        [HttpPost, ValidateAntiForgeryToken]
+        public IActionResult Create(Database model)
         {
             return Save(model);
         }
 
-        [HttpDelete, AjaxRequestOnly]
+        [HttpDelete]
         public IActionResult Delete(int id)
         {
             var model = DbContext.Get<Database>(id);
             if (model == null)
             {
-                return Error(Core.ErrorInvalidId);
+                ViewBag.Error = Core.ErrorInvalidId;
+                return Index();
             }
             DbContext.Delete(model);
-            return Success(Databases.SuccessDeletingDatabase);
+            ViewBag.Message = Databases.SuccessDeletingDatabase;
+            return Index();
         }
 
-        [HttpGet, AjaxRequestOnly]
+        [HttpGet]
         public IActionResult Edit(int id)
         {
             var model = DbContext.Get<Database>(id);
             if (model == null)
             {
-                return Error(Core.ErrorInvalidId);
+                ViewBag.Error = Core.ErrorInvalidId;
+                return Index();
             }
             model.ConnectionString = model.ConnectionString.IsEmpty() ? null : new Crypt(AppConfig).Decrypt(model.ConnectionString);
             return CreateEditView(model);
         }
 
-        [HttpPut, AjaxRequestOnly, ValidateAntiForgeryToken]
-        public IActionResult Edit([FromBody] Database model)
+        [HttpPut, ValidateAntiForgeryToken]
+        public IActionResult Edit(Database model)
         {
             return Save(model);
         }
 
-        [HttpGet, AjaxRequestOnly]
+        [HttpGet]
         public IActionResult Index()
         {
-            return PartialView(new Table("tableDatabases", Url.Action("List"), new List<TableColumn> {
+            RouteData.Values.Remove("id");
+            return View("Index", new Table("tableDatabases", Url.Action("List"), new List<TableColumn> {
                 new TableColumn("name", Databases.Name, Table.EditLink($"{Url.Action("Edit")}/{{id}}", User.IsInRole("database.edit"))),
                 new TableColumn("databaseName", Databases.DatabaseName),
                 new TableColumn("host", Databases.Host),
@@ -78,42 +82,49 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly]
         public IActionResult List()
         {
-            return Rows(GetList());
+            return Rows(DbContext.GetAll<Database>().Select(x => new { x.Id, x.Name, x.DatabaseName, x.Host, x.User }));
         }
 
-        [HttpGet, AjaxRequestOnly]
+        [HttpGet]
         public IActionResult TestConnection(int id)
         {
             var model = DbContext.Get<Database>(id);
             if (model == null)
             {
-                return Error(Core.ErrorInvalidId);
+                ViewBag.Error = Core.ErrorInvalidId;
+                return Index();
             }
-            return model.TestConnection(out var errorMsg) ? Success(Databases.SuccessTestingConnection) : Error(errorMsg);
+            if (model.TestConnection(out var errorMsg))
+            {
+                ViewBag.Message = Databases.SuccessTestingConnection;
+            }
+            else
+            {
+                ViewBag.Error = errorMsg;
+            }
+            return Index();
         }
 
         private IActionResult CreateEditView(Database model)
         {
-            return PartialView("CreateEdit", model);
-        }
-
-        private IEnumerable<object> GetList()
-        {
-            return DbContext.GetAll<Database>().Select(x => new { x.Id, x.Name, x.DatabaseName, x.Host, x.User });
+            return View("CreateEdit", model);
         }
 
         private IActionResult Save(Database model)
         {
             if (model == null)
             {
-                return Error(Core.ErrorGeneric);
+                ViewBag.Error = Core.ErrorGeneric;
+                return CreateEditView(model);
             }
             if (!ModelState.IsValid)
             {
-                return Error(ModelState.ToErrorString());
+                ViewBag.Error = ModelState.ToErrorString();
+                return CreateEditView(model);
             }
             model.Save();
-            return Success(Databases.SuccessSavingDatabase);
+            ViewBag.Message = Databases.SuccessSavingDatabase;
+            return Index();
         }
     }
 }

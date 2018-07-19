@@ -5,11 +5,10 @@
 @using (Html.BeginBodyContent(Account.UpdateAccount))
 {
     @Html.Breadcrumbs(new List<Breadcrumb> {
-        new Breadcrumb(Core.Dashboard, "Index", "Dashboard", hasAccess: User.IsInRole("dashboard.index")),
-        new Breadcrumb(Account.UpdateAccount, "Update", "Account", hasAccess: User.IsInRole("account.update"))
+        new Breadcrumb(Account.UpdateAccount, "Update", "Account")
     });
 
-    @using (Html.BeginCustomForm("Update", "Account", null, Account.UpdateAccount))
+    @using (Html.BeginCustomForm("Update", "Account"))
     {
         @Html.HiddenFor(model => model.Id)
 

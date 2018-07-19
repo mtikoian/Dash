@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Dash.Controllers
 {
-    [Authorize(Policy = "HasPermission")]
+    [Authorize(Policy = "HasPermission"), Pjax]
     public class ReportController : BaseController
     {
         public ReportController(IDbContext dbContext, AppConfiguration appConfig) : base(dbContext, appConfig)
@@ -21,32 +21,37 @@ namespace Dash.Controllers
         {
             if (model == null)
             {
-                return Error(Core.ErrorGeneric);
+                ViewBag.Error = Core.ErrorGeneric;
+                return Index();
             }
             if (!ModelState.IsValid)
             {
-                return Error(ModelState.ToErrorString());
+                ViewBag.Error = ModelState.ToErrorString();
+                return Index();
             }
             model.Save();
-            return Success();
+            ViewBag.Message = Reports.SuccessCopyingReport;
+            return Index();
         }
 
-        [HttpGet, AjaxRequestOnly]
+        [HttpGet]
         public IActionResult Create()
         {
-            return PartialView(new CreateReport(DbContext, User.UserId()));
+            return View(new CreateReport(DbContext, User.UserId()));
         }
 
-        [AjaxRequestOnly, ValidateAntiForgeryToken]
-        public IActionResult Create([FromBody] CreateReport model)
+        [HttpPost, ValidateAntiForgeryToken]
+        public IActionResult Create(CreateReport model)
         {
             if (model == null)
             {
-                return Error(Core.ErrorGeneric);
+                ViewBag.Error = Core.ErrorGeneric;
+                return View("Create", model);
             }
             if (!ModelState.IsValid)
             {
-                return Error(ModelState.ToErrorString());
+                ViewBag.Error = ModelState.ToErrorString();
+                return View("Create", model);
             }
 
             var userId = User.UserId();
@@ -58,7 +63,9 @@ namespace Dash.Controllers
                 RequestUserId = userId
             };
             DbContext.Save(newReport, false);
-            return Data(new { message = Reports.SuccessSavingReport, dialogUrl = Url.Action("SelectColumns", new { @id = newReport.Id, @closeParent = false }) });
+            ViewBag.Message = Reports.SuccessSavingReport;
+            return Index();
+            //return Data(new { message = Reports.SuccessSavingReport, dialogUrl = Url.Action("SelectColumns", new { @id = newReport.Id, @closeParent = false }) });
         }
 
         [HttpPost, AjaxRequestOnly]
@@ -82,33 +89,39 @@ namespace Dash.Controllers
             var report = DbContext.Get<Report>(id);
             if (report == null)
             {
-                return Error(Core.ErrorInvalidId);
+                ViewBag.Error = Core.ErrorInvalidId;
+                return Index();
             }
             if (!report.IsOwner)
             {
-                return Error(Reports.ErrorOwnerOnly);
+                ViewBag.Error = Reports.ErrorOwnerOnly;
+                return Index();
             }
             DbContext.Delete(report);
-            return Success(Reports.SuccessDeletingReport);
+            ViewBag.Message = Reports.SuccessDeletingReport;
+            return Index();
         }
 
-        [HttpGet, AjaxRequestOnly]
+        [HttpGet]
         public IActionResult Details(int id)
         {
             var report = DbContext.Get<Report>(id);
             if (report == null)
             {
-                return Error(Core.ErrorInvalidId);
+                ViewBag.Error = Core.ErrorInvalidId;
+                return Index();
             }
             var user = DbContext.Get<User>(User.UserId());
             if (!user.CanViewReport(report))
             {
-                return Error(Reports.ErrorPermissionDenied);
+                ViewBag.Error = Reports.ErrorPermissionDenied;
+                return Index();
             }
 
             if ((report.Dataset?.DatasetColumn?.Count ?? 0) == 0 || !user.CanAccessDataset(report.Dataset.Id))
             {
-                return Error(Reports.ErrorGeneric);
+                ViewBag.Error = Reports.ErrorGeneric;
+                return Index();
             }
 
             if (report.ReportColumn.Count > 0 && !report.ReportColumn.Any(x => x.SortDirection != null))
@@ -117,7 +130,7 @@ namespace Dash.Controllers
                 report.ReportColumn[0].SortOrder = 1;
             }
 
-            return PartialView("Details", report);
+            return View("Details", report);
         }
 
         [HttpGet, AjaxRequestOnly]
@@ -196,10 +209,11 @@ namespace Dash.Controllers
             return File(export.Stream(), export.ContentType, export.FormattedFileName);
         }
 
-        [HttpGet, AjaxRequestOnly]
+        [HttpGet]
         public IActionResult Index()
         {
-            return PartialView(new Table("tableReports", Url.Action("List"), new List<TableColumn> {
+            RouteData.Values.Remove("id");
+            return View("Index", new Table("tableReports", Url.Action("List"), new List<TableColumn> {
                 new TableColumn("name", Reports.Name, Table.EditLink($"{Url.Action("Details")}/{{id}}", User.IsInRole("report.details"))),
                 new TableColumn("datasetName", Reports.Dataset, Table.EditLink($"{Url.Action("Edit", "Dataset")}/{{datasetId}}", User.IsInRole("dataset.edit"))),
                 new TableColumn("actions", Core.Actions, sortable: false, links: new List<TableLink>()
@@ -214,29 +228,33 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly]
         public IActionResult List()
         {
-            return Rows(GetList());
+            return Rows(DbContext.GetAll<Report>(new { UserId = User.UserId() }));
         }
 
-        [HttpPut, AjaxRequestOnly]
+        [HttpPut]
         public IActionResult Rename(int id, string prompt)
         {
             var report = DbContext.Get<Report>(id);
             if (report == null)
             {
-                return Error(Core.ErrorInvalidId);
+                ViewBag.Error = Core.ErrorInvalidId;
+                return Index();
             }
             if (!report.IsOwner)
             {
-                return Error(Reports.ErrorOwnerOnly);
+                ViewBag.Error = Reports.ErrorOwnerOnly;
+                return Details(id);
             }
             if (prompt.IsEmpty())
             {
-                return Error(Reports.ErrorNameRequired);
+                ViewBag.Error = Reports.ErrorNameRequired;
+                return Details(id);
             }
 
             report.Name = prompt.Trim();
             DbContext.Save(report, false);
-            return Data(new { message = Reports.NameSaved, content = prompt });
+            ViewBag.Message = Reports.SuccessSavingReport;
+            return Details(id);
         }
 
         [HttpPut, AjaxRequestOnly]
@@ -267,76 +285,82 @@ namespace Dash.Controllers
             return Data(new { groups = model.Update() });
         }
 
-        [HttpGet, AjaxRequestOnly]
+        [HttpGet]
         public IActionResult SelectColumns(int id, bool closeParent = true)
         {
             var report = DbContext.Get<Report>(id);
             if (report == null)
             {
-                return Error(Core.ErrorInvalidId);
+                ViewBag.Error = Core.ErrorInvalidId;
+                return Index();
             }
             if (!report.IsOwner)
             {
-                return Error(Reports.ErrorOwnerOnly);
+                ViewBag.Error = Reports.ErrorOwnerOnly;
+                return Details(id);
             }
             var user = DbContext.Get<User>(User.UserId());
             if (!user.CanAccessDataset(report.DatasetId))
             {
-                return Error(Reports.ErrorInvalidDatasetId);
+                ViewBag.Error = Reports.ErrorInvalidDatasetId;
+                return Details(id);
             }
             report.AllowCloseParent = closeParent;
-            return PartialView(report);
+            return View("SelectColumns", report);
         }
 
-        [HttpPut, AjaxRequestOnly]
-        public IActionResult SelectColumns([FromBody] SelectColumn model)
+        [HttpPut]
+        public IActionResult SelectColumns(SelectColumn model)
         {
             if (model == null)
             {
-                return Error(Core.ErrorGeneric);
+                ViewBag.Error = Core.ErrorGeneric;
+                return Index();
             }
             if (!ModelState.IsValid)
             {
-                return Error(ModelState.ToErrorString());
+                ViewBag.Error = ModelState.ToErrorString();
+                return View("SelectColumns", model.Report);
             }
             model.Update();
-            return Data(new {
-                message = Reports.SuccessSavingReport,
-                closeParent = model.AllowCloseParent,
-                parentTarget = true,
-                dialogUrl = Url.Action("Details", new { @id = model.Id })
-            });
+            ViewBag.Message = Reports.SuccessSavingReport;
+            return Details(model.Report.Id);
         }
 
-        [HttpGet, AjaxRequestOnly]
+        [HttpGet]
         public IActionResult Share(int id)
         {
             var report = DbContext.Get<Report>(id);
             if (report == null)
             {
-                return Error(Core.ErrorInvalidId);
+                ViewBag.Error = Core.ErrorInvalidId;
+                return Index();
             }
             if (!report.IsOwner)
             {
-                return Error(Reports.ErrorOwnerOnly);
+                ViewBag.Error = Reports.ErrorOwnerOnly;
+                return Details(id);
             }
 
-            return PartialView(report);
+            return View(report);
         }
 
-        [HttpPut, AjaxRequestOnly]
-        public IActionResult Share([FromBody] SaveReportShare model)
+        [HttpPut]
+        public IActionResult Share(SaveReportShare model)
         {
             if (model == null)
             {
-                return Error(Core.ErrorGeneric);
+                ViewBag.Error = Core.ErrorGeneric;
+                return Index();
             }
             if (!ModelState.IsValid)
             {
-                return Error(ModelState.ToErrorString());
+                ViewBag.Error = ModelState.ToErrorString();
+                return View("Share", model.Report);
             }
             model.Update();
-            return Success(Reports.SuccessSavingReport);
+            ViewBag.Message = Reports.SuccessSavingReport;
+            return Details(model.Report.Id);
         }
 
         [HttpPut, AjaxRequestOnly]
@@ -352,11 +376,6 @@ namespace Dash.Controllers
             }
             model.Update();
             return Success();
-        }
-
-        private IEnumerable<Report> GetList()
-        {
-            return DbContext.GetAll<Report>(new { UserId = User.UserId() });
         }
     }
 }

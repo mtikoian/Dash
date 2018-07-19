@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace Dash.Controllers
 {
-    [Authorize(Policy = "HasPermission")]
+    [Authorize(Policy = "HasPermission"), Pjax]
     public class DashboardController : BaseController
     {
         private IActionContextAccessor _ActionContextAccessor;
@@ -68,18 +68,9 @@ namespace Dash.Controllers
             return Save(model);
         }
 
-        public IActionResult Index(bool withMenu = false)
+        public IActionResult Index()
         {
-            var widgets = new WidgetList(DbContext, _ActionContextAccessor, User.UserId());
-            if (Request.IsAjaxRequest())
-            {
-                if (withMenu)
-                {
-                    return PartialView("Body", widgets);
-                }
-                return PartialView(widgets);
-            }
-            return View(widgets);
+            return View(new WidgetList(DbContext, _ActionContextAccessor, User.UserId()));
         }
 
         [HttpGet]

@@ -50,10 +50,10 @@ namespace Dash
         [JilDirective(true)]
         public string ToJson { get { return JSON.SerializeDynamic(this, JilOutputFormatter.Options); } }
 
-        public static TableLink CopyButton(string href, string message, bool hasAccess = true)
+        public static TableLink CopyButton(string href, string prompt, bool hasAccess = true)
         {
             return !hasAccess ? null : new TableLink(href, Html.Classes(DashClasses.DashPrompt, DashClasses.BtnInfo)
-                .Merge("data-message", message), Core.Copy, TableIcon.Clone);
+                .Merge("data-prompt", prompt), Core.Copy, TableIcon.Clone);
         }
 
         public static TableHeaderButton CreateButton(string href, string label, bool hasAccess = true)
@@ -70,10 +70,10 @@ namespace Dash
             return new TableHeaderButton(attr, label);
         }
 
-        public static TableLink DeleteButton(string href, string message, bool hasAccess = true)
+        public static TableLink DeleteButton(string href, string confirm, bool hasAccess = true)
         {
             return !hasAccess ? null : new TableLink(href,
-                Html.Classes(DashClasses.DashConfirm, DashClasses.BtnError).Merge("data-title", Core.ConfirmDelete).Merge("data-message", message),
+                Html.Classes(DashClasses.DashConfirm, DashClasses.BtnError).Merge("data-confirm", confirm),
                 Core.Delete, TableIcon.Trash, HttpVerbs.Delete);
         }
 

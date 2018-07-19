@@ -7,73 +7,80 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Dash.Controllers
 {
-    [Authorize(Policy = "HasPermission")]
+    [Authorize(Policy = "HasPermission"), Pjax]
     public class RoleController : BaseController
     {
         public RoleController(IDbContext dbContext, AppConfiguration appConfig) : base(dbContext, appConfig)
         {
         }
 
-        [HttpGet, AjaxRequestOnly]
+        [HttpGet, AjaxRequestOnly] // this might not have to be ajax only
         public IActionResult Copy(CopyRole model)
         {
             if (model == null)
             {
-                return Error(Core.ErrorGeneric);
+                ViewBag.Error = Core.ErrorGeneric;
+                return Index();
             }
             if (!ModelState.IsValid)
             {
-                return Error(ModelState.ToErrorString());
+                ViewBag.Error = ModelState.ToErrorString();
+                return Index();
             }
             model.Save();
-            return Success(Roles.SuccessCopyingRole);
+            ViewBag.Message = Roles.SuccessCopyingRole;
+            return Index();
         }
 
-        [HttpGet, AjaxRequestOnly]
+        [HttpGet]
         public IActionResult Create()
         {
             return CreateEditView(new Role(DbContext));
         }
 
-        [HttpPost, AjaxRequestOnly, ValidateAntiForgeryToken]
-        public IActionResult Create([FromBody] Role model)
+        [HttpPost, ValidateAntiForgeryToken]
+        public IActionResult Create(Role model)
         {
             return Save(model);
         }
 
-        [HttpDelete, AjaxRequestOnly]
+        [HttpDelete, AjaxRequestOnly] // this might not have to be ajax only
         public IActionResult Delete(int id)
         {
             var model = DbContext.Get<Role>(id);
             if (model == null)
             {
-                return Error(Core.ErrorInvalidId);
+                ViewBag.Error = Core.ErrorInvalidId;
+                return Index();
             }
             DbContext.Delete(model);
-            return Success(Roles.SuccessDeletingRole);
+            ViewBag.Message = Roles.SuccessDeletingRole;
+            return Index();
         }
 
-        [HttpGet, AjaxRequestOnly]
+        [HttpGet]
         public IActionResult Edit(int id)
         {
             var model = DbContext.Get<Role>(id);
             if (model == null)
             {
-                return Error(Core.ErrorInvalidId);
+                ViewBag.Error = Core.ErrorInvalidId;
+                return Index();
             }
             return CreateEditView(model);
         }
 
-        [HttpPut, AjaxRequestOnly, ValidateAntiForgeryToken]
-        public IActionResult Edit([FromBody] Role model)
+        [HttpPut, ValidateAntiForgeryToken]
+        public IActionResult Edit(Role model)
         {
             return Save(model);
         }
 
-        [HttpGet, AjaxRequestOnly]
+        [HttpGet]
         public IActionResult Index()
         {
-            return PartialView(new Table("tableRoles", Url.Action("List"),
+            RouteData.Values.Remove("id");
+            return View("Index", new Table("tableRoles", Url.Action("List"),
                 new List<TableColumn> {
                     new TableColumn("name", Roles.Name, Table.EditLink($"{Url.Action("Edit")}/{{id}}", User.IsInRole("role.edit"))),
                     new TableColumn("actions", Core.Actions, sortable: false, links: new List<TableLink>()
@@ -88,31 +95,29 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly]
         public IActionResult List()
         {
-            return Rows(GetList());
+            return Rows(DbContext.GetAll<Role>());
         }
 
         private IActionResult CreateEditView(Role model)
         {
-            return PartialView("CreateEdit", model);
-        }
-
-        private IEnumerable<Role> GetList()
-        {
-            return DbContext.GetAll<Role>();
+            return View("CreateEdit", model);
         }
 
         private IActionResult Save(Role model)
         {
             if (model == null)
             {
-                return Error(Core.ErrorGeneric);
+                ViewBag.Error = Core.ErrorGeneric;
+                return CreateEditView(model);
             }
             if (!ModelState.IsValid)
             {
-                return Error(ModelState.ToErrorString());
+                ViewBag.Error = ModelState.ToErrorString();
+                return CreateEditView(model);
             }
             model.Save();
-            return Success(Roles.SuccessSavingRole);
+            ViewBag.Message = Roles.SuccessSavingRole;
+            return Index();
         }
     }
 }

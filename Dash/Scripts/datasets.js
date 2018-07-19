@@ -565,8 +565,8 @@
     /**
      * Initialize the dataset form when the datasetFormLoad event fires.
      */
-    $.on(document, 'datasetFormLoad', function() {
-        var form = $.dialogs.getActiveContent();
+    $.on(document, 'datasetFormLoad', function(e) {
+        var form = $.isNode(e) ? e : e.target;
         if (!$.hasClass(form, 'dataset-form')) {
             return;
         }
@@ -577,25 +577,28 @@
             url: form.getAttribute('data-url'),
             data: dataset ? { id: dataset.value } : null
         }, function(data) {
-            var dlg = $.dialogs.getActiveDialog();
-            data.content = dlg.getContent();
-            _datasets[dlg.getId()] = new Dataset(data);
+            data.content = form;
+            _datasets[dataset.value] = new Dataset(data);
         });
-    });
+    }, true);
 
     /**
      * Destroy the form when the dialog closes.
      */
-    $.on(document, 'datasetFormUnload', function() {
+    $.on(document, 'datasetFormUnload', function(e) {
         if (!_datasets) {
             return;
         }
+        var form = $.isNode(e) ? e : e.target;
+        if (!$.hasClass(form, 'dataset-form')) {
+            return;
+        }
 
-        var dlg = $.dialogs.getActiveDialog();
-        var dataset = _datasets[dlg.getId()];
+        var datasetId = $.get('.dataset-id', form).value;
+        var dataset = _datasets[datasetId];
         if (dataset) {
             dataset.destroy();
         }
-        delete _datasets[dlg.getId()];
-    });
+        delete _datasets[datasetId];
+    }, true);
 })(this.$, this.Dataset);
