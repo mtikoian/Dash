@@ -22,7 +22,8 @@ namespace Dash.Controllers
                 Serilog.Log.Error("Unhandled error code `{0}` for request `{1}`.", code, statusFeature?.OriginalPath);
             }
             if (Request.IsAjaxRequest())
-                return Error(new string[] { "403" }.Contains(code) ? Core.ErrorAuthorization : Core.ErrorGeneric);
+                return Error(!code.IsEmpty() && new string[] { "403" }.Contains(code) ? Core.ErrorAuthorization : Core.ErrorGeneric);
+            ViewBag.Title = Core.Error;
             return View("Error");
         }
 

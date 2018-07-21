@@ -1,18 +1,31 @@
 ﻿@using Dash.I18n
 @model Dash.Models.Widget
 
-@using (Html.BeginCustomForm(Model.FormAction, "Dashboard", null, Model.IsCreate ? Widgets.CreateWidget : Widgets.EditWidget, htmlAttributes: new { @data_close_event = "dashboardReload" }, method: Model.FormMethod))
+@using (Html.BeginBodyContent(Model.IsCreate ? Widgets.CreateWidget : Widgets.EditWidget))
 {
-    @Html.HiddenFor(model => model.Id)
-    @Html.HiddenFor(model => model.X)
-    @Html.HiddenFor(model => model.Y)
-    @Html.HiddenFor(model => model.Width)
-    @Html.HiddenFor(model => model.Height)
+    @Html.Breadcrumbs(new List<Breadcrumb> {
+        new Breadcrumb(Model.IsCreate ? Widgets.CreateWidget : Widgets.EditWidget, Model.FormAction, "Dashboard", Model.IsCreate ? null : new { id = Model.Id })
+    });
 
-    <div class="col-6">
-        @Html.LabelInputFor(model => model.Title)
-        @Html.LabelDropDownListFor(model => model.ReportId, Model.GetReportSelectList())
-        @Html.LabelDropDownListFor(model => model.ChartId, Model.GetChartSelectList())
-        @Html.LabelDropDownListFor(model => model.RefreshRate, Model.GetWidgetRefreshRateSelectList())
-    </div>
+    @using (Html.BeginCustomForm(Model.FormAction, "Dashboard", method: Model.FormMethod))
+    {
+        @Html.HiddenFor(model => model.Id)
+        @Html.HiddenFor(model => model.X)
+        @Html.HiddenFor(model => model.Y)
+        @Html.HiddenFor(model => model.Width)
+        @Html.HiddenFor(model => model.Height)
+
+        <partial name="_Toast" />
+
+        <div class="columns">
+            <div class="col-6">
+                @Html.LabelInputFor(model => model.Title)
+                @Html.LabelDropDownListFor(model => model.ReportId, Model.GetReportSelectList())
+                @Html.LabelDropDownListFor(model => model.ChartId, Model.GetChartSelectList())
+                @Html.LabelDropDownListFor(model => model.RefreshRate, Model.GetWidgetRefreshRateSelectList())
+            </div>
+        </div>
+
+        @Html.FormButtons();
+    }
 }

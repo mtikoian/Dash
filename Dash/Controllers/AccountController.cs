@@ -57,6 +57,7 @@ namespace Dash.Controllers
             {
                 return RedirectToAction("Index", "Dashboard");
             }
+            ViewBag.Title = Account.Login;
             return View(new LogOn());
         }
 
@@ -133,13 +134,11 @@ namespace Dash.Controllers
             return View(model);
         }
 
-        [HttpGet, AjaxRequestOnly, Authorize]
+        [HttpGet, Authorize]
         public IActionResult ToggleContextHelp()
         {
-            var wantsHelp = HttpContext.Session.GetString("ContextHelp").ToBool();
-            wantsHelp = !wantsHelp;
-            HttpContext.Session.SetString("ContextHelp", wantsHelp.ToString());
-            return Json(new { message = wantsHelp ? Core.HelpEnabled : Core.HelpDisabled, enabled = wantsHelp });
+            HttpContext.Session.SetString("ContextHelp", (!HttpContext.Session.GetString("ContextHelp").ToBool()).ToString());
+            return View("ToggleContextHelp", new Help(HttpContext.Session));
         }
 
         [HttpGet]
@@ -180,9 +179,10 @@ namespace Dash.Controllers
             return RedirectToAction("Index", "Dashboard");
         }
 
-        [HttpGet, AjaxRequestOnly, Authorize]
+        [HttpGet, Authorize]
         public IActionResult Update()
         {
+            ViewBag.Title = Account.UpdateAccount;
             return PartialView(DbContext.GetAll<User>(new { UserName = User.Identity.Name }).First());
         }
 
@@ -191,13 +191,16 @@ namespace Dash.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Error(ModelState.ToErrorString());
+                ViewBag.Error = ModelState.ToErrorString();
+                return View("Update", model);
             }
-            if (model.UpdateProfile(out var errorMsg))
+            if (!model.UpdateProfile(out var errorMsg))
             {
-                return Success(Account.AccountUpdated);
+                ViewBag.Error = errorMsg;
+                return View("Update", model);
             }
-            return Error(errorMsg);
+            ViewBag.Message = Account.AccountUpdated;
+            return View("Update", model);
         }
     }
 }

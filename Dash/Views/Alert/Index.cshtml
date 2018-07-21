@@ -1,8 +1,20 @@
 ﻿@using Dash.I18n
 @model Table
-﻿
-<div data-title="@Alerts.ViewAll" data-basic-dialog="true">
+
+@using (Html.BeginBodyContent(Alerts.ViewAll))
+{
+    @Html.Breadcrumbs(new List<Breadcrumb> {
+        new Breadcrumb(Alerts.ViewAll, "Index", "Alert")
+    });
+
+    <partial name="_Toast" />
+
+    @using (Html.BeginToolbar())
+    {
+        @Html.AuthorizedButton(Alerts.CreateAlert, "Create", "Alert", null, DashClasses.BtnPrimary, hasAccess: User.IsInRole("alert.create"))
+    }
+
     <div class="col-12">
-        <div class="dash-table" data-json="@Model.ToJson"></div>
+        <div data-toggle="table" data-json="@Model.ToJson"></div>
     </div>
-</div>
+}

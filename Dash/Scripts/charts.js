@@ -369,58 +369,59 @@
     /**
      * Request settings to display a chart and call the method to initialize it.
      */
-    $.on(document, 'chartLoad', function() {
-        var form = $.dialogs.getActiveContent();
+    $.on(document, 'chartLoad', function(e) {
+        var form = $.isNode(e) ? e : e.target;
         if (!$.hasClass(form, 'chart-form')) {
             return;
         }
 
+        var id = form.getAttribute('data-id');
         $.ajax({
             method: 'GET',
             url: form.getAttribute('data-url')
         }, function(data) {
-            var dlg = $.dialogs.getActiveDialog();
-            data.content = dlg.getContent();
-            _charts[dlg.getId()] = new ChartDetails(data);
+            data.content = form;
+            _charts[id] = new ChartDetails(data);
         });
-    });
+    }, true);
 
     /**
      * Clean up when closing the chart dialog.
      */
-    $.on(document, 'chartUnload', function() {
-        var dlg = $.dialogs.getActiveDialog();
-        var chart = _charts[dlg.getId()];
+    $.on(document, 'chartUnload', function(e) {
+        var form = $.isNode(e) ? e : e.target;
+        var id = form.getAttribute('data-id');
+        var chart = _charts[id];
         if (chart) {
             chart.destroy();
         }
-        delete _charts[dlg.getId()];
-        $.dispatch(document, $.events.dashboardReload);
-    });
+        delete _charts[id];
+    }, true);
 
     /**
      * Load the settings to display the chart share form.
      */
-    $.on(document, 'chartShareLoad', function() {
-        var form = $.dialogs.getActiveContent();
+    $.on(document, 'chartShareLoad', function(e) {
+        var form = $.isNode(e) ? e : e.target;
         if (!$.hasClass(form, 'chart-share-form')) {
             return;
         }
 
-        var dlg = $.dialogs.getActiveDialog();
-        _shares[dlg.getId()] = new ShareForm({ content: dlg.getContent(), formName: 'Shares' });
-        _shares[dlg.getId()].run();
-    });
+        var id = form.getAttribute('data-id');
+        _shares[id] = new ShareForm({ content: form, formName: 'Shares' });
+        _shares[id].run();
+    }, true);
 
     /**
      * Clean up when the chart share dialog closes.
      */
-    $.on(document, 'chartShareUnload', function() {
-        var dlg = $.dialogs.getActiveDialog();
-        var share = _shares[dlg.getId()];
+    $.on(document, 'chartShareUnload', function(e) {
+        var form = $.isNode(e) ? e : e.target;
+        var id = form.getAttribute('data-id');
+        var share = _shares[id];
         if (share) {
             share.destroy();
         }
-        delete _shares[dlg.getId()];
-    });
+        delete _shares[id];
+    }, true);
 })(this.$, this.Alertify, this.Chart, this.ChartDetails, this.ShareForm);

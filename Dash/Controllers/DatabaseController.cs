@@ -74,8 +74,7 @@ namespace Dash.Controllers
                         .AddIf(Table.DeleteButton($"{Url.Action("Delete")}/{{id}}", string.Format(Core.ConfirmDeleteBody, Databases.DatabaseLower)), User.IsInRole("database.delete"))
                         .AddIf(new TableLink($"{Url.Action("TestConnection")}/{{id}}", Html.Classes(DashClasses.DashAjax, DashClasses.BtnInfo), Databases.TestConnection, TableIcon.HeartBeat),
                             User.IsInRole("database.testconnection"))
-                )},
-                new List<TableHeaderButton>().AddIf(Table.CreateButton(Url.Action("Create"), Databases.CreateDatabase), User.IsInRole("database.create"))
+                )}
             ));
         }
 
@@ -107,6 +106,7 @@ namespace Dash.Controllers
 
         private IActionResult CreateEditView(Database model)
         {
+            ViewBag.Title = model.IsCreate ? Databases.CreateDatabase : Databases.EditDatabase;
             return View("CreateEdit", model);
         }
 

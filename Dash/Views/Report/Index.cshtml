@@ -9,7 +9,12 @@
 
     <partial name="_Toast" />
 
+    @using (Html.BeginToolbar())
+    {
+        @Html.AuthorizedButton(Reports.CreateReport, "Create", "Report", null, DashClasses.BtnPrimary, hasAccess: User.IsInRole("report.create"))
+    }
+
     <div class="col-12">
-        <div class="dash-table" data-load-event="tableLoad" data-unload-event="tableUnload" data-json="@Model.ToJson"></div>
+        <div data-toggle="table" data-json="@Model.ToJson"></div>
     </div>
 }

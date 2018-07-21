@@ -102,62 +102,13 @@
             }
 
             // add our system wide events
-            $.dialogs.processContent($.get('#widget_' + this.opts.id));
+            //$.content.processContent($.get('#widget_' + this.opts.id));
 
-            // @todo set up events for forceRefresh, toggleFullScreen, deleteWidget
+            // maybe simpler?
+            // $.on(parentNode, 'dashboardUnload', self.destroy.bind(self));
+
             $.on($.get('.btn-refresh', parentNode), 'click', self.forceRefresh.bind(self));
             $.on($.get('.btn-fullscreen', parentNode), 'click', self.toggleFullScreen.bind(self));
-            $.on($.get('.btn-delete', parentNode), 'click', self.deleteWidget.bind(self));
-
-            /*
-            var self = this;
-            // now render the rest of the widget content
-            m.mount(parentNode, {
-                view: function() {
-                    return [
-                        m('.grid-header.columns', [
-                            m('span.grid-title.col-8', self.opts.title),
-                            m('span.grid-buttons.col-4.text-right', [
-                                m('a.btn.btn-link.btn-refresh', { title: $.resx('refresh'), onclick: self.forceRefresh.bind(self) },
-                                    m('i.dash.dash-arrows-cw')
-                                ),
-                                m('a.btn.btn-link.btn-fullscreen', { title: $.resx('toggleFullScreen'), onclick: self.toggleFullScreen.bind(self) },
-                                    m('i.dash.dash-max')
-                                ),
-                                m('a.btn.btn-link.dash-ajax.fs-disabled', {
-                                    href: self.opts.baseUrl + (self.opts.isData ? 'Report' : 'Chart') + '/Details/' + (self.opts.isData ? self.opts.reportId : self.opts.chartId),
-                                    title: $.resx(self.opts.isData ? 'viewReport' : 'viewChart')
-                                }, m('i.dash.dash-info')),
-                                m('a.btn.btn-link.dash-ajax.fs-disabled', { href: self.opts.baseUrl + 'Dashboard/Edit/' + self.opts.id, title: $.resx('editWidget') },
-                                    m('i.dash.dash-pencil')
-                                ),
-                                m('a.btn.btn-link.dash-ajax.fs-disabled', { title: $.resx('deleteWidget'), onclick: self.deleteWidget.bind(self) },
-                                    m('i.dash.dash-trash')
-                                )
-                            ])
-                        ]),
-                        m('.grid-body', [
-                            self.opts.isData ? m('.widget-data', { id: 'widgetData_' + self.opts.id }, m(Table, self.tableOpts)) :
-                                m('.widget-chart', { id: 'widgetChart_' + self.opts.id }, [
-                                    m('.chart-spinner', m('.loading.loading-lg')),
-                                    m('.chart-error.d-none.pl-1',
-                                        m('div', [
-                                            m('p', $.resx('errorChartLoad')),
-                                            m('.btn.btn-info.btn-sm', { onclick: self.refresh.bind(self) }, $.resx('tryAgain'))
-                                        ])
-                                    ),
-                                    m('.canvas-container.d-none', m('canvas.chart-canvas'))
-                                ])
-                        ]),
-                        m('.grid-footer', [
-                            m('span.grid-updated-time', self.updatedDate.toLocaleTimeString()),
-                            m('span.resizable-handle.float-right', m('i.dash.dash-corner')),
-                            m('span.drag-handle.float-right', m('i.dash.dash-move'))
-                        ])
-                    ];
-                }
-            });
-            */
         },
 
         /**
@@ -248,16 +199,6 @@
             this.rect.updated = true;
         },
 
-        deleteWidget: function() {
-            var self = this;
-            Alertify.confirm($.resx('areYouSure'), function() {
-                $.ajax({
-                    method: 'DELETE',
-                    url: self.opts.baseUrl + 'Dashboard/Delete/' + self.opts.id
-                }, self.destroy.bind(self));
-            });
-        },
-
         /**
          * Handle the result of a query for report data.
          * @param {Object} json - Data to display in the widget.
@@ -301,13 +242,8 @@
         },
 
         refresh: function() {
-            if ($.dialogs.hasOpenDialog()) {
-                // don't refresh when a dialog is open
-                return;
-            }
-
             if (this.opts.isData) {
-                $.dispatch($.get('.dash-table', this.getContainer()), $.events.tableRefresh);
+                $.dispatch($.get('[data-toggle="table"]', this.getContainer()), $.events.tableRefresh);
             } else {
                 this.chart.run();
             }
@@ -317,7 +253,7 @@
 
         updateLayout: function() {
             if (this.opts.isData) {
-                $.dispatch($.get('.dash-table', this.getContainer()), $.events.layoutUpdate);
+                $.dispatch($.get('[data-toggle="table"]', this.getContainer()), $.events.layoutUpdate);
             } else {
                 this.chart.resize();
             }
@@ -379,7 +315,7 @@
          */
         destroy: function(totalDestruction) {
             if (this.opts.isData) {
-                $.dispatch($.get('.dash-table', this.getContainer()), $.events.tableDestroy);
+                $.dispatch($.get('[data-toggle="table"]', this.getContainer()), $.events.tableDestroy);
             } else {
                 $.destroy(this.chart);
             }

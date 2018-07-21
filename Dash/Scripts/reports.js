@@ -622,11 +622,11 @@
     };
 
     ReportDetails.prototype.refresh = function() {
-        $.dispatch($.get('.dash-table', this.content), $.events.tableRefresh);
+        $.dispatch($.get('[data-toggle="table"]', this.content), $.events.tableRefresh);
     };
 
     ReportDetails.prototype.destroy = function() {
-        $.dispatch($.get('.dash-table', this.content), $.events.tableDestroy);
+        $.dispatch($.get('[data-toggle="table"]', this.content), $.events.tableDestroy);
         $.destroy(this.filterForm);
         $.destroy(this.groupForm);
     };
@@ -768,26 +768,27 @@
     /**
      * Load the settings to display the report share form.
      */
-    $.on(document, 'reportShareLoad', function() {
-        var form = $.dialogs.getActiveContent();
+    $.on(document, 'reportShareLoad', function(e) {
+        var form = $.isNode(e) ? e : e.target;
         if (!$.hasClass(form, 'report-share-form')) {
             return;
         }
 
-        var dlg = $.dialogs.getActiveDialog();
-        _shares[dlg.getId()] = new ShareForm({ content: dlg.getContent(), formName: 'Shares' });
-        _shares[dlg.getId()].run();
+        var id = form.getAttribute('data-id');
+        _shares[id] = new ShareForm({ content: form, formName: 'Shares' });
+        _shares[id].run();
     }, true);
 
     /**
      * Clean up when the report share dialog closes.
      */
-    $.on(document, 'reportShareUnload', function() {
-        var dlg = $.dialogs.getActiveDialog();
-        var share = _shares[dlg.getId()];
+    $.on(document, 'reportShareUnload', function(e) {
+        var form = $.isNode(e) ? e : e.target;
+        var id = form.getAttribute('data-id');
+        var share = _shares[id];
         if (share) {
             share.destroy();
         }
-        delete _shares[dlg.getId()];
+        delete _shares[id];
     }, true);
 })(this.$, this.Draggabilly, this.ShareForm, this.ReportDetails);

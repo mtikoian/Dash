@@ -38,24 +38,34 @@
     <None Include="Views\Account\ForgotPassword.cshtml"/>
     <None Include="Views\Account\Login.cshtml"/>
     <None Include="Views\Account\ResetPassword.cshtml"/>
+    <None Include="Views\Account\ToggleContextHelp.cshtml" />
     <None Include="Views\Account\Update.cshtml"/>
     <None Include="Views\Alert\CreateEdit.cshtml"/>
+    <None Include="Views\Alert\Index.cshtml"/>
     <None Include="Views\Chart\ChangeType.cshtml"/>
     <None Include="Views\Chart\Create.cshtml"/>
     <None Include="Views\Chart\Details.cshtml"/>
+    <None Include="Views\Chart\Index.cshtml"/>
     <None Include="Views\Chart\Share.cshtml"/>
     <None Include="Views\Dashboard\Body.cshtml"/>
     <None Include="Views\Dashboard\CreateEdit.cshtml"/>
     <None Include="Views\Dashboard\Index.cshtml"/>
+    <None Include="Views\Dashboard\Widget.cshtml"/>
     <None Include="Views\Database\CreateEdit.cshtml"/>
+    <None Include="Views\Database\Index.cshtml"/>
     <None Include="Views\Dataset\CreateEdit.cshtml"/>
+    <None Include="Views\Dataset\Index.cshtml"/>
     <None Include="Views\Report\Create.cshtml"/>
     <None Include="Views\Report\Details.cshtml"/>
+    <None Include="Views\Report\Index.cshtml"/>
     <None Include="Views\Report\SelectColumns.cshtml"/>
     <None Include="Views\Report\Share.cshtml"/>
     <None Include="Views\Role\CreateEdit.cshtml"/>
+    <None Include="Views\Role\Index.cshtml"/>
+    <None Include="Views\Shared\_Chart.cshtml"/>
     <None Include="Views\Shared\Error.cshtml"/>
     <None Include="Views\User\CreateEdit.cshtml"/>
+    <None Include="Views\User\Index.cshtml"/>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="wwwroot\css\"/>
@@ -63,16 +73,5 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Dash.I18n\Dash.I18n.csproj"/>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Views\Alert\Index.cshtml"/>
-    <None Include="Views\Chart\Index.cshtml"/>
-    <None Include="Views\Dashboard\Widget.cshtml"/>
-    <None Include="Views\Database\Index.cshtml"/>
-    <None Include="Views\Dataset\Index.cshtml"/>
-    <None Include="Views\Report\Index.cshtml"/>
-    <None Include="Views\Role\Index.cshtml"/>
-    <None Include="Views\Shared\Chart.cshtml"/>
-    <None Include="Views\User\Index.cshtml"/>
   </ItemGroup>
 </Project>

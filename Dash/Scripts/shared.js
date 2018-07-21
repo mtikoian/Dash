@@ -15,10 +15,6 @@
         this.content = opts.content;
         this.columnList = opts.columns || [];
 
-        $.on($.get('.view-sql', opts.content), 'click', function() {
-            $.dialogs.openDialog($.get('.modal-sql', opts.content).outerHTML);
-        });
-
         if (!opts.allowEdit) {
             this.initDate = new Date();
         }

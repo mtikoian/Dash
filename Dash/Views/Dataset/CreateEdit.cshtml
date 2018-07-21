@@ -61,7 +61,7 @@
                                 {
                                     @Html.CustomCheckbox("RoleIds", Html.IsChecked(Model.DatasetRole, x => x.RoleId == role.Id, (int[])ViewBag.SelectedRoleIds, role.Id), role.Id.ToString(), role.Name, $"dataset_role_{role.Id}", isMultiple: true)
                                 }
-                                @Html.HelpFor(model => model.DatasetRole, false, true)
+                                @Html.HelpFor(model => model.DatasetRole, false)
                             </div>
                         </div>
                     </div>

@@ -8,36 +8,39 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Dash.Controllers
 {
-    [Authorize(Policy = "HasPermission")]
+    [Authorize(Policy = "HasPermission"), Pjax]
     public class AlertController : BaseController
     {
         public AlertController(IDbContext dbContext, AppConfiguration appConfig) : base(dbContext, appConfig)
         {
         }
 
-        [HttpGet, AjaxRequestOnly]
+        [HttpGet]
         public IActionResult Copy(CopyAlert model)
         {
             if (model == null)
             {
-                return Error(Core.ErrorGeneric);
+                ViewBag.Error = Core.ErrorGeneric;
+                return Index();
             }
             if (!ModelState.IsValid)
             {
-                return Error(ModelState.ToErrorString());
+                ViewBag.Error = ModelState.ToErrorString();
+                return Index();
             }
             model.Save();
-            return Success(Alerts.SuccessCopyingAlert);
+            ViewBag.Message = Alerts.SuccessCopyingAlert;
+            return Index();
         }
 
-        [HttpGet, AjaxRequestOnly]
+        [HttpGet]
         public IActionResult Create()
         {
             return CreateEditView(new Alert(DbContext, User.UserId()));
         }
 
-        [HttpPost, AjaxRequestOnly, ValidateAntiForgeryToken]
-        public IActionResult Create([FromBody] Alert model)
+        [HttpPost, ValidateAntiForgeryToken]
+        public IActionResult Create(Alert model)
         {
             model.OwnerId = model.OwnerId == 0 ? User.UserId() : model.OwnerId;
             return Save(model);
@@ -49,33 +52,38 @@ namespace Dash.Controllers
             var model = DbContext.Get<Alert>(id);
             if (model == null)
             {
-                return Error(Core.ErrorInvalidId);
+                ViewBag.Error = Core.ErrorInvalidId;
+                return Index();
             }
             DbContext.Delete(model);
-            return Success(Alerts.SuccessDeletingAlert);
+            ViewBag.Message = Alerts.SuccessDeletingAlert;
+            return Index();
         }
 
-        [HttpGet, AjaxRequestOnly]
+        [HttpGet]
         public IActionResult Edit(int id)
         {
             var model = DbContext.Get<Alert>(id);
             if (model == null)
             {
-                return Error(Core.ErrorInvalidId);
+                ViewBag.Error = Core.ErrorInvalidId;
+                return Index();
             }
             return CreateEditView(model);
         }
 
-        [HttpPut, AjaxRequestOnly, ValidateAntiForgeryToken]
-        public IActionResult Edit([FromBody] Alert model)
+        [HttpPut, ValidateAntiForgeryToken]
+        public IActionResult Edit(Alert model)
         {
             return Save(model);
         }
 
-        [HttpGet, AjaxRequestOnly]
+        [HttpGet]
         public IActionResult Index()
         {
-            return PartialView(new Table("tableAlerts", Url.Action("List"),
+            RouteData.Values.Remove("id");
+            ViewBag.Title = Alerts.ViewAll;
+            return View("Index", new Table("tableAlerts", Url.Action("List"),
                 new List<TableColumn> {
                     new TableColumn("name", Alerts.Name, Table.EditLink($"{Url.Action("Edit")}/{{id}}", User.IsInRole("alert.edit"))),
                     new TableColumn("subject", Alerts.Subject),
@@ -86,39 +94,37 @@ namespace Dash.Controllers
                         .AddIf(Table.EditButton($"{Url.Action("Edit")}/{{id}}"), User.IsInRole("alert.edit"))
                         .AddIf(Table.DeleteButton($"{Url.Action("Delete")}/{{id}}", string.Format(Core.ConfirmDeleteBody, Alerts.AlertLower)), User.IsInRole("alert.delete"))
                         .AddIf(Table.CopyButton($"{Url.Action("Copy")}/{{id}}", Alerts.CopyBody), User.IsInRole("alert.copy")))
-                },
-                new List<TableHeaderButton>().AddIf(Table.CreateButton(Url.Action("Create"), Alerts.CreateAlert), User.IsInRole("alert.create"))
+                }
             ));
         }
 
         [HttpGet, AjaxRequestOnly]
         public IActionResult List()
         {
-            return Rows(GetList());
+            return Rows(DbContext.GetAll<Alert>(new { UserID = User.UserId() }).Select(x => new { x.Name, x.Subject, x.SendTo, x.Id, IsActive = x.IsActive ? Core.Yes : Core.No, x.LastRunDate }));
         }
 
         private IActionResult CreateEditView(Alert model)
         {
-            return PartialView("CreateEdit", model);
-        }
-
-        private IEnumerable<object> GetList()
-        {
-            return DbContext.GetAll<Alert>(new { UserID = User.UserId() }).Select(x => new { x.Name, x.Subject, x.SendTo, x.Id, IsActive = x.IsActive ? Core.Yes : Core.No, x.LastRunDate });
+            ViewBag.Title = model.IsCreate ? Alerts.CreateAlert : Alerts.EditAlert;
+            return View("CreateEdit", model);
         }
 
         private IActionResult Save(Alert model)
         {
             if (model == null)
             {
-                return Error(Core.ErrorGeneric);
+                ViewBag.Error = Core.ErrorGeneric;
+                return CreateEditView(model);
             }
             if (!ModelState.IsValid)
             {
-                return Error(ModelState.ToErrorString());
+                ViewBag.Error = ModelState.ToErrorString();
+                return CreateEditView(model);
             }
             model.Save();
-            return Success(Alerts.SuccessSavingAlert);
+            ViewBag.Message = Alerts.SuccessSavingAlert;
+            return Index();
         }
     }
 }

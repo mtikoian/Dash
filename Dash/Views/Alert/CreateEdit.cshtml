@@ -1,31 +1,44 @@
 ﻿@using Dash.I18n
 @model Dash.Models.Alert
 
-@using (Html.BeginCustomForm(Model.FormAction, "Alert", null, Model.IsCreate ? Alerts.CreateAlert : Alerts.EditAlert, method: Model.FormMethod))
+@using (Html.BeginBodyContent(Model.IsCreate ? Alerts.CreateAlert : Alerts.EditAlert))
 {
-    @Html.HiddenFor(model => model.Id)
-    <div class="columns">
-        <div class="col-6">
-            @Html.LabelInputFor(model => model.Name)
-            @Html.LabelDropDownListFor(model => model.ReportId, Model.GetReportsForUser(User.UserId()).ToSelectList(x => x.Name, x => x.Id.ToString()))
-            @Html.LabelInputFor(model => model.Subject)
-            @Html.LabelInputFor(model => model.SendTo)
-            @Html.LabelInputFor(model => model.ResultCount)
-            @Html.LabelInputFor(model => model.NotificationInterval)
-            @Html.LabelCheckBoxFor(model => model.IsActive)
-        </div>
+    @Html.Breadcrumbs(new List<Breadcrumb> {
+        new Breadcrumb(Alerts.ViewAll, "Index", "Alert"),
+        new Breadcrumb(Model.IsCreate ? Alerts.CreateAlert : Alerts.EditAlert, Model.FormAction, "Alert", Model.IsCreate ? null : new { id = Model.Id })
+    });
 
-        <div class="col-6">
-            @Html.ControlLabel("Schedule", Alerts.Schedule)
-            <div class="col-12">
-                @Html.LabelInputFor(model => model.CronMinute, new { TypeHint = "text" })
-                @Html.LabelInputFor(model => model.CronHour, new { TypeHint = "text" })
-                @Html.LabelInputFor(model => model.CronDayOfMonth, new { TypeHint = "text" })
-                @Html.LabelInputFor(model => model.CronMonth, new { TypeHint = "text" })
-                @Html.LabelInputFor(model => model.CronDayOfWeek, new { TypeHint = "text" })
+    @using (Html.BeginCustomForm(Model.FormAction, "Role", method: Model.FormMethod))
+    {
+        @Html.HiddenFor(model => model.Id)
 
-                @Html.Help("Alert", "Schedule", false)
+        <partial name="_Toast" />
+
+        <div class="columns">
+            <div class="col-6">
+                @Html.LabelInputFor(model => model.Name)
+                @Html.LabelDropDownListFor(model => model.ReportId, Model.GetReportsForUser(User.UserId()).ToSelectList(x => x.Name, x => x.Id.ToString()))
+                @Html.LabelInputFor(model => model.Subject)
+                @Html.LabelInputFor(model => model.SendTo)
+                @Html.LabelInputFor(model => model.ResultCount)
+                @Html.LabelInputFor(model => model.NotificationInterval)
+                @Html.LabelCheckBoxFor(model => model.IsActive)
+            </div>
+
+            <div class="col-6">
+                @Html.ControlLabel("Schedule", Alerts.Schedule)
+                <div class="col-12">
+                    @Html.LabelInputFor(model => model.CronMinute, new { TypeHint = "text" })
+                    @Html.LabelInputFor(model => model.CronHour, new { TypeHint = "text" })
+                    @Html.LabelInputFor(model => model.CronDayOfMonth, new { TypeHint = "text" })
+                    @Html.LabelInputFor(model => model.CronMonth, new { TypeHint = "text" })
+                    @Html.LabelInputFor(model => model.CronDayOfWeek, new { TypeHint = "text" })
+
+                    @Html.Help("Alert", "Schedule", false)
+                </div>
             </div>
         </div>
-    </div>
+
+        @Html.FormButtons()
+    }
 }

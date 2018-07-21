@@ -41,9 +41,11 @@
             cpy.lastIndex = src.lastIndex;
             return cpy;
         }
+        if (isNode(src)) {
+            return src;
+        }
         if (isObject(src)) {
             cpy = {};
-            // copy dialog prototype over definition.
             for (var prop in src) {
                 if (src.hasOwnProperty(prop)) {
                     cpy[prop] = clone(src[prop]);
@@ -620,7 +622,6 @@
         }
         return;
     };
-
 
     /**
      * Add/remove a class from an element based on the value of toggle.

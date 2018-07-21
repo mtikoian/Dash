@@ -1,8 +1,20 @@
 ﻿@using Dash.I18n
 @model Table
-﻿
-<div data-title="@Charts.ViewAll" data-basic-dialog="true">
+
+@using (Html.BeginBodyContent(Charts.ViewAll))
+{
+    @Html.Breadcrumbs(new List<Breadcrumb> {
+        new Breadcrumb(Charts.ViewAll, "Index", "Chart")
+    });
+
+    <partial name="_Toast" />
+
+    @using (Html.BeginToolbar())
+    {
+        @Html.AuthorizedButton(Charts.CreateChart, "Create", "Chart", null, DashClasses.BtnPrimary, hasAccess: User.IsInRole("chart.create"))
+    }
+
     <div class="col-12">
-        <div class="dash-table" data-json="@Model.ToJson"></div>
+        <div data-toggle="table" data-json="@Model.ToJson"></div>
     </div>
-</div>
+}

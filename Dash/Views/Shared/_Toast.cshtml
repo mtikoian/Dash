@@ -2,14 +2,14 @@
 @if (!((string)ViewBag.Error).IsEmpty())
 {
     <div class="toast toast-error">
-        <i class="dash dash-cancel toast-dismiss"></i>
+        <i class="dash dash-cancel toast-dismiss" data-toggle="hide" data-target=".toast"></i>
         @Html.Raw(ViewBag.Error)
     </div>
 }
 @if (!((string)ViewBag.Message).IsEmpty())
 {
     <div class="toast toast-success">
-        <i class="dash dash-cancel toast-dismiss"></i>
+        <i class="dash dash-cancel toast-dismiss" data-toggle="hide" data-target=".toast"></i>
         @ViewBag.Message
     </div>
 }

@@ -42,27 +42,17 @@ li {
 }
 
 /*
-* Context help styling
+* Context help buttons
 */
-.help-active {
-    color: $teal !important;
-}
-
-.context-help {
-    cursor: pointer;
-    font-size: 1.3333rem !important;
-
-    &.context-help-pad {
-        padding-right: .6rem;
-    }
-}
-
-.dash-context-help {
-    i, &.dash-help {
+.btn {
+    .dash-help {
         color: $teal;
     }
 }
 
+/*
+* Delete buttons
+*/
 a {
     .dash-trash {
         color: $error-color;

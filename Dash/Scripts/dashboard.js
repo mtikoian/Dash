@@ -1,28 +1,13 @@
 ﻿/*!
  * Wraps functionality for displaying/moving/resizing widgets and their contents.
  */
-(function($, pjax, Widget, m, Table, CollapsibleList) {
+(function($, Widget) {
     'use strict';
 
     var _columns = 20;
     var _rows = 20;
     var _currentPositions = null;
-
-    /**
-     * Initialize the dashboard.
-     * @param {Object} widgets - Widgets options.
-     */
-    var create = function(widgets) {
-        var dashboard = $.get('#bodyContent');
-        widgets = $.coalesce(widgets, []);
-
-        var opts = makeWidgetOpts(dashboard);
-        if (widgets.length) {
-            widgets.forEach(function(x) { new Widget($.extend(x, opts)); });
-            $.on(window, 'keydown', checkKeyPress);
-            $.on(window, 'resize', $.debounce(resizeLayout, 100));
-        }
-    };
+    var _windowEvents = null;
 
     /**
      * Make the extra options needed to create a widget.
@@ -48,50 +33,20 @@
         var json = dash.getAttribute('data-json');
         if (json) {
             dash.removeAttribute('data-json');
-            create(JSON.parse(json));
+
+            var widgets = $.coalesce(JSON.parse(json), []);
+            var opts = makeWidgetOpts(dash);
+            if (widgets.length) {
+                widgets.forEach(function(x) { new Widget($.extend(x, opts)); });
+                _windowEvents = {
+                    keydown: checkKeyPress,
+                    resize: $.debounce(resizeLayout, 100)
+                };
+                $.on(window, 'keydown', _windowEvents.keydown);
+                $.on(window, 'resize', _windowEvents.resize);
+            }
         }
     }, true);
-
-    /**
-     * Fetch widget settings from server and add/reload/delete widgets as needed.
-     */
-    $.on(document, 'dashboardReload', function() {
-        var dash = $.get('#bodyContent');
-        if (!(dash && dash.hasAttribute('data-url'))) {
-            return;
-        }
-
-        $.ajax({
-            method: 'GET',
-            url: dash.getAttribute('data-url')
-        }, function(widgetOpts) {
-            if (widgetOpts) {
-                var widgets = getWidgets();
-
-                widgetOpts.forEach(function(x) {
-                    var widgetDate = new Date(x.widgetDateUpdated);
-                    var oldWidget = $.findByKey(widgets, 'id', x.id);
-                    if (!oldWidget) {
-                        // newly added widget
-                        new Widget($.extend(x, makeWidgetOpts()));
-                    } else {
-                        // existing widget - remove this widget from the list
-                        widgets.splice(oldWidget._i, 1);
-
-                        if (oldWidget.initDate < widgetDate) {
-                            // this widget needs to be reloaded
-                            oldWidget.reload(null, x);
-                        }
-                    }
-                });
-
-                if (widgets.length) {
-                    // any widgets still left need to be deleted
-                    widgets.forEach(function(x) { x.destroy(true); });
-                }
-            }
-        });
-    });
 
     /**
      * Destory dashboard.
@@ -107,6 +62,9 @@
             // any widgets still left need to be deleted
             widgets.forEach(function(x) { x.destroy(true); });
         }
+        $.off(window, 'keydown', _windowEvents.keydown);
+        $.off(window, 'resize', _windowEvents.resize);
+        _windowEvents = null;
     });
 
     /**
@@ -217,86 +175,4 @@
             getWidgets().filter(function(x) { return x.isFullscreen; }).forEach(function(x) { x.toggleFullScreen(); });
         }
     };
-
-
-    /**
-     * Initialize a table instance
-     * @param {Event} e - Event that triggered the load
-     */
-    $.on(document, 'tableLoad', function(e) {
-        var node = $.isNode(e) ? e : e.target;
-        var json = node.getAttribute('data-json');
-        if (json) {
-            var opts = JSON.parse(json);
-            m.mount(node.parentElement, {
-                view: function() {
-                    return m(Table, opts);
-                }
-            });
-            /*
-            // @todo when destroying content that contains a table, i need to unmount it.
-            m.mount(node, null);
-            */
-        }
-    }, true);
-
-    /**
-     * Destroy a table instance
-     * @param {Event} e - Event that triggered the unload
-     */
-    $.on(document, 'tableUnload', function(e) {
-        var node = $.isNode(e) ? e : e.target;
-        if (node && $.hasClass(node, 'dash-table')) {
-            $.dispatch(node, $.events.tableDestroy);
-            m.mount(node, null);
-        }
-    }, true);
-
-    /**
-     * Initialize a collapsible list instance
-     * @param {Event} e - Event that triggered the load
-     */
-    /*
-    $.on(document, 'collapsibleListLoad', function(e) {
-        var node = $.isNode(e) ? e : e.target;
-        if (node) {
-            new CollapsibleList(node);
-        }
-    }, true);
-    */
-
-    $.on('#menuBtn', 'click', function() {
-        $.toggleClass('body', 'toggled', null);
-        $.dispatch(window, new Event('resize'));
-    });
-
-    // window.dispatchEvent(new Event('resize'));
-    /**
-     * Set up content after page has loaded.
-     */
-    var pageLoaded = function() {
-        pjax.connect({ container: 'contentWrapper', excludeClass: 'pjax-no-follow' });
-        $.dialogs.processContent($.get('body'));
-
-        $.on('#toggleContextHelpBtn', 'click', function(e) {
-            e.preventDefault();
-            $.ajax({
-                method: 'GET',
-                url: this.getAttribute('href')
-            }, function(data) {
-                $.toggleClass('#toggleContextHelpBtn', 'help-active', data.enabled);
-            });
-        });
-
-        $.dispatch(document, $.events.dashboardLoad);
-    };
-
-    /**
-     * Run events needed for the inital page load.
-     */
-    if ($.resxLoaded) {
-        pageLoaded();
-    } else {
-        $.on(document, 'resxLoaded', pageLoaded);
-    }
-})(this.$, this.pjax, this.Widget, this.m, this.Table, this.CollapsibleList);
+})(this.$, this.Widget);

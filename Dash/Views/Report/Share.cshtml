@@ -8,7 +8,7 @@
         new Breadcrumb(Reports.ShareReport, "Share", "Report", new { id = Model.Id })
     });
 
-    @using (Html.BeginCustomForm("Share", "Report", null, null, "reportShareLoad", null, new { @class = "report-share-form", @data_unload_event = "reportShareUnload" }, true, HttpVerbs.Put))
+    @using (Html.BeginCustomForm("Share", "Report", null, null, "reportShareLoad", null, new { @class = "report-share-form", @data_unload_event = "reportShareUnload", @data_id = Model.Id }, true, HttpVerbs.Put))
     {
         @Html.HiddenFor(model => model.Id)
 

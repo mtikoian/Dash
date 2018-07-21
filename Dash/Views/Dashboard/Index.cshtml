@@ -2,6 +2,9 @@
 
 <div id="bodyContent" class="dashboard" data-title="@Dash.I18n.Core.Dashboard" data-load-event="dashboardLoad" data-unload-event="dashboardUnload"
      data-url="@Url.Action("IndexOptions")" data-save-url="@Url.Action("SaveDashboard")" data-json="@Model.ToJson">
+
+    <partial name="_Toast" />
+
     @foreach (var widget in Model.Widgets)
     {
         <partial name="Widget" model="widget" />

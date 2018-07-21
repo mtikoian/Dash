@@ -1,11 +1,24 @@
 ﻿@model Dash.Models.Chart
 @using Dash.I18n
 
-@using (Html.BeginCustomForm("ChangeType", "Chart", null, Charts.ChangeType))
+@using (Html.BeginBodyContent(Charts.ChangeType))
 {
-    <div class="col-6">
+    @Html.Breadcrumbs(new List<Breadcrumb> {
+        new Breadcrumb(Charts.ViewAll, "Index", "Chart"),
+        new Breadcrumb(Charts.ChangeType, "ChangeType", "Chart")
+    });
+
+    @using (Html.BeginCustomForm("ChangeType", "Chart"))
+    {
         @Html.HiddenFor(model => model.Id)
-        @Html.LabelInputFor(model => model.Name, new { disabled = true })
-        @Html.LabelDropDownListFor(model => model.ChartTypeId, Dash.Models.Chart.ChartTypeSelectList)
-    </div>
+
+        <partial name="_Toast" />
+
+        <div class="columns">
+            <div class="col-6">
+                @Html.LabelInputFor(model => model.Name, new { disabled = true })
+                @Html.LabelDropDownListFor(model => model.ChartTypeId, Dash.Models.Chart.ChartTypeSelectList)
+            </div>
+        </div>
+    }
 }

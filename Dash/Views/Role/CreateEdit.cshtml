@@ -25,7 +25,7 @@
             <div class="col-6">
                 <div class="form-group">
                     @Html.ControlLabel("PermissionIds", Dash.I18n.Roles.Permissions)
-                    <div class="col-8 dash-collapsible-list c-hand" data-load-event="collapsibleListLoad">
+                    <div class="col-8 c-hand" data-toggle="collapsible-list">
                         @foreach (var controller in Model.ControllerPermissions.Keys)
                         {
                             <ul class="collapsible-list">
@@ -53,7 +53,7 @@
                         {
                             @Html.CustomCheckbox("UserIds", Html.IsChecked(Model.UserRole, x => x.UserId == user.Id, ((int[])ViewBag.SelectedUserIds), user.Id), user.Id.ToString(), user.FullName, isMultiple: true)
                         }
-                        @Html.Help("Role", "Users", false, true)
+                        @Html.Help("Role", "Users", false)
                     </div>
                 </div>
             </div>

@@ -3,7 +3,7 @@
 
 <div class="sidebar-wrapper">
     <ul class="nav-side">
-        <li id="menuBtn" class="c-hand">
+        <li id="menuBtn" class="c-hand" data-toggle="nav-menu">
             <a><i class="dash dash-menu rn-lg"></i></a>
         </li>
 
@@ -29,11 +29,7 @@
                 </li>
                 <li class="divider"></li>
             }
-            <li>
-                <a href="@Url.Action("ToggleContextHelp","Account")" id="toggleContextHelpBtn" class="@Html.Raw(Context.Session.GetString("ContextHelp").ToBool() ? "help-active" : "")" title="@Core.ToggleHelp">
-                    <i class="dash dash-help dash-lg"></i> <span>@Html.Raw(Core.ToggleHelp)</span>
-                </a>
-            </li>
+            @Html.AuthorizedMenu(Core.ToggleHelp, "ToggleContextHelp", "Account", "help", User.IsInRole("account.togglecontexthelp"), new { data_reload = true })
             <li class="divider"></li>
             @Html.AuthorizedMenu(Account.UpdateAccount, "Update", "Account", "asterisk", User.IsInRole("account.update"))
             @Html.AuthorizedMenu(Account.Logout, "LogOff", "Account", "logout", User.Identity.IsAuthenticated)

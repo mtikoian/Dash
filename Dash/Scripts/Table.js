@@ -666,23 +666,19 @@
                     ontableRefresh: this.refresh.bind(this),
                     ontableDestroy: this.destroy.bind(this),
                     onlayoutUpdate: this.updateLayout.bind(this),
-                    'data-unload-event': 'tableUnload'
+                    'data-unload-event': 'tableUnload',
+                    'data-toggle': 'table'
                 }, [
                     !this.opts.editable ? m('span#table-items-per-page') :
                         m('.container',
                             m('.columns.form-horizontal.m-2', [
-                                m('.col-4',
+                                m('.col-6',
                                     this.opts.searchable ? m('.input-group.col-8.col-mr-auto', [
                                         m('span.input-group-addon.text-no-select', m('i.dash.dash-search')),
                                         m('input.form-input', { type: 'text', oninput: this.setSearchQuery.bind(this), value: this.searchQuery, disabled: this.loading })
                                     ]) : null
                                 ),
-                                m('.col-4',
-                                    m('.text-center', $.map(this.opts.headerButtons || [], function(x) {
-                                        return m(x.type, x.attributes, x.label);
-                                    }))
-                                ),
-                                m('.col-4',
+                                m('.col-6',
                                     m('.input-group.col-8.col-ml-auto', [
                                         m('span.input-group-addon.text-no-select', this.opts.resources.perPage),
                                         m('select.form-select', {
@@ -828,7 +824,6 @@
                 width: 100,
                 editable: true,
                 pageDropdown: true,
-                headerButtons: null,
                 storageFunction: null,
                 itemsPerPage: null,
                 searchQuery: null,
@@ -904,34 +899,38 @@
                                 classes.push('btn-link');
                             }
                             attr['class'] = classes.filter(function(x) { return x && x.length; }).join(' ');
-                            attr['data-method'] = link.method ? link.method.toUpperCase() : 'GET';
-                            attr['data-href'] = href;
                             attr['title'] = label;
-                            attr['onclick'] = function() {
-                                var node = this.getAttribute('data-href') ? this : this.parentNode;
-                                var options = {
-                                    url: node.getAttribute('data-href'), container: 'contentWrapper', method: node.getAttribute('data-method')
-                                };
-                                if (node.getAttribute('data-confirm')) {
-                                    options.history = false;
-                                    Alertify.dismissAll();
-                                    Alertify.confirm(node.getAttribute('data-confirm'), pjax.invoke.bind(null, options));
-                                } else if (node.getAttribute('data-prompt')) {
-                                    options.history = false;
-                                    Alertify.dismissAll();
-                                    Alertify.prompt(node.getAttribute('data-prompt'), function(promptValue) {
-                                        if (!$.hasValue(promptValue)) {
-                                            Alertify.error($.resx('errorNameRequired'));
-                                            return false;
-                                        }
-                                        options.url += ((!/[?&]/.test(options.url)) ? '?prompt' : '&prompt') + '=' + encodeURIComponent(promptValue);
+                            if (attr['target']) {
+                                attr['href'] = href;
+                            } else {
+                                attr['data-method'] = link.method ? link.method.toUpperCase() : 'GET';
+                                attr['data-href'] = href;
+                                attr['onclick'] = function() {
+                                    var node = this.getAttribute('data-href') ? this : this.parentNode;
+                                    var options = {
+                                        url: node.getAttribute('data-href'), container: 'contentWrapper', method: node.getAttribute('data-method')
+                                    };
+                                    if (node.getAttribute('data-confirm')) {
+                                        options.history = false;
+                                        Alertify.dismissAll();
+                                        Alertify.confirm(node.getAttribute('data-confirm'), pjax.invoke.bind(null, options));
+                                    } else if (node.getAttribute('data-prompt')) {
+                                        options.history = false;
+                                        Alertify.dismissAll();
+                                        Alertify.prompt(node.getAttribute('data-prompt'), function(promptValue) {
+                                            if (!$.hasValue(promptValue)) {
+                                                Alertify.error($.resx('errorNameRequired'));
+                                                return false;
+                                            }
+                                            options.url += ((!/[?&]/.test(options.url)) ? '?prompt' : '&prompt') + '=' + encodeURIComponent(promptValue);
+                                            pjax.invoke(options);
+                                        });
+                                    } else {
+                                        options.history = node.getAttribute('data-method') === 'GET';
                                         pjax.invoke(options);
-                                    });
-                                } else {
-                                    options.history = node.getAttribute('data-method') === 'GET';
-                                    pjax.invoke(options);
-                                }
-                            };
+                                    }
+                                };
+                            }
                             return m(isBtn ? 'button' : 'a', attr, $.isNull(link.icon) ? label : m('i', { class: 'dash dash-' + link.icon.toLowerCase() }));
                         });
                     };
@@ -946,15 +945,6 @@
                 } else if (type === 'currency') {
                     this.currencyColumns.push(column.field);
                 }
-            }
-
-            if (this.opts.headerButtons) {
-                this.opts.headerButtons = this.opts.headerButtons.filter(function(x) { return !$.isNull(x); });
-                $.forEach(this.opts.headerButtons, function(x) {
-                    if (!x.attributes.onclick && !x.attributes.target) {
-                        x.attributes.onclick = pjax.invoke.bind(null, { url: x.attributes['data-href'], container: 'contentWrapper' });
-                    }
-                });
             }
 
             this.itemsPerPage = this.store('itemsPerPage') * 1 || 10;

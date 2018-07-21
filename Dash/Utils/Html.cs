@@ -84,44 +84,35 @@ namespace Dash
             }
         }
 
+        /*
         public static IHtmlContent AuthorizedButton(this IHtmlHelper helper, string text, string controller, string action, DashClasses? btnType = null,
             DashClasses? ajaxType = null, object htmlAttributes = null, bool hasAccess = true)
         {
             return AuthorizedButton(helper, text, controller, action, null, btnType, ajaxType, htmlAttributes, hasAccess);
         }
+        */
 
-        public static IHtmlContent AuthorizedButton(this IHtmlHelper helper, string text, string controller, string action, object routeValues, DashClasses? btnType = null,
-            DashClasses? ajaxType = null, object htmlAttributes = null, bool hasAccess = true)
+        public static IHtmlContent AuthorizedButton(this IHtmlHelper helper, string text, string action, string controller, object routeValues = null, DashClasses? btnType = null, bool hasAccess = true)
         {
             if (!hasAccess)
             {
                 return HtmlString.Empty;
             }
 
-            var htmlAttr = HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes);
             var classList = new List<string>();
             classList.Merge("btn");
             classList.Merge("mr-1");
             classList.Merge((btnType ?? DashClasses.BtnPrimary).ToCssClass());
-            if (ajaxType.HasValue)
-            {
-                classList.Merge(DashClasses.DashAjax.ToCssClass());
-                classList.Merge(ajaxType.Value.ToCssClass());
-            }
-            htmlAttr["class"] = classList.Combine();
 
             var urlHelper = new UrlHelper(helper.ViewContext);
-            htmlAttr["data-href"] = urlHelper.Action(action, controller, new RouteValueDictionary(routeValues));
-            htmlAttr["type"] = "button";
-            htmlAttr["role"] = "button";
-
-            var btn = new TagBuilder("button");
-            btn.MergeAttributes(htmlAttr);
+            var btn = new TagBuilder("a");
+            btn.AddCssClass(classList.Combine());
+            btn.MergeAttribute("href", urlHelper.Action(action, controller));
             btn.InnerHtml.Append(text);
             return btn;
         }
 
-        public static TagBuilder AuthorizedMenu(this IHtmlHelper helper, string linkText, string action, string controller, string icon, bool authorized)
+        public static TagBuilder AuthorizedMenu(this IHtmlHelper helper, string linkText, string action, string controller, string icon, bool authorized, object linkAttributes = null)
         {
             if (!authorized)
             {
@@ -129,7 +120,7 @@ namespace Dash
             }
 
             var a = new TagBuilder("a");
-            //a.AddCssClass(Classes(DashClasses.DashAjax)["class"].ToString());
+            a.MergeAttributes(HtmlHelper.AnonymousObjectToHtmlAttributes(linkAttributes));
             a.MergeAttribute("href", new UrlHelper(helper.ViewContext).Action(action, controller));
             a.MergeAttribute("title", linkText);
             var span = new TagBuilder("span");
@@ -323,7 +314,7 @@ namespace Dash
             return outerDiv;
         }
 
-        public static IHtmlContent Help<TModel>(this IHtmlHelper<TModel> helper, string modelName, string fieldName, bool useInputGroup = true, bool rightPad = false)
+        public static IHtmlContent Help<TModel>(this IHtmlHelper<TModel> helper, string modelName, string fieldName, bool useInputGroup = true)
         {
             if (!helper.ViewContext.HttpContext.WantsHelp())
             {
@@ -339,15 +330,12 @@ namespace Dash
 
             var icon = helper.Icon("help", false);
             var button = new TagBuilder("button");
-            button.AddCssClass("btn btn-secondary dash-context-help");
-            button.Attributes.Add("type", "button");
-            button.Attributes.Add("role", "button");
-            button.Attributes["data-message"] = resourceLib[$"{key}"].Replace("\"", "&quot;");
+            button.AddCssClass("btn btn-secondary");
+            button.MergeAttribute("type", "button");
+            button.MergeAttribute("role", "button");
+            button.MergeAttribute("data-toggle", "context-help");
+            button.MergeAttribute("data-message", resourceLib[$"{key}"].Replace("\"", "&quot;"));
             button.InnerHtml.AppendHtml(icon);
-            if (rightPad)
-            {
-                button.AddCssClass("context-help-pad");
-            }
             if (useInputGroup)
             {
                 var span = new TagBuilder("span");
@@ -358,10 +346,10 @@ namespace Dash
             return button;
         }
 
-        public static IHtmlContent HelpFor<TModel, TValue>(this IHtmlHelper<TModel> helper, Expression<Func<TModel, TValue>> expression, bool useInputGroup = true, bool rightPad = false)
+        public static IHtmlContent HelpFor<TModel, TValue>(this IHtmlHelper<TModel> helper, Expression<Func<TModel, TValue>> expression, bool useInputGroup = true)
         {
             var explorer = ExpressionMetadataProvider.FromLambdaExpression(expression, helper.ViewData, helper.MetadataProvider);
-            return Help(helper, explorer.Metadata.ContainerType.Name, explorer.Metadata.PropertyName, useInputGroup, rightPad);
+            return Help(helper, explorer.Metadata.ContainerType.Name, explorer.Metadata.PropertyName, useInputGroup);
         }
 
         public static TagBuilder Icon(this IHtmlHelper helper, string icon, bool large = true, bool primary = false)
@@ -395,8 +383,9 @@ namespace Dash
             foreach (var item in itemList)
             {
                 var itemTag = new TagBuilder("li");
-                itemTag.AddCssClass("menu-item dash-input-replace c-hand");
-                itemTag.Attributes["data-target"] = targetId;
+                itemTag.AddCssClass("menu-item c-hand");
+                itemTag.Attributes["data-toggle"] = "input-replace";
+                itemTag.Attributes["data-target"] = $"#{targetId}";
                 itemTag.Attributes["data-value"] = item;
                 itemTag.InnerHtml.AppendHtml(item);
                 ul.InnerHtml.AppendHtml(itemTag);
@@ -449,7 +438,7 @@ namespace Dash
             var rowDiv = new TagBuilder("div");
             rowDiv.AddCssClass("col-12");
             rowDiv.InnerHtml.AppendHtml(checkboxDiv);
-            rowDiv.InnerHtml.AppendHtml(helper.HelpFor(expression, false, true));
+            rowDiv.InnerHtml.AppendHtml(helper.HelpFor(expression, false));
 
             var innerDiv = new TagBuilder("div");
             innerDiv.AddCssClass("col-" + inputWidth);

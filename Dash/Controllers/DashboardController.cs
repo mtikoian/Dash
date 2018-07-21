@@ -17,60 +17,62 @@ namespace Dash.Controllers
             _ActionContextAccessor = actionContextAccessor;
         }
 
-        [HttpGet, AjaxRequestOnly]
+        [HttpGet]
         public IActionResult Create()
         {
-            return CreateEditView(new Widget(DbContext, _ActionContextAccessor));
+            return CreateEditView(new Widget(DbContext));
         }
 
-        [HttpPost, AjaxRequestOnly, ValidateAntiForgeryToken]
-        public IActionResult Create([FromBody] Widget model)
+        [HttpPost, ValidateAntiForgeryToken]
+        public IActionResult Create(Widget model)
         {
             return Save(model);
         }
 
-        [HttpDelete, AjaxRequestOnly]
+        [HttpDelete]
         public IActionResult Delete(int id)
         {
             var widget = DbContext.Get<Widget>(id);
             if (widget == null)
             {
-                return Error(Core.ErrorInvalidId);
+                ViewBag.Error = Core.ErrorInvalidId;
+                return Index();
             }
             if (!widget.AllowEdit)
             {
-                return Error(Core.ErrorInvalidId);
+                ViewBag.Error = Core.ErrorInvalidId;
+                return Index();
             }
 
             DbContext.Delete(widget);
-            return Success(Widgets.SuccessDeletingWidget);
+            return Index();
         }
 
-        [HttpGet, AjaxRequestOnly]
+        [HttpGet]
         public IActionResult Edit(int id)
         {
             var widget = DbContext.Get<Widget>(id);
             if (widget == null)
             {
-                return Error(Core.ErrorInvalidId);
+                ViewBag.Error = Core.ErrorInvalidId;
             }
             if (!widget.AllowEdit)
             {
-                return Error(Core.ErrorInvalidId);
+                ViewBag.Error = Core.ErrorInvalidId;
             }
-
             return CreateEditView(widget);
         }
 
-        [HttpPut, AjaxRequestOnly, ValidateAntiForgeryToken]
-        public IActionResult Edit([FromBody] Widget model)
+        [HttpPut, ValidateAntiForgeryToken]
+        public IActionResult Edit(Widget model)
         {
             return Save(model);
         }
 
         public IActionResult Index()
         {
-            return View(new WidgetList(DbContext, _ActionContextAccessor, User.UserId()));
+            ViewBag.Title = Core.Dashboard;
+            return View("Index", new WidgetList(DbContext, _ActionContextAccessor, User.UserId()));
         }
 
         [HttpGet]
@@ -103,7 +105,7 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly]
         public IActionResult WidgetOptions(int id)
         {
-            var model = DbContext.Get<Widget>(id);
+            var model = DbContext.Get<WidgetView>(id);
             if (model == null)
             {
                 return Error(Core.ErrorInvalidId);
@@ -111,28 +113,28 @@ namespace Dash.Controllers
             return Data(model);
         }
 
-        public IActionResult WidgetContent()
-        {
-            return PartialView("Index", new WidgetList(DbContext, _ActionContextAccessor, User.UserId()));
-        }
-
         private IActionResult CreateEditView(Widget model)
         {
-            return PartialView("CreateEdit", model);
+            ViewBag.ToDateTime = model.IsCreate ? Widgets.CreateWidget : Widgets.EditWidget;
+            return View("CreateEdit", model);
         }
 
         private IActionResult Save(Widget model)
         {
             if (model == null)
             {
-                return Error(Core.ErrorGeneric);
+                ViewBag.Error = Core.ErrorGeneric;
+                return CreateEditView(model);
             }
             if (!ModelState.IsValid)
             {
-                return Error(ModelState.ToErrorString());
+                ViewBag.Error = ModelState.ToErrorString();
+                return CreateEditView(model);
             }
+            model.UserId = model.UserId > 0 ? model.UserId : User.UserId();
             model.Save();
-            return Success(Widgets.SuccessSavingWidget);
+            ViewBag.Message = Widgets.SuccessSavingWidget;
+            return Index();
         }
     }
 }

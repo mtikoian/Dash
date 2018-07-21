@@ -1,0 +1,15 @@
+﻿@using Dash.I18n;
+@model Dash.Models.Help
+
+@using (Html.BeginBodyContent(Core.ToggleHelp))
+{
+    @Html.Breadcrumbs(new List<Breadcrumb> {
+        new Breadcrumb(Core.ToggleHelp, "ToggleContextHelp", "Account")
+    });
+
+    <div class="columns">
+        <div class="col-12">
+            @Html.ToCard(Model.IsEnabled ? Core.HelpEnabled : Core.HelpDisabled, CardTypes.Primary)
+        </div>
+    </div>
+}

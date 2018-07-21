@@ -23,13 +23,12 @@
                 @Html.LabelInputFor(model => model.LastName)
                 @Html.LabelPasswordFor(model => model.Password, Model.Id == 0 ? new { required = true } : null)
                 @Html.LabelPasswordFor(model => model.ConfirmPassword, Model.Id == 0 ? new { required = true } : null)
+                @Html.LabelInputFor(model => model.Email, inputType: Dash.Html.InputFieldType.Email)
+                @Html.LabelDropDownListFor(model => model.LanguageId, new SelectList(Model.DbContext.GetAll<Language>(), "Id", "Name"))
                 @Html.LabelCheckBoxFor(model => model.AllowSingleFactor)
             </div>
 
             <div class="col-6">
-                @Html.LabelInputFor(model => model.Email, inputType: Dash.Html.InputFieldType.Email)
-                @Html.LabelDropDownListFor(model => model.LanguageId, new SelectList(Model.DbContext.GetAll<Language>(), "Id", "Name"))
-
                 <div class="form-group columns">
                     @Html.ControlLabel("RoleIds", Users.Roles)
                     <div class="col-8 checkbox-block">
@@ -37,7 +36,7 @@
                         {
                             @Html.CustomCheckbox("RoleIds", Html.IsChecked(Model.UserRole, x => x.RoleId == role.Id, ((int[])ViewBag.SelectedRoleIds), role.Id), role.Id.ToString(), role.Name, isMultiple: true)
                         }
-                        @Html.HelpFor(model => model.UserRole, false, true)
+                        @Html.HelpFor(model => model.UserRole, false)
                     </div>
                 </div>
             </div>

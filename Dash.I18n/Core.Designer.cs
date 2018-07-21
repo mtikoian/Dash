@@ -250,6 +250,15 @@ namespace Dash.I18n {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        public static string Error {
+            get {
+                return ResourceManager.GetString("Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You can&apos;t do that when you are already logged in..
         /// </summary>
         public static string ErrorAlreadyLoggedIn {

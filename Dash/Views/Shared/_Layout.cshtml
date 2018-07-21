@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>@Dash.I18n.Core.Dashboard</title>
+    <title>@(((string)ViewBag.Title).IsEmpty() ? Dash.I18n.Core.Dashboard : ViewBag.Title)</title>
     <link rel="stylesheet" href="~/css/bundle.css" />
     <link rel="icon" href="~/favicon.ico">
 </head>
@@ -19,7 +19,7 @@
         </div>
     </div>
 
-    <div id="loader" class="dialog-loading">
+    <div id="loader" class="dialog-loading d-none">
         <div class="loading loading-lg"></div>
     </div>
 

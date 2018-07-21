@@ -29,18 +29,15 @@ namespace Dash
         {
         }
 
-        public Table(string id, string url, IEnumerable<TableColumn> columns, IEnumerable<TableHeaderButton> headerButtons = null, IEnumerable<object> data = null)
+        public Table(string id, string url, IEnumerable<TableColumn> columns)
         {
             Id = id;
             Url = url;
             Columns = columns;
-            HeaderButtons = headerButtons;
-            Data = data;
         }
 
         public IEnumerable<TableColumn> Columns { get; set; }
         public IEnumerable<object> Data { get; set; }
-        public IEnumerable<TableHeaderButton> HeaderButtons { get; set; }
         public string Id { get; set; }
         public bool LoadAllData { get; set; } = true;
         public bool Searchable { get; set; } = true;
@@ -54,20 +51,6 @@ namespace Dash
         {
             return !hasAccess ? null : new TableLink(href, Html.Classes(DashClasses.DashPrompt, DashClasses.BtnInfo)
                 .Merge("data-prompt", prompt), Core.Copy, TableIcon.Clone);
-        }
-
-        public static TableHeaderButton CreateButton(string href, string label, bool hasAccess = true)
-        {
-            if (!hasAccess)
-            {
-                return null;
-            }
-            var attr = Html.Classes(DashClasses.BtnPrimary, DashClasses.DashAjax);
-            attr["type"] = "button";
-            attr["role"] = "button";
-            attr["data-href"] = href;
-            attr["data-method"] = "GET";
-            return new TableHeaderButton(attr, label);
         }
 
         public static TableLink DeleteButton(string href, string confirm, bool hasAccess = true)
@@ -122,19 +105,6 @@ namespace Dash
     {
         public string Field { get; set; }
         public decimal Width { get; set; }
-    }
-
-    public class TableHeaderButton
-    {
-        public TableHeaderButton(Dictionary<string, object> attributes = null, string label = null)
-        {
-            Attributes = attributes?.ToDictionary(k => k.Key, v => v.Value.ToString());
-            Label = label;
-        }
-
-        public Dictionary<string, string> Attributes { get; set; }
-        public string Label { get; set; }
-        public string Type { get; set; } = "button";
     }
 
     public class TableLink

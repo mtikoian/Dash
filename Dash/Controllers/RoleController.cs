@@ -80,6 +80,7 @@ namespace Dash.Controllers
         public IActionResult Index()
         {
             RouteData.Values.Remove("id");
+            ViewBag.Title = Roles.ViewAll;
             return View("Index", new Table("tableRoles", Url.Action("List"),
                 new List<TableColumn> {
                     new TableColumn("name", Roles.Name, Table.EditLink($"{Url.Action("Edit")}/{{id}}", User.IsInRole("role.edit"))),
@@ -87,8 +88,7 @@ namespace Dash.Controllers
                         .AddIf(Table.EditButton($"{Url.Action("Edit")}/{{id}}"), User.IsInRole("role.edit"))
                         .AddIf(Table.DeleteButton($"{Url.Action("Delete")}/{{id}}", string.Format(Core.ConfirmDeleteBody, Roles.RoleLower)), User.IsInRole("role.delete"))
                         .AddIf(Table.CopyButton($"{Url.Action("Copy")}/{{id}}", Roles.CopyBody), User.IsInRole("role.copy")))
-                },
-                new List<TableHeaderButton>().AddIf(Table.CreateButton(Url.Action("Create"), Roles.CreateRole), User.IsInRole("role.create"))
+                }
             ));
         }
 
@@ -100,6 +100,7 @@ namespace Dash.Controllers
 
         private IActionResult CreateEditView(Role model)
         {
+            ViewBag.Title = model.IsCreate ? Roles.CreateRole : Roles.EditRole;
             return View("CreateEdit", model);
         }
 

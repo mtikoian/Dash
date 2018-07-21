@@ -63,6 +63,7 @@ namespace Dash.Controllers
         public IActionResult Index()
         {
             RouteData.Values.Remove("id");
+            ViewBag.Title = Users.ViewAll;
             return View("Index", new Table("tableUsers", Url.Action("List"),
                 new List<TableColumn> {
                     new TableColumn("userName", Users.UserName, Table.EditLink($"{Url.Action("Edit")}/{{id}}", User.IsInRole("user.edit"))),
@@ -77,8 +78,7 @@ namespace Dash.Controllers
                             new Dictionary<string, object>().Append("!!", new object[] { new Dictionary<string, object>().Append("var", "isLocked") })
                         ), User.IsInRole("user.unlock"))
                     )
-                },
-                new List<TableHeaderButton>().AddIf(Table.CreateButton(Url.Action("Create"), Users.CreateUser), User.IsInRole("user.create"))
+                }
             ));
         }
 
@@ -104,6 +104,7 @@ namespace Dash.Controllers
 
         private IActionResult CreateEditView(User model)
         {
+            ViewBag.Title = model.IsCreate ? Users.CreateUser : Users.EditUser;
             return View("CreateEdit", model);
         }
 

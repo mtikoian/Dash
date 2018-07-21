@@ -131,7 +131,7 @@
             self.records = newRecords;
 
             Alertify.success($.resx('dataset.importSuccess'));
-            $.dialogs.focusOnClose.call(e);
+            $.content.focusOnClose.call(e);
         });
     };
 
@@ -141,7 +141,7 @@
      */
     ColumnForm.prototype.import = function(e) {
         if (this.checkStatus()) {
-            Alertify.confirm($.resx('dataset.confirmImport'), this.importColumns.bind(this, e), $.dialogs.focusOnClose.bind(e));
+            Alertify.confirm($.resx('dataset.confirmImport'), this.importColumns.bind(this, e), $.content.focusOnClose.bind(e));
         }
     };
 

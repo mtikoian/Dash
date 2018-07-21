@@ -9,11 +9,9 @@
         chartShareLoad: new CustomEvent('chartShareLoad'),
         chartShareUnload: new CustomEvent('chartShareUnload'),
         chartUnload: new CustomEvent('chartUnload'),
-        collapsibleListLoad: new CustomEvent('collapsibleListLoad'),
         columnSelectorLoad: new CustomEvent('columnSelectorLoad'),
         dashboardLoad: new CustomEvent('dashboardLoad'),
         dashboardUnload: new CustomEvent('dashboardUnload'),
-        dashboardReload: new CustomEvent('dashboardReload'),
         datasetFormLoad: new CustomEvent('datasetFormLoad'),
         datasetFormUnload: new CustomEvent('datasetFormUnload'),
         layoutUpdate: new CustomEvent('layoutUpdate'),
@@ -62,7 +60,7 @@
 
         var canBlock = $.coalesce(options.block, true);
         if (canBlock) {
-            $.show(_loadingDiv);
+            //$.show(_loadingDiv);
         }
 
         // keep IE from caching requests by tacking milliseconds to end of url
@@ -75,7 +73,7 @@
             }
             if (response.data.error) {
                 if (canBlock) {
-                    $.hide(_loadingDiv);
+                    //$.hide(_loadingDiv);
                 }
                 if ($.isFunction(onError)) {
                     onError(response.data);
@@ -83,7 +81,7 @@
                 Alertify.error(response.data.error);
             } else {
                 if (canBlock) {
-                    $.hide(_loadingDiv);
+                    //$.hide(_loadingDiv);
                 }
                 if ($.isFunction(onSuccess)) {
                     onSuccess(response.data);
@@ -94,7 +92,7 @@
             }
         }).catch(function(response) {
             if (canBlock) {
-                $.hide(_loadingDiv);
+                //$.hide(_loadingDiv);
             }
             if (options.url.indexOf('LogJavascriptError') > -1) {
                 return;
@@ -223,22 +221,6 @@
             return { content: data };
         }
     };
-
-    /**
-     * Closure to set up the loading splash screen and return the node for it.
-     */
-    var _loadingDiv = (function() {
-        var div = $.get('#loader');
-        $.on(div, 'keydown', function(e) {
-            if ($.hasClass('#loader', 'd-none')) {
-                return;
-            }
-            e.preventDefault();
-            e.stopPropagation();
-            return false;
-        });
-        return div;
-    })();
 
     $.ajax = ajax;
     $.logError = logError;

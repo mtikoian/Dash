@@ -1,11 +1,25 @@
 ﻿@using Dash.I18n
 @model Dash.Models.Chart
 
-@using (Html.BeginCustomForm("Share", "Chart", null, Charts.ShareChart, "chartShareLoad", null, new { @class = "chart-share-form", @data_close_event = "chartShareUnload" }, true, HttpVerbs.Put))
+@using (Html.BeginBodyContent(Charts.ShareChart))
 {
-    @Html.HiddenFor(model => model.Id)
-    @Html.ToCard(Charts.ShareExplain)
-    <div class="col-12 p-2">
-        <div class="share-table-wrapper" data-json="@Model.ShareOptionsJson"></div>
-    </div>
+    @Html.Breadcrumbs(new List<Breadcrumb> {
+        new Breadcrumb(Charts.ViewAll, "Index", "Chart"),
+        new Breadcrumb(Charts.ShareChart, "Share", "Chart", new { id = Model.Id })
+    });
+
+    @using (Html.BeginCustomForm("Share", "Chart", null, null, "chartShareLoad", null, new { @class = "chart-share-form", @data_unload_event = "chartShareUnload" }, true, HttpVerbs.Put))
+    {
+        @Html.HiddenFor(model => model.Id)
+
+        <partial name="_Toast" />
+
+        @Html.ToCard(Reports.ShareReportExplain)
+
+        <div class="columns">
+            <div class="share-table-wrapper" data-json="@Model.ShareOptionsJson"></div>
+        </div>
+
+        @Html.FormButtons();
+    }
 }

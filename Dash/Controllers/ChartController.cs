@@ -9,46 +9,46 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Dash.Controllers
 {
-    [Authorize(Policy = "HasPermission")]
+    [Authorize(Policy = "HasPermission"), Pjax]
     public class ChartController : BaseController
     {
         public ChartController(IDbContext dbContext, AppConfiguration appConfig) : base(dbContext, appConfig)
         {
         }
 
-        [HttpGet, AjaxRequestOnly]
+        [HttpGet]
         public IActionResult ChangeType(int id)
         {
             var chart = DbContext.Get<Chart>(id);
             if (chart == null)
             {
-                return Error(Core.ErrorInvalidId);
+                ViewBag.Error = Core.ErrorInvalidId;
+                return Index();
             }
             if (!chart.IsOwner)
             {
-                return Error(Charts.ErrorOwnerOnly);
+                ViewBag.Error = Charts.ErrorOwnerOnly;
+                return Details(id);
             }
-            return PartialView(chart);
+            return View("ChangeType", chart);
         }
 
-        [HttpPost, AjaxRequestOnly, ValidateAntiForgeryToken]
-        public IActionResult ChangeType([FromBody] ChangeType model)
+        [HttpPost, ValidateAntiForgeryToken]
+        public IActionResult ChangeType(ChangeType model)
         {
             if (model == null)
             {
-                return Error(Core.ErrorGeneric);
+                ViewBag.Error = Core.ErrorGeneric;
+                return Index();
             }
             if (!ModelState.IsValid)
             {
-                return Error(ModelState.ToErrorString());
+                ViewBag.Error = ModelState.ToErrorString();
+                return View("ChangeType", model);
             }
             model.Update();
-            return Data(new {
-                message = Charts.SuccessSavingChart,
-                closeParent = true,
-                parentTarget = true,
-                dialogUrl = Url.Action("Details", new { @id = model.Id })
-            });
+            ViewBag.Message = Charts.SuccessSavingChart;
+            return Details(model.Id);
         }
 
         [HttpGet, AjaxRequestOnly]
@@ -56,33 +56,39 @@ namespace Dash.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Error(ModelState.ToErrorString());
+                ViewBag.Error = ModelState.ToErrorString();
+                return Index();
             }
             model.Save();
-            return Success();
+            ViewBag.Message = Charts.SuccessCopyingChart;
+            return Index();
         }
 
-        [HttpGet, AjaxRequestOnly]
+        [HttpGet]
         public IActionResult Create()
         {
-            return PartialView(new CreateChart(DbContext, User.UserId()));
+            ViewBag.Title = Charts.CreateChart;
+            return View(new CreateChart(DbContext, User.UserId()));
         }
 
-        [HttpPost, AjaxRequestOnly, ValidateAntiForgeryToken]
-        public IActionResult Create([FromBody] CreateChart model)
+        [HttpPost, ValidateAntiForgeryToken]
+        public IActionResult Create(CreateChart model)
         {
             if (model == null)
             {
-                return Error(Core.ErrorGeneric);
+                ViewBag.Error = Core.ErrorGeneric;
+                return Index();
             }
             if (!ModelState.IsValid)
             {
-                return Error(ModelState.ToErrorString());
+                ViewBag.Error = ModelState.ToErrorString();
+                return View("Create", model);
             }
 
             var newChart = Chart.Create(model, User.UserId());
             DbContext.Save(newChart, false);
-            return Data(new { message = Charts.SuccessSavingChart, dialogUrl = Url.Action("Details", new { @id = newChart.Id }) });
+            ViewBag.Message = Charts.SuccessSavingChart;
+            return Index();
         }
 
         [HttpPost, AjaxRequestOnly]
@@ -111,30 +117,36 @@ namespace Dash.Controllers
             var chart = DbContext.Get<Chart>(id);
             if (chart == null)
             {
-                return Error(Core.ErrorInvalidId);
+                ViewBag.Error = Core.ErrorInvalidId;
+                return Index();
             }
             if (!chart.IsOwner)
             {
-                return Error(Charts.ErrorOwnerOnly);
+                ViewBag.Error = Charts.ErrorOwnerOnly;
+                return Index();
             }
             DbContext.Delete(chart);
-            return Success(Charts.SuccessDeletingChart);
+            ViewBag.Message = Charts.SuccessDeletingChart;
+            return Index();
         }
 
-        [HttpGet, AjaxRequestOnly]
+        [HttpGet]
         public IActionResult Details(int id)
         {
             var chart = DbContext.Get<Chart>(id);
             if (chart == null)
             {
-                return Error(Core.ErrorInvalidId);
+                ViewBag.Error = Core.ErrorInvalidId;
+                return Index();
             }
             var user = DbContext.Get<User>(User.UserId());
             if (!user.CanViewChart(chart))
             {
-                return Error(Charts.ErrorPermissionDenied);
+                ViewBag.Error = Charts.ErrorPermissionDenied;
+                return Index();
             }
-            return PartialView("Details", chart);
+            ViewBag.Title = chart.Name;
+            return View("Details", chart);
         }
 
         [HttpGet, AjaxRequestOnly]
@@ -194,46 +206,51 @@ namespace Dash.Controllers
             return File(model.Stream(), model.ContentType, model.FormattedFileName);
         }
 
-        [HttpGet, AjaxRequestOnly]
+        [HttpGet]
         public IActionResult Index()
         {
-            return PartialView(new Table("tableCharts", Url.Action("List"), new List<TableColumn> {
+            RouteData.Values.Remove("id");
+            ViewBag.Title = Charts.ViewAll;
+            return View("Index", new Table("tableCharts", Url.Action("List"), new List<TableColumn> {
                 new TableColumn("name", Charts.Name, Table.EditLink($"{Url.Action("Details")}/{{id}}", User.IsInRole("chart.details"))),
                 new TableColumn("actions", Core.Actions, sortable: false, links: new List<TableLink>()
                         .AddIf(Table.EditButton($"{Url.Action("Details")}/{{id}}"), User.IsInRole("chart.details"))
                         .AddIf(Table.DeleteButton($"{Url.Action("Delete")}/{{id}}", Charts.ConfirmDelete), User.IsInRole("chart.delete"))
                         .AddIf(Table.CopyButton($"{Url.Action("Copy")}/{{id}}", Charts.NewName), User.IsInRole("chart.copy"))
-                )},
-                new List<TableHeaderButton>().AddIf(Table.CreateButton(Url.Action("Create"), Charts.CreateChart), User.IsInRole("chart.create"))
+                )}
             ));
         }
 
         [HttpGet, AjaxRequestOnly]
         public IActionResult List()
         {
-            return Rows(GetList());
+            return Rows(DbContext.GetAll<Chart>(new { UserId = User.UserId() }));
         }
 
-        [HttpGet, AjaxRequestOnly]
+        [HttpPut]
         public IActionResult Rename(int id, string prompt)
         {
             var chart = DbContext.Get<Chart>(id);
             if (chart == null)
             {
-                return Error(Core.ErrorInvalidId);
+                ViewBag.Error = Core.ErrorInvalidId;
+                return Index();
             }
             if (!chart.IsOwner)
             {
-                return Error(Charts.ErrorOwnerOnly);
+                ViewBag.Error = Charts.ErrorOwnerOnly;
+                return Details(id);
             }
             if (prompt.IsEmpty())
             {
-                return Error(Charts.ErrorNameRequired);
+                ViewBag.Error = Charts.ErrorNameRequired;
+                return Details(id);
             }
 
             chart.Name = prompt.Trim();
             DbContext.Save(chart, false);
-            return Data(new { message = Charts.NameSaved, content = prompt });
+            ViewBag.Message = Charts.NameSaved;
+            return Details(id);
         }
 
         [HttpPost, AjaxRequestOnly]
@@ -250,39 +267,40 @@ namespace Dash.Controllers
             return Data(new { ranges = model.Update() });
         }
 
-        [HttpGet, AjaxRequestOnly]
+        [HttpGet]
         public IActionResult Share(int id)
         {
             var chart = DbContext.Get<Chart>(id);
             if (chart == null)
             {
-                return Error(Core.ErrorInvalidId);
+                ViewBag.Error = Core.ErrorInvalidId;
+                return Index();
             }
             if (!chart.IsOwner)
             {
-                return Error(Charts.ErrorOwnerOnly);
+                ViewBag.Error = Charts.ErrorOwnerOnly;
+                return Details(id);
             }
-            return PartialView(chart);
+            ViewBag.Title = Charts.ShareChart;
+            return View("Share", chart);
         }
 
-        [HttpPut, AjaxRequestOnly]
-        public IActionResult Share([FromBody] SaveChartShare model)
+        [HttpPut]
+        public IActionResult Share(SaveChartShare model)
         {
             if (model == null)
             {
-                return Error(Core.ErrorInvalidId);
+                ViewBag.Error = Core.ErrorInvalidId;
+                return Index();
             }
             if (!ModelState.IsValid)
             {
-                return Error(ModelState.ToErrorString());
+                ViewBag.Error = ModelState.ToErrorString();
+                return View("Share", model.Chart);
             }
             model.Update();
-            return Success(Charts.SuccessSavingChart);
-        }
-
-        private IEnumerable<Chart> GetList()
-        {
-            return DbContext.GetAll<Chart>(new { UserId = User.UserId() });
+            ViewBag.Message = Charts.SuccessSavingChart;
+            return Details(model.Id);
         }
     }
 }

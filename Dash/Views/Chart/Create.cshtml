@@ -1,10 +1,26 @@
 ﻿@model Dash.Models.CreateChart
 @using Dash.I18n
 
-@using (Html.BeginCustomForm("Create", "Chart", null, Charts.CreateChart))
+@using (Html.BeginBodyContent(Charts.CreateChart))
 {
-    <div class="col-6">
-        @Html.LabelInputFor(model => model.Name)
-        @Html.LabelDropDownListFor(model => model.ChartTypeId, Dash.Models.Chart.ChartTypeSelectList)
-    </div>
+    @Html.Breadcrumbs(new List<Breadcrumb> {
+        new Breadcrumb(Charts.ViewAll, "Index", "Chart"),
+        new Breadcrumb(Charts.CreateChart, Model.FormAction, "Chart")
+    });
+
+    @using (Html.BeginCustomForm(Model.FormAction, "Chart", method: Model.FormMethod))
+    {
+        @Html.HiddenFor(model => model.Id)
+
+        <partial name="_Toast" />
+
+        <div class="columns">
+            <div class="col-6">
+                @Html.LabelInputFor(model => model.Name)
+                @Html.LabelDropDownListFor(model => model.ChartTypeId, Dash.Models.Chart.ChartTypeSelectList)
+            </div>
+        </div>
+
+        @Html.FormButtons()
+    }
 }

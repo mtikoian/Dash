@@ -348,4 +348,7 @@
   <data name="Hangfire" xml:space="preserve">
     <value>Hangfire Dashboard</value>
   </data>
+  <data name="Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
 </root>
