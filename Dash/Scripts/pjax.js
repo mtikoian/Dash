@@ -268,11 +268,9 @@
      */
     internal.updateContent = function(html, options) {
         var newNode = $.createNode(html);
-        if ($.isNull(options.title)) {
-            var title = $.getAll('[data-title]', newNode, true);
-            if (title.length) {
-                options.title = title[0].getAttribute('data-title');
-            }
+        var title = $.getAll('[data-title]', newNode, true);
+        if (title.length) {
+            options.title = title[0].getAttribute('data-title');
         }
 
         // Update the DOM with the new content
