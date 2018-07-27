@@ -9,7 +9,6 @@
         new Breadcrumb(Model.IsCreate ? Users.CreateUser : Users.EditUser, Model.FormAction, "User", Model.IsCreate ? null : new { id = Model.Id })
     });
 
-
     @using (Html.BeginCustomForm(Model.FormAction, "User", null, Model.IsCreate ? Users.CreateUser : Users.EditUser, method: Model.FormMethod))
     {
         @Html.HiddenFor(model => model.Id)
