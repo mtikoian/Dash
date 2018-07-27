@@ -47,7 +47,6 @@
     <None Include="Views\Chart\Details.cshtml"/>
     <None Include="Views\Chart\Index.cshtml"/>
     <None Include="Views\Chart\Share.cshtml"/>
-    <None Include="Views\Dashboard\Body.cshtml"/>
     <None Include="Views\Dashboard\CreateEdit.cshtml"/>
     <None Include="Views\Dashboard\Index.cshtml"/>
     <None Include="Views\Dashboard\Widget.cshtml"/>
