@@ -147,7 +147,12 @@
                 Alertify.dismissAll();
                 Alertify.confirm(this.getAttribute('data-confirm'), internal.handle.bind(null, options), function(e) { e.target.focus(); });
             } else {
-                internal.handle(options);
+                var form = $.get('form.has-changes');
+                if (form) {
+                    Alertify.confirm(form.getAttribute('data-confirm'), internal.handle.bind(null, options), function(e) { e.target.focus(); });
+                } else {
+                    internal.handle(options);
+                }
             }
         });
     };
@@ -186,13 +191,27 @@
         options = internal.parseOptions(options);
         if (options === false) return;
 
-        // Attach event.
-        $.on(node, 'submit', function(event) {
+        // Attach event for detecting changes
+        $.on(node, 'change', function(e) {
+            var form = e.currentTarget || e.target;
+            if (form.nodeName === 'FORM') {
+                $.addClass(form, 'has-changes');
+            }
+        }, true);
+
+        // Attach event for handling form submission
+        $.on(node, 'submit', function(e) {
             // Allow middle click (pages in new windows)
-            if (event.which > 1 || event.metaKey || event.ctrlKey) return;
+            if (e.which > 1 || e.metaKey || e.ctrlKey) {
+                return;
+            }
             // Don't fire normal event
-            if (event.preventDefault) { event.preventDefault(); } else { event.returnValue = false; }
-            // handle the load.
+            if (e.preventDefault) {
+                e.preventDefault();
+            } else {
+                e.returnValue = false;
+            }
+            // handle the submission
             options.form = this;
             internal.handleForm(options);
         });
