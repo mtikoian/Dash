@@ -166,13 +166,12 @@
      * @param content_node.
      */
     internal.attachForm = function(node, options) {
-        // Ignore external links.
-        /* check protocol for form action
-        if (form.getAttribute('action') node.protocol !== document.location.protocol ||
-            node.host !== document.location.host) {
+        // check protocol and host for form action and ignore external links
+        var actionNode = document.createElement('a');
+        actionNode.href = node.action;
+        if (actionNode.protocol !== document.location.protocol || actionNode.host !== document.location.host) {
             return;
         }
-        */
 
         // Add link HREF to object
         options.url = node.action;
