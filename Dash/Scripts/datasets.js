@@ -344,8 +344,8 @@
  * Dataset form component.
  */
 (function(root, factory) {
-    root.Dataset = factory(root.m, root.$, root.Alertify, root.Form, root.Autocomplete, root.Help, root.JoinForm, root.ColumnForm);
-})(this, function(m, $, Alertify, Form, Autocomplete, Help, JoinForm, ColumnForm) {
+    root.Dataset = factory(root.m, root.$, root.Alertify, root.Form, root.Autocomplete, root.Help);
+})(this, function(m, $, Alertify, Form, Autocomplete, Help) {
     'use strict';
 
     /**
@@ -367,28 +367,6 @@
         this.checkType(false);
         this.loadSourceList();
         this.loadColumnList();
-
-        this.joinForm = new JoinForm({
-            content: opts.content,
-            wantsHelp: opts.wantsHelp,
-            joins: opts.joins,
-            joinTypes: opts.joinTypes,
-            sourceFn: this.getSourceList.bind(this),
-            columnUpdateFn: this.loadColumnList.bind(this)
-        });
-        this.joinForm.run();
-
-        this.columnForm = new ColumnForm({
-            content: opts.content,
-            wantsHelp: opts.wantsHelp,
-            columns: opts.columns,
-            dataTypes: opts.dataTypes,
-            filterTypes: opts.filterTypes,
-            sourceFn: this.getSourceList.bind(this),
-            columnFn: this.getColumnList.bind(this),
-            selectedSourceFn: this.getSelectedSourceList.bind(this)
-        });
-        this.columnForm.run();
 
         $.onChange($.get('.dataset-database', this.content), this.loadSourceList.bind(this), false);
         $.onChange($.get('.dataset-type', this.content), this.checkType.bind(this), false);

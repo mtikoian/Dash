@@ -11,6 +11,17 @@ namespace Dash.Models
 
     public class DatasetJoin : BaseModel
     {
+        public DatasetJoin()
+        {
+        }
+
+        public DatasetJoin(IDbContext dbContext, int datasetid)
+        {
+            DbContext = dbContext;
+            DatasetId = datasetid;
+        }
+
+
         [Required(ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorRequired")]
         public int DatasetId { get; set; }
 

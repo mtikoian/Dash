@@ -1,0 +1,33 @@
+﻿@using Dash.I18n
+@using Dash.Models
+@model DatasetJoin
+
+@using (Html.BeginBodyContent(Model.IsCreate ? Datasets.CreateDataset : Datasets.EditDataset))
+{
+    @Html.Breadcrumbs(new List<Breadcrumb> {
+        new Breadcrumb(Datasets.ViewAll, "Index", "Dataset"),
+        new Breadcrumb(Model.IsCreate ? Datasets.CreateDataset : Datasets.EditDataset, Model.FormAction, "Dataset", Model.IsCreate ? null : new { id = Model.Id })
+    });
+
+    @using (Html.BeginCustomForm(Model.FormAction, "DatasetJoin", null, null, "datasetJoinFormLoad", Url.Action("Sources", "Dataset"), new {
+        @class = "dataset-join-form",
+        @data_unload_event = "datasetJoinFormUnload"
+    }, method: Model.FormMethod))
+    {
+        @Html.HiddenFor(model => model.Id, new { @class = "dataset-join-id" })
+
+        <partial name="_Toast" />
+
+        <div class="columns">
+            <div class="col-6">
+
+            </div>
+
+            <div class="col-6">
+
+            </div>
+        </div>
+
+        @Html.FormButtons()
+    }
+}

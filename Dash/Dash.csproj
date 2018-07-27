@@ -54,6 +54,9 @@
     <None Include="Views\Database\Index.cshtml"/>
     <None Include="Views\Dataset\CreateEdit.cshtml"/>
     <None Include="Views\Dataset\Index.cshtml"/>
+    <None Include="Views\Dataset\Joins.cshtml"/>
+    <None Include="Views\DatasetJoin\CreateEdit.cshtml"/>
+    <None Include="Views\DatasetJoin\Index.cshtml"/>
     <None Include="Views\Report\Create.cshtml"/>
     <None Include="Views\Report\Details.cshtml"/>
     <None Include="Views\Report\Index.cshtml"/>

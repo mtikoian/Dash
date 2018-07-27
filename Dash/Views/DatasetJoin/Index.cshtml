@@ -1,0 +1,38 @@
+﻿@using Dash.I18n
+@using Dash.Models
+@model Dataset
+
+@using (Html.BeginBodyContent(Model.IsCreate ? Datasets.CreateDataset : Datasets.EditDataset))
+{
+    @Html.Breadcrumbs(new List<Breadcrumb> {
+        new Breadcrumb(Datasets.ViewAll, "Index", "Dataset"),
+        new Breadcrumb(Model.IsCreate ? Datasets.CreateDataset : Datasets.EditDataset, Model.FormAction, "Dataset", Model.IsCreate ? null : new { id = Model.Id })
+    });
+
+    <partial name="_Toast" />
+
+    <ul class="tab tab-block m-2" role="tablist">
+        <li role="presentation" class="tab-item">
+            @Html.AuthorizedActionLink(Datasets.Overview, Model.FormAction, "Dataset", new { Model.Id }, new { @class = "btn btn-link", role = "tab" }, hasAccess: User.IsInRole($"dataset.{Model.FormAction.ToLower()}"))
+        </li>
+        <li role="presentation" class="tab-item">
+            <a href="#overviewJoins_@Model.Id" id="overviewJoins_@Model.Id" class="active" role="tab" data-toggle="tab" aria-controls="joinsTab_@Model.Id">@Html.Raw(Datasets.Joins)</a>
+        </li>
+        <li role="presentation" class="tab-item">
+            @Html.AuthorizedActionLink(Datasets.Columns, "Index", "DatasetColumn", new { Model.Id }, new { @class = "btn btn-link", role = "tab" }, hasAccess: User.IsInRole("datasetcolumn.index"))
+        </li>
+    </ul>
+
+    <div role="tabpanel" class="tab-pane" id="joinsContent_@Model.Id" aria-labelledby="joinsTab_@Model.Id">
+
+        @using (Html.BeginToolbar())
+        {
+            @Html.AuthorizedButton(Core.Add, "Create", "DatasetJoin", null, DashClasses.BtnPrimary, hasAccess: User.IsInRole("datasetjoin.create"))
+        }
+
+        <div class="col-12">
+            <div data-toggle="table" data-json="@Model.Table.ToJson"></div>
+        </div>
+
+    </div>
+}
