@@ -7,6 +7,7 @@ using System;
 
 namespace Dash
 {
+    // Courtesy https://stackoverflow.com/questions/39276939/how-to-inject-dependencies-into-models-in-asp-net-core/41059267#41059267
     public class DiModelBinder : ComplexTypeModelBinder
     {
         public DiModelBinder(IDictionary<ModelMetadata, IModelBinder> propertyBinders, ILoggerFactory loggerFactory) : base(propertyBinders, loggerFactory)
