@@ -9,8 +9,6 @@
 
     .tab-item {
         margin-top: 0;
-        border-top: 1px solid $gray-color-light;
-        border-left: 1px solid $gray-color-light;
 
         a {
             border-bottom: $border-width-lg solid transparent;
@@ -40,10 +38,6 @@
         .btn-clear {
             margin-top: -$unit-1;
         }
-    }
-
-    .tab-item:last-child {
-        border-right: 1px solid $gray-color-light;
     }
 
     &.tab-block {
