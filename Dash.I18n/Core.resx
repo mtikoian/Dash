@@ -325,7 +325,7 @@
     <value>Confirm</value>
   </data>
   <data name="DiscardChanges" xml:space="preserve">
-    <value>You have unsaved changes. Are you sure you want to close the dialog and discard the changes?</value>
+    <value>You have unsaved changes. Are you sure you want to leave without saving?</value>
   </data>
   <data name="Okay" xml:space="preserve">
     <value>Okay</value>

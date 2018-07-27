@@ -232,7 +232,7 @@ namespace Dash.I18n {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You have unsaved changes. Are you sure you want to close the dialog and discard the changes?.
+        ///   Looks up a localized string similar to You have unsaved changes. Are you sure you want to leave without saving?.
         /// </summary>
         public static string DiscardChanges {
             get {
