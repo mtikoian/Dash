@@ -1,6 +1,97 @@
 @import "spectre/variables";
 @import "spectre/mixins.scss";
 
+html {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    height: 100%;
+}
+
+#fullPageBody {
+    height: 100%;
+    font-size: 0;
+}
+
+#sidebarWrapper {
+    display: inline-block;
+    vertical-align: top;
+    height: 100%;
+    overflow: auto;
+    width: 2.8rem;
+    font-size: $font-size;
+
+    .nav-side {
+        margin-left: .1rem;
+
+        #menuBtn {
+            a {
+                color: $info-color;
+                padding-left: .8rem;
+            }
+        }
+
+        li {
+            line-height: 2rem;
+
+            a {
+                display: block;
+                text-decoration: none;
+                color: $primary-color;
+                padding-left: .6rem;
+
+                span {
+                    display: none;
+                    padding-left: .5rem;
+                }
+
+                &:hover {
+                    color: $primary-color-light;
+                    border-left: $info-color 2px solid;
+                }
+
+                &:active, &:focus {
+                    text-decoration: none;
+                }
+            }
+        }
+    }
+}
+
+#contentWrapper {
+    display: inline-block;
+    vertical-align: top;
+    height: 100%;
+    width: calc(100% - 2.8rem);
+    overflow: auto;
+    border-left: 1px solid $primary-color;
+    font-size: $font-size;
+}
+
+body.toggled {
+    #sidebarWrapper {
+        width: 12rem;
+
+        li {
+            a {
+                span {
+                    display: inline;
+                }
+            }
+        }
+    }
+
+    #contentWrapper {
+        width: calc(100% - 12rem);
+    }
+}
+
+#bodyContent {
+    height: 100%;
+}
+
 li {
     list-style: none;
 }

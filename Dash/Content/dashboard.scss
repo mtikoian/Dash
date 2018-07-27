@@ -1,87 +1,6 @@
-﻿@import "spectre/variables";
-
-html, body {
-    width: 100%;
-}
-
-.sidebar-wrapper {
-    height: 100%;
-    background: #000;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    width: 2.8rem;
-
-    .nav-side {
-        margin-left: .1rem;
-
-        #menuBtn {
-            a {
-                color: $info-color;
-                padding-left: .7rem;
-            }
-        }
-
-        li {
-            line-height: 2rem;
-
-            a {
-                display: block;
-                text-decoration: none;
-                color: #999999;
-                padding-left: .5rem;
-
-                span {
-                    display: none;
-                    padding-left: .5rem;
-                }
-
-                &:hover {
-                    color: #fff;
-                    background: rgba(255,255,255,0.2);
-                    border-left: $info-color 2px solid;
-                }
-
-                &:active, &:focus {
-                    text-decoration: none;
-                }
-            }
-        }
-    }
-}
-
-.content-wrapper {
-    top: 0;
-    left: 2.8rem;
-    right: 0;
-    bottom: 0;
-    position: absolute;
-}
-
-body.toggled {
-    .sidebar-wrapper {
-        width: 12rem;
-        z-index: 1000;
-
-        li {
-            a {
-                span {
-                    display: inline;
-                }
-            }
-        }
-    }
-
-    .content-wrapper {
-        left: 12rem;
-    }
-}
-
-.dashboard {
+﻿.dashboard {
     position: relative;
     height: 100%;
-    background-color: white;
 
     .widget-data {
         .container-fluid {
@@ -112,12 +31,6 @@ body.toggled {
             padding-top: 20px;
         }
     }
-    /* clear fix */
-    &:after {
-        content: '';
-        display: block;
-        clear: both;
-    }
 
     .is-dragging, .is-positioning-post-drag {
         z-index: 2;
@@ -128,6 +41,12 @@ body.toggled {
         background: #efefef;
         border: 1px solid hsla(0, 0%, 0%, 0.5);
         position: absolute;
+        margin-top: -1px;
+        margin-bottom: -1px;
+
+        &.grid-item-x-0 {
+            border-left: none;
+        }
 
         .grid-header {
             width: 100%;
