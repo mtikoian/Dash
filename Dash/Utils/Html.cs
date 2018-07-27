@@ -157,6 +157,11 @@ namespace Dash
             {
                 htmlAttr["data-url"] = dataUrl;
             }
+            if (!htmlAttr.ContainsKey("data-confirm"))
+            {
+                htmlAttr["data-confirm"] = Core.DiscardChanges;
+            }
+
             if (method != HttpVerbs.Post && method != HttpVerbs.Get)
             {
                 // @todo can we switch to just using method later?
