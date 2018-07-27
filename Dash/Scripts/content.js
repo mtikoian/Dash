@@ -228,10 +228,16 @@
         return div;
     })();
 
+    /**
+     * Show loading indicator.
+     */
     var loading = function() {
         $.show(_loadingDiv);
     };
 
+    /**
+     * Hide loading indicator.
+     */
     var done = function() {
         $.hide(_loadingDiv);
     };
