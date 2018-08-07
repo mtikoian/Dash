@@ -87,12 +87,12 @@ namespace Dash.Controllers
             return View("TwoFactorLogin", model.Membership);
         }
 
-        [HttpGet, AjaxRequestOnly]
+        [HttpGet]
         public IActionResult LogOff()
         {
             HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             HttpContext.Session.Clear();
-            return Json(new { Reload = true });
+            return RedirectToAction("Login");
         }
 
         [HttpGet]
