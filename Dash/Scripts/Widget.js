@@ -45,7 +45,6 @@
             this.isFullscreen = false;
             this.initDate = new Date();
             this.dragMargin = 0;
-            this.updatedDate = new Date();
 
             if (opts.isData) {
                 this.tableOpts = {
@@ -247,8 +246,7 @@
             } else {
                 this.chart.run();
             }
-
-            this.updatedDate = new Date();
+            $.setText($.get('.grid-updated-time', this.getContainer()), new Date().toLocaleTimeString());
         },
 
         updateLayout: function() {
