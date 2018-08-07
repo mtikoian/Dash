@@ -32,7 +32,7 @@
             @Html.AuthorizedMenu(Core.ToggleHelp, "ToggleContextHelp", "Account", "help", User.IsInRole("account.togglecontexthelp"), new { data_reload = true })
             <li class="divider"></li>
             @Html.AuthorizedMenu(Account.UpdateAccount, "Update", "Account", "asterisk", User.IsInRole("account.update"))
-            @Html.AuthorizedMenu(Account.Logout, "LogOff", "Account", "logout", User.Identity.IsAuthenticated)
+            @Html.AuthorizedMenu(Account.Logout, "LogOff", "Account", "logout", true, new { @class = "pjax-no-follow" })
         }
         else
         {
