@@ -1,7 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using Dash.I18n;
 using Jil;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Dash.Models
 {
@@ -9,14 +13,25 @@ namespace Dash.Models
     {
         private DataType _DataType;
 
+        public DatasetColumn()
+        {
+        }
+
+        public DatasetColumn(IDbContext dbContext, int datasetid)
+        {
+            DbContext = dbContext;
+            DatasetId = datasetid;
+        }
+
         [Ignore, JilDirective(true)]
         public string Alias { get { return $"column{Id}"; } }
 
-        [StringLength(250, ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorMaxLength")]
-        [Required(ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorRequired")]
+        [Display(Name = "ColumnName", ResourceType = typeof(Datasets))]
+        [StringLength(250, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
+        [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public string ColumnName { get; set; }
 
-        [Required(ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorRequired")]
+        [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         [JilDirective(true)]
         public int DatasetId { get; set; }
 
@@ -28,19 +43,39 @@ namespace Dash.Models
             set { _DataType = value; }
         }
 
-        [Required(ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorRequired")]
+        [Display(Name = "ColumnDataType", ResourceType = typeof(Datasets))]
+        [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int DataTypeId { get; set; }
 
-        [StringLength(500, ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorMaxLength")]
+        [Ignore, JilDirective(true)]
+        public IEnumerable<SelectListItem> DataTypeList
+        {
+            get
+            {
+                return DbContext.GetAll<DataType>().OrderBy(d => d.Name).ToSelectList(x => x.Name, x => x.Id.ToString());
+            }
+        }
+
+        [JilDirective(true)]
+        [BindNever, ValidateNever]
+        public string DataTypeName
+        {
+            get { return _DataType?.Name; }
+        }
+
+        [Display(Name = "ColumnTransform", ResourceType = typeof(Datasets))]
+        [StringLength(500, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string Derived { get; set; }
 
         [Ignore]
         public int DisplayOrder { get; set; }
 
-        [StringLength(500, ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorMaxLength")]
+        [Display(Name = "ColumnQuery", ResourceType = typeof(Datasets))]
+        [StringLength(500, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string FilterQuery { get; set; }
 
-        [Required(ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorRequired")]
+        [Display(Name = "ColumnFilterType", ResourceType = typeof(Datasets))]
+        [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int FilterTypeId { get; set; }
 
         [Ignore, JilDirective(true)]
@@ -67,6 +102,7 @@ namespace Dash.Models
         [BindNever, ValidateNever]
         public bool IsInteger { get { return DataType.IsInteger; } }
 
+        [Display(Name = "ColumnIsParam", ResourceType = typeof(Datasets))]
         public bool IsParam { get; set; }
 
         [Ignore, JilDirective(true)]
@@ -76,22 +112,12 @@ namespace Dash.Models
         [BindNever, ValidateNever]
         public bool IsText { get { return DataType.IsText; } }
 
-        [StringLength(250, ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorMaxLength")]
+        [Display(Name = "ColumnLink", ResourceType = typeof(Datasets))]
+        [StringLength(250, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string Link { get; set; }
 
         [Ignore, JilDirective(true)]
         public int ReportColumnId { get; set; }
-
-        [Ignore, JilDirective(true)]
-        [BindNever, ValidateNever]
-        public string Table
-        {
-            get
-            {
-                var loc = ColumnName.LastIndexOf(".");
-                return loc > -1 ? ColumnName.Substring(0, loc) : "";
-            }
-        }
 
         [Ignore, JilDirective(true)]
         [BindNever, ValidateNever]
@@ -119,8 +145,20 @@ namespace Dash.Models
             }
         }
 
-        [Required(ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorRequired")]
-        [StringLength(100, ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorMaxLength")]
+        [Ignore, JilDirective(true)]
+        [BindNever, ValidateNever]
+        public string TableName
+        {
+            get
+            {
+                var loc = ColumnName.LastIndexOf(".");
+                return loc > -1 ? ColumnName.Substring(0, loc) : "";
+            }
+        }
+
+        [Display(Name = "ColumnTitle", ResourceType = typeof(Datasets))]
+        [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
+        [StringLength(100, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string Title { get; set; }
 
         [Ignore, JilDirective(true)]

@@ -17,9 +17,14 @@ namespace Dash.Controllers
         }
 
         [HttpGet, AjaxRequestOnly]
-        public IActionResult Columns(int id, string tables)
+        public IActionResult Columns(int id)
         {
-            return Json(new { columns = DbContext.Get<Dataset>(id)?.AvailableColumns(tables.Split(',')) ?? new List<object>() });
+            var model = DbContext.Get<Dataset>(id);
+            if (model == null)
+            {
+                return Data(new { });
+            }
+            return Data(model.AvailableColumns());
         }
 
         [HttpGet]
@@ -130,9 +135,14 @@ namespace Dash.Controllers
         }
 
         [HttpGet, AjaxRequestOnly]
-        public IActionResult Sources(int databaseId, int typeId)
+        public IActionResult Sources(int id)
         {
-            return Data(DbContext.Get<Database>(databaseId)?.GetSourceList(true, typeId == (int)DatasetTypes.Proc));
+            var model = DbContext.Get<Dataset>(id);
+            if (model == null)
+            {
+                return Data(new { });
+            }
+            return Data(DbContext.Get<Database>(model.DatabaseId)?.GetSourceList(true, model.TypeId == (int)DatasetTypes.Proc));
         }
 
         [HttpPost, AjaxRequestOnly]

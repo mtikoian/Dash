@@ -238,7 +238,7 @@ namespace Dash.Models
             else
             {
                 // get the table name from the column name
-                var table = column.Table;
+                var table = column.TableName;
                 if (!table.IsEmpty() && Joins.ContainsKey(table))
                 {
                     // get the tables required to join this one in

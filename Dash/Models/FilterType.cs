@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Dash.I18n;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Dash.Models
 {
@@ -145,11 +146,11 @@ namespace Dash.Models
         /// Build a list of all filter types.
         /// </summary>
         /// <returns>List of objects with id and name.</returns>
-        public static IEnumerable<object> FilterTypeList
+        public static IEnumerable<SelectListItem> FilterTypeList
         {
             get
             {
-                return typeof(FilterTypes).TranslatedList(new ResourceDictionary("Filters"), "LabelType_").Prepend(new { Id = 0, Name = Datasets.ColumnFilterType });
+                return typeof(FilterTypes).TranslatedSelect(new ResourceDictionary("Filters"), "LabelType_");
             }
         }
     }

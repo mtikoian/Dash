@@ -264,4 +264,49 @@
   <data name="ImportErrorNoProcs" xml:space="preserve">
     <value>Schema can't be imported for stored procedures.</value>
   </data>
+  <data name="LabelJoinType_Inner" xml:space="preserve">
+    <value>Inner</value>
+  </data>
+  <data name="LabelJoinType_Left" xml:space="preserve">
+    <value>Left</value>
+  </data>
+  <data name="LabelJoinType_Right" xml:space="preserve">
+    <value>Right</value>
+  </data>
+  <data name="SuccessSavingJoin" xml:space="preserve">
+    <value>The join was saved successfully.</value>
+  </data>
+  <data name="CreateJoin" xml:space="preserve">
+    <value>Create Join</value>
+  </data>
+  <data name="EditJoin" xml:space="preserve">
+    <value>Edit Join</value>
+  </data>
+  <data name="ConfirmDeleteJoin" xml:space="preserve">
+    <value>Are you sure you want to delete this join?</value>
+  </data>
+  <data name="SuccessDeletingJoin" xml:space="preserve">
+    <value>The join was deleted successfully. You will need to remove any columns that relied on this join.</value>
+  </data>
+  <data name="ConfirmDeleteColumn" xml:space="preserve">
+    <value>Are you sure you want to delete this column?</value>
+  </data>
+  <data name="CreateColumn" xml:space="preserve">
+    <value>Create Column</value>
+  </data>
+  <data name="EditColumn" xml:space="preserve">
+    <value>Edit Column</value>
+  </data>
+  <data name="SuccessDeletingColumn" xml:space="preserve">
+    <value>The column was deleted successfully.</value>
+  </data>
+  <data name="SuccessSavingColumn" xml:space="preserve">
+    <value>The column was saved successfully.</value>
+  </data>
+  <data name="ErrorAlreadyFirstJoin" xml:space="preserve">
+    <value>This join is already first.</value>
+  </data>
+  <data name="ErrorAlreadyLastJoin" xml:space="preserve">
+    <value>This join is already last.</value>
+  </data>
 </root>

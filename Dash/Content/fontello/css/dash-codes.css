@@ -3,8 +3,8 @@
 .dash-help:before { content: '\e801'; } /* '' */
 .dash-unlock:before { content: '\e802'; } /* '' */
 .dash-fire:before { content: '\e803'; } /* '' */
-.dash-up-big:before { content: '\e804'; } /* '' */
-.dash-down-big:before { content: '\e805'; } /* '' */
+.dash-up:before { content: '\e804'; } /* '' */
+.dash-down:before { content: '\e805'; } /* '' */
 .dash-cancel:before { content: '\e806'; } /* '' */
 .dash-plus:before { content: '\e807'; } /* '' */
 .dash-minus:before { content: '\e808'; } /* '' */

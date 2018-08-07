@@ -20,7 +20,9 @@ namespace Dash
         Clone,
         HeartBeat,
         Database,
-        Unlock
+        Unlock,
+        Up,
+        Down
     }
 
     public class Table
@@ -62,12 +64,22 @@ namespace Dash
 
         public static TableLink EditButton(string href, bool hasAccess = true)
         {
-            return !hasAccess ? null : new TableLink(href, Html.Classes(DashClasses.DashAjax, DashClasses.BtnWarning), Core.Edit, TableIcon.Edit);
+            return !hasAccess ? null : new TableLink(href, Html.Classes(DashClasses.BtnWarning), Core.Edit, TableIcon.Edit);
         }
 
         public static TableLink EditLink(string href, bool hasAccess = true)
         {
-            return !hasAccess ? null : new TableLink(href, Html.Classes(DashClasses.DashAjax));
+            return !hasAccess ? null : new TableLink(href);
+        }
+
+        public static TableLink UpButton(string href, bool hasAccess = true)
+        {
+            return !hasAccess ? null : new TableLink(href, Html.Classes(DashClasses.BtnInfo), Core.MoveUp, TableIcon.Up);
+        }
+
+        public static TableLink DownButton(string href, bool hasAccess = true)
+        {
+            return !hasAccess ? null : new TableLink(href, Html.Classes(DashClasses.BtnInfo), Core.MoveDown, TableIcon.Down);
         }
     }
 
@@ -86,7 +98,7 @@ namespace Dash
             Links = links;
         }
 
-        public TableColumn(string field, string label, TableLink link)
+        public TableColumn(string field, string label, TableLink link, bool sortable = true)
         {
             Field = field;
             Label = label;

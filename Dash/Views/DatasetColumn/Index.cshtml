@@ -16,18 +16,18 @@
             @Html.AuthorizedActionLink(Datasets.Overview, Model.FormAction, "Dataset", new { Id = Model.Id }, new { @class = "btn btn-link", role = "tab" }, hasAccess: User.IsInRole("dataset.edit"))
         </li>
         <li role="presentation" class="tab-item">
-            <a href="#overviewJoins_@Model.Id" id="overviewJoins_@Model.Id" class="active" role="tab" data-toggle="tab" aria-controls="joinsTab_@Model.Id">@Html.Raw(Datasets.Joins)</a>
+            @Html.AuthorizedActionLink(Datasets.Joins, "Index", "DatasetJoin", new { DatasetId = Model.Id }, new { @class = "btn btn-link", role = "tab" }, hasAccess: User.IsInRole("datasetjoin.index"))
         </li>
         <li role="presentation" class="tab-item">
-            @Html.AuthorizedActionLink(Datasets.Columns, "Index", "DatasetColumn", new { DatasetId = Model.Id }, new { @class = "btn btn-link", role = "tab" }, hasAccess: User.IsInRole("datasetcolumn.index"))
+            <a href="#overviewColumns_@Model.Id" id="overviewColumns_@Model.Id" class="active" role="tab" data-toggle="tab" aria-controls="columnsTab_@Model.Id">@Html.Raw(Datasets.Columns)</a>
         </li>
     </ul>
 
-    <div role="tabpanel" class="tab-pane" id="joinsContent_@Model.Id" aria-labelledby="joinsTab_@Model.Id">
+    <div role="tabpanel" class="tab-pane" id="columnnsContent_@Model.Id" aria-labelledby="columnnsTab_@Model.Id">
 
         @using (Html.BeginToolbar())
         {
-            @Html.AuthorizedButton(Core.Add, "Create", "DatasetJoin", new { DatasetId = Model.Id }, DashClasses.BtnPrimary, hasAccess: User.IsInRole("datasetjoin.create"))
+            @Html.AuthorizedButton(Core.Add, "Create", "DatasetColumn", new { DatasetId = Model.Id }, DashClasses.BtnPrimary, hasAccess: User.IsInRole("datasetcolumn.create"))
         }
 
         <div class="col-12">

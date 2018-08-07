@@ -6,7 +6,8 @@
 {
     @Html.Breadcrumbs(new List<Breadcrumb> {
         new Breadcrumb(Datasets.ViewAll, "Index", "Dataset"),
-        new Breadcrumb(Model.IsCreate ? Datasets.CreateDataset : Datasets.EditDataset, Model.FormAction, "Dataset", Model.IsCreate ? null : new { id = Model.Id })
+        new Breadcrumb(Datasets.EditDataset, "Index", "DatasetJoin", new { DatasetId = Model.DatasetId }),
+        new Breadcrumb(Model.IsCreate ? Datasets.CreateJoin : Datasets.EditJoin, Model.FormAction, "DatasetJoin", Model.IsCreate ? null : new { id = Model.Id })
     });
 
     @using (Html.BeginCustomForm(Model.FormAction, "DatasetJoin", null, null, "datasetJoinFormLoad", Url.Action("Sources", "Dataset"), new {
@@ -15,16 +16,16 @@
     }, method: Model.FormMethod))
     {
         @Html.HiddenFor(model => model.Id, new { @class = "dataset-join-id" })
+        @Html.HiddenFor(model => model.DatasetId)
+        @Html.HiddenFor(model => model.JoinOrder)
 
         <partial name="_Toast" />
 
         <div class="columns">
             <div class="col-6">
-
-            </div>
-
-            <div class="col-6">
-
+                @Html.LabelInputFor(model => model.TableName, new { data_toggle = "autocomplete", data_url = Url.Action("Sources", "Dataset", new { id = Model.DatasetId }) })
+                @Html.LabelDropDownListFor(model => model.JoinTypeId, Model.JoinTypeList)
+                @Html.LabelInputFor(model => model.Keys)
             </div>
         </div>
 

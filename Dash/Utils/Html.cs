@@ -107,7 +107,7 @@ namespace Dash
             var urlHelper = new UrlHelper(helper.ViewContext);
             var btn = new TagBuilder("a");
             btn.AddCssClass(classList.Combine());
-            btn.MergeAttribute("href", urlHelper.Action(action, controller));
+            btn.MergeAttribute("href", urlHelper.Action(action, controller, routeValues));
             btn.InnerHtml.Append(text);
             return btn;
         }

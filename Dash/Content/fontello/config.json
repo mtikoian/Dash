@@ -20,13 +20,13 @@
     },
     {
       "uid": "95376bf082bfec6ce06ea1cda7bd7ead",
-      "css": "up-big",
+      "css": "up",
       "code": 59396,
       "src": "fontawesome"
     },
     {
       "uid": "1c4068ed75209e21af36017df8871802",
-      "css": "down-big",
+      "css": "down",
       "code": 59397,
       "src": "fontawesome"
     },
