@@ -18,6 +18,8 @@ namespace Dash.Models
         [DataType(System.ComponentModel.DataAnnotations.DataType.Password)]
         public string Password { get; set; }
 
+        public string ReturnUrl { get; set; }
+
         [Display(Name = "UserName", ResourceType = typeof(Users))]
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         [MaxLength(100, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]

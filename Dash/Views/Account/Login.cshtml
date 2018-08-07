@@ -9,6 +9,8 @@
 
     @using (Html.BeginCustomForm("Login", "Account", htmlAttributes: new { @class = "pjax-no-follow" }))
     {
+        @Html.HiddenFor(m => m.ReturnUrl)
+
         <partial name="_Toast" />
 
         <div class="columns">

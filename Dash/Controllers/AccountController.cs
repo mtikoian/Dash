@@ -51,14 +51,14 @@ namespace Dash.Controllers
         }
 
         [HttpGet]
-        public IActionResult Login()
+        public IActionResult Login(string returnUrl = null)
         {
             if (User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("Index", "Dashboard");
             }
             ViewBag.Title = Account.Login;
-            return View(new LogOn());
+            return View(new LogOn { ReturnUrl = returnUrl });
         }
 
         [HttpPost, ValidateAntiForgeryToken]
@@ -81,7 +81,11 @@ namespace Dash.Controllers
             }
             if (model.Membership.AllowSingleFactor)
             {
-                return RedirectToAction("Index", "Dashboard", new { WithMenu = true });
+                if (!model.ReturnUrl.IsEmpty())
+                {
+                    return Redirect(model.ReturnUrl);
+                }
+                return RedirectToAction("Index", "Dashboard");
             }
             model.Membership.CreateHash();
             return View("TwoFactorLogin", model.Membership);
