@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Common;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace Dash.Models
 {
@@ -24,5 +23,7 @@ namespace Dash.Models
         public abstract IEnumerable<T> Query<T>(string procName, object parameters = null);
 
         public abstract void Save<T>(T model, bool lazySave = true, bool forceSaveNulls = false) where T : BaseModel;
+
+        public abstract T WithTransaction<T>(Func<T> commands);
     }
 }

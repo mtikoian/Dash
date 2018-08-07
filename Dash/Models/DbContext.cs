@@ -205,6 +205,35 @@ namespace Dash.Models
             }
         }
 
+        public override T WithTransaction<T>(Func<T> commands)
+        {
+            using (var conn = GetConnection())
+            {
+                conn.Open();
+                using (var tran = conn.BeginTransaction())
+                {
+                    var result = default(T);
+                    try
+                    {
+                        result = commands();
+                        tran.Commit();
+                        conn.Close();
+                    }
+                    catch (Exception)
+                    {
+                        try
+                        {
+                            tran.Rollback();
+                        }
+                        catch { }
+                        conn.Close();
+                        throw;
+                    }
+                    return result;
+                }
+            }
+        }
+
         protected T Cached<T>(string key, Func<T> onCreate) where T : class
         {
             if (_Cache == null)
