@@ -1,8 +1,10 @@
 ﻿/*!
  * Wraps content processing functionality.
  */
-(function(m, $, Alertify, pjax, Table, Tab, CollapsibleList, DatePicker) {
+(function(m, $, Alertify, pjax, Table, Tab, CollapsibleList, DatePicker, autoComplete) {
     'use strict';
+
+    var autoCompletes = [];
 
     /**
      * Display context help.
@@ -21,6 +23,48 @@
         if (node) {
             $.on(this, 'click', $.hide.bind(null, node, false));
         }
+    };
+
+    var autocompleteReady = function(data) {
+        autoCompletes.push(new autoComplete({
+            selector: this,
+            sourceData: data
+        }));
+    };
+
+    /**
+     * Initialize autocomplete.
+     * @this {Node} Node the event is being bound to.
+     */
+    var autocompleteLoad = function() {
+        // @todo maybe add a way to include source list in original html response instead of requiring another request
+
+        var self = this;
+        var xhr = new XMLHttpRequest();
+        // Add state listener.
+        xhr.onreadystatechange = function() {
+            if ((xhr.readyState === 4) && (xhr.status === 200)) {
+                // Success, Return HTML
+                autocompleteReady.call(self, JSON.parse(xhr.responseText));
+            } else if ((xhr.readyState === 4) && (xhr.status === 404 || xhr.status === 500)) {
+                // error @todo what should i do here?
+                autocompleteReady.call(self, []);
+            }
+        };
+        xhr.open(this.getAttribute('data-method') || 'GET', this.getAttribute('data-url'), true);
+        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        xhr.send(null);
+    };
+
+    /**
+     * Destroy autocompletes on this page.
+     * @this {Node} Node the event is being bound to.
+     */
+    var autocompleteUnload = function() {
+        autoCompletes.forEach(function(x) {
+            x.destroy();
+        });
+        autoCompletes = [];
     };
 
     /**
@@ -147,6 +191,11 @@
         {
             selector: '[data-toggle="hide"]',
             onLoad: hide
+        },
+        {
+            selector: '[data-toggle="autocomplete"]',
+            onLoad: autocompleteLoad,
+            onUnload: autocompleteUnload
         }
     ];
 
@@ -259,4 +308,4 @@
         $.on(document, 'resxLoaded', pageLoaded);
     }
 
-})(this.m, this.$, this.Alertify, this.pjax, this.Table, this.Tab, this.CollapsibleList, this.DatePicker);
+})(this.m, this.$, this.Alertify, this.pjax, this.Table, this.Tab, this.CollapsibleList, this.DatePicker, this.autoComplete);
