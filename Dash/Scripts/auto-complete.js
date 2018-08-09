@@ -123,6 +123,9 @@
                     over_sb = 0;
                 }
                 if (!over_sb) {
+                    if (o.sourceData && o.sourceData.indexOf(that.value) === -1) {
+                        that.value = '';
+                    }
                     that.last_val = that.value;
                     that.sc.style.display = 'none';
                     setTimeout(function() { that.sc.style.display = 'none'; }, 350); // hide suggestions on fast input
@@ -155,12 +158,11 @@
             };
 
             that.keydownHandler = function(e) {
-                var sel;
+                var sel = that.sc.querySelector('.autocomplete-suggestion.selected');
                 var key = window.event ? e.keyCode : e.which;
                 // down (40), up (38)
                 if ((key === 40 || key === 38) && that.sc.innerHTML) {
                     var next;
-                    sel = that.sc.querySelector('.autocomplete-suggestion.selected');
                     if (!sel) {
                         next = key === 40 ? that.sc.querySelector('.autocomplete-suggestion') : that.sc.childNodes[that.sc.childNodes.length - 1]; // first : last
                         next.className += ' selected';
@@ -181,14 +183,21 @@
                     return false;
                 } else if (key === 27) {
                     // esc
-                    that.value = that.last_val; that.sc.style.display = 'none';
+                    that.value = '';
+                    that.sc.style.display = 'none';
                 } else if (key === 13 || key === 9) {
-                    // enter
-                    sel = that.sc.querySelector('.autocomplete-suggestion.selected');
+                    // enter or tab
                     if (sel && that.sc.style.display != 'none') {
-                        e.preventDefault();
+                        if (key === 13) {
+                            e.preventDefault();
+                        }
+                        that.value = sel.getAttribute('data-val');
                         o.onSelect(e, sel.getAttribute('data-val'), sel);
-                        setTimeout(function() { that.sc.style.display = 'none'; }, 20);
+                        setTimeout(function() {
+                            that.sc.style.display = 'none';
+                        }, 20);
+                    } else {
+                        that.value = '';
                     }
                 }
             };
