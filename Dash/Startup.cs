@@ -123,9 +123,9 @@ namespace Dash
             app.UseHangfireServer();
 
             app.UseMvc(routes => {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Dashboard}/{action=Index}/{id?}");
+                routes.MapRoute("dataset", "DatasetJoin/{action=Index}/{datasetId:int}/{id:int?}", new { controller = "DatasetJoin" });
+                routes.MapRoute("dataset", "DatasetColumn/{action=Index}/{datasetId:int}/{id:int?}", new { controller = "DatasetColumn" });
+                routes.MapRoute("default", "{controller=Dashboard}/{action=Index}/{id:int?}");
             });
 
             // use reflection to check for added/removed permissions and update db accordingly

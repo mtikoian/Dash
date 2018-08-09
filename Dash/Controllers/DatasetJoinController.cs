@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Dash.Configuration;
 using Dash.I18n;
@@ -73,13 +74,13 @@ namespace Dash.Controllers
             RouteData.Values.Remove("id");
             var model = DbContext.Get<Dataset>(datasetId);
             model.Table = new Table("tableDatasetJoins", Url.Action("List", values: new { datasetId }), new List<TableColumn> {
-                new TableColumn("tableName", Datasets.JoinTableName, Table.EditLink($"{Url.Action("Edit")}/{{id}}", User.IsInRole("datasetjoin.edit")), false),
+                new TableColumn("tableName", Datasets.JoinTableName, Table.EditLink($"{Url.Action("Edit")}/{{datasetId}}/{{id}}", User.IsInRole("datasetjoin.edit")), false),
                 new TableColumn("keys", Datasets.JoinKeys, sortable: false),
                 new TableColumn("actions", Core.Actions, sortable: false, links: new List<TableLink>()
-                        .AddIf(Table.EditButton($"{Url.Action("Edit")}/{{id}}"), User.IsInRole("datasetjoin.edit"))
-                        .AddIf(Table.DeleteButton($"{Url.Action("Delete")}/{{id}}", Datasets.ConfirmDeleteJoin), User.IsInRole("datasetjoin.delete"))
-                        .AddIf(Table.UpButton($"{Url.Action("MoveUp")}/{{id}}"), User.IsInRole("datasetjoin.moveup"))
-                        .AddIf(Table.DownButton($"{Url.Action("MoveDown")}/{{id}}"), User.IsInRole("datasetjoin.movedown"))
+                        .AddIf(Table.EditButton($"{Url.Action("Edit")}/{{datasetId}}/{{id}}"), User.IsInRole("datasetjoin.edit"))
+                        .AddIf(Table.DeleteButton($"{Url.Action("Delete")}/{{datasetId}}/{{id}}", Datasets.ConfirmDeleteJoin), User.IsInRole("datasetjoin.delete"))
+                        .AddIf(Table.UpButton($"{Url.Action("MoveUp")}/{{datasetId}}/{{id}}", jsonLogic: new Dictionary<string, object>().Append(">", new object[] { new Dictionary<string, object>().Append("var", "joinOrder"), 0 })), User.IsInRole("datasetjoin.moveup"))
+                        .AddIf(Table.DownButton($"{Url.Action("MoveDown")}/{{datasetId}}/{{id}}", jsonLogic: new Dictionary<string, object>().Append("!", new object[] { new Dictionary<string, object>().Append("var", "isLast") })), User.IsInRole("datasetjoin.movedown"))
                 )}
             );
             return View("Index", model);
@@ -88,7 +89,12 @@ namespace Dash.Controllers
         [HttpGet, AjaxRequestOnly]
         public IActionResult List(int datasetId)
         {
-            return Rows(DbContext.Get<Dataset>(datasetId).DatasetJoin.OrderBy(x => x.JoinOrder));
+            var joins = DbContext.Get<Dataset>(datasetId).DatasetJoin.OrderBy(x => x.JoinOrder).ToList();
+            if (joins.Any())
+            {
+                joins[joins.Count() - 1].IsLast = true;
+            }
+            return Rows(joins);
         }
 
         [HttpGet]

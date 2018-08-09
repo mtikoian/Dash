@@ -29,6 +29,9 @@ namespace Dash.Models
         [Required(ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorRequired")]
         public int DatasetId { get; set; }
 
+        [Ignore]
+        public bool IsLast { get; set; }
+
         [Required]
         public int JoinOrder { get; set; }
 

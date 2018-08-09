@@ -72,14 +72,14 @@ namespace Dash
             return !hasAccess ? null : new TableLink(href);
         }
 
-        public static TableLink UpButton(string href, bool hasAccess = true)
+        public static TableLink UpButton(string href, bool hasAccess = true, object jsonLogic = null)
         {
-            return !hasAccess ? null : new TableLink(href, Html.Classes(DashClasses.BtnInfo), Core.MoveUp, TableIcon.Up);
+            return !hasAccess ? null : new TableLink(href, Html.Classes(DashClasses.BtnInfo), Core.MoveUp, TableIcon.Up, jsonLogic: jsonLogic);
         }
 
-        public static TableLink DownButton(string href, bool hasAccess = true)
+        public static TableLink DownButton(string href, bool hasAccess = true, object jsonLogic = null)
         {
-            return !hasAccess ? null : new TableLink(href, Html.Classes(DashClasses.BtnInfo), Core.MoveDown, TableIcon.Down);
+            return !hasAccess ? null : new TableLink(href, Html.Classes(DashClasses.BtnInfo), Core.MoveDown, TableIcon.Down, jsonLogic: jsonLogic);
         }
     }
 

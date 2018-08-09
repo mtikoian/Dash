@@ -6,7 +6,8 @@
 {
     @Html.Breadcrumbs(new List<Breadcrumb> {
         new Breadcrumb(Datasets.ViewAll, "Index", "Dataset"),
-        new Breadcrumb(Datasets.EditDataset, "Index", "DatasetJoin", new { DatasetId = Model.DatasetId }),
+        new Breadcrumb(Datasets.EditDataset, "Edit", "Dataset", new { Id = Model.DatasetId }),
+        new Breadcrumb(Datasets.Joins, "Index", "DatasetJoin", new { DatasetId = Model.DatasetId }),
         new Breadcrumb(Model.IsCreate ? Datasets.CreateJoin : Datasets.EditJoin, Model.FormAction, "DatasetJoin", Model.IsCreate ? null : new { id = Model.Id })
     });
 
