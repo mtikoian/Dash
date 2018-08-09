@@ -103,6 +103,7 @@ namespace Dash
             Field = field;
             Label = label;
             Links = new List<TableLink> { link };
+            Sortable = sortable;
         }
 
         public TableDataType DataType { get; set; } = TableDataType.String;
