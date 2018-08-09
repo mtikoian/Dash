@@ -165,10 +165,7 @@ namespace Dash.Models
             {
                 tableList.Each(table => {
                     Database.GetTableSchema(table).Rows.OfType<DataRow>().Each(row => {
-                        columns.Add(new {
-                            table = row.ToTableName(Database.IsSqlServer),
-                            column = row.ToColumnName(Database.IsSqlServer, false)
-                        });
+                        columns.Add($"{row.ToTableName(Database.IsSqlServer)}.{row.ToColumnName(Database.IsSqlServer, false)}");
                     });
                 });
             }
