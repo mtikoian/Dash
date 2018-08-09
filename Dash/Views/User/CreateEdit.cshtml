@@ -2,11 +2,11 @@
 @using Dash.Models
 @model User
 
-@using (Html.BeginBodyContent(Model.IsCreate ? Users.CreateUser : Users.EditUser))
+@using (Html.BeginBodyContent())
 {
     @Html.Breadcrumbs(new List<Breadcrumb> {
         new Breadcrumb(Users.ViewAll, "Index", "User"),
-        new Breadcrumb(Model.IsCreate ? Users.CreateUser : Users.EditUser, Model.FormAction, "User", Model.IsCreate ? null : new { id = Model.Id })
+        new Breadcrumb(Model.IsCreate ? Users.CreateUser : Users.EditUser, Model.FormAction, "User", Model.IsCreate ? null : new { Id = Model.Id })
     });
 
     @using (Html.BeginCustomForm(Model.FormAction, "User", null, Model.IsCreate ? Users.CreateUser : Users.EditUser, method: Model.FormMethod))

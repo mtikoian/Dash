@@ -82,7 +82,6 @@ namespace Dash.Controllers
         public IActionResult Index()
         {
             RouteData.Values.Remove("id");
-            ViewBag.Title = Alerts.ViewAll;
             return View("Index", new Table("tableAlerts", Url.Action("List"),
                 new List<TableColumn> {
                     new TableColumn("name", Alerts.Name, Table.EditLink($"{Url.Action("Edit")}/{{id}}", User.IsInRole("alert.edit"))),
@@ -106,7 +105,6 @@ namespace Dash.Controllers
 
         private IActionResult CreateEditView(Alert model)
         {
-            ViewBag.Title = model.IsCreate ? Alerts.CreateAlert : Alerts.EditAlert;
             return View("CreateEdit", model);
         }
 

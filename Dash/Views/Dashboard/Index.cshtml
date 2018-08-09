@@ -1,6 +1,9 @@
 ﻿@model Dash.Models.WidgetList
+@{
+    ViewBag.Title = Dash.I18n.Core.Dashboard;
+}
 
-<div id="bodyContent" class="dashboard" data-title="@Dash.I18n.Core.Dashboard" data-load-event="dashboardLoad" data-unload-event="dashboardUnload"
+<div id="bodyContent" class="dashboard" data-pjax-title="@Dash.I18n.Core.Dashboard" data-pjax-url="@Url.Action("Index")" data-load-event="dashboardLoad" data-unload-event="dashboardUnload"
      data-url="@Url.Action("IndexOptions")" data-save-url="@Url.Action("SaveDashboard")" data-json="@Model.ToJson">
 
     <partial name="_Toast" />

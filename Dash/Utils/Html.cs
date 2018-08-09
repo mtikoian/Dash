@@ -143,7 +143,7 @@ namespace Dash
             htmlAttr["class"] = MergedList(htmlAttr.ContainsKey("class") ? htmlAttr["class"] : "", new string[] { "container form-horizontal p-5" }).Combine();
             if (!title.IsEmpty())
             {
-                htmlAttr["data-title"] = title.Trim();
+                htmlAttr["data-pjax-title"] = title.Trim();
             }
             if (!htmlAttr.ContainsKey("id"))
             {
@@ -173,14 +173,18 @@ namespace Dash
             return mvcForm;
         }
 
-        public static IDisposable BeginBodyContent(this IHtmlHelper helper, string title = null, string loadEvent = null, string unloadEvent = null)
+        public static IDisposable BeginBodyContent(this IHtmlHelper helper, string title = null, string url = null, string loadEvent = null, string unloadEvent = null)
         {
             var div = new TagBuilder("div");
             div.Attributes.Add("id", "bodyContent");
             div.AddCssClass("p-5");
             if (!title.IsEmpty())
             {
-                div.Attributes.Add("data-title", title);
+                div.Attributes.Add("data-pjax-title", title);
+            }
+            if (!url.IsEmpty())
+            {
+                div.Attributes.Add("data-pjax-url", url);
             }
             if (!loadEvent.IsEmpty())
             {
@@ -207,6 +211,12 @@ namespace Dash
                 li.InnerHtml.AppendHtml(AuthorizedActionLink(helper, x.Label, x.Action, x.Controller, x.RouteValues, returnEmpty: false, hasAccess: x.HasAccess));
                 ul.InnerHtml.AppendHtml(li);
             });
+
+            var last = breadcrumbs.Last();
+            ul.MergeAttribute("data-pjax-title", last.Label);
+            helper.ViewBag.Title = last.Label;
+            var urlHelper = new UrlHelper(helper.ViewContext);
+            ul.MergeAttribute("data-pjax-url", urlHelper.Action(last.Action, last.Controller, last.RouteValues));
 
             var divider = new TagBuilder("div");
             divider.AddCssClass("divider");

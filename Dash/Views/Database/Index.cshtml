@@ -1,7 +1,7 @@
 ﻿@using Dash.I18n
 @model Table
 
-@using (Html.BeginBodyContent(Databases.ViewAll))
+@using (Html.BeginBodyContent())
 {
     @Html.Breadcrumbs(new List<Breadcrumb> {
         new Breadcrumb(Databases.ViewAll, "Index", "Database")

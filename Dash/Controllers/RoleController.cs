@@ -80,7 +80,6 @@ namespace Dash.Controllers
         public IActionResult Index()
         {
             RouteData.Values.Remove("id");
-            ViewBag.Title = Roles.ViewAll;
             return View("Index", new Table("tableRoles", Url.Action("List"),
                 new List<TableColumn> {
                     new TableColumn("name", Roles.Name, Table.EditLink($"{Url.Action("Edit")}/{{id}}", User.IsInRole("role.edit"))),
@@ -100,7 +99,6 @@ namespace Dash.Controllers
 
         private IActionResult CreateEditView(Role model)
         {
-            ViewBag.Title = model.IsCreate ? Roles.CreateRole : Roles.EditRole;
             return View("CreateEdit", model);
         }
 

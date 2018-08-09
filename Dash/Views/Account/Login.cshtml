@@ -1,7 +1,7 @@
 ﻿@using Dash.I18n
 @model Dash.Models.LogOn
 
-@using (Html.BeginBodyContent(Account.Login))
+@using (Html.BeginBodyContent())
 {
     @Html.Breadcrumbs(new List<Breadcrumb> {
         new Breadcrumb(Account.Login, "Login", "Account")

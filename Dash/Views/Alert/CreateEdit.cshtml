@@ -1,7 +1,7 @@
 ﻿@using Dash.I18n
 @model Dash.Models.Alert
 
-@using (Html.BeginBodyContent(Model.IsCreate ? Alerts.CreateAlert : Alerts.EditAlert))
+@using (Html.BeginBodyContent())
 {
     @Html.Breadcrumbs(new List<Breadcrumb> {
         new Breadcrumb(Alerts.ViewAll, "Index", "Alert"),

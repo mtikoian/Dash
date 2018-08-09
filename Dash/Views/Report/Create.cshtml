@@ -1,7 +1,7 @@
 ﻿@model Dash.Models.CreateReport
 @using Dash.I18n
 
-@using (Html.BeginBodyContent(Reports.CreateReport))
+@using (Html.BeginBodyContent())
 {
     @Html.Breadcrumbs(new List<Breadcrumb> {
         new Breadcrumb(Reports.ViewAll, "Index", "Report"),

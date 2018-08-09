@@ -2,7 +2,7 @@
 @using Dash.Models
 @model Report
 
-@using (Html.BeginBodyContent(Model.Name))
+@using (Html.BeginBodyContent())
 {
     @Html.Breadcrumbs(new List<Breadcrumb> {
         new Breadcrumb(Reports.ViewAll, "Index", "Report"),

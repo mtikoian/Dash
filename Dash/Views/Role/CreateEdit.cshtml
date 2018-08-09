@@ -2,7 +2,7 @@
 @using Dash.I18n;
 @model Role
 
-@using (Html.BeginBodyContent(Model.IsCreate ? Roles.CreateRole : Roles.EditRole))
+@using (Html.BeginBodyContent())
 {
     @Html.Breadcrumbs(new List<Breadcrumb> {
         new Breadcrumb(Roles.ViewAll, "Index", "Role"),

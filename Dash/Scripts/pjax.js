@@ -120,9 +120,9 @@
             options.container = node.getAttribute('data-pjax');
         }
 
-        // If data-title is specified, use as title.
-        if (node.getAttribute('data-title')) {
-            options.title = node.getAttribute('data-title');
+        // If data-pjax-title is specified, use as title.
+        if (node.getAttribute('data-pjax-title')) {
+            options.title = node.getAttribute('data-pjax-title');
         }
 
         // If data-reload is specified, allow repeat requests to the same url.
@@ -181,9 +181,9 @@
             options.container = node.getAttribute('data-pjax');
         }
 
-        // If data-title is specified, use as title.
-        if (node.getAttribute('data-title')) {
-            options.title = node.getAttribute('data-title');
+        // If data-pjax-title is specified, use as title.
+        if (node.getAttribute('data-pjax-title')) {
+            options.title = node.getAttribute('data-pjax-title');
         }
 
         // Check options are valid.
@@ -267,9 +267,13 @@
      */
     internal.updateContent = function(html, options) {
         var newNode = $.createNode(html);
-        var title = $.getAll('[data-title]', newNode, true);
+        var title = $.getAll('[data-pjax-title]', newNode, true);
         if (title.length) {
-            options.title = title[0].getAttribute('data-title');
+            options.title = title[0].getAttribute('data-pjax-title');
+        }
+        var url = $.getAll('[data-pjax-url]', newNode, true);
+        if (url.length) {
+            options.url = url[0].getAttribute('data-pjax-url');
         }
 
         // Update the DOM with the new content
@@ -405,6 +409,15 @@
 
             internal.onUnload(options);
             options = internal.updateContent(html, options);
+            if (options.history) {
+                // If this is the first time pjax has run, create a state object for the current page.
+                if (internal.firstrun) {
+                    window.history.replaceState({ url: document.location.href, container: options.container.id, title: document.title, method: options.method }, document.title);
+                    internal.firstrun = false;
+                }
+                // Update browser history
+                window.history.pushState({ url: options.url, container: options.container.id, title: options.title, method: options.method }, options.title, options.url);
+            }
             internal.onLoad(options);
         });
     };

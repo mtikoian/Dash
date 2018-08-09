@@ -106,7 +106,6 @@ namespace Dash.Controllers
 
         private IActionResult CreateEditView(Database model)
         {
-            ViewBag.Title = model.IsCreate ? Databases.CreateDatabase : Databases.EditDatabase;
             return View("CreateEdit", model);
         }
 

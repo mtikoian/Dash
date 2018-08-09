@@ -23,7 +23,6 @@ namespace Dash.Controllers
             }
             if (Request.IsAjaxRequest())
                 return Error(!code.IsEmpty() && new string[] { "403" }.Contains(code) ? Core.ErrorAuthorization : Core.ErrorGeneric);
-            ViewBag.Title = Core.Error;
             return View("Error");
         }
 

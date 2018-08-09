@@ -73,7 +73,6 @@ namespace Dash.Controllers
                         .AddIf(Table.DeleteButton($"{Url.Action("Delete")}/{{id}}", Datasets.ConfirmDeleteColumn), User.IsInRole("datasetcolumn.delete"))
                 )}
             );
-            ViewBag.Title = Datasets.Columns;
             return View("Index", model);
         }
 
@@ -85,7 +84,6 @@ namespace Dash.Controllers
 
         private IActionResult CreateEditView(DatasetColumn model)
         {
-            ViewBag.Title = model.IsCreate ? Datasets.CreateColumn : Datasets.EditColumn;
             return View("CreateEdit", model);
         }
 

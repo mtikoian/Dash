@@ -82,7 +82,6 @@ namespace Dash.Controllers
                         .AddIf(Table.DownButton($"{Url.Action("MoveDown")}/{{id}}"), User.IsInRole("datasetjoin.movedown"))
                 )}
             );
-            ViewBag.Title = Datasets.Joins;
             return View("Index", model);
         }
 
@@ -130,7 +129,6 @@ namespace Dash.Controllers
 
         private IActionResult CreateEditView(DatasetJoin model)
         {
-            ViewBag.Title = model.IsCreate ? Datasets.CreateJoin : Datasets.EditJoin;
             return View("CreateEdit", model);
         }
 

@@ -2,7 +2,7 @@
 @using Dash.Models
 @model Dataset
 
-@using (Html.BeginBodyContent(Model.IsCreate ? Datasets.CreateDataset : Datasets.EditDataset))
+@using (Html.BeginBodyContent())
 {
     @Html.Breadcrumbs(new List<Breadcrumb> {
         new Breadcrumb(Datasets.ViewAll, "Index", "Dataset"),

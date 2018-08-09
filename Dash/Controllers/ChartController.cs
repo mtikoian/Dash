@@ -67,7 +67,6 @@ namespace Dash.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            ViewBag.Title = Charts.CreateChart;
             return View(new CreateChart(DbContext, User.UserId()));
         }
 
@@ -145,7 +144,6 @@ namespace Dash.Controllers
                 ViewBag.Error = Charts.ErrorPermissionDenied;
                 return Index();
             }
-            ViewBag.Title = chart.Name;
             return View("Details", chart);
         }
 
@@ -281,7 +279,6 @@ namespace Dash.Controllers
                 ViewBag.Error = Charts.ErrorOwnerOnly;
                 return Details(id);
             }
-            ViewBag.Title = Charts.ShareChart;
             return View("Share", chart);
         }
 

@@ -2,7 +2,7 @@
 @using Dash.Models
 @model User
 
-@using (Html.BeginBodyContent(Account.UpdateAccount))
+@using (Html.BeginBodyContent())
 {
     @Html.Breadcrumbs(new List<Breadcrumb> {
         new Breadcrumb(Account.UpdateAccount, "Update", "Account")

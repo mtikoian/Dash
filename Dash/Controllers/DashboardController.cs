@@ -71,7 +71,6 @@ namespace Dash.Controllers
 
         public IActionResult Index()
         {
-            ViewBag.Title = Core.Dashboard;
             return View("Index", new WidgetList(DbContext, _ActionContextAccessor, User.UserId()));
         }
 

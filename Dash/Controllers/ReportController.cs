@@ -128,7 +128,6 @@ namespace Dash.Controllers
                 report.ReportColumn[0].SortDirection = "asc";
                 report.ReportColumn[0].SortOrder = 1;
             }
-            ViewBag.Title = report.Name;
             return View("Details", report);
         }
 
@@ -212,7 +211,6 @@ namespace Dash.Controllers
         public IActionResult Index()
         {
             RouteData.Values.Remove("id");
-            ViewBag.Title = Reports.ViewAll;
             return View("Index", new Table("tableReports", Url.Action("List"), new List<TableColumn> {
                 new TableColumn("name", Reports.Name, Table.EditLink($"{Url.Action("Details")}/{{id}}", User.IsInRole("report.details"))),
                 new TableColumn("datasetName", Reports.Dataset, Table.EditLink($"{Url.Action("Edit", "Dataset")}/{{datasetId}}", User.IsInRole("dataset.edit"))),
@@ -340,7 +338,6 @@ namespace Dash.Controllers
                 ViewBag.Error = Reports.ErrorOwnerOnly;
                 return Details(id);
             }
-            ViewBag.Title = Reports.ShareReport;
             return View("Share", report);
         }
 
