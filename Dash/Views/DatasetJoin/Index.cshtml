@@ -16,7 +16,7 @@
             @Html.AuthorizedActionLink(Datasets.Overview, Model.FormAction, "Dataset", new { Id = Model.Id }, new { @class = "btn btn-link", role = "tab" }, hasAccess: User.IsInRole("dataset.edit"))
         </li>
         <li role="presentation" class="tab-item">
-            <a href="#overviewJoins_@Model.Id" id="overviewJoins_@Model.Id" class="active" role="tab" data-toggle="tab" aria-controls="joinsTab_@Model.Id">@Html.Raw(Datasets.Joins)</a>
+            <a id="overviewJoins_@Model.Id" class="active" role="tab" data-toggle="tab" aria-controls="joinsTab_@Model.Id">@Html.Raw(Datasets.Joins)</a>
         </li>
         <li role="presentation" class="tab-item">
             @Html.AuthorizedActionLink(Datasets.Columns, "Index", "DatasetColumn", new { DatasetId = Model.Id }, new { @class = "btn btn-link", role = "tab" }, hasAccess: User.IsInRole("datasetcolumn.index"))

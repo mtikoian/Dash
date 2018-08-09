@@ -19,7 +19,7 @@
             @Html.AuthorizedActionLink(Datasets.Joins, "Index", "DatasetJoin", new { DatasetId = Model.Id }, new { @class = "btn btn-link", role = "tab" }, hasAccess: User.IsInRole("datasetjoin.index"))
         </li>
         <li role="presentation" class="tab-item">
-            <a href="#overviewColumns_@Model.Id" id="overviewColumns_@Model.Id" class="active" role="tab" data-toggle="tab" aria-controls="columnsTab_@Model.Id">@Html.Raw(Datasets.Columns)</a>
+            <a id="overviewColumns_@Model.Id" class="active" role="tab" data-toggle="tab" aria-controls="columnsTab_@Model.Id">@Html.Raw(Datasets.Columns)</a>
         </li>
     </ul>
 

@@ -13,7 +13,7 @@
 
     <ul class="tab tab-block m-2" role="tablist">
         <li role="presentation" class="tab-item">
-            <a href="#overviewContent_@Model.Id" id="overviewTab_@Model.Id" class="active" role="tab" data-toggle="tab" aria-controls="overviewTab_@Model.Id">@Html.Raw(Datasets.Overview)</a>
+            <a id="overviewTab_@Model.Id" class="active" role="tab" data-toggle="tab" aria-controls="overviewTab_@Model.Id">@Html.Raw(Datasets.Overview)</a>
         </li>
         @if (!Model.IsCreate)
         {
