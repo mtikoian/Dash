@@ -7,16 +7,13 @@
     @Html.Breadcrumbs(new List<Breadcrumb> {
         new Breadcrumb(Datasets.ViewAll, "Index", "Dataset"),
         new Breadcrumb(Datasets.EditDataset, "Edit", "Dataset", new { Id = Model.DatasetId }),
-        new Breadcrumb(Datasets.Joins, "Index", "DatasetJoin", new { DatasetId = Model.DatasetId }),
-        new Breadcrumb(Model.IsCreate ? Datasets.CreateJoin : Datasets.EditJoin, Model.FormAction, "DatasetJoin", Model.IsCreate ? null : new { id = Model.Id })
+        new Breadcrumb(Datasets.Joins, "Index", "DatasetJoin", new { Id = Model.DatasetId }),
+        new Breadcrumb(Model.IsCreate ? Datasets.CreateJoin : Datasets.EditJoin, Model.FormAction, "DatasetJoin", Model.IsCreate ? null : new { Id = Model.Id })
     });
 
-    @using (Html.BeginCustomForm(Model.FormAction, "DatasetJoin", null, null, "datasetJoinFormLoad", Url.Action("Sources", "Dataset"), new {
-        @class = "dataset-join-form",
-        @data_unload_event = "datasetJoinFormUnload"
-    }, method: Model.FormMethod))
+    @using (Html.BeginCustomForm(Model.FormAction, "DatasetJoin", method: Model.FormMethod))
     {
-        @Html.HiddenFor(model => model.Id, new { @class = "dataset-join-id" })
+        @Html.HiddenFor(model => model.Id)
         @Html.HiddenFor(model => model.DatasetId)
         @Html.HiddenFor(model => model.JoinOrder)
 
@@ -24,7 +21,7 @@
 
         <div class="columns">
             <div class="col-6">
-                @Html.LabelInputFor(model => model.TableName, new { data_toggle = "autocomplete", data_url = Url.Action("Sources", "Dataset", new { id = Model.DatasetId }) })
+                @Html.LabelInputFor(model => model.TableName, new { data_toggle = "autocomplete", data_url = Url.Action("Sources", "Dataset", new { Id = Model.DatasetId }) })
                 @Html.LabelDropDownListFor(model => model.JoinTypeId, Model.JoinTypeList)
                 @Html.LabelInputFor(model => model.Keys)
             </div>

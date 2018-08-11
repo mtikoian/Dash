@@ -79,7 +79,7 @@ namespace Dash.I18n {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Input.
+        ///   Looks up a localized string similar to Input Param.
         /// </summary>
         public static string ColumnIsParam {
             get {
@@ -106,7 +106,7 @@ namespace Dash.I18n {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select Query.
+        ///   Looks up a localized string similar to Filter Query.
         /// </summary>
         public static string ColumnQuery {
             get {

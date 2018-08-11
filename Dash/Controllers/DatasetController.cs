@@ -128,20 +128,23 @@ namespace Dash.Controllers
         }
 
         [HttpGet, AjaxRequestOnly]
-        public IActionResult ReadSchema(int databaseId, List<string> sources)
+        public IActionResult Sources(int? id = null, int? databaseId = null)
         {
-            return Data(new { columns = new Dataset(DbContext).ImportSchema(databaseId, sources) });
-        }
-
-        [HttpGet, AjaxRequestOnly]
-        public IActionResult Sources(int id)
-        {
-            var model = DbContext.Get<Dataset>(id);
-            if (model == null)
+            if (id.HasPositiveValue())
             {
-                return Data(new { });
+                var model = DbContext.Get<Dataset>(id.Value);
+                if (model == null)
+                {
+                    return Data(new { });
+                }
+                return Data(DbContext.Get<Database>(model.DatabaseId)?.GetSourceList(true, model.TypeId == (int)DatasetTypes.Proc));
             }
-            return Data(DbContext.Get<Database>(model.DatabaseId)?.GetSourceList(true, model.TypeId == (int)DatasetTypes.Proc));
+            if (databaseId.HasPositiveValue())
+            {
+                // @todo add a way to handle table or proc sources
+                return Data(DbContext.Get<Database>(databaseId.Value)?.GetSourceList(true, false));
+            }
+            return Data(new { });
         }
 
         [HttpPost, AjaxRequestOnly]

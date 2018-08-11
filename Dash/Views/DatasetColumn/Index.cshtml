@@ -6,17 +6,18 @@
 {
     @Html.Breadcrumbs(new List<Breadcrumb> {
         new Breadcrumb(Datasets.ViewAll, "Index", "Dataset"),
-        new Breadcrumb(Datasets.EditDataset, Model.FormAction, "Dataset", new { id = Model.Id })
+        new Breadcrumb(Datasets.EditDataset, Model.FormAction, "Dataset", new { Id = Model.Id }),
+        new Breadcrumb(Datasets.Columns, "Index", "DatasetColumn", new { Id = Model.Id })
     });
 
     <partial name="_Toast" />
 
     <ul class="tab tab-block m-2" role="tablist">
         <li role="presentation" class="tab-item">
-            @Html.AuthorizedActionLink(Datasets.Overview, Model.FormAction, "Dataset", new { Id = Model.Id }, new { @class = "btn btn-link", role = "tab" }, hasAccess: User.IsInRole("dataset.edit"))
+            @Html.AuthorizedActionLink(Datasets.Overview, "Edit", "Dataset", new { Id = Model.Id }, new { @class = "btn btn-link", role = "tab" }, hasAccess: User.IsInRole("dataset.edit"))
         </li>
         <li role="presentation" class="tab-item">
-            @Html.AuthorizedActionLink(Datasets.Joins, "Index", "DatasetJoin", new { DatasetId = Model.Id }, new { @class = "btn btn-link", role = "tab" }, hasAccess: User.IsInRole("datasetjoin.index"))
+            @Html.AuthorizedActionLink(Datasets.Joins, "Index", "DatasetJoin", new { Id = Model.Id }, new { @class = "btn btn-link", role = "tab" }, hasAccess: User.IsInRole("datasetjoin.index"))
         </li>
         <li role="presentation" class="tab-item">
             <a id="overviewColumns_@Model.Id" class="active" role="tab" data-toggle="tab" aria-controls="columnsTab_@Model.Id">@Html.Raw(Datasets.Columns)</a>
@@ -27,7 +28,8 @@
 
         @using (Html.BeginToolbar())
         {
-            @Html.AuthorizedButton(Core.Add, "Create", "DatasetColumn", new { DatasetId = Model.Id }, DashClasses.BtnPrimary, hasAccess: User.IsInRole("datasetcolumn.create"))
+            @Html.AuthorizedButton(Core.Add, "Create", "DatasetColumn", new { Id = Model.Id }, DashClasses.BtnPrimary, hasAccess: User.IsInRole("datasetcolumn.create"))
+            @Html.AuthorizedButton(Datasets.Import, "Import", "DatasetColumn", new { Id = Model.Id }, DashClasses.BtnInfo, hasAccess: User.IsInRole("datasetcolumn.import"))
         }
 
         <div class="col-12">

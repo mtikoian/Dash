@@ -6,16 +6,14 @@
 {
     @Html.Breadcrumbs(new List<Breadcrumb> {
         new Breadcrumb(Datasets.ViewAll, "Index", "Dataset"),
-        new Breadcrumb(Datasets.EditDataset, "Index", "DatasetJoin", new { DatasetId = Model.DatasetId }),
-        new Breadcrumb(Model.IsCreate ? Datasets.CreateColumn : Datasets.EditColumn, Model.FormAction, "DatasetColumn", Model.IsCreate ? null : new { id = Model.Id })
+        new Breadcrumb(Datasets.EditDataset, "Edit", "Dataset", new { Id = Model.DatasetId }),
+        new Breadcrumb(Datasets.Columns, "Index", "DatasetColumn", new { Id = Model.DatasetId }),
+        new Breadcrumb(Model.IsCreate ? Datasets.CreateColumn : Datasets.EditColumn, Model.FormAction, "DatasetColumn", Model.IsCreate ? null : new { Id = Model.Id })
     });
 
-    @using (Html.BeginCustomForm(Model.FormAction, "DatasetColumn", null, null, "datasetColumnFormLoad", Url.Action("Columns", "Dataset"), new {
-        @class = "dataset-column-form",
-        @data_unload_event = "datasetColumnFormUnload"
-    }, method: Model.FormMethod))
+    @using (Html.BeginCustomForm(Model.FormAction, "DatasetColumn", method: Model.FormMethod))
     {
-        @Html.HiddenFor(model => model.Id, new { @class = "dataset-column-id" })
+        @Html.HiddenFor(model => model.Id)
         @Html.HiddenFor(model => model.DatasetId)
 
         <partial name="_Toast" />
@@ -23,10 +21,10 @@
         <div class="columns">
             <div class="col-6">
                 @Html.LabelInputFor(model => model.Title)
-                @Html.LabelInputFor(model => model.ColumnName, new { data_toggle = "autocomplete", data_url = Url.Action("Columns", "Dataset", new { id = Model.DatasetId }) })
+                @Html.LabelInputFor(model => model.ColumnName, new { data_toggle = "autocomplete", data_url = Url.Action("Columns", "Dataset", new { Id = Model.DatasetId }) })
                 @Html.LabelDropDownListFor(model => model.DataTypeId, Model.DataTypeList)
                 @Html.LabelInputFor(model => model.Derived)
-                @Html.LabelDropDownListFor(model => model.FilterTypeId, FilterType.FilterTypeList)
+                @Html.LabelDropDownListFor(model => model.FilterTypeId, FilterType.FilterTypeList, new { @data_toggle = "disable", @data_target = "#FilterQuery", @data_match = (int)FilterTypes.Select })
                 @Html.LabelInputFor(model => model.FilterQuery)
                 @Html.LabelInputFor(model => model.Link)
                 @Html.LabelCheckBoxFor(model => model.IsParam)

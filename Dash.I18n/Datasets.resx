@@ -151,7 +151,7 @@
     <value>Column</value>
   </data>
   <data name="ColumnQuery" xml:space="preserve">
-    <value>Select Query</value>
+    <value>Filter Query</value>
   </data>
   <data name="ColumnTitle" xml:space="preserve">
     <value>Title</value>
@@ -247,7 +247,7 @@
     <value>Type</value>
   </data>
   <data name="ColumnIsParam" xml:space="preserve">
-    <value>Input</value>
+    <value>Input Param</value>
   </data>
   <data name="ErrorTableOrProcRequired" xml:space="preserve">
     <value>You must provide a primary table or a stored proc.</value>

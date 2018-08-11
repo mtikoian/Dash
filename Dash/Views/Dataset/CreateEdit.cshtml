@@ -18,37 +18,26 @@
         @if (!Model.IsCreate)
         {
             <li role="presentation" class="tab-item">
-                @Html.AuthorizedActionLink(Datasets.Joins, "Index", "DatasetJoin", new { DatasetId = Model.Id }, new { @class = "btn btn-link", role = "tab" }, hasAccess: User.IsInRole("datasetjoin.index"))
+                @Html.AuthorizedActionLink(Datasets.Joins, "Index", "DatasetJoin", new { Model.Id }, new { @class = "btn btn-link", role = "tab" }, hasAccess: User.IsInRole("datasetjoin.index"))
             </li>
             <li role="presentation" class="tab-item">
-                @Html.AuthorizedActionLink(Datasets.Columns, "Index", "DatasetColumn", new { DatasetId = Model.Id }, new { @class = "btn btn-link", role = "tab" }, hasAccess: User.IsInRole("datasetcolumn.index"))
+                @Html.AuthorizedActionLink(Datasets.Columns, "Index", "DatasetColumn", new { Model.Id }, new { @class = "btn btn-link", role = "tab" }, hasAccess: User.IsInRole("datasetcolumn.index"))
             </li>
         }
     </ul>
 
     <div class="tab-content m-2">
         <div role="tabpanel" class="tab-pane active" id="overviewContent_@Model.Id" aria-labelledby="overviewTab_@Model.Id">
-            @using (Html.BeginCustomForm(Model.FormAction, "Dataset", null, null, "datasetFormLoad", Url.Action("FormOptions", "Dataset"), new {
-                @class = "dataset-form",
-                @data_table_url = @Url.Action("Sources"),
-                @data_column_url = @Url.Action("TableColumns"),
-                @data_import_url = @Url.Action("ReadSchema"),
-                @data_unload_event = "datasetFormUnload"
-            }, method: Model.FormMethod))
+            @using (Html.BeginCustomForm(Model.FormAction, "Dataset", method: Model.FormMethod))
             {
-                @Html.HiddenFor(model => model.Id, new { @class = "dataset-id" })
+                @Html.HiddenFor(model => model.Id)
 
                 <div class="columns">
                     <div class="col-6">
                         @Html.LabelInputFor(model => model.Name)
                         @Html.LabelDropDownListFor(model => model.DatabaseId, new SelectList(Model.DbContext.GetAll<Database>(), "Id", "Name"), new { @class = "dataset-database" })
                         @Html.LabelDropDownListFor(model => model.TypeId, Model.TypeList, new { @class = "dataset-type" })
-                        <div class="form-group">
-                            <label class="form-label col-4 required" for="PrimarySource">@Datasets.PrimarySource</label>
-                            <div class="col-8">
-                                <div class="dataset-primary-source" data-value="@Model.PrimarySource"></div>
-                            </div>
-                        </div>
+                        @Html.LabelInputFor(model => model.PrimarySource, new { data_toggle = "autocomplete", data_url = Url.Action("Sources", "Dataset", new { Id = Model.Id }) })
                         @Html.LabelTextAreaFor(model => model.Description)
                         @Html.LabelTextAreaFor(model => model.Conditions)
                     </div>

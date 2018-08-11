@@ -20,6 +20,11 @@ namespace Dash.Models
         {
         }
 
+        public DatasetJoin(IDbContext dbContext)
+        {
+            DbContext = dbContext;
+        }
+
         public DatasetJoin(IDbContext dbContext, int datasetid)
         {
             DbContext = dbContext;

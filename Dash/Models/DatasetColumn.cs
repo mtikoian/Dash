@@ -17,6 +17,11 @@ namespace Dash.Models
         {
         }
 
+        public DatasetColumn(IDbContext dbContext)
+        {
+            DbContext = dbContext;
+        }
+
         public DatasetColumn(IDbContext dbContext, int datasetid)
         {
             DbContext = dbContext;
@@ -35,8 +40,7 @@ namespace Dash.Models
         [JilDirective(true)]
         public int DatasetId { get; set; }
 
-        [JilDirective(true)]
-        [BindNever, ValidateNever]
+        [JilDirective(true), BindNever, ValidateNever]
         public DataType DataType
         {
             get { return _DataType ?? (_DataType = DbContext.Get<DataType>(DataTypeId)); }
@@ -47,7 +51,7 @@ namespace Dash.Models
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int DataTypeId { get; set; }
 
-        [Ignore, JilDirective(true)]
+        [Ignore, JilDirective(true), BindNever, ValidateNever]
         public IEnumerable<SelectListItem> DataTypeList
         {
             get
@@ -56,11 +60,10 @@ namespace Dash.Models
             }
         }
 
-        [JilDirective(true)]
-        [BindNever, ValidateNever]
+        [Ignore, BindNever, ValidateNever]
         public string DataTypeName
         {
-            get { return _DataType?.Name; }
+            get { return DataType?.Name; }
         }
 
         [Display(Name = "ColumnTransform", ResourceType = typeof(Datasets))]
@@ -78,28 +81,22 @@ namespace Dash.Models
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int FilterTypeId { get; set; }
 
-        [Ignore, JilDirective(true)]
-        [BindNever, ValidateNever]
+        [Ignore, JilDirective(true), BindNever, ValidateNever]
         public bool IsBinary { get { return DataType.IsBinary; } }
 
-        [Ignore, JilDirective(true)]
-        [BindNever, ValidateNever]
+        [Ignore, JilDirective(true), BindNever, ValidateNever]
         public bool IsBool { get { return DataType.IsBool; } }
 
-        [Ignore, JilDirective(true)]
-        [BindNever, ValidateNever]
+        [Ignore, JilDirective(true), BindNever, ValidateNever]
         public bool IsCurrency { get { return DataType.IsCurrency; } }
 
-        [Ignore, JilDirective(true)]
-        [BindNever, ValidateNever]
+        [Ignore, JilDirective(true), BindNever, ValidateNever]
         public bool IsDateTime { get { return DataType.IsDateTime; } }
 
-        [Ignore, JilDirective(true)]
-        [BindNever, ValidateNever]
+        [Ignore, JilDirective(true), BindNever, ValidateNever]
         public bool IsDecimal { get { return DataType.IsDecimal; } }
 
-        [Ignore, JilDirective(true)]
-        [BindNever, ValidateNever]
+        [Ignore, JilDirective(true), BindNever, ValidateNever]
         public bool IsInteger { get { return DataType.IsInteger; } }
 
         [Display(Name = "ColumnIsParam", ResourceType = typeof(Datasets))]
@@ -108,8 +105,7 @@ namespace Dash.Models
         [Ignore, JilDirective(true)]
         public bool IsSelect { get { return FilterTypeId == 3; } }
 
-        [Ignore, JilDirective(true)]
-        [BindNever, ValidateNever]
+        [Ignore, JilDirective(true), BindNever, ValidateNever]
         public bool IsText { get { return DataType.IsText; } }
 
         [Display(Name = "ColumnLink", ResourceType = typeof(Datasets))]
@@ -119,8 +115,7 @@ namespace Dash.Models
         [Ignore, JilDirective(true)]
         public int ReportColumnId { get; set; }
 
-        [Ignore, JilDirective(true)]
-        [BindNever, ValidateNever]
+        [Ignore, JilDirective(true), BindNever, ValidateNever]
         public string TableDataType
         {
             get
@@ -145,8 +140,7 @@ namespace Dash.Models
             }
         }
 
-        [Ignore, JilDirective(true)]
-        [BindNever, ValidateNever]
+        [Ignore, JilDirective(true), BindNever, ValidateNever]
         public string TableName
         {
             get

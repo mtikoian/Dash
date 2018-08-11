@@ -16,9 +16,9 @@ namespace Dash.Controllers
         }
 
         [HttpGet]
-        public IActionResult Create(int datasetId)
+        public IActionResult Create(int id)
         {
-            return CreateEditView(new DatasetColumn(DbContext, datasetId));
+            return CreateEditView(new DatasetColumn(DbContext, id));
         }
 
         [HttpPost, ValidateAntiForgeryToken]
@@ -60,11 +60,32 @@ namespace Dash.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index(int datasetId)
+        public IActionResult Import(int id)
+        {
+            var model = DbContext.Get<Dataset>(id);
+            if (model == null)
+            {
+                ViewBag.Error = Core.ErrorInvalidId;
+                return DatasetRedirect();
+            }
+            if (model.ImportSchema(out var error))
+            {
+                ViewBag.Message = Datasets.SuccessReadingSchema;
+            }
+            else
+            {
+                ViewBag.Error = error;
+            }
+            return Index(id);
+        }
+
+
+        [HttpGet]
+        public IActionResult Index(int id)
         {
             RouteData.Values.Remove("id");
-            var model = DbContext.Get<Dataset>(datasetId);
-            model.Table = new Table("tableDatasetColumns", Url.Action("List", values: new { datasetId }), new List<TableColumn> {
+            var model = DbContext.Get<Dataset>(id);
+            model.Table = new Table("tableDatasetColumns", Url.Action("List", values: new { id }), new List<TableColumn> {
                 new TableColumn("title", Datasets.ColumnTitle, Table.EditLink($"{Url.Action("Edit")}/{{id}}", User.IsInRole("datasetcolumn.edit"))),
                 new TableColumn("columnName", Datasets.ColumnName),
                 new TableColumn("dataTypeName", Datasets.ColumnDataType),
@@ -77,9 +98,9 @@ namespace Dash.Controllers
         }
 
         [HttpGet, AjaxRequestOnly]
-        public IActionResult List(int datasetId)
+        public IActionResult List(int id)
         {
-            return Rows(DbContext.Get<Dataset>(datasetId).DatasetColumn);
+            return Rows(DbContext.Get<Dataset>(id).DatasetColumn);
         }
 
         private IActionResult CreateEditView(DatasetColumn model)

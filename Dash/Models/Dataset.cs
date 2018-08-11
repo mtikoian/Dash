@@ -153,12 +153,7 @@ namespace Dash.Models
             }
             else
             {
-                if (!PrimarySource.IsEmpty())
-                {
-                    tableList.Add(PrimarySource);
-                }
-                // add any joined tables as groups
-                tableList.AddRange(DatasetJoin?.Select(x => x.TableName).Distinct().Where(x => !tableList.Contains(x)));
+                tableList = TableList();
             }
 
             if (Database?.TestConnection(out var error) == true)
@@ -217,58 +212,82 @@ namespace Dash.Models
             return selectColumns;
         }
 
-        public List<DatasetColumn> ImportSchema(int databaseId, List<string> sources)
+        public bool ImportSchema(out string error)
         {
-            var database = DbContext.Get<Database>(databaseId);
-            var existingColumns = new Dictionary<string, DatasetColumn>();
-            if (sources.Count > 0 && database != null && database.TestConnection(out var error))
+            error = "";
+            if (Database?.TestConnection(out var testError) != true)
             {
-                // first build a dictionary of all datatypes
-                var dataTypes = DbContext.GetAll<DataType>().ToDictionary(t => t.Name, t => t);
-                sources.Each(source => {
-                    database.GetTableSchema(source).Rows.OfType<DataRow>().Each(row => {
-                        var columnName = row.ToColumnName(database.IsSqlServer);
-                        if (!existingColumns.ContainsKey(columnName.ToLower()))
-                        {
-                            var newColumn = new DatasetColumn {
-                                DatasetId = 0,
-                                DataTypeId = 0,
-                                FilterTypeId = 0,
-                                Title = row["COLUMN_NAME"].ToString(),
-                                ColumnName = columnName
-                            };
-
-                            var dataType = row["DATA_TYPE"].ToString();
-                            if (dataTypes.ContainsKey(dataType))
-                            {
-                                // set the correct datatype
-                                newColumn.DataTypeId = dataTypes[dataType].Id;
-
-                                // try to set the correct filtertype
-                                if ((dataTypes[dataType].IsInteger || dataTypes[dataType].IsDecimal))
-                                {
-                                    newColumn.FilterTypeId = (int)FilterTypes.Numeric;
-                                }
-                                else if (dataTypes[dataType].IsBool)
-                                {
-                                    newColumn.FilterTypeId = (int)FilterTypes.Boolean;
-                                }
-                                else if (dataTypes[dataType].IsDateTime)
-                                {
-                                    newColumn.FilterTypeId = (int)FilterTypes.Date;
-                                }
-                                else
-                                {
-                                    newColumn.FilterTypeId = (int)FilterTypes.Text;
-                                }
-
-                                existingColumns.Add(columnName.ToLower(), newColumn);
-                            }
-                        }
-                    });
-                });
+                error = Datasets.ImportErrorDatabaseRequired;
+                return false;
             }
-            return existingColumns.Values.ToList();
+            if (IsProc)
+            {
+                error = Datasets.ImportErrorNoProcs;
+                return false;
+            }
+
+            var sources = TableList();
+            if (!sources.Any())
+            {
+                error = Datasets.ImportErrorPrimarySourceRequired;
+                return false;
+            }
+
+            var existingColumns = new Dictionary<string, DatasetColumn>();
+            var dataTypes = DbContext.GetAll<DataType>().ToDictionary(t => t.Name, t => t);
+            DatasetColumn?.Each(x => existingColumns.Add(x.ColumnName.ToLower(), x));
+            var totalColumns = 0;
+            sources.Each(source => {
+                Database.GetTableSchema(source).Rows.OfType<DataRow>().Each(row => {
+                    totalColumns++;
+                    var columnName = row.ToColumnName(Database.IsSqlServer);
+                    if (!existingColumns.ContainsKey(columnName.ToLower()))
+                    {
+                        var newColumn = new DatasetColumn {
+                            DatasetId = Id,
+                            DataTypeId = 0,
+                            FilterTypeId = 0,
+                            Title = row["COLUMN_NAME"].ToString(),
+                            ColumnName = columnName
+                        };
+
+                        var dataType = row["DATA_TYPE"].ToString();
+                        if (dataTypes.ContainsKey(dataType))
+                        {
+                            // set the correct datatype
+                            newColumn.DataTypeId = dataTypes[dataType].Id;
+
+                            // try to set the correct filtertype
+                            if ((dataTypes[dataType].IsInteger || dataTypes[dataType].IsDecimal))
+                            {
+                                newColumn.FilterTypeId = (int)FilterTypes.Numeric;
+                            }
+                            else if (dataTypes[dataType].IsBool)
+                            {
+                                newColumn.FilterTypeId = (int)FilterTypes.Boolean;
+                            }
+                            else if (dataTypes[dataType].IsDateTime)
+                            {
+                                newColumn.FilterTypeId = (int)FilterTypes.Date;
+                            }
+                            else
+                            {
+                                newColumn.FilterTypeId = (int)FilterTypes.Text;
+                            }
+
+                            DbContext.Save(newColumn);
+                            existingColumns.Add(columnName.ToLower(), newColumn);
+                        }
+                    }
+                });
+            });
+
+            if (totalColumns == 0)
+            {
+                error = Datasets.ImportErrorNoColumnsRead;
+                return false;
+            }
+            return true;
         }
 
         public bool IsUniqueName(string name, int id)
@@ -285,7 +304,8 @@ namespace Dash.Models
                     ?? new List<DatasetRole>();
             }
             ForSave = true;
-            DbContext.Save(this, forceSaveNulls: true);
+            // @todo got a bug here that is deleting all joins/columns when saving after editing the dataset overview
+            DbContext.Save(this);
             return true;
         }
 
@@ -295,6 +315,18 @@ namespace Dash.Models
             {
                 yield return new ValidationResult(Datasets.ErrorDuplicateName, new[] { "Name" });
             }
+        }
+
+        private List<string> TableList()
+        {
+            var tableList = new List<string>();
+            if (!PrimarySource.IsEmpty())
+            {
+                tableList.Add(PrimarySource);
+            }
+            // add any joined tables as groups
+            tableList.AddRange(DatasetJoin?.Select(x => x.TableName).Distinct().Where(x => !tableList.Contains(x)));
+            return tableList;
         }
     }
 

@@ -362,6 +362,7 @@
     internal.request = function(options, callback) {
         $.content.loading();
         // Create xmlHttpRequest object.
+        // @todo consider converting to fetch - see https://github.com/developit/unfetch polyfill
         var xhr = new XMLHttpRequest();
         // Add state listener.
         xhr.onreadystatechange = function() {

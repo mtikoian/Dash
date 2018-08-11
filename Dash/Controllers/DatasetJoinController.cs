@@ -18,15 +18,15 @@ namespace Dash.Controllers
         }
 
         [HttpGet]
-        public IActionResult Create(int datasetId)
+        public IActionResult Create(int id)
         {
-            var model = DbContext.Get<Dataset>(datasetId);
+            var model = DbContext.Get<Dataset>(id);
             if (model == null)
             {
                 ViewBag.Error = Core.ErrorInvalidId;
                 return DatasetRedirect();
             }
-            return CreateEditView(new DatasetJoin(DbContext, datasetId) { JoinOrder = model.DatasetJoin.Count });
+            return CreateEditView(new DatasetJoin(DbContext, id) { JoinOrder = model.DatasetJoin.Count });
         }
 
         [HttpPost, ValidateAntiForgeryToken]
@@ -69,11 +69,11 @@ namespace Dash.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index(int datasetId)
+        public IActionResult Index(int id)
         {
             RouteData.Values.Remove("id");
-            var model = DbContext.Get<Dataset>(datasetId);
-            model.Table = new Table("tableDatasetJoins", Url.Action("List", values: new { datasetId }), new List<TableColumn> {
+            var model = DbContext.Get<Dataset>(id);
+            model.Table = new Table("tableDatasetJoins", Url.Action("List", values: new { id }), new List<TableColumn> {
                 new TableColumn("tableName", Datasets.JoinTableName, Table.EditLink($"{Url.Action("Edit")}/{{datasetId}}/{{id}}", User.IsInRole("datasetjoin.edit")), false),
                 new TableColumn("keys", Datasets.JoinKeys, sortable: false),
                 new TableColumn("actions", Core.Actions, sortable: false, links: new List<TableLink>()
@@ -87,9 +87,9 @@ namespace Dash.Controllers
         }
 
         [HttpGet, AjaxRequestOnly]
-        public IActionResult List(int datasetId)
+        public IActionResult List(int id)
         {
-            var joins = DbContext.Get<Dataset>(datasetId).DatasetJoin.OrderBy(x => x.JoinOrder).ToList();
+            var joins = DbContext.Get<Dataset>(id).DatasetJoin.OrderBy(x => x.JoinOrder).ToList();
             if (joins.Any())
             {
                 joins[joins.Count() - 1].IsLast = true;

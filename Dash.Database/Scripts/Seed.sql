@@ -68,7 +68,6 @@ INSERT [Permission] ([ControllerName], [ActionName]) VALUES
 	(N'Dataset', N'Create'),
 	(N'Dataset', N'Edit'),
 	(N'Dataset', N'Delete'),
-	(N'Dataset', N'ReadSchema'),
 	(N'Dataset', N'List'),
 	(N'Dataset', N'Copy'),
 	(N'Report', N'Data'),
