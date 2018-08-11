@@ -123,8 +123,7 @@ namespace Dash
             app.UseHangfireServer();
 
             app.UseMvc(routes => {
-                routes.MapRoute("dataset", "DatasetJoin/{action=Index}/{datasetId:int}/{id:int?}", new { controller = "DatasetJoin" });
-                routes.MapRoute("dataset", "DatasetColumn/{action=Index}/{datasetId:int}/{id:int?}", new { controller = "DatasetColumn" });
+                routes.MapRoute("parentChild", "{controller=Dashboard}/{action=Index}/{parentId:int}/{id:int}");
                 routes.MapRoute("default", "{controller=Dashboard}/{action=Index}/{id:int?}");
             });
 
