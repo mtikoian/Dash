@@ -65,7 +65,7 @@
         $.off(window, 'keydown', _windowEvents.keydown);
         $.off(window, 'resize', _windowEvents.resize);
         _windowEvents = null;
-    });
+    }, true);
 
     /**
      * Get the widget objects for the dashboard.
