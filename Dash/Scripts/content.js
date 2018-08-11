@@ -19,7 +19,7 @@
      * @this {Node} Node the event is being bound to.
      */
     var hide = function() {
-        var node = $.closest(this.getAttribute('data-target'), this);
+        var node = $.get(this.getAttribute('data-target'));
         if (node) {
             $.on(this, 'click', $.hide.bind(null, node, false));
         }
