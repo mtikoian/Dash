@@ -319,7 +319,7 @@
             list = (container || document).querySelectorAll(selector);
         }
         var res = Array.prototype.slice.call(list);
-        if (includeContainer && matches(container, selector)) {
+        if (includeContainer && container && matches(container, selector)) {
             res.unshift(container);
         }
         return res;
