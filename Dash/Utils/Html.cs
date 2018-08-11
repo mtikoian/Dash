@@ -469,10 +469,10 @@ namespace Dash
         }
 
         public static IHtmlContent LabelDropDownListFor<TModel, TValue>(this IHtmlHelper<TModel> helper, Expression<Func<TModel, TValue>> expression, IEnumerable<SelectListItem> listItems,
-            object htmlAttributes = null, int labelWidth = 4, int inputWidth = 8, bool disabled = false, bool includeEmptyItem = true)
+            object inputAttributes = null, int labelWidth = 4, int inputWidth = 8, bool disabled = false, bool includeEmptyItem = true)
         {
             // build input
-            var attrs = helper.InputAttributesFor(expression, htmlAttributes);
+            var attrs = helper.InputAttributesFor(expression, inputAttributes);
             if (disabled)
             {
                 attrs.Add("disabled", "disabled");
