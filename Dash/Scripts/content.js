@@ -25,6 +25,24 @@
         }
     };
 
+    var conditionallyDisable = function() {
+        var n = $.get(this.getAttribute('data-target'));
+        if (this.value == this.getAttribute('data-match')) {
+            n.removeAttribute('disabled');
+        } else {
+            n.value = '';
+            n.setAttribute('disabled', true);
+        }
+    };
+
+    /**
+     * Conditionally disable content.
+     * @this {Node} Node the event is being bound to.
+     */
+    var disable = function() {
+        $.onChange(this, conditionallyDisable, true);
+    };
+
     var autocompleteReady = function(data) {
         autoCompletes.push(new autoComplete({
             selector: this,
@@ -191,6 +209,10 @@
         {
             selector: '[data-toggle="hide"]',
             onLoad: hide
+        },
+        {
+            selector: '[data-toggle="disable"]',
+            onLoad: disable
         },
         {
             selector: '[data-toggle="autocomplete"]',
