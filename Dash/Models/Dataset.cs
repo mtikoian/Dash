@@ -295,7 +295,7 @@ namespace Dash.Models
             return !DbContext.GetAll<Dataset>(new { Name = name }).Any(x => x.Id != id);
         }
 
-        public bool Save()
+        public bool Save(bool lazySave = true)
         {
             if (RoleIds != null)
             {
@@ -305,7 +305,7 @@ namespace Dash.Models
             }
             ForSave = true;
             // @todo got a bug here that is deleting all joins/columns when saving after editing the dataset overview
-            DbContext.Save(this);
+            DbContext.Save(this, lazySave);
             return true;
         }
 

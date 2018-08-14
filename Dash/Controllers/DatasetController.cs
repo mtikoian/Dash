@@ -186,9 +186,9 @@ namespace Dash.Controllers
                 ViewBag.Error = ModelState.ToErrorString();
                 return CreateEditView(model);
             }
-            model.Save();
+            model.Save(false);
             ViewBag.Message = Datasets.SuccessSavingDataset;
-            return Index();
+            return CreateEditView(model);
         }
     }
 }
