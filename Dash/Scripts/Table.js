@@ -908,7 +908,7 @@
                                 attr['onclick'] = function() {
                                     var node = this.getAttribute('data-href') ? this : this.parentNode;
                                     var options = {
-                                        url: node.getAttribute('data-href'), container: 'contentWrapper', method: node.getAttribute('data-method')
+                                        url: node.getAttribute('data-href'), method: node.getAttribute('data-method')
                                     };
                                     if (node.getAttribute('data-confirm')) {
                                         options.history = false;
