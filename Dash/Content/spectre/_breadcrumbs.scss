@@ -3,6 +3,7 @@
     font-size: 1rem;
     list-style: none;
     margin: 0;
+    user-select: none;
 
     .breadcrumb-item {
         color: $gray-color-dark;
