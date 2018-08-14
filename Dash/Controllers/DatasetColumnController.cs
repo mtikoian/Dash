@@ -18,6 +18,14 @@ namespace Dash.Controllers
         [HttpGet]
         public IActionResult Create(int id)
         {
+            var model = DbContext.Get<Dataset>(id);
+            if (model == null)
+            {
+                ViewBag.Error = Core.ErrorInvalidId;
+                return DatasetRedirect();
+            }
+            // clear modelState so that datasetId isn't treated as the new model Id
+            ModelState.Clear();
             return CreateEditView(new DatasetColumn(DbContext, id));
         }
 

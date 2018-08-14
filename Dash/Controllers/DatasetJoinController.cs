@@ -26,6 +26,8 @@ namespace Dash.Controllers
                 ViewBag.Error = Core.ErrorInvalidId;
                 return DatasetRedirect();
             }
+            // clear modelState so that datasetId isn't treated as the new model Id
+            ModelState.Clear();
             return CreateEditView(new DatasetJoin(DbContext, id) { JoinOrder = model.DatasetJoin.Count });
         }
 
