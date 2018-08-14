@@ -43,6 +43,7 @@ namespace Dash
         public string Id { get; set; }
         public bool LoadAllData { get; set; } = true;
         public bool Searchable { get; set; } = true;
+        public bool StoreSettings { get; set; } = true;
 
         public string Url { get; set; }
 

@@ -93,7 +93,7 @@ namespace Dash.Controllers
                         .AddIf(Table.EditButton($"{Url.Action("Edit")}/{{id}}"), User.IsInRole("datasetcolumn.edit"))
                         .AddIf(Table.DeleteButton($"{Url.Action("Delete")}/{{id}}", Datasets.ConfirmDeleteColumn), User.IsInRole("datasetcolumn.delete"))
                 )}
-            );
+            ) { StoreSettings = false };
             return View("Index", model);
         }
 

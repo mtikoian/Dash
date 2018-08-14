@@ -82,7 +82,7 @@ namespace Dash.Controllers
                         .AddIf(Table.UpButton($"{Url.Action("MoveUp")}/{{datasetId}}/{{id}}", jsonLogic: new Dictionary<string, object>().Append(">", new object[] { new Dictionary<string, object>().Append("var", "joinOrder"), 0 })), User.IsInRole("datasetjoin.moveup"))
                         .AddIf(Table.DownButton($"{Url.Action("MoveDown")}/{{datasetId}}/{{id}}", jsonLogic: new Dictionary<string, object>().Append("!", new object[] { new Dictionary<string, object>().Append("var", "isLast") })), User.IsInRole("datasetjoin.movedown"))
                 )}
-            );
+            ) { StoreSettings = false };
             return View("Index", model);
         }
 

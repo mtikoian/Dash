@@ -16,6 +16,9 @@
          * @returns {string|undefined} Value if getting, else undefined.
          */
         store: function(key, value) {
+            if (!this.opts.storeSettings) {
+                return;
+            }
             var myKey = this.opts.id + '.' + key;
             // getter
             if ($.isUndefined(value)) {
@@ -824,6 +827,7 @@
                 width: 100,
                 editable: true,
                 pageDropdown: true,
+                storeSettings: true,
                 storageFunction: null,
                 itemsPerPage: null,
                 searchQuery: null,
