@@ -308,7 +308,7 @@
      * Set up content after page has loaded.
      */
     var pageLoaded = function() {
-        pjax.connect({ container: $.get('#contentWrapper'), excludeClass: 'pjax-no-follow' });
+        pjax.init();
     };
 
     /**
