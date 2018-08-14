@@ -37,7 +37,7 @@
                         @Html.LabelInputFor(model => model.Name)
                         @Html.LabelDropDownListFor(model => model.DatabaseId, new SelectList(Model.DbContext.GetAll<Database>(), "Id", "Name"), new { @class = "dataset-database" })
                         @Html.LabelDropDownListFor(model => model.TypeId, Model.TypeList, new { @class = "dataset-type" })
-                        @Html.LabelInputFor(model => model.PrimarySource, new { data_toggle = "autocomplete", data_url = Url.Action("Sources", "Dataset", new { Id = Model.Id }) })
+                        @Html.LabelInputFor(model => model.PrimarySource, new { data_toggle = "autocomplete", data_url = Url.Action("Sources", "Dataset"), data_params = "#DatabaseId,#TypeId" })
                         @Html.LabelTextAreaFor(model => model.Description)
                         @Html.LabelTextAreaFor(model => model.Conditions)
                     </div>

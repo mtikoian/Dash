@@ -21,7 +21,7 @@
 
         <div class="columns">
             <div class="col-6">
-                @Html.LabelInputFor(model => model.TableName, new { data_toggle = "autocomplete", data_url = Url.Action("Sources", "Dataset", new { Id = Model.DatasetId }) })
+                @Html.LabelInputFor(model => model.TableName, new { data_toggle = "autocomplete", data_preload = true, data_url = Url.Action("Sources", "Dataset", new { Id = Model.DatasetId }) })
                 @Html.LabelDropDownListFor(model => model.JoinTypeId, Model.JoinTypeList)
                 @Html.LabelInputFor(model => model.Keys)
             </div>

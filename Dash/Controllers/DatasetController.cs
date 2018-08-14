@@ -128,7 +128,7 @@ namespace Dash.Controllers
         }
 
         [HttpGet, AjaxRequestOnly]
-        public IActionResult Sources(int? id = null, int? databaseId = null)
+        public IActionResult Sources(int? id = null, int? databaseId = null, int? typeId = null, string search = null)
         {
             if (id.HasPositiveValue())
             {
@@ -141,28 +141,15 @@ namespace Dash.Controllers
             }
             if (databaseId.HasPositiveValue())
             {
-                // @todo add a way to handle table or proc sources
-                return Data(DbContext.Get<Database>(databaseId.Value)?.GetSourceList(true, false));
+                var results = DbContext.Get<Database>(databaseId.Value)?.GetSourceList(true, typeId.HasValue && typeId == (int)DatasetTypes.Proc);
+                if (!search.IsEmpty())
+                {
+                    search = search.ToLower();
+                    results = results.Where(x => search == null || x.ToLower().Contains(search));
+                }
+                return Data(results);
             }
             return Data(new { });
-        }
-
-        [HttpPost, AjaxRequestOnly]
-        public IActionResult TableColumns([FromBody] TableColumnList model)
-        {
-            if (model == null)
-            {
-                return Error(Core.ErrorGeneric);
-            }
-            if (!ModelState.IsValid)
-            {
-                return Error(ModelState.ToErrorString());
-            }
-            if (model.Tables?.Any() != true)
-            {
-                return Data("");
-            }
-            return Data(model.GetList());
         }
 
         private IActionResult CreateEditView(Dataset model)
