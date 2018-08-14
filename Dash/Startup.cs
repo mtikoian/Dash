@@ -123,7 +123,6 @@ namespace Dash
             app.UseHangfireServer();
 
             app.UseMvc(routes => {
-                routes.MapRoute("parentChild", "{controller=Dashboard}/{action=Index}/{parentId:int}/{id:int}");
                 routes.MapRoute("default", "{controller=Dashboard}/{action=Index}/{id:int?}");
             });
 
