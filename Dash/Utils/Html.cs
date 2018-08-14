@@ -205,10 +205,12 @@ namespace Dash
             var ul = new TagBuilder("ul");
             ul.AddCssClass("breadcrumb");
             breadcrumbs = breadcrumbs.Prepend(new Breadcrumb(Core.Dashboard, "Index", "Dashboard")).ToList();
+            var i = 0;
             breadcrumbs.Each(x => {
+                i++;
                 var li = new TagBuilder("li");
                 li.AddCssClass("breadcrumb-item");
-                li.InnerHtml.AppendHtml(AuthorizedActionLink(helper, x.Label, x.Action, x.Controller, x.RouteValues, returnEmpty: false, hasAccess: x.HasAccess));
+                li.InnerHtml.AppendHtml(AuthorizedActionLink(helper, x.Label, x.Action, x.Controller, x.RouteValues, returnEmpty: false, hasAccess: x.HasAccess && i < breadcrumbs.Count));
                 ul.InnerHtml.AppendHtml(li);
             });
 
