@@ -41,7 +41,7 @@
             var links = tab && $.getAll('a', tab);
             return links.length && $.get(links[0].getAttribute('href'));
         }
-    }
+    };
 
     return Tab;
 });
