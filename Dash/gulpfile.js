@@ -90,8 +90,7 @@ gulp.task('js', function() {
         paths.js + 'pjax.js',              // pjax library
         paths.js + 'helpers.js',           // commonly used helper libraries
         // re-used components
-        paths.js + 'Autocomplete.js',      // custom autocomplete component using mithril
-        paths.js + 'auto-complete.js',     // autocomplete component
+        paths.js + 'Autocomplete.js',      // autocomplete component
         paths.js + 'Chart.js',             // charting
         paths.js + 'CollapsibleList.js',   // lightweight library for treeviews
         paths.js + 'ColorPicker.js',       // custom color picker

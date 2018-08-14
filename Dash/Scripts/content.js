@@ -1,10 +1,10 @@
 ﻿/*!
  * Wraps content processing functionality.
  */
-(function(m, $, Alertify, pjax, Table, Tab, CollapsibleList, DatePicker, autoComplete) {
+(function(m, $, Alertify, pjax, Table, Tab, CollapsibleList, DatePicker, Autocomplete) {
     'use strict';
 
-    var autoCompletes = [];
+    var autocompletes = [];
 
     /**
      * Display context help.
@@ -43,35 +43,63 @@
         $.onChange(this, conditionallyDisable, true);
     };
 
-    var autocompleteReady = function(data) {
-        autoCompletes.push(new autoComplete({
-            selector: this,
-            sourceData: data
-        }));
-    };
-
     /**
      * Initialize autocomplete.
      * @this {Node} Node the event is being bound to.
      */
     var autocompleteLoad = function() {
         // @todo maybe add a way to include source list in original html response instead of requiring another request
+        // @todo move the xhr calls into another library
 
+        var preload = ['true', 'True'].indexOf(this.getAttribute('data-preload')) > -1;
         var self = this;
-        var xhr = new XMLHttpRequest();
-        // Add state listener.
-        xhr.onreadystatechange = function() {
-            if ((xhr.readyState === 4) && (xhr.status === 200)) {
-                // Success, Return HTML
-                autocompleteReady.call(self, JSON.parse(xhr.responseText));
-            } else if ((xhr.readyState === 4) && (xhr.status === 404 || xhr.status === 500)) {
-                // error @todo what should i do here?
-                autocompleteReady.call(self, []);
-            }
-        };
-        xhr.open(this.getAttribute('data-method') || 'GET', this.getAttribute('data-url'), true);
-        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-        xhr.send(null);
+        if (preload) {
+            var xhr = new XMLHttpRequest();
+            // Add state listener.
+            xhr.onreadystatechange = function() {
+                if ((xhr.readyState === 4) && (xhr.status === 200)) {
+                    autocompletes.push(new Autocomplete({ selector: self, sourceData: JSON.parse(xhr.responseText) }));
+                } else if ((xhr.readyState === 4) && (xhr.status === 404 || xhr.status === 500)) {
+                    // error - @todo what do i do here?
+                    autocompletes.push(new Autocomplete({ selector: self, sourceData: null }));
+                }
+            };
+            xhr.open(this.getAttribute('data-method') || 'GET', this.getAttribute('data-url'), true);
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+            xhr.send(null);
+        } else {
+            autocompletes.push(new Autocomplete({
+                selector: self, source: function(search, response) {
+                    var xhr = new XMLHttpRequest();
+                    // Add state listener.
+                    xhr.onreadystatechange = function() {
+                        if ((xhr.readyState === 4) && (xhr.status === 200)) {
+                            response(JSON.parse(xhr.responseText));
+                        } else if ((xhr.readyState === 4) && (xhr.status === 404 || xhr.status === 500)) {
+                            // error - @todo what do i do here?
+                        }
+                    };
+                    var url = self.getAttribute('data-url');
+                    var params = { search: search };
+                    if (self.hasAttribute('data-params')) {
+                        self.getAttribute('data-params').split(',').forEach(function(x) {
+                            var node = $.get(x);
+                            if (node) {
+                                params[node.id] = node.value;
+                            }
+                        });
+                    }
+                    url += url.indexOf('?') > -1 ? '&' : '?';
+                    url += Object.keys(params).map(function(x) {
+                        return encodeURIComponent(x) + '=' + encodeURIComponent(params[x]);
+                    }).join('&');
+
+                    xhr.open(self.getAttribute('data-method') || 'GET', url, true);
+                    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                    xhr.send(null);
+                }
+            }));
+        }
     };
 
     /**
@@ -79,10 +107,10 @@
      * @this {Node} Node the event is being bound to.
      */
     var autocompleteUnload = function() {
-        autoCompletes.forEach(function(x) {
+        autocompletes.forEach(function(x) {
             x.destroy();
         });
-        autoCompletes = [];
+        autocompletes = [];
     };
 
     /**
@@ -330,4 +358,4 @@
         $.on(document, 'resxLoaded', pageLoaded);
     }
 
-})(this.m, this.$, this.Alertify, this.pjax, this.Table, this.Tab, this.CollapsibleList, this.DatePicker, this.autoComplete);
+})(this.m, this.$, this.Alertify, this.pjax, this.Table, this.Tab, this.CollapsibleList, this.DatePicker, this.Autocomplete);

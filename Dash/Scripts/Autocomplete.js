@@ -1,240 +1,261 @@
-﻿/*!
- * Autocomplete mithril component.
- */
+﻿/*
+    JavaScript autoComplete v1.0.4
+    Copyright (c) 2014 Simon Steinberger / Pixabay
+    GitHub: https://github.com/Pixabay/JavaScript-autoComplete
+    License: http://www.opensource.org/licenses/mit-license.php
+*/
+
 (function(root, factory) {
-    root.Autocomplete = factory(root.m, root.$);
-})(this, function(m, $) {
+    root.Autocomplete = factory();
+})(this, function() {
     'use strict';
 
-    var _keys = {
-        DOWN: 40,
-        ENTER: 13,
-        ESC: 27,
-        TAB: 9,
-        UP: 38
-    };
+    function Autocomplete(options) {
+        if (!document.querySelector) return;
 
-    /**
-     * Escape a string for use with a regex.
-     * @param {string} s - String to escape.
-     * @returns Escaped string.
-     */
-    var regExpEscape = function(s) {
-        return s.replace(/[-\\^$*+?.()|[\]{}]/g, '\\$&');
-    };
-
-    var Autocomplete = {
-        /**
-         * Initialize the component.
-         * @param {Object} vnode - Mithril virtual node
-         */
-        oninit: function(vnode) {
-            var attrs = vnode.attrs;
-            this.opts = {
-                value: attrs.value,
-                valueChanged: false,
-                name: attrs.name,
-                placeholder: attrs.placeholder,
-                active: false,
-                required: attrs.required,
-                disabled: attrs.disabled,
-                onSelect: attrs.onSelect,
-                onCancel: attrs.onCancel,
-                class: attrs.class,
-                list: attrs.list || [],
-                filteredList: [],
-                container: null,
-                selectedIndex: -1
-            };
-        },
-
-        /**
-         * Update the opts in case the component name is changed.
-         * @param {Object} vnode - Mithril virtual node
-         * @param vnode
-         */
-        onupdate: function(vnode) {
-            if (vnode.attrs) {
-                this.opts.name = vnode.attrs.name;
-            }
-        },
-
-        /**
-         * Grab the DOM containing node after it is created.
-         * @param {Object} vnode - Mithril virtual node
-         */
-        oncreate: function(vnode) {
-            this.opts.container = vnode.dom;
-            this.opts.container.autocomplete = this;
-        },
-
-        /**
-         * Update the list of items.
-         * @param {string[]} list - Array of strings to show.
-         */
-        setList: function(list) {
-            this.close();
-            this.opts.list = list;
-            this.opts.filteredList = [];
-        },
-
-        /**
-         * Check special keys and respond accordingly.
-         * @param {Event} e - Keypress event.
-         */
-        onKeyDown: function(e) {
-            if (this.opts.disabled) {
-                return;
-            }
-
-            if (this.opts.active) {
-                if (e.keyCode === _keys.ENTER) {
-                    var selected = this.opts.filteredList[this.opts.selectedIndex];
-                    if (selected) {
-                        this.selectItem(selected);
-                    } else {
-                        this.cancel(true);
-                    }
-                    e.preventDefault();
-                    e.stopPropagation();
-                } else if (e.keyCode === _keys.ESC) {
-                    this.cancel(true);
-                    e.preventDefault();
-                    e.stopPropagation();
-                } else if (e.keyCode === _keys.DOWN) {
-                    this.selectIndex(Math.min(this.opts.selectedIndex + 1, this.opts.filteredList.length - 1));
-                } else if (e.keyCode === _keys.UP) {
-                    this.selectIndex(Math.max(this.opts.selectedIndex - 1, 0));
-                }
-            }
-        },
-
-        /**
-         * Handle the input's value changing and show the list.
-         * @param {Event} e - Event that triggered the change.
-         */
-        onInput: function(e) {
-            if (this.opts.value !== e.target.value) {
-                this.opts.valueChanged = true;
-                this.opts.value = e.target.value;
-            }
-            if (this.opts.value.length > 1) {
-                this.opts.active = true;
-                this.opts.selectedIndex = 0;
-                var val = this.opts.value.toLowerCase();
-                this.opts.filteredList = ($.isFunction(this.opts.list) ? this.opts.list() : this.opts.list).filter(function(x) {
-                    return x.toLowerCase().indexOf(val) > -1;
-                });
-            } else {
-                this.opts.filteredList = [];
-            }
-        },
-
-        /**
-         * Close autocomplete dropdown on lost focus.
-         */
-        onBlur: function() {
-            if (this.opts.active || this.opts.valueChanged) {
-                this.cancel(false);
-            }
-        },
-
-        /**
-         * Select an item from the list by index.
-         * @param {number} index - Filtered list item index.
-         */
-        selectIndex: function(index) {
-            this.opts.selectedIndex = index;
-            var ul = $.get('ul', this.opts.container);
-            if (ul && ul.children[index]) {
-                ul.children[index].scrollIntoView();
-            }
-        },
-
-        /**
-         * Select an item by text value.
-         * @param {string} item - Text to select.
-         * @param {Event} e - Event that triggered this.
-         */
-        selectItem: function(item, e, focus) {
-            if ($.isFunction(this.opts.onSelect)) {
-                this.opts.onSelect.call(null, item);
-            }
-            this.opts.value = item;
-            this.close($.isNull(focus) ? true : focus);
-            if (e && e.preventDefault) {
-                e.preventDefault();
-            }
-        },
-
-        /**
-         * Discard value and close the autocomplete.
-         * @param {bool} focus - Focus on the original control after closing if true.
-         */
-        cancel: function(focus) {
-            if (this.opts.valueChanged) {
-                this.opts.value = '';
-            }
-            if ($.isFunction(this.opts.onCancel)) {
-                this.opts.onCancel();
-            }
-            this.close(focus);
-        },
-
-        /**
-         * Set value and close the autocomplete.
-         * @param {bool} focus - Focus on the original control after closing if true.
-         */
-        close: function(focus) {
-            this.opts.active = false;
-            this.opts.selectedIndex = -1;
-            this.opts.valueChanged = false;
-            if (focus) {
-                var input = $.get('input', this.opts.container);
-                if (input) {
-                    input.focus();
-                }
-            }
-        },
-
-        /**
-         * Highlight val inside item.
-         * @param {string} text - Text to highlight in.
-         * @param {string} val - Substring to highlight.
-         * @returns Marked up string.
-         */
-        highlightItem: function(text, val) {
-            return val === '' ? text : text.replace(RegExp(regExpEscape(val.trim()), 'gi'), '<mark>$&</mark>');
-        },
-
-        /**
-         * Create HTML to display component.
-         * @returns {Object} Mithril vnode
-         */
-        view: function() {
-            var self = this;
-            return m('.mithril-autocomplete-container.autocomplete', { class: self.opts.active ? 'autocomplete-active' : '' },
-                m('input.form-input', {
-                    type: 'text',
-                    name: self.opts.name,
-                    placeholder: self.opts.placeholder,
-                    class: (self.opts.class || '') + (self.opts.required && !$.hasValue(self.opts.value) ? ' mform-control-error' : ''),
-                    autocomplete: 'off',
-                    'aria-autocomplete': 'list',
-                    onkeydown: self.onKeyDown.bind(self),
-                    oninput: self.onInput.bind(self),
-                    value: self.opts.value,
-                    onblur: self.onBlur.bind(self)
-                }),
-                self.opts.active && m('ul', self.opts.filteredList.map(function(x, index) {
-                    return m('li', {
-                        key: x, 'aria-selected': self.opts.selectedIndex == index,
-                        onmousedown: self.selectItem.bind(self, x)
-                    }, m.trust(self.highlightItem(x, self.opts.value)));
-                }))
-            );
+        // helpers
+        function hasClass(el, className) {
+            return el.classList.contains(className);
         }
-    };
 
+        function addEvent(el, type, handler) {
+            el.addEventListener(type, handler);
+        }
+
+        function removeEvent(el, type, handler) {
+            el.removeEventListener(type, handler);
+        }
+
+        function live(elClass, event, cb, context) {
+            addEvent(context || document, event, function(e) {
+                var found, el = e.target || e.srcElement;
+                while (el && !(found = hasClass(el, elClass))) {
+                    el = el.parentElement;
+                }
+                if (found) {
+                    cb.call(el, e);
+                }
+            });
+        }
+
+        var o = {
+            selector: 0,
+            source: 0,
+            minChars: 2,
+            delay: 250,
+            offsetLeft: 0,
+            offsetTop: 1,
+            cache: 1,
+            sourceData: null,
+            menuClass: '',
+            renderItem: function(item, search) {
+                // escape special characters
+                search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+                var re = new RegExp('(' + search.split(' ').join('|') + ')', 'gi');
+                return '<div class="autocomplete-suggestion" data-val="' + item + '">' + item.replace(re, '<b>$1</b>') + '</div>';
+            },
+            onSelect: function(e, term, item) { }
+        };
+        for (var k in options) { if (options.hasOwnProperty(k)) o[k] = options[k]; }
+
+        // init
+        var elems = typeof o.selector == 'object' ? [o.selector] : document.querySelectorAll(o.selector);
+        for (var i = 0; i < elems.length; i++) {
+            var that = elems[i];
+
+            // create suggestions container "sc"
+            that.sc = document.createElement('div');
+            that.sc.className = 'autocomplete-suggestions ' + o.menuClass;
+
+            that.autocompleteAttr = that.getAttribute('autocomplete');
+            that.setAttribute('autocomplete', 'off');
+            that.cache = {};
+            that.last_val = '';
+
+            that.updateSC = function(resize, next) {
+                var rect = that.getBoundingClientRect();
+                that.sc.style.left = Math.round(rect.left + (window.pageXOffset || document.documentElement.scrollLeft) + o.offsetLeft) + 'px';
+                that.sc.style.top = Math.round(rect.bottom + (window.pageYOffset || document.documentElement.scrollTop) + o.offsetTop) + 'px';
+                that.sc.style.width = Math.round(rect.right - rect.left) + 'px'; // outerWidth
+                if (!resize) {
+                    that.sc.style.display = 'block';
+                    if (!that.sc.maxHeight) { that.sc.maxHeight = parseInt((window.getComputedStyle ? getComputedStyle(that.sc, null) : that.sc.currentStyle).maxHeight); }
+                    if (!that.sc.suggestionHeight) that.sc.suggestionHeight = that.sc.querySelector('.autocomplete-suggestion').offsetHeight;
+                    if (that.sc.suggestionHeight)
+                        if (!next) that.sc.scrollTop = 0;
+                        else {
+                            var scrTop = that.sc.scrollTop, selTop = next.getBoundingClientRect().top - that.sc.getBoundingClientRect().top;
+                            if (selTop + that.sc.suggestionHeight - that.sc.maxHeight > 0)
+                                that.sc.scrollTop = selTop + that.sc.suggestionHeight + scrTop - that.sc.maxHeight;
+                            else if (selTop < 0)
+                                that.sc.scrollTop = selTop + scrTop;
+                        }
+                }
+            };
+            addEvent(window, 'resize', that.updateSC);
+            document.body.appendChild(that.sc);
+
+            live('autocomplete-suggestion', 'mouseleave', function() {
+                var sel = that.sc.querySelector('.autocomplete-suggestion.selected');
+                if (sel) setTimeout(function() { sel.className = sel.className.replace('selected', ''); }, 20);
+            }, that.sc);
+
+            live('autocomplete-suggestion', 'mouseover', function() {
+                var sel = that.sc.querySelector('.autocomplete-suggestion.selected');
+                if (sel) sel.className = sel.className.replace('selected', '');
+                this.className += ' selected';
+            }, that.sc);
+
+            live('autocomplete-suggestion', 'mousedown', function(e) {
+                if (hasClass(this, 'autocomplete-suggestion')) { // else outside click
+                    var v = this.getAttribute('data-val');
+                    that.value = v;
+                    o.onSelect(e, v, this);
+                    that.sc.style.display = 'none';
+                }
+            }, that.sc);
+
+            that.blurHandler = function() {
+                var over_sb;
+                try {
+                    over_sb = document.querySelector('.autocomplete-suggestions:hover');
+                } catch (e) {
+                    over_sb = 0;
+                }
+                if (!over_sb) {
+                    if (o.sourceData && o.sourceData.indexOf(that.value) === -1) {
+                        that.value = '';
+                    }
+                    that.last_val = that.value;
+                    that.sc.style.display = 'none';
+                    setTimeout(function() { that.sc.style.display = 'none'; }, 350); // hide suggestions on fast input
+                } else if (that !== document.activeElement) {
+                    setTimeout(function() { that.focus(); }, 20);
+                }
+            };
+            addEvent(that, 'blur', that.blurHandler);
+
+            var suggest = function(data) {
+                var val = that.value;
+                that.cache[val] = data;
+                if (data.length && val.length >= o.minChars) {
+                    var s = '';
+                    for (var i = 0; i < data.length; i++) s += o.renderItem(data[i], val);
+                    that.sc.innerHTML = s;
+                    that.updateSC(0);
+                } else {
+                    that.sc.style.display = 'none';
+                }
+            };
+
+            var internalSource = function(sourceData, term, suggest) {
+                term = term.toLowerCase();
+                var matches = [];
+                for (i = 0; i < sourceData.length; i++) {
+                    if (~sourceData[i].toLowerCase().indexOf(term)) matches.push(sourceData[i]);
+                }
+                suggest(matches);
+            };
+
+            that.keydownHandler = function(e) {
+                var sel = that.sc.querySelector('.autocomplete-suggestion.selected');
+                var key = window.event ? e.keyCode : e.which;
+                // down (40), up (38)
+                if ((key === 40 || key === 38) && that.sc.innerHTML) {
+                    var next;
+                    if (!sel) {
+                        next = key === 40 ? that.sc.querySelector('.autocomplete-suggestion') : that.sc.childNodes[that.sc.childNodes.length - 1]; // first : last
+                        next.className += ' selected';
+                        that.value = next.getAttribute('data-val');
+                    } else {
+                        next = key === 40 ? sel.nextSibling : sel.previousSibling;
+                        if (next) {
+                            sel.className = sel.className.replace('selected', '');
+                            next.className += ' selected';
+                            that.value = next.getAttribute('data-val');
+                        } else {
+                            sel.className = sel.className.replace('selected', '');
+                            that.value = that.last_val;
+                            next = 0;
+                        }
+                    }
+                    that.updateSC(0, next);
+                    return false;
+                } else if (key === 27) {
+                    // esc
+                    that.value = '';
+                    that.sc.style.display = 'none';
+                } else if (key === 13 || key === 9) {
+                    // enter or tab
+                    if (sel && that.sc.style.display != 'none') {
+                        if (key === 13) {
+                            e.preventDefault();
+                        }
+                        that.value = sel.getAttribute('data-val');
+                        o.onSelect(e, sel.getAttribute('data-val'), sel);
+                        setTimeout(function() {
+                            that.sc.style.display = 'none';
+                        }, 20);
+                    } else {
+                        that.value = '';
+                    }
+                }
+            };
+            addEvent(that, 'keydown', that.keydownHandler);
+
+            that.keyupHandler = function(e) {
+                var key = window.event ? e.keyCode : e.which;
+                if (!key || (key < 35 || key > 40) && key != 13 && key != 27) {
+                    var val = that.value;
+                    if (val.length >= o.minChars) {
+                        if (val != that.last_val) {
+                            that.last_val = val;
+                            clearTimeout(that.timer);
+                            if (o.cache) {
+                                if (val in that.cache) { suggest(that.cache[val]); return; }
+                                // no requests if previous suggestions were empty
+                                for (var i = 1; i < val.length - o.minChars; i++) {
+                                    var part = val.slice(0, val.length - i);
+                                    if (part in that.cache && !that.cache[part].length) { suggest([]); return; }
+                                }
+                            }
+                            that.timer = setTimeout(o.sourceData ? internalSource.bind(null, o.sourceData, val, suggest) : o.source.bind(this, val, suggest), o.delay);
+                        }
+                    } else {
+                        that.last_val = val;
+                        that.sc.style.display = 'none';
+                    }
+                }
+            };
+            addEvent(that, 'keyup', that.keyupHandler);
+
+            that.focusHandler = function(e) {
+                that.last_val = '\n';
+                that.keyupHandler(e);
+            };
+            if (!o.minChars) {
+                addEvent(that, 'focus', that.focusHandler);
+            }
+        }
+
+        // public destroy method
+        this.destroy = function() {
+            for (var i = 0; i < elems.length; i++) {
+                var that = elems[i];
+                removeEvent(window, 'resize', that.updateSC);
+                removeEvent(that, 'blur', that.blurHandler);
+                removeEvent(that, 'focus', that.focusHandler);
+                removeEvent(that, 'keydown', that.keydownHandler);
+                removeEvent(that, 'keyup', that.keyupHandler);
+                if (that.autocompleteAttr) {
+                    that.setAttribute('autocomplete', that.autocompleteAttr);
+                } else {
+                    that.removeAttribute('autocomplete');
+                }
+                document.body.removeChild(that.sc);
+                that = null;
+            }
+        };
+    }
     return Autocomplete;
 });
