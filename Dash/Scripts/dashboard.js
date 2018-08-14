@@ -62,8 +62,10 @@
             // any widgets still left need to be deleted
             widgets.forEach(function(x) { x.destroy(true); });
         }
-        $.off(window, 'keydown', _windowEvents.keydown);
-        $.off(window, 'resize', _windowEvents.resize);
+        if (_windowEvents) {
+            $.off(window, 'keydown', _windowEvents.keydown);
+            $.off(window, 'resize', _windowEvents.resize);
+        }
         _windowEvents = null;
     }, true);
 
