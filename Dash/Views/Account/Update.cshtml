@@ -8,6 +8,8 @@
         new Breadcrumb(Account.UpdateAccount, "Update", "Account")
     });
 
+    <partial name="_Toast" />
+
     @using (Html.BeginCustomForm("Update", "Account"))
     {
         @Html.HiddenFor(model => model.Id)
