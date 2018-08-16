@@ -228,6 +228,7 @@
      * @param {Object} options - Configuration options.
      */
     pjax.init = function(options) {
+        options = options || {};
         // Delete history and title if provided. These options should only be provided via invoke();
         delete options.title;
         delete options.history;
