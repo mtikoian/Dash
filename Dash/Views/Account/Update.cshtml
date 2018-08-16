@@ -13,6 +13,7 @@
     @using (Html.BeginCustomForm("Update", "Account"))
     {
         @Html.HiddenFor(model => model.Id)
+        @Html.HiddenFor(model => model.UserName)
 
         <div class="columns">
             <div class="col-6">
