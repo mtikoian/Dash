@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Resources;
 
-namespace Dash.I18n
+namespace Dash.Utils
 {
     /// <summary>
     /// Dictionary for interacting with resource files.

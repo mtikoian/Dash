@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Dash.Configuration;
 using Dash.Models;
-using Dash.I18n;
+using Dash.Resources;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dash.Controllers

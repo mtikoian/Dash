@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using Dash.I18n;
+using Dash.Resources;
+using Dash.Utils;
 using Jil;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -31,7 +32,7 @@ namespace Dash.Models
             DatasetId = datasetid;
         }
 
-        [Required(ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorRequired")]
+        [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int DatasetId { get; set; }
 
         [Ignore]
@@ -41,7 +42,7 @@ namespace Dash.Models
         public int JoinOrder { get; set; }
 
         [Display(Name = "JoinType", ResourceType = typeof(Datasets))]
-        [Required(ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorRequired")]
+        [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int JoinTypeId { get; set; }
 
         [Ignore, JilDirective(true)]
@@ -54,13 +55,13 @@ namespace Dash.Models
         }
 
         [Display(Name = "JoinKeys", ResourceType = typeof(Datasets))]
-        [Required(ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorRequired")]
-        [StringLength(500, ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorMaxLength")]
+        [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
+        [StringLength(500, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string Keys { get; set; }
 
         [Display(Name = "JoinTableName", ResourceType = typeof(Datasets))]
-        [Required(ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorRequired")]
-        [StringLength(100, ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorMaxLength")]
+        [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
+        [StringLength(100, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string TableName { get; set; }
 
         public bool MoveDown(out string error)

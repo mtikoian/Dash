@@ -65,7 +65,6 @@ gulp.task('watch', function() {
     gulp.watch(paths.js + '**/*.js', ['js']);
     gulp.watch('*.csproj', ['webFixer']);
     gulp.watch('../Dash.Database/*.sqlproj', ['dbFixer']);
-    gulp.watch('../Dash.I18n/*.csproj', ['i18nFixer']);
 });
 
 gulp.task('sass', function() {
@@ -138,10 +137,6 @@ gulp.task('favicon', function() {
 
 gulp.task('webFixer', function() {
     return gulp.src(['*.csproj']).pipe(through.obj(sortXml)).pipe(replace('&#xD;', '')).pipe(gulp.dest('.'));
-});
-
-gulp.task('i18nFixer', function() {
-    return gulp.src(['../Dash.I18n/*.csproj']).pipe(through.obj(sortXml)).pipe(replace('&#xD;', '')).pipe(gulp.dest('../Dash.I18n/'));
 });
 
 gulp.task('dbFixer', function() {

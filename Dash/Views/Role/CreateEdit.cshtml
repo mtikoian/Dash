@@ -1,5 +1,5 @@
 ﻿@using Dash.Models
-@using Dash.I18n;
+@using Dash.Resources;
 @model Role
 
 @using (Html.BeginBodyContent())
@@ -24,7 +24,7 @@
         <div class="columns">
             <div class="col-6">
                 <div class="form-group">
-                    @Html.ControlLabel("PermissionIds", Dash.I18n.Roles.Permissions)
+                    @Html.ControlLabel("PermissionIds", Dash.Resources.Roles.Permissions)
                     <div class="col-8 c-hand" data-toggle="collapsible-list">
                         @foreach (var controller in Model.ControllerPermissions.Keys)
                         {
@@ -47,7 +47,7 @@
             </div>
             <div class="col-6">
                 <div class="form-group columns">
-                    @Html.ControlLabel("UserIds", Dash.I18n.Roles.Users)
+                    @Html.ControlLabel("UserIds", Dash.Resources.Roles.Users)
                     <div class="col-8 checkbox-block">
                         @foreach (var user in Model.AllUsers)
                         {

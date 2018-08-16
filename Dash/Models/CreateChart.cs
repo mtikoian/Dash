@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Dash.Resources;
 
 namespace Dash.Models
 {
@@ -14,13 +15,13 @@ namespace Dash.Models
             RequestUserId = userId;
         }
 
-        [Display(Name = "Type", ResourceType = typeof(I18n.Charts))]
-        [Required(ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorRequired")]
+        [Display(Name = "Type", ResourceType = typeof(Charts))]
+        [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int ChartTypeId { get; set; }
 
-        [Display(Name = "Name", ResourceType = typeof(I18n.Charts))]
-        [Required(ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorRequired")]
-        [MaxLength(100, ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorMaxLength"), StringLength(100)]
+        [Display(Name = "Name", ResourceType = typeof(Charts))]
+        [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
+        [MaxLength(100, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength"), StringLength(100)]
         public string Name { get; set; }
     }
 }

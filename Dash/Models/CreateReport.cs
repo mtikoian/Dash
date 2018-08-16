@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Dash.I18n;
+using Dash.Resources;
 
 namespace Dash.Models
 {

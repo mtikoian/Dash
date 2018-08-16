@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Dash.Resources;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
@@ -16,8 +17,8 @@ namespace Dash.Models
             set { _Chart = value; }
         }
 
-        [Required(ErrorMessageResourceType = typeof(I18n.Reports), ErrorMessageResourceName = "ErrorNameRequired")]
-        [StringLength(100, ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorMaxLength")]
+        [Required(ErrorMessageResourceType = typeof(Reports), ErrorMessageResourceName = "ErrorNameRequired")]
+        [StringLength(100, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string Prompt { get; set; }
 
         public void Save()
@@ -32,7 +33,7 @@ namespace Dash.Models
             DbContext = (IDbContext)validationContext.GetService(typeof(IDbContext));
             if (Chart == null)
             {
-                yield return new ValidationResult(I18n.Core.ErrorInvalidId);
+                yield return new ValidationResult(Core.ErrorInvalidId);
             }
         }
     }

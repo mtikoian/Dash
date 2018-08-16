@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Globalization;
 using System.Linq;
-using Dash.I18n;
 using Dash.Configuration;
+using Dash.Resources;
 using Dash.Utils;
 using Jil;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -186,9 +185,7 @@ namespace Dash.Models
                 var language = DbContext.Get<Language>(user.LanguageId);
                 if (language != null)
                 {
-                    var cultureInfo = new CultureInfo(language.LanguageCode);
-                    CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
-                    CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+                    LanguageCode = language.LanguageCode;
                 }
                 return true;
             }

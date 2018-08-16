@@ -5,8 +5,9 @@ using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text.Encodings.Web;
-using Dash.I18n;
 using Dash.Models;
+using Dash.Resources;
+using Dash.Utils;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Internal;
@@ -133,6 +134,33 @@ namespace Dash
             return li;
         }
 
+        public static IDisposable BeginBodyContent(this IHtmlHelper helper, string title = null, string url = null, string loadEvent = null, string unloadEvent = null)
+        {
+            var div = new TagBuilder("div");
+            div.Attributes.Add("id", "bodyContent");
+            div.AddCssClass("p-5");
+            if (!title.IsEmpty())
+            {
+                div.Attributes.Add("data-pjax-title", title);
+            }
+            if (!url.IsEmpty())
+            {
+                div.Attributes.Add("data-pjax-url", url);
+            }
+            if (!loadEvent.IsEmpty())
+            {
+                div.Attributes.Add("data-load-event", loadEvent);
+            }
+            if (!unloadEvent.IsEmpty())
+            {
+                div.Attributes.Add("data-unload-event", unloadEvent);
+            }
+
+            var writer = helper.ViewContext.Writer;
+            div.RenderStartTag().WriteTo(writer, HtmlEncoder.Default);
+            return new BodyContent(writer);
+        }
+
         public static MvcForm BeginCustomForm(this IHtmlHelper helper, string action, string controller, object routeValues = null, string title = null, string dataLoadEvent = null, string dataUrl = null, object htmlAttributes = null, bool ajaxForm = true, HttpVerbs method = HttpVerbs.Post)
         {
             var htmlAttr = HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes);
@@ -173,31 +201,11 @@ namespace Dash
             return mvcForm;
         }
 
-        public static IDisposable BeginBodyContent(this IHtmlHelper helper, string title = null, string url = null, string loadEvent = null, string unloadEvent = null)
+        public static IDisposable BeginToolbar(this IHtmlHelper helper)
         {
-            var div = new TagBuilder("div");
-            div.Attributes.Add("id", "bodyContent");
-            div.AddCssClass("p-5");
-            if (!title.IsEmpty())
-            {
-                div.Attributes.Add("data-pjax-title", title);
-            }
-            if (!url.IsEmpty())
-            {
-                div.Attributes.Add("data-pjax-url", url);
-            }
-            if (!loadEvent.IsEmpty())
-            {
-                div.Attributes.Add("data-load-event", loadEvent);
-            }
-            if (!unloadEvent.IsEmpty())
-            {
-                div.Attributes.Add("data-unload-event", unloadEvent);
-            }
-
             var writer = helper.ViewContext.Writer;
-            div.RenderStartTag().WriteTo(writer, HtmlEncoder.Default);
-            return new BodyContent(writer);
+            writer.Write("<div class=\"col-12\"><div class=\"text-right\">");
+            return new Toolbar(writer);
         }
 
         public static IHtmlContent Breadcrumbs(this IHtmlHelper helper, List<Breadcrumb> breadcrumbs)
@@ -227,41 +235,6 @@ namespace Dash
             div.InnerHtml.AppendHtml(ul);
             div.InnerHtml.AppendHtml(divider);
             return div;
-        }
-
-        public static IHtmlContent FormButtons(this IHtmlHelper helper, string submitLabel = null, IHtmlContent extraButtons = null)
-        {
-            var submit = new TagBuilder("input");
-            submit.MergeAttribute("type", "submit");
-            submit.MergeAttribute("value", submitLabel ?? Core.Save);
-            submit.AddCssClass("btn btn-primary");
-            var span = new TagBuilder("span");
-            span.AddCssClass("form-buttons col-8 col-ml-auto");
-            span.InnerHtml.AppendHtml(submit);
-            if (extraButtons != null)
-            {
-                span.InnerHtml.AppendHtml(extraButtons);
-            }
-
-            var columnDiv = new TagBuilder("div");
-            columnDiv.AddCssClass("columns");
-            columnDiv.InnerHtml.AppendHtml(span);
-
-            var colDiv = new TagBuilder("div");
-            colDiv.AddCssClass("col-6");
-            colDiv.InnerHtml.AppendHtml(columnDiv);
-
-            var div = new TagBuilder("div");
-            div.AddCssClass("columns pt-5");
-            div.InnerHtml.AppendHtml(colDiv);
-            return div;
-        }
-
-        public static IDisposable BeginToolbar(this IHtmlHelper helper)
-        {
-            var writer = helper.ViewContext.Writer;
-            writer.Write("<div class=\"col-12\"><div class=\"text-right\">");
-            return new Toolbar(writer);
         }
 
         public static Dictionary<string, object> Classes(params DashClasses[] classList)
@@ -329,6 +302,34 @@ namespace Dash
             outerDiv.AddCssClass("col-12");
             outerDiv.InnerHtml.AppendHtml(div);
             return outerDiv;
+        }
+
+        public static IHtmlContent FormButtons(this IHtmlHelper helper, string submitLabel = null, IHtmlContent extraButtons = null)
+        {
+            var submit = new TagBuilder("input");
+            submit.MergeAttribute("type", "submit");
+            submit.MergeAttribute("value", submitLabel ?? Core.Save);
+            submit.AddCssClass("btn btn-primary");
+            var span = new TagBuilder("span");
+            span.AddCssClass("form-buttons col-8 col-ml-auto");
+            span.InnerHtml.AppendHtml(submit);
+            if (extraButtons != null)
+            {
+                span.InnerHtml.AppendHtml(extraButtons);
+            }
+
+            var columnDiv = new TagBuilder("div");
+            columnDiv.AddCssClass("columns");
+            columnDiv.InnerHtml.AppendHtml(span);
+
+            var colDiv = new TagBuilder("div");
+            colDiv.AddCssClass("col-6");
+            colDiv.InnerHtml.AppendHtml(columnDiv);
+
+            var div = new TagBuilder("div");
+            div.AddCssClass("columns pt-5");
+            div.InnerHtml.AppendHtml(colDiv);
+            return div;
         }
 
         public static IHtmlContent Help<TModel>(this IHtmlHelper<TModel> helper, string modelName, string fieldName, bool useInputGroup = true)
@@ -647,20 +648,6 @@ namespace Dash
             return label;
         }
 
-        private class Toolbar : IDisposable
-        {
-            private readonly TextWriter _writer;
-
-            public Toolbar(TextWriter writer)
-            {
-                _writer = writer;
-            }
-
-            public void Dispose()
-            {
-                _writer.Write("</div></div>");
-            }
-        }
         private class BodyContent : IDisposable
         {
             private readonly TextWriter _writer;
@@ -673,6 +660,21 @@ namespace Dash
             public void Dispose()
             {
                 _writer.Write("</div>");
+            }
+        }
+
+        private class Toolbar : IDisposable
+        {
+            private readonly TextWriter _writer;
+
+            public Toolbar(TextWriter writer)
+            {
+                _writer = writer;
+            }
+
+            public void Dispose()
+            {
+                _writer.Write("</div></div>");
             }
         }
     }

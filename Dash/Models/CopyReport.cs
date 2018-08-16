@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Dash.Resources;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
@@ -11,8 +12,8 @@ namespace Dash.Models
         private IHttpContextAccessor _HttpContextAccessor;
         private Report _Report;
 
-        [Required(ErrorMessageResourceType = typeof(I18n.Reports), ErrorMessageResourceName = "ErrorNameRequired")]
-        [StringLength(100, ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorMaxLength")]
+        [Required(ErrorMessageResourceType = typeof(Reports), ErrorMessageResourceName = "ErrorNameRequired")]
+        [StringLength(100, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string Prompt { get; set; }
 
         [BindNever, ValidateNever]
@@ -35,12 +36,12 @@ namespace Dash.Models
             _HttpContextAccessor = (IHttpContextAccessor)validationContext.GetService(typeof(IHttpContextAccessor));
             if (Report == null)
             {
-                yield return new ValidationResult(I18n.Core.ErrorInvalidId);
+                yield return new ValidationResult(Core.ErrorInvalidId);
             }
             var user = DbContext.Get<User>(_HttpContextAccessor.HttpContext.User.UserId());
             if (user?.CanAccessDataset(Report.DatasetId) != true)
             {
-                yield return new ValidationResult(I18n.Reports.ErrorReportDatasetAccess);
+                yield return new ValidationResult(Reports.ErrorReportDatasetAccess);
             }
         }
     }

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Dash.Resources;
 
 namespace Dash.Models
 {
@@ -7,13 +8,13 @@ namespace Dash.Models
     /// </summary>
     public class UserRole : BaseModel
     {
-        [Required(ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorRequired")]
+        [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int RoleId { get; set; }
 
         [Ignore]
         public string RoleName { get; set; }
 
-        [Required(ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorRequired")]
+        [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int UserId { get; set; }
     }
 }

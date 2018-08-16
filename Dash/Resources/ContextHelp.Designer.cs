@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Dash.I18n {
+namespace Dash.Resources {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Dash.I18n {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Dash.I18n.ContextHelp", typeof(ContextHelp).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Dash.Resources.ContextHelp", typeof(ContextHelp).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

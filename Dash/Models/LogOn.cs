@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Dash.Configuration;
-using Dash.I18n;
+using Dash.Resources;
 using Dash.Utils;
 using Microsoft.AspNetCore.Http;
 

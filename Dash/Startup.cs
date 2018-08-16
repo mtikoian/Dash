@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Security.Claims;
@@ -13,10 +15,11 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
@@ -114,7 +117,15 @@ namespace Dash
             app.UseStaticFiles();
             app.UseAuthentication();
 
-            app.UseRequestLocalization();
+            var cultures = new List<CultureInfo> {
+                new CultureInfo("en"),
+                new CultureInfo("es")
+            };
+            app.UseRequestLocalization(new RequestLocalizationOptions {
+                DefaultRequestCulture = new RequestCulture("en"),
+                SupportedCultures = cultures,
+                SupportedUICultures = cultures
+            });
 
             // Configure hangfire to use the new JobActivator we defined.
             app.UseHangfireDashboard("/hangfire", new DashboardOptions() {
@@ -171,6 +182,10 @@ namespace Dash
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddScoped<IDbContext, DbContext>();
 
+            services.AddLocalization(x => {
+                x.ResourcesPath = "Resources";
+            });
+
             // https://stackoverflow.com/questions/39276939/how-to-inject-dependencies-into-models-in-asp-net-core
             services.AddMvc().AddMvcOptions(options => {
                 // replace ComplexTypeModelBinderProvider with its descendent - IoCModelBinderProvider
@@ -178,7 +193,7 @@ namespace Dash
                 var binderIndex = options.ModelBinderProviders.IndexOf(provider);
                 options.ModelBinderProviders.Remove(provider);
                 options.ModelBinderProviders.Insert(binderIndex, new DiModelBinderProvider());
-            });
+            }).AddDataAnnotationsLocalization();
         }
 
         /// <summary>

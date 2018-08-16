@@ -1,12 +1,14 @@
-﻿using System.Linq;
+﻿using System.Globalization;
+using System.Linq;
 using Dash.Configuration;
-using Dash.I18n;
 using Dash.Models;
+using Dash.Resources;
 using Dash.Utils;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 
@@ -79,6 +81,14 @@ namespace Dash.Controllers
                 ViewBag.Error = error;
                 return View("Login", model);
             }
+
+            // add localization cookie after logon
+            var cultureInfo = new CultureInfo(model.Membership.LanguageCode);
+            Response.Cookies.Append(
+                CookieRequestCultureProvider.DefaultCookieName,
+                CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(cultureInfo))
+            );
+
             if (model.Membership.AllowSingleFactor)
             {
                 if (!model.ReturnUrl.IsEmpty())
@@ -203,6 +213,14 @@ namespace Dash.Controllers
                 ViewBag.Error = errorMsg;
                 return View("Update", model);
             }
+
+            // add localization cookie after logon
+            var cultureInfo = new CultureInfo(model.LanguageCode);
+            Response.Cookies.Append(
+                CookieRequestCultureProvider.DefaultCookieName,
+                CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(cultureInfo))
+            );
+
             ViewBag.Message = Account.AccountUpdated;
             return View("Update", model);
         }

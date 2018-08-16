@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Dash.I18n {
+namespace Dash.Resources {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace Dash.I18n {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class Users {
+    public class Roles {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Users() {
+        internal Roles() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Dash.I18n {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Dash.I18n.Users", typeof(Users).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Dash.Resources.Roles", typeof(Roles).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,52 +61,34 @@ namespace Dash.I18n {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Allow Single Factor Login.
+        ///   Looks up a localized string similar to Enter the name for the new role..
         /// </summary>
-        public static string AllowSingleFactor {
+        public static string CopyBody {
             get {
-                return ResourceManager.GetString("AllowSingleFactor", resourceCulture);
+                return ResourceManager.GetString("CopyBody", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Confirm Password.
+        ///   Looks up a localized string similar to Create Role.
         /// </summary>
-        public static string ConfirmPassword {
+        public static string CreateRole {
             get {
-                return ResourceManager.GetString("ConfirmPassword", resourceCulture);
+                return ResourceManager.GetString("CreateRole", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create User.
+        ///   Looks up a localized string similar to Edit Role.
         /// </summary>
-        public static string CreateUser {
+        public static string EditRole {
             get {
-                return ResourceManager.GetString("CreateUser", resourceCulture);
+                return ResourceManager.GetString("EditRole", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Edit User.
-        /// </summary>
-        public static string EditUser {
-            get {
-                return ResourceManager.GetString("EditUser", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Email.
-        /// </summary>
-        public static string Email {
-            get {
-                return ResourceManager.GetString("Email", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A user with this name already exists..
+        ///   Looks up a localized string similar to A role with this name already exists..
         /// </summary>
         public static string ErrorDuplicateName {
             get {
@@ -115,34 +97,16 @@ namespace Dash.I18n {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to First Name.
+        ///   Looks up a localized string similar to A name is required to create a role..
         /// </summary>
-        public static string FirstName {
+        public static string ErrorNameRequired {
             get {
-                return ResourceManager.GetString("FirstName", resourceCulture);
+                return ResourceManager.GetString("ErrorNameRequired", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Language.
-        /// </summary>
-        public static string Language {
-            get {
-                return ResourceManager.GetString("Language", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Last Name.
-        /// </summary>
-        public static string LastName {
-            get {
-                return ResourceManager.GetString("LastName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Users.
+        ///   Looks up a localized string similar to Roles.
         /// </summary>
         public static string MenuItem {
             get {
@@ -151,79 +115,70 @@ namespace Dash.I18n {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Password.
+        ///   Looks up a localized string similar to Name.
         /// </summary>
-        public static string Password {
+        public static string Name {
             get {
-                return ResourceManager.GetString("Password", resourceCulture);
+                return ResourceManager.GetString("Name", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Roles.
+        ///   Looks up a localized string similar to Permissions.
         /// </summary>
-        public static string Roles {
+        public static string Permissions {
             get {
-                return ResourceManager.GetString("Roles", resourceCulture);
+                return ResourceManager.GetString("Permissions", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to User deleted successfully..
+        ///   Looks up a localized string similar to role.
         /// </summary>
-        public static string SuccessDeletingUser {
+        public static string RoleLower {
             get {
-                return ResourceManager.GetString("SuccessDeletingUser", resourceCulture);
+                return ResourceManager.GetString("RoleLower", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to User saved successfully..
+        ///   Looks up a localized string similar to Role copied successfully..
         /// </summary>
-        public static string SuccessSavingUser {
+        public static string SuccessCopyingRole {
             get {
-                return ResourceManager.GetString("SuccessSavingUser", resourceCulture);
+                return ResourceManager.GetString("SuccessCopyingRole", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to User unlocked successfully..
+        ///   Looks up a localized string similar to Role deleted successfully..
         /// </summary>
-        public static string SuccessUnlockingUser {
+        public static string SuccessDeletingRole {
             get {
-                return ResourceManager.GetString("SuccessUnlockingUser", resourceCulture);
+                return ResourceManager.GetString("SuccessDeletingRole", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unlock.
+        ///   Looks up a localized string similar to Role saved successfully..
         /// </summary>
-        public static string Unlock {
+        public static string SuccessSavingRole {
             get {
-                return ResourceManager.GetString("Unlock", resourceCulture);
+                return ResourceManager.GetString("SuccessSavingRole", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to user.
+        ///   Looks up a localized string similar to Users.
         /// </summary>
-        public static string UserLower {
+        public static string Users {
             get {
-                return ResourceManager.GetString("UserLower", resourceCulture);
+                return ResourceManager.GetString("Users", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to UserName.
-        /// </summary>
-        public static string UserName {
-            get {
-                return ResourceManager.GetString("UserName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to View All Users.
+        ///   Looks up a localized string similar to View All Roles.
         /// </summary>
         public static string ViewAll {
             get {

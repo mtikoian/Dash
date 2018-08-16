@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
-using Dash.I18n;
+using Dash.Resources;
+using Dash.Utils;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Dash.Models

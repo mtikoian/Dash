@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
 using Dash.Configuration;
-using Dash.I18n;
 using Dash.Models;
+using Dash.Resources;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 

@@ -2,7 +2,8 @@
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Linq;
-using Dash.I18n;
+using Dash.Resources;
+using Dash.Utils;
 using Jil;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;

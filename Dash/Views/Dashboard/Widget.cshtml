@@ -1,5 +1,5 @@
 ﻿@model Dash.Models.WidgetView
-@using Dash.I18n;
+@using Dash.Resources;
 
 <div id="widget_@Model.Id" class="grid-item grid-item-width-@Model.Width grid-item-height-@Model.Height grid-item-x-@Model.X grid-item-y-@Model.Y"
      data-id="@Model.Id" data-report-id="@Model.ReportId" data-options-url="@Url.Action("WidgetOptions", new { id = Model.Id })"

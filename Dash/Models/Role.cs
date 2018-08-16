@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using Dash.Resources;
 using Jil;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
@@ -54,9 +55,9 @@ namespace Dash.Models
             }
         }
 
-        [Display(Name = "Name", ResourceType = typeof(I18n.Roles))]
-        [Required(ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorRequired")]
-        [StringLength(100, ErrorMessageResourceType = typeof(I18n.Core), ErrorMessageResourceName = "ErrorMaxLength")]
+        [Display(Name = "Name", ResourceType = typeof(Roles))]
+        [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
+        [StringLength(100, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string Name { get; set; }
 
         [Ignore]
@@ -85,7 +86,7 @@ namespace Dash.Models
         {
             var newRole = this.Clone();
             newRole.Id = 0;
-            newRole.Name = name.IsEmpty() ? String.Format(I18n.Core.CopyOf, Name) : name;
+            newRole.Name = name.IsEmpty() ? string.Format(Core.CopyOf, Name) : name;
             newRole.RolePermission = (RolePermission ?? DbContext.GetAll<RolePermission>(new { RoleId = Id }))?.Select(x => new RolePermission { PermissionId = x.PermissionId }).ToList();
             newRole.UserRole = (UserRole ?? DbContext.GetAll<UserRole>(new { RoleId = Id }))?.Select(x => new UserRole { UserId = x.UserId }).ToList();
             return newRole;
@@ -112,7 +113,7 @@ namespace Dash.Models
         {
             if (!IsUniqueName(Name, Id))
             {
-                yield return new ValidationResult(I18n.Roles.ErrorDuplicateName, new[] { "Name" });
+                yield return new ValidationResult(Roles.ErrorDuplicateName, new[] { "Name" });
             }
         }
     }

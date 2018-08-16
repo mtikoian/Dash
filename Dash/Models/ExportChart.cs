@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Drawing;
 using System.IO;
-using System.Web;
+using Dash.Resources;
 
 namespace Dash.Models
 {
@@ -10,11 +10,11 @@ namespace Dash.Models
     {
         public string ContentType { get; } = "image/png";
 
-        [Required, Display(Name = "ExportChartData", ResourceType = typeof(I18n.Charts))]
+        [Required, Display(Name = "ExportChartData", ResourceType = typeof(Charts))]
         public string Data { get; set; }
 
         [Required, StringLength(250, MinimumLength = 5)]
-        [Display(Name = "ExportChartName", ResourceType = typeof(I18n.Charts))]
+        [Display(Name = "ExportChartName", ResourceType = typeof(Charts))]
         public string FileName { get; set; }
 
         public string FormattedFileName
@@ -22,12 +22,12 @@ namespace Dash.Models
             get
             {
                 var formattedName = FileName;
-                Array.ForEach(Path.GetInvalidFileNameChars(), c => formattedName = formattedName.Replace(c.ToString(), String.Empty));
+                Array.ForEach(Path.GetInvalidFileNameChars(), c => formattedName = formattedName.Replace(c.ToString(), string.Empty));
                 return $"{formattedName}.png";
             }
         }
 
-        [Required, Display(Name = "ExportChartWidth", ResourceType = typeof(I18n.Charts))]
+        [Required, Display(Name = "ExportChartWidth", ResourceType = typeof(Charts))]
         public int Width { get; set; }
 
         /// <summary>

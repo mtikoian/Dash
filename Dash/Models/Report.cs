@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Dash.Configuration;
-using Dash.I18n;
+using Dash.Resources;
+using Dash.Utils;
 using Jil;
 
 namespace Dash.Models

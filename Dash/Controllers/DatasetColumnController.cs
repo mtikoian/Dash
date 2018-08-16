@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Dash.Configuration;
-using Dash.I18n;
 using Dash.Models;
+using Dash.Resources;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -86,7 +86,6 @@ namespace Dash.Controllers
             }
             return Index(id);
         }
-
 
         [HttpGet]
         public IActionResult Index(int id)

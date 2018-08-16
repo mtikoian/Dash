@@ -6,12 +6,13 @@ using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
 using Dapper;
-using Dash.I18n;
+using Dash.Resources;
 using Jil;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Dash.Configuration;
+using Dash.Utils;
 
 namespace Dash.Models
 {

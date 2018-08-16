@@ -8,8 +8,8 @@ using System.Reflection;
 using System.Security.Claims;
 using System.Text;
 using System.Text.RegularExpressions;
-using Dash.I18n;
 using Dash.Models;
+using Dash.Utils;
 using FastMember;
 using Jil;
 using Microsoft.AspNetCore.Http;
@@ -22,8 +22,8 @@ namespace Dash
     {
         private const string RequestedWithHeader = "X-Requested-With";
         private const string XmlHttpRequest = "XMLHttpRequest";
-        private static Regex CsvRegex = new Regex(@"(?:^|(,\s?))(""(?:[^""]+|"""")*""|[^(,\s?)]*)", RegexOptions.Compiled);
         private static Regex CssRegex = new Regex(@"(?<!_)([A-Z])", RegexOptions.Compiled);
+        private static Regex CsvRegex = new Regex(@"(?:^|(,\s?))(""(?:[^""]+|"""")*""|[^(,\s?)]*)", RegexOptions.Compiled);
 
         /// <summary>
         /// Add an item to the list if `add` is true.
