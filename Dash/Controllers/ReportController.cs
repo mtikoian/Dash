@@ -82,7 +82,7 @@ namespace Dash.Controllers
             return Data(model.GetResult());
         }
 
-        [HttpDelete, AjaxRequestOnly]
+        [HttpDelete]
         public IActionResult Delete(int id)
         {
             var report = DbContext.Get<Report>(id);

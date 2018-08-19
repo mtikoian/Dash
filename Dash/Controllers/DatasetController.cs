@@ -57,7 +57,7 @@ namespace Dash.Controllers
             return Save(model);
         }
 
-        [HttpDelete, AjaxRequestOnly]
+        [HttpDelete]
         public IActionResult Delete(int id)
         {
             var model = DbContext.Get<Dataset>(id);
@@ -87,21 +87,6 @@ namespace Dash.Controllers
         public IActionResult Edit(Dataset model)
         {
             return Save(model);
-        }
-
-        [HttpGet, AjaxRequestOnly]
-        public IActionResult FormOptions(int? id)
-        {
-            var model = id.HasPositiveValue() ? DbContext.Get<Dataset>(id.Value) : null;
-            return Json(new {
-                joinTypes = typeof(JoinTypes).TranslatedList().Prepend(new { Id = 0, Name = Datasets.JoinType }),
-                joins = model?.DatasetJoin,
-                dataTypes = DbContext.GetAll<DataType>().OrderBy(d => d.Name).Select(x => new { x.Id, x.Name }).ToList()
-                    .Prepend(new { Id = 0, Name = Datasets.ColumnDataType }),
-                filterTypes = FilterType.FilterTypeList,
-                columns = model?.DatasetColumn,
-                wantsHelp = HttpContext.Session.GetString("ContextHelp").ToBool()
-            });
         }
 
         [HttpGet]

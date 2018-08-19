@@ -44,7 +44,7 @@ namespace Dash.Controllers
             return Save(model);
         }
 
-        [HttpDelete, AjaxRequestOnly] // this might not have to be ajax only
+        [HttpDelete]
         public IActionResult Delete(int id)
         {
             var model = DbContext.Get<Role>(id);
