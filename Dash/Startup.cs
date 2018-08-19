@@ -93,9 +93,10 @@ namespace Dash
                         catch { }
                     }
 
-                    if (context.Request.ContentType.ToLower().Contains("jil"))
+                    var contentType = context.Request.ContentType.ToLower();
+                    if (contentType.Contains("jil") || contentType.Contains("json"))
                     {
-                        context.Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
+                        context.Response.StatusCode = (int)System.Net.HttpStatusCode.InternalServerError;
                         context.Response.ContentType = "application/json";
 
                         using (var writer = new StreamWriter(context.Response.Body))

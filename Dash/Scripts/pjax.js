@@ -112,28 +112,18 @@
         $.content.loading();
         // Create xmlHttpRequest object.
         // @todo consider converting to fetch - see https://github.com/developit/unfetch polyfill
-        var xhr = new XMLHttpRequest();
-        // Add state listener.
-        xhr.onreadystatechange = function() {
-            if ((xhr.readyState === 4) && (xhr.status === 200)) {
-                // Success, Return HTML
-                callback(xhr.responseText);
-                $.content.done();
-            } else if ((xhr.readyState === 4) && (xhr.status === 404 || xhr.status === 500)) {
-                // error (return false)
-                callback(false);
-                $.content.done();
-            }
-            // @todo possible bug here where readystate doesn't match either?
-        };
-        // Secret pjax ?get param so browser doesn't return pjax content from cache when we don't want it to
-        // Switch between ? and & so as not to break any URL params (Based on change by zmasek https://github.com/zmasek/)
-        xhr.open(options.method || 'GET', options.url + ((!/[?&]/.test(options.url)) ? '?_pjax' : '&_pjax'), true);
-        // Add headers so things can tell the request is being performed via AJAX.
-        xhr.setRequestHeader('X-PJAX', 'true'); // PJAX header
-        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');// Standard AJAX header.
 
-        xhr.send(null);
+        $.ajax({
+            method: options.method || 'GET',
+            url: options.url + ((!/[?&]/.test(options.url)) ? '?_pjax' : '&_pjax'),
+            headers: { 'X-PJAX': 'true' }
+        }, function(response) {
+            callback(response);
+            $.content.done();
+        }, function() {
+            callback(false);
+            $.content.done();
+        });
     };
 
     /**
@@ -143,27 +133,19 @@
      */
     pjax.submit = function(form, callback) {
         $.content.loading();
-        // Create xmlHttpRequest object.
-        var xhr = new XMLHttpRequest();
-        // Add state listener.
-        xhr.onreadystatechange = function() {
-            if ((xhr.readyState === 4) && (xhr.status === 200)) {
-                // Success, Return HTML
-                callback(xhr.responseText);
-                $.content.done();
-            } else if ((xhr.readyState === 4) && (xhr.status === 404 || xhr.status === 500)) {
-                // error (return false)
-                callback(false);
-                $.content.done();
-            }
-        };
-        // Secret pjax ?get param so browser doesn't return pjax content from cache when we don't want it to
-        // Switch between ? and & so as not to break any URL params (Based on change by zmasek https://github.com/zmasek/)
-        xhr.open(form.hasAttribute('data-method') ? form.getAttribute('data-method') : 'POST', form.getAttribute('action'), true);
-        // Add headers so things can tell the request is being performed via AJAX.
-        xhr.setRequestHeader('X-PJAX', 'true'); // PJAX header
-        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');// Standard AJAX header.
-        xhr.send(new FormData(form));
+
+        $.ajax({
+            method: form.hasAttribute('data-method') ? form.getAttribute('data-method') : 'POST',
+            url: form.getAttribute('action'),
+            headers: { 'X-PJAX': 'true' },
+            body: new FormData(form)
+        }, function(response) {
+            callback(response);
+            $.content.done();
+        }, function() {
+            callback(false);
+            $.content.done();
+        });
     };
 
     /**

@@ -49,37 +49,24 @@
      */
     var autocompleteLoad = function() {
         // @todo maybe add a way to include source list in original html response instead of requiring another request
-        // @todo move the xhr calls into another library
 
         var preload = ['true', 'True'].indexOf(this.getAttribute('data-preload')) > -1;
         var self = this;
         if (preload) {
-            var xhr = new XMLHttpRequest();
-            // Add state listener.
-            xhr.onreadystatechange = function() {
-                if ((xhr.readyState === 4) && (xhr.status === 200)) {
-                    autocompletes.push(new Autocomplete({ selector: self, sourceData: JSON.parse(xhr.responseText) }));
-                } else if ((xhr.readyState === 4) && (xhr.status === 404 || xhr.status === 500)) {
+            $.ajax({
+                method: self.getAttribute('data-method') || 'GET',
+                url: self.getAttribute('data-url')
+            }, function(data) {
+                if (data && data.length) {
+                    autocompletes.push(new Autocomplete({ selector: self, sourceData: data }));
+                } else {
                     // error - @todo what do i do here?
                     autocompletes.push(new Autocomplete({ selector: self, sourceData: null }));
                 }
-            };
-            xhr.open(this.getAttribute('data-method') || 'GET', this.getAttribute('data-url'), true);
-            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-            xhr.send(null);
+            });
         } else {
             autocompletes.push(new Autocomplete({
                 selector: self, source: function(search, response) {
-                    var xhr = new XMLHttpRequest();
-                    // Add state listener.
-                    xhr.onreadystatechange = function() {
-                        if ((xhr.readyState === 4) && (xhr.status === 200)) {
-                            response(JSON.parse(xhr.responseText));
-                        } else if ((xhr.readyState === 4) && (xhr.status === 404 || xhr.status === 500)) {
-                            // error - @todo what do i do here?
-                        }
-                    };
-                    var url = self.getAttribute('data-url');
                     var params = { search: search };
                     if (self.hasAttribute('data-params')) {
                         self.getAttribute('data-params').split(',').forEach(function(x) {
@@ -89,14 +76,18 @@
                             }
                         });
                     }
-                    url += url.indexOf('?') > -1 ? '&' : '?';
-                    url += Object.keys(params).map(function(x) {
-                        return encodeURIComponent(x) + '=' + encodeURIComponent(params[x]);
-                    }).join('&');
 
-                    xhr.open(self.getAttribute('data-method') || 'GET', url, true);
-                    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-                    xhr.send(null);
+                    $.ajax({
+                        method: self.getAttribute('data-method') || 'GET',
+                        url: self.getAttribute('data-url'),
+                        data: params
+                    }, function(data) {
+                        if (data && data.length) {
+                            response(data);
+                        } else {
+                            // error - @todo what do i do here?
+                        }
+                    });
                 }
             }));
         }

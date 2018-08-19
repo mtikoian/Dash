@@ -236,7 +236,13 @@
             if (!$.isNull(options)) {
                 callback.call(this, options);
             } else {
-                $.ajax({ method: 'GET', url: this.opts.baseUrl + 'Dashboard/WidgetOptions/' + this.opts.id }, callback.bind(this));
+                $.ajax({
+                    method: 'GET', url: this.opts.baseUrl + 'Dashboard/WidgetOptions/' + this.opts.id,
+                    headers: {
+                        'Content-Type': 'application/jil; charset=utf-8',
+                        'Accept': 'application/jil'
+                    }
+                }, callback.bind(this));
             }
         },
 

@@ -92,7 +92,11 @@
             $.ajax({
                 method: 'POST',
                 url: self.url,
-                block: false
+                block: false,
+                headers: {
+                    'Content-Type': 'application/jil; charset=utf-8',
+                    'Accept': 'application/jil'
+                }
             }, function(data) {
                 if ($.isFunction(self.dataFn)) {
                     if (!self.dataFn(data)) {

@@ -79,6 +79,8 @@
             this.loading = false;
             this.sort(false);
             this.filterResults();
+            // redraw is needed because $.ajax uses fetch which is async
+            m.redraw();
         },
 
         /**
@@ -93,13 +95,19 @@
                 method: this.opts.requestMethod,
                 url: this.opts.url,
                 data: this.buildParams(),
-                block: false
+                block: false,
+                headers: {
+                    'Content-Type': 'application/jil; charset=utf-8',
+                    'Accept': 'application/jil'
+                }
             }, this.processData.bind(this), function(data) {
                 self.loading = false;
                 self.loadingError = true;
                 if (self.opts.errorCallback) {
                     self.opts.errorCallback(data);
                 }
+                // redraw is needed because $.ajax uses fetch which is async
+                m.redraw();
             });
         },
 

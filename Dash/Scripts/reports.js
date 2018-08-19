@@ -116,6 +116,10 @@
             data: {
                 Id: self.reportId,
                 Filters: $.toPascalKeys(self.records)
+            },
+            headers: {
+                'Content-Type': 'application/jil; charset=utf-8',
+                'Accept': 'application/jil'
             }
         }, function(data) {
             if (data) {
@@ -377,6 +381,10 @@
                 Id: self.reportId,
                 GroupAggregator: self.aggregator === '' ? 0 : self.aggregator * 1,
                 Groups: $.toPascalKeys(self.records)
+            },
+            headers: {
+                'Content-Type': 'application/jil; charset=utf-8',
+                'Accept': 'application/jil'
             }
         }, function(data) {
             if (data) {
@@ -512,7 +520,11 @@
                         Columns: $.toPascalKeys(settings.columnWidths),
                         ReportWidth: settings.width * 1
                     },
-                    block: false
+                    block: false,
+                    headers: {
+                        'Content-Type': 'application/jil; charset=utf-8',
+                        'Accept': 'application/jil'
+                    }
                 });
                 self.previousColumnWidths = settings.columnWidths;
             }
@@ -745,7 +757,11 @@
 
         $.ajax({
             method: 'GET',
-            url: form.getAttribute('data-url')
+            url: form.getAttribute('data-url'),
+            headers: {
+                'Content-Type': 'application/jil; charset=utf-8',
+                'Accept': 'application/jil'
+            }
         }, function(data) {
             data.content = form;
             _reports[form.getAttribute('data-id')] = new ReportDetails(data);

@@ -30,83 +30,80 @@
 }(this.$));
 
 /*!
- * Ajax wrapper and error logging.
+ * Fetch wrapper and error logging.
  */
-(function(m, $, Alertify) {
+(function($, Alertify) {
     'use strict';
 
     /**
-     * Wrap Mithril Ajax request with success/error handling.
-     * @param {Object} options - Options to use for the ajax request.
+     * Wrap fetch with success/error handling.
+     * @param {Object} options - Options to use for the request.
      * @param {Function} onSuccess - Function to handle success result.
      * @param {Function} onError - Function to handle error result.
      */
     var _ajax = function(options, onSuccess, onError) {
-        options.headers = {
-            'Content-Type': 'application/jil; charset=utf-8',
-            'Accept': 'application/jil',
+        options = options || {};
+        options.headers = $.extend({
             'X-Requested-With': 'XMLHttpRequest'
-        };
+        }, options.headers);
         if (options.token) {
             options.headers['X-XSRF-Token'] = options.token;
             delete options.token;
         }
-        options.config = function(xhr) {
-            xhr.timeout = 60000;
-        };
-        options.extract = function(xhr) {
-            return { status: xhr.status, data: _deserialize(xhr.responseText) };
-        };
 
-        var canBlock = $.coalesce(options.block, true);
-        if (canBlock) {
-            //$.show(_loadingDiv);
+        // keep browser from caching requests by tacking milliseconds to end of url
+        var url = options.url + (options.url.indexOf('?') > -1 ? '&' : '?') + '_t=' + Date.now();
+        delete options.url;
+
+        if (options.data) {
+            options.headers['Content-Type'] = 'application/json';
+            if (options.method === 'GET') {
+                url += '&' + Object.keys(options.data).map(function(x) {
+                    return encodeURIComponent(x) + '=' + encodeURIComponent(options.data[x]);
+                }).join('&');
+            } else {
+                options.body = JSON.stringify(options.data);
+            }
+            delete options.data;
         }
 
-        // keep IE from caching requests by tacking milliseconds to end of url
-        options.url += (options.url.indexOf('?') > -1 ? '&' : '?') + '_t=' + Date.now();
-
-        m.request(options).then(function(response) {
-            if (response.data.reload) {
-                location.reload();
-                return;
-            }
-            if (response.data.error) {
-                if (canBlock) {
-                    //$.hide(_loadingDiv);
+        fetch(url, options)
+            .then(_checkStatus)
+            .then(_parse)
+            .then(function(data) {
+                if (data.reload) {
+                    location.reload();
+                    return;
+                }
+                if (data.error) {
+                    if ($.isFunction(onError)) {
+                        onError(data);
+                    }
+                    Alertify.error(data.error);
+                } else {
+                    if ($.isFunction(onSuccess)) {
+                        onSuccess(data);
+                    }
+                    if (data.message) {
+                        Alertify.success(data.message);
+                    }
+                }
+            }).catch(function(response) {
+                // @todo error handling here probably needs more work still
+                if (url.indexOf('LogJavascriptError') > -1) {
+                    return;
+                }
+                // @todo not sure what to log here
+                logError(response.statusText);
+                if ([400, 401, 402, 403].indexOf(response.status) > -1) {
+                    Alertify.error(($.resx && $.resx('errorAuthorization')) || 'You do not have permission to access the requested resource.');
+                } else {
+                    Alertify.error(($.resx && $.resx('errorGeneric')) || 'An unhandled error occurred.');
                 }
                 if ($.isFunction(onError)) {
-                    onError(response.data);
+                    onError(response);
                 }
-                Alertify.error(response.data.error);
-            } else {
-                if (canBlock) {
-                    //$.hide(_loadingDiv);
-                }
-                if ($.isFunction(onSuccess)) {
-                    onSuccess(response.data);
-                }
-                if (response.data.message) {
-                    Alertify.success(response.data.message);
-                }
-            }
-        }).catch(function(response) {
-            if (canBlock) {
-                //$.hide(_loadingDiv);
-            }
-            if (options.url.indexOf('LogJavascriptError') > -1) {
-                return;
-            }
-            logError(response.data);
-            if ([400, 401, 402, 403].indexOf(response.status) > -1) {
-                Alertify.error(($.resx && $.resx('errorAuthorization')) || 'You do not have permission to access the requested resource.');
-            } else {
-                Alertify.error(($.resx && $.resx('errorGeneric')) || 'An unhandled error occurred.');
-            }
-            if ($.isFunction(onError)) {
-                onError(response.data);
-            }
-        });
+            });
     };
 
     var _requestQueue = [];
@@ -206,25 +203,33 @@
         _ajax({ method: 'POST', url: '/Error/LogJavascriptError', data: { message: detail }, block: false }, null, null);
     };
 
+    var _checkStatus = function(response) {
+        if (response.status >= 200 && response.status < 300) {
+            return response;
+        } else {
+            var error = new Error(response.statusText);
+            error.response = response;
+            throw error;
+        }
+    };
+
     /**
-     * Deserialize response from ajax request.
-     * @param {string} data - String of data to deserialize.
+     * Deserialize response from fetch.
+     * @param {Object} response - Response object
      * @returns {Object} Result object from JSON, or object with a single 'content' property if that fails.
      */
-    var _deserialize = function(data) {
-        if ($.isNull(data) || data.length === 0) {
-            return null;
-        }
+    var _parse = function(response) {
         try {
-            return JSON.parse(data);
-        } catch (e) {
-            return { content: data };
+            var contentType = response && response.headers.has('content-type') ? response.headers.get('content-type') : '';
+            return contentType && (contentType.indexOf('application/json') > -1 || contentType.indexOf('application/jil') > -1) ? response.json() : response.text();
+        } catch (ex) {
+            return response;
         }
     };
 
     $.ajax = ajax;
     $.logError = logError;
-}(this.m, this.$, this.Alertify));
+}(this.$, this.Alertify));
 
 /**
  * Add a application wide error handler to log errors.
@@ -271,7 +276,11 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
     if (body && body.hasAttribute('data-resx')) {
         $.ajax({
             method: 'GET',
-            url: body.getAttribute('data-resx')
+            url: body.getAttribute('data-resx'),
+            headers: {
+                'Content-Type': 'application/jil; charset=utf-8',
+                'Accept': 'application/jil'
+            }
         }, function(data) {
             if (data) {
                 _resx = data;

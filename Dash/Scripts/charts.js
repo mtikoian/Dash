@@ -62,6 +62,10 @@
             data: {
                 Id: self.chartId,
                 Ranges: $.toPascalKeys(self.records)
+            },
+            headers: {
+                'Content-Type': 'application/jil; charset=utf-8',
+                'Accept': 'application/jil'
             }
         }, function(data) {
             if (data) {
@@ -378,7 +382,11 @@
         var id = form.getAttribute('data-id');
         $.ajax({
             method: 'GET',
-            url: form.getAttribute('data-url')
+            url: form.getAttribute('data-url'),
+            headers: {
+                'Content-Type': 'application/jil; charset=utf-8',
+                'Accept': 'application/jil'
+            }
         }, function(data) {
             data.content = form;
             _charts[id] = new ChartDetails(data);
