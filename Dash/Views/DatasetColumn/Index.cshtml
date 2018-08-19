@@ -12,20 +12,19 @@
 
     <partial name="_Toast" />
 
-    <ul class="tab tab-block m-2" role="tablist">
-        <li role="presentation" class="tab-item">
-            @Html.AuthorizedActionLink(Datasets.Overview, "Edit", "Dataset", new { Id = Model.Id }, new { @class = "btn btn-link", role = "tab" }, hasAccess: User.IsInRole("dataset.edit"))
-        </li>
-        <li role="presentation" class="tab-item">
-            @Html.AuthorizedActionLink(Datasets.Joins, "Index", "DatasetJoin", new { Id = Model.Id }, new { @class = "btn btn-link", role = "tab" }, hasAccess: User.IsInRole("datasetjoin.index"))
-        </li>
-        <li role="presentation" class="tab-item">
-            <a id="overviewColumns_@Model.Id" class="active" role="tab" data-toggle="tab" aria-controls="columnsTab_@Model.Id">@Html.Raw(Datasets.Columns)</a>
-        </li>
-    </ul>
+    <tab-list>
+        <tab-item no-render="@(!User.IsInRole("dataset.edit"))">
+            @Html.AuthorizedActionLink(Datasets.Overview, "Edit", "Dataset", new { Id = Model.Id }, new { @class = "btn btn-link", role = "tab" })
+        </tab-item>
+        <tab-item no-render="@(!User.IsInRole("datasetjoin.index"))">
+            @Html.AuthorizedActionLink(Datasets.Joins, "Index", "DatasetJoin", new { Id = Model.Id }, new { @class = "btn btn-link", role = "tab" })
+        </tab-item>
+        <tab-item>
+            <a id="columnsTab" class="active" role="tab" data-toggle="tab" aria-controls="columnsContent">@Html.Raw(Datasets.Columns)</a>
+        </tab-item>
+    </tab-list>
 
-    <div role="tabpanel" class="tab-pane" id="columnnsContent_@Model.Id" aria-labelledby="columnnsTab_@Model.Id">
-
+    <tab-panel id="columnsContent" label-id="columnsTab">
         @using (Html.BeginToolbar())
         {
             @Html.AuthorizedButton(Core.Add, "Create", "DatasetColumn", new { Id = Model.Id }, DashClasses.BtnPrimary, hasAccess: User.IsInRole("datasetcolumn.create"))
@@ -35,5 +34,5 @@
         <div class="col-12">
             <div data-toggle="table" data-json="@Model.Table.ToJson"></div>
         </div>
-    </div>
+    </tab-panel>
 }

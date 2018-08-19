@@ -11,56 +11,51 @@
 
     <partial name="_Toast" />
 
-    <ul class="tab tab-block m-2" role="tablist">
-        <li role="presentation" class="tab-item">
-            <a id="overviewTab_@Model.Id" class="active" role="tab" data-toggle="tab" aria-controls="overviewTab_@Model.Id">@Html.Raw(Datasets.Overview)</a>
-        </li>
-        @if (!Model.IsCreate)
+    <tab-list>
+        <tab-item>
+            <a id="overviewTab" class="active" role="tab" data-toggle="tab" aria-controls="overviewContent">@Html.Raw(Datasets.Overview)</a>
+        </tab-item>
+        <tab-item no-render="@(Model.IsCreate || !User.IsInRole("datasetjoin.index"))">
+            @Html.AuthorizedActionLink(Datasets.Joins, "Index", "DatasetJoin", new { Model.Id }, new { @class = "btn btn-link", role = "tab" })
+        </tab-item>
+        <tab-item no-render="@(Model.IsCreate || !User.IsInRole("datasetcolumn.index"))">
+            @Html.AuthorizedActionLink(Datasets.Columns, "Index", "DatasetColumn", new { Model.Id }, new { @class = "btn btn-link", role = "tab" })
+        </tab-item>
+    </tab-list>
+
+    <tab-panel id="overviewContent" label-id="overviewTab">
+        @using (Html.BeginCustomForm(Model.FormAction, "Dataset", method: Model.FormMethod))
         {
-            <li role="presentation" class="tab-item">
-                @Html.AuthorizedActionLink(Datasets.Joins, "Index", "DatasetJoin", new { Model.Id }, new { @class = "btn btn-link", role = "tab" }, hasAccess: User.IsInRole("datasetjoin.index"))
-            </li>
-            <li role="presentation" class="tab-item">
-                @Html.AuthorizedActionLink(Datasets.Columns, "Index", "DatasetColumn", new { Model.Id }, new { @class = "btn btn-link", role = "tab" }, hasAccess: User.IsInRole("datasetcolumn.index"))
-            </li>
-        }
-    </ul>
+            @Html.HiddenFor(model => model.Id)
 
-    <div class="tab-content m-2">
-        <div role="tabpanel" class="tab-pane active" id="overviewContent_@Model.Id" aria-labelledby="overviewTab_@Model.Id">
-            @using (Html.BeginCustomForm(Model.FormAction, "Dataset", method: Model.FormMethod))
-            {
-                @Html.HiddenFor(model => model.Id)
+            <div class="columns">
+                <div class="col-6">
+                    @Html.LabelInputFor(model => model.Name)
+                    @Html.LabelDropDownListFor(model => model.DatabaseId, new SelectList(Model.DbContext.GetAll<Database>(), "Id", "Name"), new { @class = "dataset-database" })
+                    @Html.LabelDropDownListFor(model => model.TypeId, Model.TypeList, new { @class = "dataset-type" })
+                    @Html.LabelInputFor(model => model.PrimarySource, new { data_toggle = "autocomplete", data_url = Url.Action("Sources", "Dataset"), data_params = "#DatabaseId,#TypeId" })
+                    @Html.LabelTextAreaFor(model => model.Description)
+                    @Html.LabelTextAreaFor(model => model.Conditions)
+                </div>
 
-                <div class="columns">
-                    <div class="col-6">
-                        @Html.LabelInputFor(model => model.Name)
-                        @Html.LabelDropDownListFor(model => model.DatabaseId, new SelectList(Model.DbContext.GetAll<Database>(), "Id", "Name"), new { @class = "dataset-database" })
-                        @Html.LabelDropDownListFor(model => model.TypeId, Model.TypeList, new { @class = "dataset-type" })
-                        @Html.LabelInputFor(model => model.PrimarySource, new { data_toggle = "autocomplete", data_url = Url.Action("Sources", "Dataset"), data_params = "#DatabaseId,#TypeId" })
-                        @Html.LabelTextAreaFor(model => model.Description)
-                        @Html.LabelTextAreaFor(model => model.Conditions)
-                    </div>
+                <div class="col-6">
+                    @Html.LabelInputFor(model => model.DateFormat, groupAddOn: Html.InputGroupButton("DateFormat", Html.Icon("list-numbered", false, true), Model.DefaultDateFormats))
+                    @Html.LabelInputFor(model => model.CurrencyFormat, groupAddOn: Html.InputGroupButton("CurrencyFormat", Html.Icon("list-numbered", false, true), Model.DefaultCurrencyFormats))
 
-                    <div class="col-6">
-                        @Html.LabelInputFor(model => model.DateFormat, groupAddOn: Html.InputGroupButton("DateFormat", Html.Icon("list-numbered", false, true), Model.DefaultDateFormats))
-                        @Html.LabelInputFor(model => model.CurrencyFormat, groupAddOn: Html.InputGroupButton("CurrencyFormat", Html.Icon("list-numbered", false, true), Model.DefaultCurrencyFormats))
-
-                        <div class="form-group">
-                            @Html.ControlLabel("RoleIds", Datasets.Roles)
-                            <div class="col-8 checkbox-block">
-                                @foreach (var role in Model.GetAllRoles())
-                                {
-                                    @Html.CustomCheckbox("RoleIds", Html.IsChecked(Model.DatasetRole, x => x.RoleId == role.Id, (int[])ViewBag.SelectedRoleIds, role.Id), role.Id.ToString(), role.Name, $"dataset_role_{role.Id}", isMultiple: true)
-                                }
-                                @Html.HelpFor(model => model.DatasetRole, false)
-                            </div>
+                    <div class="form-group">
+                        @Html.ControlLabel("RoleIds", Datasets.Roles)
+                        <div class="col-8 checkbox-block">
+                            @foreach (var role in Model.GetAllRoles())
+                            {
+                                @Html.CustomCheckbox("RoleIds", Html.IsChecked(Model.DatasetRole, x => x.RoleId == role.Id, (int[])ViewBag.SelectedRoleIds, role.Id), role.Id.ToString(), role.Name, $"dataset_role_{role.Id}", isMultiple: true)
+                            }
+                            @Html.HelpFor(model => model.DatasetRole, false)
                         </div>
                     </div>
                 </div>
+            </div>
 
-                @Html.FormButtons()
-            }
-        </div>
-    </div>
+            @Html.FormButtons()
+        }
+    </tab-panel>
 }

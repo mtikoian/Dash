@@ -7,6 +7,12 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Tag\**"/>
+    <Content Remove="Tag\**"/>
+    <EmbeddedResource Remove="Tag\**"/>
+    <None Remove="Tag\**"/>
+  </ItemGroup>
+  <ItemGroup>
     <Content Remove="Views\Shared\Error.cshtml"/>
   </ItemGroup>
   <ItemGroup>
@@ -75,15 +81,15 @@
     <Folder Include="wwwroot\js\"/>
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="Resources\Charts.Designer.cs">
-      <DependentUpon>Charts.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
     <Compile Update="Resources\Datasets.Designer.cs">
       <DependentUpon>Datasets.resx</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Resources\Account.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Account.resx</DependentUpon>
     </Compile>
     <Compile Update="Resources\Alerts.Designer.cs">
       <DependentUpon>Alerts.resx</DependentUpon>
@@ -105,10 +111,10 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
-    <Compile Update="Resources\Account.Designer.cs">
+    <Compile Update="Resources\Charts.Designer.cs">
+      <DependentUpon>Charts.resx</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>Account.resx</DependentUpon>
     </Compile>
     <Compile Update="Resources\Filters.Designer.cs">
       <DependentUpon>Filters.resx</DependentUpon>
@@ -137,12 +143,12 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Update="Resources\Databases.resx">
-      <LastGenOutput>Databases.Designer.cs</LastGenOutput>
-      <Generator>PublicResXFileCodeGenerator</Generator>
-    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Account.es.resx">
       <Generator/>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Account.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Account.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Alerts.resx">
       <LastGenOutput>Alerts.Designer.cs</LastGenOutput>
@@ -160,9 +166,9 @@
       <LastGenOutput>Core.Designer.cs</LastGenOutput>
       <Generator>PublicResXFileCodeGenerator</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\Account.resx">
+    <EmbeddedResource Update="Resources\Databases.resx">
+      <LastGenOutput>Databases.Designer.cs</LastGenOutput>
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Account.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Datasets.resx">
       <LastGenOutput>Datasets.Designer.cs</LastGenOutput>

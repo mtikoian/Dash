@@ -12,20 +12,19 @@
 
     <partial name="_Toast" />
 
-    <ul class="tab tab-block m-2" role="tablist">
-        <li role="presentation" class="tab-item">
+    <tab-list>
+        <tab-item no-render="@(!User.IsInRole("dataset.edit"))">
             @Html.AuthorizedActionLink(Datasets.Overview, "Edit", "Dataset", new { Id = Model.Id }, new { @class = "btn btn-link", role = "tab" }, hasAccess: User.IsInRole("dataset.edit"))
-        </li>
-        <li role="presentation" class="tab-item">
-            <a id="overviewJoins_@Model.Id" class="active" role="tab" data-toggle="tab" aria-controls="joinsTab_@Model.Id">@Html.Raw(Datasets.Joins)</a>
-        </li>
-        <li role="presentation" class="tab-item">
-            @Html.AuthorizedActionLink(Datasets.Columns, "Index", "DatasetColumn", new { Id = Model.Id }, new { @class = "btn btn-link", role = "tab" }, hasAccess: User.IsInRole("datasetcolumn.index"))
-        </li>
-    </ul>
+        </tab-item>
+        <tab-item>
+            <a id="joinsTab" class="active" role="tab" data-toggle="tab" aria-controls="joinsTab">@Html.Raw(Datasets.Joins)</a>
+        </tab-item>
+        <tab-item no-render="@(!User.IsInRole("datasetcolumn.edit"))">
+            @Html.AuthorizedActionLink(Datasets.Columns, "Index", "DatasetColumn", new { Id = Model.Id }, new { @class = "btn btn-link", role = "tab" })
+        </tab-item>
+    </tab-list>
 
-    <div role="tabpanel" class="tab-pane" id="joinsContent_@Model.Id" aria-labelledby="joinsTab_@Model.Id">
-
+    <tab-panel id="joinsContent" label-id="joinsTab">
         @using (Html.BeginToolbar())
         {
             @Html.AuthorizedButton(Core.Add, "Create", "DatasetJoin", new { Id = Model.Id }, DashClasses.BtnPrimary, hasAccess: User.IsInRole("datasetjoin.create"))
@@ -34,5 +33,5 @@
         <div class="col-12">
             <div data-toggle="table" data-json="@Model.Table.ToJson"></div>
         </div>
-    </div>
+    </tab-panel>
 }
