@@ -10,92 +10,74 @@
     });
 
     <div class="report-form" data-load-event="reportLoad" data-unload-event="reportUnload" data-url="@Url.Action("DetailsOptions", "Report", new { id = Model.Id })" data-title="@Model.Name" data-id="@Model.Id">
-        <div class="m-2">
-            <ul class="tab tab-block" role="tablist">
-                <li role="presentation" class="tab-item">
-                    <a href="#tabFiltersContent_@Model.Id" id="tabFilters_@Model.Id" class="active" role="tab" data-toggle="tab" aria-controls="tabFiltersContent_@Model.Id">@Reports.Filters</a>
-                </li>
-                <li role="presentation" class="tab-item">
-                    <a href="#tabGroupingContent_@Model.Id" id="tabGrouping_@Model.Id" role="tab" data-toggle="tab" aria-controls="tabGroupingContent_@Model.Id">@Reports.Groups</a>
-                </li>
-                @if (this.User.IsInRole("dataset.create"))
-                {
-                    <li role="presentation" class="tab-item">
-                        <a href="#tabSqlContent_@Model.Id" id="tabSql_@Model.Id" role="tab" data-toggle="tab" aria-controls="tabSqlContent_@Model.Id">@Core.ViewSql</a>
-                    </li>
-                }
-                <li class="tab-item dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">@Core.Actions</a>
-                    <ul class="menu" role="menu">
-                        @if (Model.IsOwner)
-                        {
-                            if (User.IsInRole("report.selectcolumns"))
-                            {
-                                <li>
-                                    @Html.AuthorizedActionLink(Reports.SelectColumns, "SelectColumns", "Report", new { id = Model.Id }, new { @class = "dropdown-item dash-ajax" })
-                                </li>
-                            }
-                            if (User.IsInRole("report.rename"))
-                            {
-                                <li>
-                                    @Html.AuthorizedActionLink(Core.Rename, "Rename", "Report", new { id = Model.Id }, new { @class = "dropdown-item dash-ajax dash-prompt", @data_method = "PUT", @data_update_target = ".dialog-header", @data_message = Reports.NewName
-                               })
-                                </li>
-                            }
-                            if (User.IsInRole("report.share"))
-                            {
-                                <li>
-                                    @Html.AuthorizedActionLink(Reports.ShareReport, "Share", "Report", new { id = Model.Id }, new { @class = "dropdown-item dash-ajax", @data_title = Reports.ShareReport })
-                                </li>
-                            }
-                        }
-                    </ul>
-                </li>
-            </ul>
+        <tab-list>
+            <tab-item>
+                <a id="reportTab" class="active" role="tab" data-toggle="tab" aria-controls="reportContent">@Reports.ViewReport</a>
+            </tab-item>
+            <tab-item>
+                <a href="#tabFiltersContent" id="tabFilters" role="tab" data-toggle="tab" aria-controls="tabFiltersContent">@Reports.Filters</a>
+            </tab-item>
+            <tab-item no-render="@(!User.IsInRole("dataset.create"))">
+                <a href="#tabGroupingContent" id="tabGrouping" role="tab" data-toggle="tab" aria-controls="tabGroupingContent">@Reports.Groups</a>
+            </tab-item>
+            <tab-item no-render="@(!User.IsInRole(" dataset.create"))">
+                <a href="#tabSqlContent" id="tabSql" role="tab" data-toggle="tab" aria-controls="tabSqlContent">@Core.ViewSql</a>
+            </tab-item>
+            <tab-item no-render="@(!User.IsInRole("report.selectcolumns"))">
+                @Html.AuthorizedActionLink(Reports.SelectColumns, "SelectColumns", "Report", new { id = Model.Id }, new { @class = "dropdown-item dash-ajax" })
+            </tab-item>
+            <tab-item no-render="@(!User.IsInRole("report.rename"))">
+                @Html.AuthorizedActionLink(Core.Rename, "Rename", "Report", new { id = Model.Id },
+                    new { @class = "dropdown-item dash-ajax dash-prompt", @data_method = "PUT", @data_update_target = ".dialog-header", @data_message = Reports.NewName })
+            </tab-item>
+            <tab-item no-render="@(!User.IsInRole("report.share"))">
+                @Html.AuthorizedActionLink(Reports.ShareReport, "Share", "Report", new { id = Model.Id }, new { @class = "dropdown-item dash-ajax", @data_title = Reports.ShareReport })
+            </tab-item>
+        </tab-list>
 
-            <div class="tab-content">
-                <div role="tabpanel" class="tab-pane active" id="tabFiltersContent_@Model.Id" aria-labelledby="tabFilters_@Model.Id">
-                    <div class="table-wrapper filter-table-wrapper container"></div>
-                </div>
-
-                <div role="tabpanel" class="tab-pane" id="tabGroupingContent_@Model.Id" aria-labelledby="tabGrouping_@Model.Id">
-                    <div class="table-wrapper group-table-wrapper container"></div>
-                </div>
-
-                @if (User.IsInRole("dataset.create"))
-                {
-                    <div role="tabpanel" class="tab-pane" id="tabSqlContent_@Model.Id" aria-labelledby="tabSql_@Model.Id">
-                        <div class="col-12">
-                            <div class="sql-data-content">
-                                <h5>@Reports.DataQuery</h5>
-                                <pre class="code" data-lang="SQL"><code class="sql-text"></code></pre>
-                                <div class="sql-error"></div>
-                            </div>
-                            <div class="sql-count-content">
-                                <h5>@Reports.CountQuery</h5>
-                                <pre class="code" data-lang="SQL"><code class="sql-text"></code></pre>
-                                <div class="sql-error"></div>
-                            </div>
+        <tab-panel id="reportContent" label-id="reportTab">
+            @if (Model.ReportColumn.Any())
+            {
+                <div class="report-data-container container p-2"></div>
+            }
+            else
+            {
+                <div class="report-data-no-columns">
+                    <div class="card text-white m-2 bg-warning">
+                        <div class="card-body">
+                            <p class="card-text">@Reports.ErrorNoColumnsSelected</p>
+                            @Html.AuthorizedActionLink(Reports.SelectColumns, "SelectColumns", "Report", new { id = Model.Id }, new { @class = $"{DashClasses.Btn.ToCssClass()} {DashClasses.BtnPrimary.ToCssClass()}" }, hasAccess: this.User.IsInRole("report.selectcolumns"))
                         </div>
                     </div>
-                }
-            </div>
-        </div>
+                </div>
+            }
+        </tab-panel>
 
-        @if (Model.ReportColumn.Any())
-        {
-            <div class="report-data-container container p-2"></div>
-        }
-        else
-        {
-            <div class="report-data-no-columns">
-                <div class="card text-white m-2 bg-warning">
-                    <div class="card-body">
-                        <p class="card-text">@Reports.ErrorNoColumnsSelected</p>
-                        @Html.AuthorizedActionLink(Reports.SelectColumns, "SelectColumns", "Report", new { id = Model.Id }, new { @class = $"{DashClasses.Btn.ToCssClass()} {DashClasses.BtnPrimary.ToCssClass()}" }, hasAccess: this.User.IsInRole("report.selectcolumns"))
+            @*<div role="tabpanel" class="tab-pane" id="tabFiltersContent" aria-labelledby="tabFilters">
+                <div class="table-wrapper filter-table-wrapper container"></div>
+            </div>
+
+            <div role="tabpanel" class="tab-pane" id="tabGroupingContent" aria-labelledby="tabGrouping">
+                <div class="table-wrapper group-table-wrapper container"></div>
+            </div>
+
+            @if (User.IsInRole("dataset.create"))
+            {
+                <div role="tabpanel" class="tab-pane" id="tabSqlContent" aria-labelledby="tabSql">
+                    <div class="col-12">
+                        <div class="sql-data-content">
+                            <h5>@Reports.DataQuery</h5>
+                            <pre class="code" data-lang="SQL"><code class="sql-text"></code></pre>
+                            <div class="sql-error"></div>
+                        </div>
+                        <div class="sql-count-content">
+                            <h5>@Reports.CountQuery</h5>
+                            <pre class="code" data-lang="SQL"><code class="sql-text"></code></pre>
+                            <div class="sql-error"></div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        }
+            }
+        </div>*@
     </div>
 }
