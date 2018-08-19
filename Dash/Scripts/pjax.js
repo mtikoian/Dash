@@ -77,11 +77,11 @@
         if (options.history) {
             // If this is the first time pjax has run, create a state object for the current page.
             if (pjax.firstRun) {
-                window.history.replaceState({ url: document.location.href, container: '#' + options.container.id, title: document.title, method: options.method }, document.title);
+                window.history.replaceState({ url: document.location.href, container: options.container, title: document.title, method: options.method }, document.title);
                 pjax.firstRun = false;
             }
             // Update browser history
-            window.history.pushState({ url: options.url, container: '#' + options.container.id, title: options.title, method: options.method }, options.title, options.url);
+            window.history.pushState({ url: options.url, container: options.container, title: options.title, method: options.method }, options.title, options.url);
         }
     };
 
@@ -177,12 +177,12 @@
         }
 
         // Use default options if not defined
-        options = $.extend(options, {
+        options = $.extend({
             method: 'GET',
             container: pjax.container,
             history: true,
             returnToTop: true
-        });
+        }, options);
 
         // Ensure history is a boolean.
         options.history = (options.history === false) ? false : true;
@@ -215,7 +215,10 @@
         delete options.title;
         delete options.history;
 
-        pjax.options = options;
+        pjax.container = $.coalesce(options.container, pjax.container);
+        pjax.excludeClass = $.coalesce(options.excludeClass, pjax.excludeClass);
+        pjax.ignoreFileTypes = $.coalesce(options.ignoreFileTypes, pjax.ignoreFileTypes);
+
         var body = $.get('body');
         $.content.load(body);
         pjax.checkEvents(body, 'data-load-event');
@@ -246,7 +249,7 @@
                 title: e.state.title,
                 method: e.state.method,
                 history: false
-            }, pjax.options);
+            });
 
             // Convert state data to PJAX options
             var options = pjax.parseOptions(opt);
