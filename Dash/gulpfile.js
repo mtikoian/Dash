@@ -22,8 +22,11 @@ var paths = {
     dist: './wwwroot/'
 };
 
-var includeSort = function(a, b) {
-    return a.$.Include > b.$.Include ? 1 : a.$.Include < b.$.Include ? -1 : 0;
+var childSort = function(a, b) {
+    if (a.$.Include) {
+        return a.$.Include > b.$.Include ? 1 : a.$.Include < b.$.Include ? -1 : 0;
+    }
+    return a.$.Update > b.$.Update ? 1 : a.$.Update < b.$.Update ? -1 : 0;
 }
 
 function sortXml(file, encoding, callback) {
@@ -50,7 +53,7 @@ function sortXml(file, encoding, callback) {
             keys.sort();
             keys.forEach(function(y) {
                 newObject[y] = x[y];
-                newObject[y].sort(includeSort);
+                newObject[y].sort(childSort);
             });
             return newObject;
         });
