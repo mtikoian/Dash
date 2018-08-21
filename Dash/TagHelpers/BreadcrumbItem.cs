@@ -1,5 +1,7 @@
 ﻿using System.Text.Encodings.Web;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
@@ -23,6 +25,14 @@ namespace Dash.TagHelpers
             (HtmlHelper as IViewContextAware).Contextualize(ViewContext);
             output.TagName = "li";
             output.AddClass("breadcrumb-item", HtmlEncoder.Default);
+            if (IsActive)
+            {
+                output.Attributes.Add("data-pjax-title", Label);
+                HtmlHelper.ViewBag.Title = Label;
+                var urlHelper = new UrlHelper(HtmlHelper.ViewContext);
+                output.Attributes.Add("data-pjax-url", urlHelper.Action(Action, Controller, RouteValues));
+                output.Attributes.Add("data-pjax-method", "GET");
+            }
             output.Content.AppendHtml(Html.AuthorizedActionLink(HtmlHelper, Label, Action, Controller, RouteValues, returnEmpty: false, hasAccess: !IsActive));
             base.Process(context, output);
         }

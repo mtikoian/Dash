@@ -31,6 +31,10 @@
         if (container.length) {
             options.container = container[0].getAttribute('data-pjax-container');
         }
+        var method = $.getAll('[data-pjax-method]', newNode, true);
+        if (method.length) {
+            options.method = method[0].getAttribute('data-pjax-method');
+        }
 
         // Get container node
         var node = $.get(options.container || pjax.container);
@@ -342,9 +346,7 @@
             return;
         }
 
-        // Add link HREF to object
         var options = { url: target.action };
-
         // Check options are valid.
         options = pjax.parseOptions(options, target);
         if (options === false) return;
