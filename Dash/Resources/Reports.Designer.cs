@@ -115,7 +115,7 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create New Report.
+        ///   Looks up a localized string similar to Create Report.
         /// </summary>
         public static string CreateReport {
             get {
@@ -156,6 +156,15 @@ namespace Dash.Resources {
         public static string Dataset {
             get {
                 return ResourceManager.GetString("Dataset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit Report.
+        /// </summary>
+        public static string EditReport {
+            get {
+                return ResourceManager.GetString("EditReport", resourceCulture);
             }
         }
         

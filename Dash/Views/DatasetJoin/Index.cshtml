@@ -2,36 +2,32 @@
 @using Dash.Models
 @model Dataset
 
-@using (Html.BeginBodyContent())
-{
-    @Html.Breadcrumbs(new List<Breadcrumb> {
-        new Breadcrumb(Datasets.ViewAll, "Index", "Dataset"),
-        new Breadcrumb(Datasets.EditDataset, Model.FormAction, "Dataset", new { Id = Model.Id }),
-        new Breadcrumb(Datasets.Joins, "Index", "DatasetJoin", new { Id = Model.Id })
-    });
+<body-content>
+    <breadcrumb>
+        <breadcrumb-item label="@Datasets.ViewAll" controller="Dataset" action="Index"></breadcrumb-item>
+        <breadcrumb-item label="@Datasets.EditDataset" controller="Dataset" action="Edit" route-values="@(new { Id = Model.Id })"></breadcrumb-item>
+        <breadcrumb-item label="@Datasets.Joins" controller="DatasetJoin" action="Index" route-values="@(new { Id = Model.Id })" is-active="true"></breadcrumb-item>
+    </breadcrumb>
 
     <partial name="_Toast" />
 
     <tab-list>
         <tab-item no-render="@(!User.IsInRole("dataset.edit"))">
-            @Html.AuthorizedActionLink(Datasets.Overview, "Edit", "Dataset", new { Id = Model.Id }, new { @class = "btn btn-link", role = "tab" }, hasAccess: User.IsInRole("dataset.edit"))
+            @Html.AuthorizedActionLink(Datasets.Overview, "Edit", "Dataset", new { Id = Model.Id }, new { @class = "btn btn-link", role = "tab" })
         </tab-item>
         <tab-item>
-            <a id="joinsTab" class="active" role="tab" data-toggle="tab" aria-controls="joinsTab">@Html.Raw(Datasets.Joins)</a>
+            <tab-active id="joins">@Datasets.Joins</tab-active>
         </tab-item>
-        <tab-item no-render="@(!User.IsInRole("datasetcolumn.edit"))">
-            @Html.AuthorizedActionLink(Datasets.Columns, "Index", "DatasetColumn", new { Id = Model.Id }, new { @class = "btn btn-link", role = "tab" })
+        <tab-item no-render="@(Model.IsCreate || !User.IsInRole("datasetcolumn.index"))">
+            @Html.AuthorizedActionLink(Datasets.Columns, "Index", "DatasetColumn", new { Model.Id }, new { @class = "btn btn-link", role = "tab" })
         </tab-item>
     </tab-list>
 
-    <tab-panel id="joinsContent" label-id="joinsTab">
-        @using (Html.BeginToolbar())
-        {
+    <tab-panel id="joins">
+        <toolbar>
             @Html.AuthorizedButton(Core.Add, "Create", "DatasetJoin", new { Id = Model.Id }, DashClasses.BtnPrimary, hasAccess: User.IsInRole("datasetjoin.create"))
-        }
+        </toolbar>
 
-        <div class="col-12">
-            <div data-toggle="table" data-json="@Model.Table.ToJson"></div>
-        </div>
+        <dynamic-table options="@Model.Table"></dynamic-table>
     </tab-panel>
-}
+</body-content>

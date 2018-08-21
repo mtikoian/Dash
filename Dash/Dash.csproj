@@ -81,11 +81,6 @@
     <Folder Include="wwwroot\js\"/>
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="Resources\Datasets.Designer.cs">
-      <DependentUpon>Datasets.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
     <Compile Update="Resources\Account.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -93,6 +88,11 @@
     </Compile>
     <Compile Update="Resources\Alerts.Designer.cs">
       <DependentUpon>Alerts.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Resources\Charts.Designer.cs">
+      <DependentUpon>Charts.resx</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
@@ -111,8 +111,8 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
-    <Compile Update="Resources\Charts.Designer.cs">
-      <DependentUpon>Charts.resx</DependentUpon>
+    <Compile Update="Resources\Datasets.Designer.cs">
+      <DependentUpon>Datasets.resx</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>

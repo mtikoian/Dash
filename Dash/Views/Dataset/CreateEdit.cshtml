@@ -2,18 +2,17 @@
 @using Dash.Models
 @model Dataset
 
-@using (Html.BeginBodyContent())
-{
-    @Html.Breadcrumbs(new List<Breadcrumb> {
-        new Breadcrumb(Datasets.ViewAll, "Index", "Dataset"),
-        new Breadcrumb(Model.IsCreate ? Datasets.CreateDataset : Datasets.EditDataset, Model.FormAction, "Dataset", Model.IsCreate ? null : new { id = Model.Id })
-    });
+<body-content>
+    <breadcrumb>
+        <breadcrumb-item label="@Datasets.ViewAll" controller="Dataset" action="Index"></breadcrumb-item>
+        <breadcrumb-item label="@(Model.IsCreate ? Datasets.CreateDataset : Datasets.EditDataset)" controller="Dataset" action="@Model.FormAction" route-values="@(Model.IsCreate ? null : new { Id = Model.Id })" is-active="true"></breadcrumb-item>
+    </breadcrumb>
 
     <partial name="_Toast" />
 
     <tab-list>
         <tab-item>
-            <a id="overviewTab" class="active" role="tab" data-toggle="tab" aria-controls="overviewContent">@Html.Raw(Datasets.Overview)</a>
+            <tab-active id="overview">@Datasets.Overview</tab-active>
         </tab-item>
         <tab-item no-render="@(Model.IsCreate || !User.IsInRole("datasetjoin.index"))">
             @Html.AuthorizedActionLink(Datasets.Joins, "Index", "DatasetJoin", new { Model.Id }, new { @class = "btn btn-link", role = "tab" })
@@ -23,7 +22,7 @@
         </tab-item>
     </tab-list>
 
-    <tab-panel id="overviewContent" label-id="overviewTab">
+    <tab-panel id="overview">
         @using (Html.BeginCustomForm(Model.FormAction, "Dataset", method: Model.FormMethod))
         {
             @Html.HiddenFor(model => model.Id)
@@ -58,4 +57,4 @@
             @Html.FormButtons()
         }
     </tab-panel>
-}
+</body-content>

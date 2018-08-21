@@ -2,13 +2,12 @@
 @using Dash.Models
 @model Dataset
 
-@using (Html.BeginBodyContent())
-{
-    @Html.Breadcrumbs(new List<Breadcrumb> {
-        new Breadcrumb(Datasets.ViewAll, "Index", "Dataset"),
-        new Breadcrumb(Datasets.EditDataset, Model.FormAction, "Dataset", new { Id = Model.Id }),
-        new Breadcrumb(Datasets.Columns, "Index", "DatasetColumn", new { Id = Model.Id })
-    });
+<body-content>
+    <breadcrumb>
+        <breadcrumb-item label="@Datasets.ViewAll" controller="Dataset" action="Index"></breadcrumb-item>
+        <breadcrumb-item label="@Datasets.EditDataset" controller="Dataset" action="Edit" route-values="@(new { Id = Model.Id })"></breadcrumb-item>
+        <breadcrumb-item label="@Datasets.Columns" controller="DatasetColumn" action="Index" route-values="@(new { Id = Model.Id })" is-active="true"></breadcrumb-item>
+    </breadcrumb>
 
     <partial name="_Toast" />
 
@@ -20,19 +19,16 @@
             @Html.AuthorizedActionLink(Datasets.Joins, "Index", "DatasetJoin", new { Id = Model.Id }, new { @class = "btn btn-link", role = "tab" })
         </tab-item>
         <tab-item>
-            <a id="columnsTab" class="active" role="tab" data-toggle="tab" aria-controls="columnsContent">@Html.Raw(Datasets.Columns)</a>
+            <tab-active id="columns">@Datasets.Columns</tab-active>
         </tab-item>
     </tab-list>
 
-    <tab-panel id="columnsContent" label-id="columnsTab">
-        @using (Html.BeginToolbar())
-        {
+    <tab-panel id="columns">
+        <toolbar>
             @Html.AuthorizedButton(Core.Add, "Create", "DatasetColumn", new { Id = Model.Id }, DashClasses.BtnPrimary, hasAccess: User.IsInRole("datasetcolumn.create"))
             @Html.AuthorizedButton(Datasets.Import, "Import", "DatasetColumn", new { Id = Model.Id }, DashClasses.BtnInfo, hasAccess: User.IsInRole("datasetcolumn.import"))
-        }
+        </toolbar>
 
-        <div class="col-12">
-            <div data-toggle="table" data-json="@Model.Table.ToJson"></div>
-        </div>
+        <dynamic-table options="@Model.Table"></dynamic-table>
     </tab-panel>
-}
+</body-content>

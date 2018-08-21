@@ -1,20 +1,16 @@
 ﻿@using Dash.Resources
 @model Table
 
-@using (Html.BeginBodyContent())
-{
-    @Html.Breadcrumbs(new List<Breadcrumb> {
-        new Breadcrumb(Databases.ViewAll, "Index", "Database")
-    });
+<body-content>
+    <breadcrumb>
+        <breadcrumb-item label="@Databases.ViewAll" controller="Database" action="Index" is-active="true"></breadcrumb-item>
+    </breadcrumb>
 
     <partial name="_Toast" />
 
-    @using (Html.BeginToolbar())
-    {
-        @Html.AuthorizedButton(Databases.CreateDatabase, "Create", "Database", null, DashClasses.BtnPrimary, hasAccess: User.IsInRole("database.create"))
-    }
+    <toolbar no-render="@(!User.IsInRole("database.create"))">
+        @Html.AuthorizedButton(Databases.CreateDatabase, "Create", "Database", null, DashClasses.BtnPrimary)
+    </toolbar>
 
-    <div class="col-12">
-        <div data-toggle="table" data-json="@Model.ToJson"></div>
-    </div>
-}
+    <dynamic-table options="@Model"></dynamic-table>
+</body-content>

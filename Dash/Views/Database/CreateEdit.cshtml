@@ -1,18 +1,17 @@
 ﻿@using Dash.Resources
 @model Dash.Models.Database
 
-@using (Html.BeginBodyContent())
-{
-    @Html.Breadcrumbs(new List<Breadcrumb> {
-        new Breadcrumb(Databases.ViewAll, "Index", "Database"),
-        new Breadcrumb(Model.IsCreate ? Databases.CreateDatabase : Databases.EditDatabase, Model.FormAction, "Database", Model.IsCreate ? null : new { id = Model.Id })
-    });
+<body-content>
+    <breadcrumb>
+        <breadcrumb-item label="@Databases.ViewAll" controller="Database" action="Index"></breadcrumb-item>
+        <breadcrumb-item label="@(Model.IsCreate ? Databases.CreateDatabase : Databases.EditDatabase)" controller="Database" action="@Model.FormAction" route-values="@(Model.IsCreate ? null : new { Id = Model.Id })" is-active="true"></breadcrumb-item>
+    </breadcrumb>
+
+    <partial name="_Toast" />
 
     @using (Html.BeginCustomForm(Model.FormAction, "Database", method: Model.FormMethod))
     {
         @Html.HiddenFor(model => model.Id)
-
-        <partial name="_Toast" />
 
         <div class="columns">
             <div class="col-6">
@@ -35,4 +34,4 @@
 
         @Html.FormButtons()
     }
-}
+</body-content>

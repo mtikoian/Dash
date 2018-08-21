@@ -187,7 +187,7 @@
     <value>Report saved successfully.</value>
   </data>
   <data name="CreateReport" xml:space="preserve">
-    <value>Create New Report</value>
+    <value>Create Report</value>
   </data>
   <data name="ViewAll" xml:space="preserve">
     <value>View All Reports</value>
@@ -272,5 +272,8 @@
   </data>
   <data name="ErrorNoColumnsSelectedChange" xml:space="preserve">
     <value>There are no columns selected for this report. Use `Change Columns` from the `Actions` menu to select columns.</value>
+  </data>
+  <data name="EditReport" xml:space="preserve">
+    <value>Edit Report</value>
   </data>
 </root>
