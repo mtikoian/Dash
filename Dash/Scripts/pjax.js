@@ -74,15 +74,16 @@
      * @param {Object} options - Configuration options.
      */
     pjax.updateHistory = function(options) {
-        if (options.history) {
-            // If this is the first time pjax has run, create a state object for the current page.
-            if (pjax.firstRun) {
-                window.history.replaceState({ url: document.location.href, container: options.container, title: document.title, method: options.method }, document.title);
-                pjax.firstRun = false;
-            }
-            // Update browser history
-            window.history.pushState({ url: options.url, container: options.container, title: options.title, method: options.method }, options.title, options.url);
+        if (!options.history) {
+            return;
         }
+        // If this is the first time pjax has run, create a state object for the current page.
+        if (pjax.firstRun) {
+            window.history.replaceState({ url: document.location.href, container: options.container, title: document.title, method: options.method }, document.title);
+            pjax.firstRun = false;
+        }
+        // Update browser history
+        window.history.pushState({ url: options.url, container: options.container, title: options.title, method: options.method }, options.title, options.url);
     };
 
     /**
@@ -110,8 +111,6 @@
      */
     pjax.request = function(options, callback) {
         $.content.loading();
-        // Create xmlHttpRequest object.
-        // @todo consider converting to fetch - see https://github.com/developit/unfetch polyfill
 
         $.ajax({
             method: options.method || 'GET',
@@ -207,18 +206,8 @@
 
     /**
      * Configure pjax.
-     * @param {Object} options - Configuration options.
      */
-    pjax.init = function(options) {
-        options = options || {};
-        // Delete history and title if provided. These options should only be provided via invoke();
-        delete options.title;
-        delete options.history;
-
-        pjax.container = $.coalesce(options.container, pjax.container);
-        pjax.excludeClass = $.coalesce(options.excludeClass, pjax.excludeClass);
-        pjax.ignoreFileTypes = $.coalesce(options.ignoreFileTypes, pjax.ignoreFileTypes);
-
+    pjax.init = function() {
         var body = $.get('body');
         $.content.load(body);
         pjax.checkEvents(body, 'data-load-event');
