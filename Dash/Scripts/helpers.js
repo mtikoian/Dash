@@ -47,7 +47,7 @@
             'X-Requested-With': 'XMLHttpRequest'
         }, options.headers);
         if (options.token) {
-            options.headers['X-XSRF-Token'] = options.token;
+            options.headers['X-XSRF-TOKEN'] = options.token;
             delete options.token;
         }
 
@@ -66,13 +66,14 @@
             }
             delete options.data;
         }
+        options.credentials = 'same-origin';
 
         fetch(url, options)
             .then(_checkStatus)
             .then(_parse)
             .then(function(data) {
                 if (data.reload) {
-                    location.reload();
+                    location.reload(true);
                     return;
                 }
                 if (data.error) {
@@ -88,20 +89,19 @@
                         Alertify.success(data.message);
                     }
                 }
-            }).catch(function(response) {
-                // @todo error handling here probably needs more work still
+            }).catch(function(data) {
                 if (url.indexOf('LogJavascriptError') > -1) {
                     return;
                 }
                 // @todo not sure what to log here
-                logError(response.statusText);
-                if ([400, 401, 402, 403].indexOf(response.status) > -1) {
-                    Alertify.error(($.resx && $.resx('errorAuthorization')) || 'You do not have permission to access the requested resource.');
+                logError(data.message);
+                if (data.response && data.response.status && [400, 401, 402, 403].indexOf(data.response.status) > -1) {
+                    location.reload(true);
                 } else {
                     Alertify.error(($.resx && $.resx('errorGeneric')) || 'An unhandled error occurred.');
                 }
                 if ($.isFunction(onError)) {
-                    onError(response);
+                    onError(data.response);
                 }
             });
     };
