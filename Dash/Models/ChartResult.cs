@@ -44,7 +44,7 @@ namespace Dash.Models
                 return;
             }
 
-            var yType = yColumn == null ? "string" : yColumn.TableDataType;
+            var yType = yColumn == null ? "string" : yColumn.TableDataType.ToString();
             var groupedValues = new Dictionary<string, dynamic>();
             var groupedCounts = new Dictionary<string, int>();
 

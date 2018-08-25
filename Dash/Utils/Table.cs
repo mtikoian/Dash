@@ -40,15 +40,24 @@ namespace Dash
 
         public IEnumerable<TableColumn> Columns { get; set; }
         public IEnumerable<object> Data { get; set; }
+        public string DisplayCurrencyFormat { get; set; }
+        public string DisplayDateFormat { get; set; }
+        public bool? Editable { get; set; }
         public string Id { get; set; }
-        public bool LoadAllData { get; set; } = true;
-        public bool Searchable { get; set; } = true;
-        public bool StoreSettings { get; set; } = true;
-
-        public string Url { get; set; }
+        public int? ItemsPerPage { get; set; }
+        public bool? LoadAllData { get; set; } = true;
+        public HttpVerbs? RequestMethod { get; set; }
+        public bool? Searchable { get; set; } = true;
+        public IEnumerable<TableSorting> Sorting { get; set; }
+        public HttpVerbs? StoreRequestMethod { get; set; }
+        public bool? StoreSettings { get; set; }
+        public string StoreUrl { get; set; }
+        public object RequestParams { get; set; }
 
         [JilDirective(true)]
         public string ToJson { get { return JSON.SerializeDynamic(this, JilOutputFormatter.Options); } }
+        public string Url { get; set; }
+        public decimal? Width { get; set; }
 
         public static TableLink CopyButton(string href, string prompt, bool hasAccess = true)
         {
@@ -61,6 +70,11 @@ namespace Dash
             return !hasAccess ? null : new TableLink(href,
                 Html.Classes(DashClasses.DashConfirm, DashClasses.BtnError).Merge("data-confirm", confirm),
                 Core.Delete, TableIcon.Trash, HttpVerbs.Delete);
+        }
+
+        public static TableLink DownButton(string href, bool hasAccess = true, object jsonLogic = null)
+        {
+            return !hasAccess ? null : new TableLink(href, Html.Classes(DashClasses.BtnInfo), Core.MoveDown, TableIcon.Down, jsonLogic: jsonLogic);
         }
 
         public static TableLink EditButton(string href, bool hasAccess = true)
@@ -77,11 +91,6 @@ namespace Dash
         {
             return !hasAccess ? null : new TableLink(href, Html.Classes(DashClasses.BtnInfo), Core.MoveUp, TableIcon.Up, jsonLogic: jsonLogic);
         }
-
-        public static TableLink DownButton(string href, bool hasAccess = true, object jsonLogic = null)
-        {
-            return !hasAccess ? null : new TableLink(href, Html.Classes(DashClasses.BtnInfo), Core.MoveDown, TableIcon.Down, jsonLogic: jsonLogic);
-        }
     }
 
     public class TableColumn
@@ -90,13 +99,17 @@ namespace Dash
         {
         }
 
-        public TableColumn(string field, string label, bool sortable = true, TableDataType dataType = TableDataType.String, IEnumerable<TableLink> links = null)
+        public TableColumn(string field, string label, bool sortable = true, TableDataType dataType = TableDataType.String, IEnumerable<TableLink> links = null, decimal? width = null)
         {
             Field = field;
             Label = label;
             Sortable = sortable;
             DataType = dataType;
             Links = links;
+            if (width.HasValue)
+            {
+                Width = width.Value;
+            }
         }
 
         public TableColumn(string field, string label, TableLink link, bool sortable = true)

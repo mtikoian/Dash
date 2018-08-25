@@ -204,8 +204,8 @@ namespace Dash.Models
                     CurrencyFormat = report.Dataset.CurrencyFormat,
                     DateFormat = report.Dataset.DateFormat,
                     Title = $"{report.Name} ({xColumn.Title})",
-                    XType = xColumn.TableDataType,
-                    YType = yColumn.TableDataType,
+                    XType = xColumn.TableDataType.ToString(),
+                    YType = yColumn.TableDataType.ToString(),
                     Sql = hasDatasetAccess ? (report.Dataset.IsProc ? sqlQuery.ExecStatement(true) : sqlQuery.SelectStatement(prepare: true)) : null
                 };
 

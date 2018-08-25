@@ -6,6 +6,7 @@ using Dash.Configuration;
 using Dash.Resources;
 using Dash.Utils;
 using Jil;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Dash.Models
 {
@@ -152,6 +153,35 @@ namespace Dash.Models
         private List<DatasetColumn> _DatasetColumnsByDisplay { get; set; }
         private User _Owner { get; set; }
 
+        public Table TableOptions(IUrlHelper urlHelper)
+        {
+            return new Table($"report{Id}", urlHelper.Action("Data", "Report", new { Id = Id, Save = true }),
+                ReportColumn.Select(x => {
+                    var datasetColumn = Dataset.DatasetColumn.FirstOrDefault(c => c.Id == x.ColumnId);
+                    var link = datasetColumn?.Link;
+                    if (!link.IsEmpty())
+                    {
+                        Dataset.DatasetColumn.ForEach(dc => link = link.ReplaceCase(dc.ColumnName, $"{{{dc.Alias}}}"));
+                    }
+                    return new TableColumn(datasetColumn?.Alias ?? "", datasetColumn?.Title, true, datasetColumn?.TableDataType ?? TableDataType.String,
+                        new List<TableLink>().AddIf(new TableLink(link, Html.Classes().Append("target", "_blank")), !link.IsEmpty()), x.Width
+                    );
+                })
+            ) {
+                RequestMethod = HttpVerbs.Post,
+                Searchable = false,
+                LoadAllData = false,
+                Editable = IsOwner,
+                Sorting = SortColumns(),
+                StoreUrl = urlHelper.Action("UpdateColumnWidths", "Report", new { Id = Id, Save = IsOwner }),
+                StoreRequestMethod = HttpVerbs.Put,
+                Width = Width,
+                DisplayDateFormat = Dataset.DateFormat,
+                DisplayCurrencyFormat = Dataset.CurrencyFormat,
+                RequestParams = new { Id = Id, Save = IsOwner }
+            };
+        }
+
         public Report Copy(string name = null)
         {
             var newReport = this.Clone();
@@ -255,7 +285,7 @@ namespace Dash.Models
         public ReportResult GetData(IAppConfiguration appConfig, int start, int rowLimit, bool hasDatasetAccess)
         {
             // build a obj to store our results
-            var response = new ReportResult() { UpdatedDate = DateUpdated };
+            var response = new ReportResult() { UpdatedDate = DateUpdated, ReportId = Id };
 
             if (Dataset.DatasetColumn?.Any() != true)
             {
@@ -398,14 +428,14 @@ namespace Dash.Models
                     Field = datasetColumn?.Alias ?? "",
                     Label = datasetColumn?.Title,
                     Sortable = true,
-                    DataType = datasetColumn?.TableDataType ?? "",
+                    DataType = datasetColumn?.TableDataType.ToString() ?? "",
                     Width = x.Width,
                     Links = new List<TableLink>().AddIf(new TableLink(link, Html.Classes().Append("target", "_blank")), !link.IsEmpty())
                 };
             });
         }
 
-        public IEnumerable<object> SortColumns()
+        public IEnumerable<TableSorting> SortColumns()
         {
             if (ReportColumn == null)
             {
@@ -414,7 +444,7 @@ namespace Dash.Models
             var sortColumns = ReportColumn.Where(c => c.SortOrder > 0).OrderBy(c => c.SortOrder);
             return sortColumns.Select(x => {
                 var datasetColumn = Dataset.DatasetColumn.FirstOrDefault(c => c.Id == x.ColumnId);
-                return new { Field = datasetColumn?.Alias ?? "", Dir = x.SortDirection, DataType = datasetColumn?.TableDataType ?? "" };
+                return new TableSorting { Field = datasetColumn?.Alias ?? "", Dir = x.SortDirection, DataType = datasetColumn?.TableDataType.ToString() ?? "" };
             });
         }
 

@@ -116,27 +116,27 @@ namespace Dash.Models
         public int ReportColumnId { get; set; }
 
         [Ignore, JilDirective(true), BindNever, ValidateNever]
-        public string TableDataType
+        public TableDataType TableDataType
         {
             get
             {
                 if ((FilterTypes)FilterTypeId == FilterTypes.Select)
                 {
-                    return "string";
+                    return TableDataType.String;
                 }
                 if (IsCurrency)
                 {
-                    return "currency";
+                    return TableDataType.Currency;
                 }
                 if (IsInteger || IsDecimal)
                 {
-                    return "int";
+                    return TableDataType.Int;
                 }
                 if (IsDateTime)
                 {
-                    return "date";
+                    return TableDataType.Date;
                 }
-                return "string";
+                return TableDataType.String;
             }
         }
 

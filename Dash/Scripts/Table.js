@@ -22,25 +22,35 @@
             var myKey = this.opts.id + '.' + key;
             // getter
             if ($.isUndefined(value)) {
-                return $.isNull(this.opts.storageFunction) ? localStorage[myKey] : $.coalesce(this.opts[key], null);
+                return $.isNull(this.opts.storeUrl) ? localStorage[myKey] : $.coalesce(this.opts[key], null);
             }
 
             // setter
-            if ($.isNull(this.opts.storageFunction)) {
+            if ($.isNull(this.storeFunction)) {
                 localStorage[myKey] = value;
             } else {
-                // ignore the param actually passed and use the values from the object
-                // passing the whole object lets the storage function decide when to actually save using a debounce
-                if ($.isFunction(this.opts.storageFunction)) {
-                    this.opts.storageFunction({
+                var data;
+                if (this.opts.requestUsePascalCase) {
+                    data = $.extend($.toPascalKeys(this.opts.requestParams), {
+                        ItemsPerPage: this.itemsPerPage,
+                        CurrentStartItem: this.currentStartItem,
+                        SearchQuery: this.searchQuery,
+                        Width: this.width,
+                        Sorting: this.sorting,
+                        Columns: $.toPascalKeys($.map(this.opts.columns, function(c) { return { field: c.field, width: c.width * 1.0 }; }))
+                    });
+                } else {
+                    data = $.extend(this.opts.requestParams, {
                         itemsPerPage: this.itemsPerPage,
                         currentStartItem: this.currentStartItem,
                         searchQuery: this.searchQuery,
                         width: this.width,
                         sorting: this.sorting,
-                        columnWidths: $.map(this.opts.columns, function(c) { return { field: c.field, width: c.width * 1.0 }; })
+                        columns: $.map(this.opts.columns, function(c) { return { field: c.field, width: c.width * 1.0 }; })
                     });
                 }
+
+                this.storeFunction.call(null, data);
             }
         },
 
@@ -127,7 +137,7 @@
         buildParams: function() {
             var sort = this.sorting.length > 0 ? $.map(this.sorting, function(obj, i) { return { field: obj.field, dir: obj.dir, index: i }; }) : null;
             if (this.opts.requestUsePascalCase) {
-                return $.extend(this.opts.requestParams, {
+                return $.extend($.toPascalKeys(this.opts.requestParams), {
                     StartItem: this.currentStartItem,
                     Items: this.itemsPerPage,
                     Query: this.searchQuery,
@@ -836,7 +846,8 @@
                 editable: true,
                 pageDropdown: true,
                 storeSettings: true,
-                storageFunction: null,
+                storeUrl: null,
+                storeRequestMethod: 'PUT',
                 itemsPerPage: null,
                 searchQuery: null,
                 currentStartItem: null,
@@ -874,6 +885,20 @@
             this.intColumns = [];
             this.dateColumns = [];
             this.currencyColumns = [];
+
+
+            this.storeFunction = null;
+            if (this.opts.storeUrl) {
+                var storeUrl = this.opts.storeUrl;
+                var storeRequestMethod = this.opts.storeRequestMethod;
+                this.storeFunction = $.debounce(function(data) {
+                    $.ajax({
+                        url: storeUrl,
+                        method: storeRequestMethod,
+                        data: data
+                    });
+                }, 250);
+            }
 
             var self = this;
             for (var i = 0; i < this.opts.columns.length; i++) {
