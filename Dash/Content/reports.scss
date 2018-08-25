@@ -5,23 +5,9 @@
 
 .column-item {
     background: #efefef;
-    margin: .5rem;
     padding: .5rem;
     cursor: move;
-    z-index: 999;
-    width: 45%;
-    position: absolute;
     height: 2rem;
-
-    &.column-item-right {
-        left: 50%;
-    }
-
-    @for $i from 1 through 100 {
-        &.column-item-y-#{$i} {
-            top: $i*2.5rem;
-        }
-    }
 }
 
 #filterTableWrapper {

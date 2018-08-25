@@ -19,11 +19,11 @@ namespace Dash.Models
         [BindNever, ValidateNever]
         public Report Report { get { return _Report ?? (_Report = DbContext.Get<Report>(Id)); } }
 
-        public decimal ReportWidth { get; set; }
+        public decimal Width { get; set; }
 
         public void Update()
         {
-            Report.UpdateColumnWidths(ReportWidth, Columns);
+            Report.UpdateColumnWidths(Width, Columns);
         }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)

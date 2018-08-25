@@ -1,0 +1,59 @@
+﻿@using Dash.Resources
+@using Dash.Models
+@model Report
+
+<body-content>
+    <breadcrumb>
+        <breadcrumb-item label="@Reports.ViewAll" controller="Report" action="Index"></breadcrumb-item>
+        <breadcrumb-item label="@Reports.ViewReport" controller="Report" action="Edit" route-values="@(new { Model.Id })" is-active="true"></breadcrumb-item>
+    </breadcrumb>
+
+    <partial name="_Toast" />
+
+    <tab-list>
+        <tab-item>
+            <tab-active id="report">@Reports.ViewReport</tab-active>
+        </tab-item>
+        <tab-item no-render="@(!User.IsInRole("reportfilter.index"))">
+            @Html.AuthorizedActionLink(Reports.Filters, "Index", "ReportFilter", new { Model.Id }, new { @class = "btn btn-link", role = "tab" })
+        </tab-item>
+        <tab-item no-render="@(!User.IsInRole("reportgroup.index"))">
+            @Html.AuthorizedActionLink(Reports.Groups, "Index", "ReportGroup", new { Model.Id }, new { @class = "btn btn-link", role = "tab" })
+        </tab-item>
+        <tab-item no-render="@(!User.IsInRole("report.selectcolumns"))">
+            @Html.AuthorizedActionLink(Reports.SelectColumns, "SelectColumns", "Report", new { Model.Id }, new { @class = "btn btn-link", role = "tab" })
+        </tab-item>
+        <tab-item no-render="@(!User.IsInRole("report.edit"))">
+            @Html.AuthorizedActionLink(Core.Rename, "Rename", "Report", new { Model.Id }, new { @class = "btn btn-link", role = "tab" })
+        </tab-item>
+        <tab-item no-render="@(!User.IsInRole("report.share"))">
+            @Html.AuthorizedActionLink(Reports.ShareReport, "Share", "Report", new { Model.Id }, new { @class = "btn btn-link", role = "tab" })
+        </tab-item>
+        <tab-item no-render="@(!User.IsInRole("report.export"))">
+            @Html.AuthorizedActionLink(Core.Export, "Export", "Report", new { Model.Id }, new { @class = "btn btn-link pjax-no-follow", role = "tab", target = "_blank" })
+        </tab-item>
+        <tab-item no-render="@(!User.IsInRole("report.sql"))">
+            @Html.AuthorizedActionLink(Core.ViewSql, "Sql", "Report", new { Model.Id }, new { @class = "btn btn-link", role = "tab" })
+        </tab-item>
+    </tab-list>
+
+    <tab-panel id="report">
+        @if (Model.ReportColumn.Any())
+        {
+            <div class="report-data-container container p-2">
+                <dynamic-table options="@Model.TableOptions(Url)"></dynamic-table>
+            </div>
+        }
+        else
+        {
+            <div class="report-data-no-columns">
+                <div class="card text-white m-2 bg-warning">
+                    <div class="card-body">
+                        <p class="card-text">@Reports.ErrorNoColumnsSelected</p>
+                        @Html.AuthorizedActionLink(Reports.SelectColumns, "SelectColumns", "Report", new { Model.Id }, new { @class = $"{DashClasses.Btn.ToCssClass()} {DashClasses.BtnPrimary.ToCssClass()}" }, hasAccess: this.User.IsInRole("report.selectcolumns"))
+                    </div>
+                </div>
+            </div>
+        }
+    </tab-panel>
+</body-content>

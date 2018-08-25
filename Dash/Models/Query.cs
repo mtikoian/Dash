@@ -35,6 +35,8 @@ namespace Dash.Models
         /// <param name="isChart">Set if this query will be used for creating a chart, default to false.</param>
         public Query(Report report, ChartRange range = null)
         {
+            // @todo replace this class with https://github.com/sqlkata/querybuilder
+
             Report = report;
             ChartRange = range;
             IsChart = range != null;

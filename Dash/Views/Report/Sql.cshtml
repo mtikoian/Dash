@@ -1,0 +1,26 @@
+﻿@using Dash.Resources
+@using Dash.Models
+@model ReportResult
+
+<body-content>
+    <breadcrumb>
+        <breadcrumb-item label="@Reports.ViewAll" controller="Report" action="Index"></breadcrumb-item>
+        <breadcrumb-item label="@Reports.ViewReport" controller="Report" action="Edit" route-values="@(new { Id = Model.ReportId })"></breadcrumb-item>
+        <breadcrumb-item label="@Core.ViewSql" controller="Report" action="Sql" route-values="@(new { Id = Model.ReportId })" is-active="true"></breadcrumb-item>
+    </breadcrumb>
+
+    <partial name="_Toast" />
+
+    <div class="col-12">
+        <div class="sql-data-content">
+            <h5>@Reports.DataQuery</h5>
+            <pre class="code" data-lang="SQL"><code class="sql-text">@Model.DataSql</code></pre>
+            <div class="sql-error">@Model.DataError</div>
+        </div>
+        <div class="sql-count-content">
+            <h5>@Reports.CountQuery</h5>
+            <pre class="code" data-lang="SQL"><code class="sql-text">@Model.CountSql</code></pre>
+            <div class="sql-error">@Model.CountError</div>
+        </div>
+    </div>
+</body-content>

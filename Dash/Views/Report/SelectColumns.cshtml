@@ -1,56 +1,86 @@
 ﻿@model Dash.Models.Report
 @using Dash.Resources
 
-@using (Html.BeginBodyContent())
-{
-    @Html.Breadcrumbs(new List<Breadcrumb> {
-        new Breadcrumb(Reports.ViewAll, "Index", "Report"),
-        new Breadcrumb(Reports.SelectColumns, "SelectColumns", "Report", new { id = Model.Id })
-    });
+<body-content data-load-event="columnSelectorLoad" data-unload-event="columnSelectorUnload">
+    <breadcrumb>
+        <breadcrumb-item label="@Reports.ViewAll" controller="Report" action="Index"></breadcrumb-item>
+        <breadcrumb-item label="@Reports.ViewReport" controller="Report" action="Edit" route-values="@(new { Model.Id })"></breadcrumb-item>
+        <breadcrumb-item label="@Reports.SelectColumns" controller="Report" action="SelectColumns" route-values="@(new { Model.Id })" is-active="true"></breadcrumb-item>
+    </breadcrumb>
 
-    @using (Html.BeginCustomForm("SelectColumns", "Report", null, null, "columnSelectorLoad", htmlAttributes: new { @data_unload_event = "columnSelectorUnload" }, method: HttpVerbs.Put))
-    {
-        @Html.HiddenFor(model => model.Id)
-        @Html.HiddenFor(model => model.AllowCloseParent)
+    <partial name="_Toast" />
 
-        <partial name="_Toast" />
+    <tab-list>
+        <tab-item>
+            @Html.AuthorizedActionLink(Reports.ViewReport, "Edit", "Report", new { Model.Id }, new { @class = "btn btn-link", role = "tab" })
+        </tab-item>
+        <tab-item no-render="@(!User.IsInRole("reportfilter.index"))">
+            @Html.AuthorizedActionLink(Reports.Filters, "Index", "ReportFilter", new { Model.Id }, new { @class = "btn btn-link", role = "tab" })
+        </tab-item>
+        <tab-item no-render="@(!User.IsInRole("reportgroup.index"))">
+            @Html.AuthorizedActionLink(Reports.Groups, "Index", "ReportGroup", new { Model.Id }, new { @class = "btn btn-link", role = "tab" })
+        </tab-item>
+        <tab-item>
+            <tab-active id="selectColumns">@Reports.SelectColumns</tab-active>
+        </tab-item>
+        <tab-item no-render="@(!User.IsInRole("report.edit"))">
+            @Html.AuthorizedActionLink(Core.Rename, "Rename", "Report", new { Model.Id }, new { @class = "btn btn-link", role = "tab" })
+        </tab-item>
+        <tab-item no-render="@(!User.IsInRole("report.share"))">
+            @Html.AuthorizedActionLink(Reports.ShareReport, "Share", "Report", new { id = Model.Id }, new { @class = "btn btn-link", role = "tab" })
+        </tab-item>
+        <tab-item no-render="@(!User.IsInRole("report.export"))">
+            @Html.AuthorizedActionLink(Core.Export, "Export", "Report", new { Model.Id }, new { @class = "btn btn-link pjax-no-follow", role = "tab", target = "_blank" })
+        </tab-item>
+        <tab-item no-render="@(!User.IsInRole("report.sql"))">
+            @Html.AuthorizedActionLink(Core.ViewSql, "Sql", "Report", new { Model.Id }, new { @class = "btn btn-link", role = "tab" })
+        </tab-item>
+    </tab-list>
 
+    <tab-panel id="selectColumns">
         @Html.ToCard(Reports.SelectColumnsExplain, CardTypes.Primary)
 
-        <div class="columns">
-            <div class="col-6"><h4>@Reports.Available</h4></div>
-            <div class="col-6"><h4>@Reports.Selected</h4></div>
-        </div>
-        <div class="columns column-list">
-            @if (Model != null)
-            {
-                var i = -1;
-                var left = -1;
-                var right = -1;
-                foreach (var column in Model.DatasetColumnsByDisplay)
+        @using (Html.BeginCustomForm("SelectColumns", "Report", null, null, "columnSelectorLoad", htmlAttributes: new { @data_unload_event = "columnSelectorUnload" }, method: HttpVerbs.Put))
+        {
+            @Html.HiddenFor(model => model.Id)
+            @Html.HiddenFor(model => model.AllowCloseParent)
+            <div class="columns">
+                <div class="col-6"><h4>@Reports.Available</h4></div>
+                <div class="col-6"><h4>@Reports.Selected</h4></div>
+            </div>
+            <div class="columns column-list">
+                @if (Model != null)
                 {
-                    if (column.DisplayOrder > 0)
+                    var i = -1;
+                    var left = -1;
+                    var right = -1;
+                    foreach (var column in Model.DatasetColumnsByDisplay)
                     {
-                        ++right;
-                    }
-                    else
-                    {
-                        ++left;
-                    }
-                    ++i;
+                        if (column.DisplayOrder > 0)
+                        {
+                            ++right;
+                        }
+                        else
+                        {
+                            ++left;
+                        }
+                        ++i;
 
-                    <div class="column-item column-item-y-@(column.DisplayOrder > 0 ? right : left) @(column.DisplayOrder > 0 ? "column-item-right" : "column-item-left")" data-item-id="@column.Id">
-                        <div>
-                            @column.Title
-                            <input type="hidden" name="Columns[@i].Id" value="@column.ReportColumnId" />
-                            <input type="hidden" name="Columns[@i].ColumnId" value="@column.Id" />
-                            <input type="hidden" name="Columns[@i].DisplayOrder" value="@column.DisplayOrder" class="column-grid-display-order" />
+                        <div class="col-12">
+                            <div class="col-6 column-item @(column.DisplayOrder > 0 ? "col-ml-auto" : "col-mr-auto")" data-item-id="@column.Id">
+                                <div>
+                                    @column.Title
+                                    <input type="hidden" name="Columns[@i].Id" value="@column.ReportColumnId" />
+                                    <input type="hidden" name="Columns[@i].ColumnId" value="@column.Id" />
+                                    <input type="hidden" name="Columns[@i].DisplayOrder" value="@column.DisplayOrder" class="column-grid-display-order" />
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    }
                 }
-            }
-        </div>
+            </div>
 
-        @Html.FormButtons()
-    }
-}
+            @Html.FormButtons()
+        }
+    </tab-panel>
+</body-content>

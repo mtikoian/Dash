@@ -102,7 +102,7 @@ namespace Dash.Controllers
         }
 
         [HttpGet]
-        public IActionResult Details(int id)
+        public IActionResult Edit(int id)
         {
             var report = DbContext.Get<Report>(id);
             if (report == null)
@@ -128,11 +128,11 @@ namespace Dash.Controllers
                 report.ReportColumn[0].SortDirection = "asc";
                 report.ReportColumn[0].SortOrder = 1;
             }
-            return View("Details", report);
+            return View("Edit", report);
         }
 
         [HttpGet, AjaxRequestOnly]
-        public IActionResult DetailsOptions(int id)
+        public IActionResult EditOptions(int id)
         {
             var report = DbContext.Get<Report>(id);
             if (report == null)
@@ -212,17 +212,17 @@ namespace Dash.Controllers
         {
             RouteData.Values.Remove("id");
             return View("Index", new Table("tableReports", Url.Action("List"), new List<TableColumn> {
-                new TableColumn("name", Reports.Name, Table.EditLink($"{Url.Action("Details")}/{{id}}", User.IsInRole("report.details"))),
+                new TableColumn("name", Reports.Name, Table.EditLink($"{Url.Action("Edit")}/{{id}}", User.IsInRole("report.edit"))),
                 new TableColumn("datasetName", Reports.Dataset, Table.EditLink($"{Url.Action("Edit", "Dataset")}/{{datasetId}}", User.IsInRole("dataset.edit"))),
                 new TableColumn("actions", Core.Actions, sortable: false, links: new List<TableLink>()
-                        .AddIf(Table.EditButton($"{Url.Action("Details")}/{{id}}"), User.IsInRole("report.details"))
+                        .AddIf(Table.EditButton($"{Url.Action("Edit")}/{{id}}"), User.IsInRole("report.edit"))
                         .AddIf(Table.DeleteButton($"{Url.Action("Delete")}/{{id}}", Reports.ConfirmDelete), User.IsInRole("report.delete"))
                         .AddIf(Table.CopyButton($"{Url.Action("Copy")}/{{id}}", Reports.NewName), User.IsInRole("report.copy"))
                 )}
             ));
         }
 
-        [HttpGet, AjaxRequestOnly]
+        [HttpGet, AjaxRequestOnly, ParentAction("Index")]
         public IActionResult List()
         {
             return Rows(DbContext.GetAll<Report>(new { UserId = User.UserId() }));
@@ -240,18 +240,18 @@ namespace Dash.Controllers
             if (!report.IsOwner)
             {
                 ViewBag.Error = Reports.ErrorOwnerOnly;
-                return Details(id);
+                return Edit(id);
             }
             if (prompt.IsEmpty())
             {
                 ViewBag.Error = Reports.ErrorNameRequired;
-                return Details(id);
+                return Edit(id);
             }
 
             report.Name = prompt.Trim();
             DbContext.Save(report, false);
             ViewBag.Message = Reports.SuccessSavingReport;
-            return Details(id);
+            return Edit(id);
         }
 
         [HttpPut, AjaxRequestOnly]
@@ -294,13 +294,13 @@ namespace Dash.Controllers
             if (!report.IsOwner)
             {
                 ViewBag.Error = Reports.ErrorOwnerOnly;
-                return Details(id);
+                return Edit(id);
             }
             var user = DbContext.Get<User>(User.UserId());
             if (!user.CanAccessDataset(report.DatasetId))
             {
                 ViewBag.Error = Reports.ErrorInvalidDatasetId;
-                return Details(id);
+                return Edit(id);
             }
             report.AllowCloseParent = closeParent;
             return View("SelectColumns", report);
@@ -321,7 +321,7 @@ namespace Dash.Controllers
             }
             model.Update();
             ViewBag.Message = Reports.SuccessSavingReport;
-            return Details(model.Report.Id);
+            return Edit(model.Report.Id);
         }
 
         [HttpGet]
@@ -336,7 +336,7 @@ namespace Dash.Controllers
             if (!report.IsOwner)
             {
                 ViewBag.Error = Reports.ErrorOwnerOnly;
-                return Details(id);
+                return Edit(id);
             }
             return View("Share", report);
         }
@@ -356,7 +356,19 @@ namespace Dash.Controllers
             }
             model.Update();
             ViewBag.Message = Reports.SuccessSavingReport;
-            return Details(model.Report.Id);
+            return Edit(model.Report.Id);
+        }
+
+        [HttpGet]
+        public IActionResult Sql(int id)
+        {
+            var report = DbContext.Get<Report>(id);
+            if (report == null)
+            {
+                ViewBag.Error = Core.ErrorInvalidId;
+                return Index();
+            }
+            return View("Sql", report.GetData(AppConfig, 0, report.RowLimit, true));
         }
 
         [HttpPut, AjaxRequestOnly]

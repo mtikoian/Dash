@@ -10,7 +10,7 @@
         <span class="grid-buttons col-4 text-right">
             <a title="@Widgets.Refresh" class="btn btn-link btn-refresh"><i class="dash dash-arrows-cw"></i></a>
             <a title="@Widgets.ToggleFullScreen" class="btn btn-link btn-fullscreen"><i class="dash dash-max"></i></a>
-            <a href="@Url.Action("Details", "Report", new { @id = Model.ReportId })" title="@Widgets.Report" class="btn btn-link dash-ajax fs-disabled" data-title="@Widgets.ViewReport">
+            <a href="@Url.Action("Edit", "Report", new { @id = Model.ReportId })" title="@Widgets.Report" class="btn btn-link dash-ajax fs-disabled" data-title="@Widgets.ViewReport">
                 <i class="dash dash-info"></i>
             </a>
             <a href="@Url.Action("Edit", "Dashboard", new { @id = Model.Id })" title="@Widgets.EditWidget" class="btn btn-link dash-ajax fs-disabled"><i class="dash dash-pencil"></i></a>

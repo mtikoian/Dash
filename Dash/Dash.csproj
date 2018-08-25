@@ -65,7 +65,7 @@
     <None Include="Views\Dataset\CreateEdit.cshtml"/>
     <None Include="Views\Dataset\Index.cshtml"/>
     <None Include="Views\Report\Create.cshtml"/>
-    <None Include="Views\Report\Details.cshtml"/>
+    <None Include="Views\Report\Edit.cshtml"/>
     <None Include="Views\Report\Index.cshtml"/>
     <None Include="Views\Report\SelectColumns.cshtml"/>
     <None Include="Views\Report\Share.cshtml"/>
@@ -141,6 +141,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Update="Views\Report\Sql.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Resources\Account.es.resx">
