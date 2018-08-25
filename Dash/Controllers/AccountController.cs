@@ -83,11 +83,7 @@ namespace Dash.Controllers
             }
 
             // add localization cookie after logon
-            var cultureInfo = new CultureInfo(model.Membership.LanguageCode);
-            Response.Cookies.Append(
-                CookieRequestCultureProvider.DefaultCookieName,
-                CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(cultureInfo))
-            );
+            Response.Cookies.Append(Startup.CultureCookieName, CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(new CultureInfo(model.Membership.LanguageCode))));
 
             if (model.Membership.AllowSingleFactor)
             {
@@ -215,11 +211,7 @@ namespace Dash.Controllers
             }
 
             // add localization cookie after logon
-            var cultureInfo = new CultureInfo(model.LanguageCode);
-            Response.Cookies.Append(
-                CookieRequestCultureProvider.DefaultCookieName,
-                CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(cultureInfo))
-            );
+            Response.Cookies.Append(Startup.CultureCookieName, CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(new CultureInfo(model.LanguageCode))));
 
             ViewBag.Message = Account.AccountUpdated;
             return View("Update", model);

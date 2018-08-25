@@ -40,6 +40,10 @@ namespace Dash
 
     public class Startup
     {
+        public static string CultureCookieName = ".Dash.Culture";
+        public static string AuthCookieName = ".Dash.Auth";
+        public static string AntiforgeryCookieName = ".Dash.AntiForgery";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -122,11 +126,13 @@ namespace Dash
                 new CultureInfo("en"),
                 new CultureInfo("es")
             };
-            app.UseRequestLocalization(new RequestLocalizationOptions {
+            var localizationOptions = new RequestLocalizationOptions {
                 DefaultRequestCulture = new RequestCulture("en"),
                 SupportedCultures = cultures,
-                SupportedUICultures = cultures
-            });
+                SupportedUICultures = cultures,
+            };
+            localizationOptions.RequestCultureProviders.Insert(0, new CookieRequestCultureProvider() { CookieName = CultureCookieName });
+            app.UseRequestLocalization(localizationOptions);
 
             // Configure hangfire to use the new JobActivator we defined.
             app.UseHangfireDashboard("/hangfire", new DashboardOptions() {
@@ -156,6 +162,7 @@ namespace Dash
                 x.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             }).AddCookie(x => {
                 x.Cookie.HttpOnly = true;
+                x.Cookie.Name = AuthCookieName;
                 x.SessionStore = new MemoryCacheTicketStore();
             });
 
@@ -173,7 +180,10 @@ namespace Dash
             services.AddSingleton<IAuthorizationHandler, PermissionRequirementHandler>();
 
             services.AddDataProtection();
-            services.AddAntiforgery(options => options.HeaderName = "X-XSRF-Token");
+            services.AddAntiforgery(options => {
+                options.HeaderName = "X-XSRF-TOKEN";
+                options.Cookie.Name = AntiforgeryCookieName;
+            });
             var cache = new MemoryCache(new MemoryCacheOptions());
             services.AddSingleton(cache);
             services.AddSession(options => {
