@@ -11,7 +11,6 @@ namespace Dash.TagHelpers
             output.TagName = "ul";
             output.AddClass("tab", HtmlEncoder.Default);
             output.AddClass("tab-block", HtmlEncoder.Default);
-            output.AddClass("m-2", HtmlEncoder.Default);
             output.Attributes.Add("role", "tablist");
             base.Process(context, output);
         }
