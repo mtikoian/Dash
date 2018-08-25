@@ -144,7 +144,7 @@ namespace Dash.Models
             UserRole = RoleIds?.Where(x => x > 0).Select(id => keyedUserRoles.ContainsKey(id) ? keyedUserRoles[id] : new UserRole { UserId = Id, RoleId = id }).ToList()
                 ?? new List<UserRole>();
 
-            DbContext.Save(this);
+            DbContext.Save(this, lazySave);
             if (!Password.IsEmpty())
             {
                 var salt = Hasher.GenerateSalt();
