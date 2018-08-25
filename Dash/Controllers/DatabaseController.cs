@@ -78,13 +78,13 @@ namespace Dash.Controllers
             ));
         }
 
-        [HttpGet, AjaxRequestOnly]
+        [HttpGet, AjaxRequestOnly, ParentAction("Index")]
         public IActionResult List()
         {
             return Rows(DbContext.GetAll<Database>().Select(x => new { x.Id, x.Name, x.DatabaseName, x.Host, x.User }));
         }
 
-        [HttpGet]
+        [HttpGet, ParentAction("Create,Edit")]
         public IActionResult TestConnection(int id)
         {
             var model = DbContext.Get<Database>(id);

@@ -16,7 +16,7 @@ namespace Dash.Controllers
         {
         }
 
-        [HttpGet, AjaxRequestOnly]
+        [HttpGet, AjaxRequestOnly, ParentAction("Create,Edit")]
         public IActionResult Columns(int id)
         {
             var model = DbContext.Get<Dataset>(id);
@@ -106,13 +106,13 @@ namespace Dash.Controllers
             ));
         }
 
-        [HttpGet, AjaxRequestOnly]
+        [HttpGet, AjaxRequestOnly, ParentAction("Index")]
         public IActionResult List()
         {
             return Rows(DbContext.GetAll<Dataset>().Select(x => new { x.Id, x.Name, x.DatabaseName, x.DatabaseHost, x.PrimarySource, x.DatabaseId }));
         }
 
-        [HttpGet, AjaxRequestOnly]
+        [HttpGet, AjaxRequestOnly, ParentAction("Create,Edit")]
         public IActionResult Sources(int? id = null, int? databaseId = null, int? typeId = null, string search = null)
         {
             if (id.HasPositiveValue())

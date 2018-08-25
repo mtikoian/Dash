@@ -81,13 +81,13 @@ namespace Dash.Controllers
             ));
         }
 
-        [HttpGet, AjaxRequestOnly]
+        [HttpGet, AjaxRequestOnly, ParentAction("Index")]
         public IActionResult List()
         {
             return Rows(DbContext.GetAll<User>().Select(x => new { x.Id, x.UserName, x.FirstName, x.LastName, x.Email, x.IsLocked }));
         }
 
-        [HttpPut]
+        [HttpPut, ParentAction("Create,Edit")]
         public IActionResult Unlock(int id)
         {
             var model = DbContext.Get<User>(id);

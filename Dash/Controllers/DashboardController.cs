@@ -74,7 +74,7 @@ namespace Dash.Controllers
             return View("Index", new WidgetList(DbContext, _ActionContextAccessor, User.UserId()));
         }
 
-        [HttpGet]
+        [HttpGet, ParentAction("Index")]
         public IActionResult IndexOptions()
         {
             return Data(new WidgetList(DbContext, _ActionContextAccessor, User.UserId()).Widgets);
@@ -95,13 +95,7 @@ namespace Dash.Controllers
             return Success();
         }
 
-        [AjaxRequestOnly]
-        public IActionResult Start()
-        {
-            return PartialView("Start");
-        }
-
-        [HttpGet, AjaxRequestOnly]
+        [HttpGet, AjaxRequestOnly, ParentAction("Index")]
         public IActionResult WidgetOptions(int id)
         {
             var model = DbContext.Get<WidgetView>(id);

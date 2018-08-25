@@ -67,7 +67,7 @@ namespace Dash.Controllers
             return Save(model);
         }
 
-        [HttpGet]
+        [HttpGet, ParentAction("Create")]
         public IActionResult Import(int id)
         {
             var model = DbContext.Get<Dataset>(id);
@@ -104,7 +104,7 @@ namespace Dash.Controllers
             return View("Index", model);
         }
 
-        [HttpGet, AjaxRequestOnly]
+        [HttpGet, AjaxRequestOnly, ParentAction("Index")]
         public IActionResult List(int id)
         {
             return Rows(DbContext.Get<Dataset>(id).DatasetColumn);

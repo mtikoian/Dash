@@ -97,7 +97,7 @@ namespace Dash.Controllers
             ));
         }
 
-        [HttpGet, AjaxRequestOnly]
+        [HttpGet, AjaxRequestOnly, ParentAction("Index")]
         public IActionResult List()
         {
             return Rows(DbContext.GetAll<Alert>(new { UserID = User.UserId() }).Select(x => new { x.Name, x.Subject, x.SendTo, x.Id, IsActive = x.IsActive ? Core.Yes : Core.No, x.LastRunDate }));

@@ -218,7 +218,7 @@ namespace Dash
                 .Where(x => typeof(Controller).IsAssignableFrom(x)) //filter controllers
                 .SelectMany(x => x.GetMethods())
                 .Where(x => x.IsPublic && !x.IsDefined(typeof(NonActionAttribute))
-                     && (x.IsDefined(typeof(AuthorizeAttribute)) || (x.DeclaringType.IsDefined(typeof(AuthorizeAttribute)) && !x.IsDefined(typeof(AllowAnonymousAttribute)))))
+                     && (x.IsDefined(typeof(AuthorizeAttribute)) || (x.DeclaringType.IsDefined(typeof(AuthorizeAttribute)) && !x.IsDefined(typeof(AllowAnonymousAttribute)) &!x.IsDefined(typeof(ParentActionAttribute)))))
                 .Select(x => $"{x.DeclaringType.FullName.Split('.').Last().Replace("Controller", "")}.{x.Name}")
                 .Distinct()
                 .ToDictionary(x => x.ToLower(), x => x);

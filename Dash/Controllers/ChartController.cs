@@ -219,7 +219,7 @@ namespace Dash.Controllers
             ));
         }
 
-        [HttpGet, AjaxRequestOnly]
+        [HttpGet, AjaxRequestOnly, ParentAction("Index")]
         public IActionResult List()
         {
             return Rows(DbContext.GetAll<Chart>(new { UserId = User.UserId() }));

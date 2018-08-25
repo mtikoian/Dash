@@ -14,7 +14,7 @@ namespace Dash.Controllers
         {
         }
 
-        [HttpGet, AjaxRequestOnly] // this might not have to be ajax only
+        [HttpGet]
         public IActionResult Copy(CopyRole model)
         {
             if (model == null)
@@ -91,7 +91,7 @@ namespace Dash.Controllers
             ));
         }
 
-        [HttpGet, AjaxRequestOnly]
+        [HttpGet, AjaxRequestOnly, ParentAction("Index")]
         public IActionResult List()
         {
             return Rows(DbContext.GetAll<Role>());

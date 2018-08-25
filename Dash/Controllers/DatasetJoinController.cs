@@ -87,7 +87,7 @@ namespace Dash.Controllers
             return View("Index", model);
         }
 
-        [HttpGet, AjaxRequestOnly]
+        [HttpGet, AjaxRequestOnly, ParentAction("Index")]
         public IActionResult List(int id)
         {
             var joins = DbContext.Get<Dataset>(id).DatasetJoin.OrderBy(x => x.JoinOrder).ToList();
@@ -98,7 +98,7 @@ namespace Dash.Controllers
             return Rows(joins);
         }
 
-        [HttpGet]
+        [HttpGet, ParentAction("Edit")]
         public IActionResult MoveDown(int id)
         {
             var model = DbContext.Get<DatasetJoin>(id);
@@ -116,7 +116,7 @@ namespace Dash.Controllers
             return Index(model.DatasetId);
         }
 
-        [HttpGet]
+        [HttpGet, ParentAction("Edit")]
         public IActionResult MoveUp(int id)
         {
             var model = DbContext.Get<DatasetJoin>(id);
