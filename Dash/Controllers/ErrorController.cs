@@ -21,8 +21,6 @@ namespace Dash.Controllers
                 var statusFeature = HttpContext.Features.Get<IStatusCodeReExecuteFeature>();
                 Serilog.Log.Error("Unhandled error code `{0}` for request `{1}`.", code, statusFeature?.OriginalPath);
             }
-            if (Request.IsAjaxRequest())
-                return Error(!code.IsEmpty() && new string[] { "403" }.Contains(code) ? Core.ErrorAuthorization : Core.ErrorGeneric);
             return View("Error");
         }
 
