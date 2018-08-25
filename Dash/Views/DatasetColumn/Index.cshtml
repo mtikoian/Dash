@@ -26,7 +26,7 @@
     <tab-panel id="columns">
         <toolbar>
             @Html.AuthorizedButton(Core.Add, "Create", "DatasetColumn", new { Id = Model.Id }, DashClasses.BtnPrimary, hasAccess: User.IsInRole("datasetcolumn.create"))
-            @Html.AuthorizedButton(Datasets.Import, "Import", "DatasetColumn", new { Id = Model.Id }, DashClasses.BtnInfo, hasAccess: User.IsInRole("datasetcolumn.import"))
+            @Html.AuthorizedButton(Datasets.Import, "Import", "DatasetColumn", new { Id = Model.Id }, DashClasses.BtnInfo, hasAccess: User.IsInRole("datasetcolumn.create"))
         </toolbar>
 
         <dynamic-table options="@Model.Table"></dynamic-table>
