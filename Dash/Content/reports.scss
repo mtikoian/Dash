@@ -1,13 +1,17 @@
-﻿.column-list {
-    background: #dddddd;
-    position: relative;
+﻿@import "spectre/variables";
+
+.column-list {
+    border: 1px solid $gray-color-dark;
+    min-height: 300px;
 }
 
 .column-item {
-    background: #efefef;
+    background: $gray-color-light;
+    border-radius: .5rem .5rem;
     padding: .5rem;
     cursor: move;
     height: 2rem;
+    margin-bottom: .2rem;
 }
 
 #filterTableWrapper {

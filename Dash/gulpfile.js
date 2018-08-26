@@ -92,6 +92,7 @@ gulp.task('js', function() {
         paths.js + 'Alertify.js',          // alerts/modals
         paths.js + 'pjax.js',              // pjax library
         paths.js + 'helpers.js',           // commonly used helper libraries
+        paths.js + 'sortable.js',           // drag-n-drop
         // re-used components
         paths.js + 'Autocomplete.js',      // autocomplete component
         paths.js + 'Chart.js',             // charting

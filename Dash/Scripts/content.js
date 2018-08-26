@@ -1,10 +1,11 @@
 ﻿/*!
  * Wraps content processing functionality.
  */
-(function(m, $, Alertify, pjax, Table, Tab, CollapsibleList, DatePicker, Autocomplete) {
+(function(m, $, Alertify, pjax, Table, Tab, CollapsibleList, DatePicker, Autocomplete, sortable) {
     'use strict';
 
     var autocompletes = [];
+    var sortables = [];
 
     /**
      * Display context help.
@@ -102,6 +103,37 @@
             x.destroy();
         });
         autocompletes = [];
+    };
+
+    /**
+     * Initialize sortable.
+     * @this {Node} Node the event is being bound to.
+     */
+    var sortableLoad = function() {
+        var left = $.get(this.getAttribute('data-target-left'));
+        var right = $.get(this.getAttribute('data-target-right'));
+
+        sortable(left, {
+            forcePlaceholderSize: true,
+            items: '.column-item',
+            acceptFrom: this.getAttribute('data-target-left') + ',' + this.getAttribute('data-target-right')
+        });
+        sortable(right, {
+            forcePlaceholderSize: true,
+            items: '.column-item',
+            acceptFrom: this.getAttribute('data-target-left') + ',' + this.getAttribute('data-target-right')
+        });
+    };
+
+    /**
+     * Destroy sortables on this page.
+     * @this {Node} Node the event is being bound to.
+     */
+    var sortableUnload = function() {
+        sortables.forEach(function(x) {
+            x.destroy();
+        });
+        sortables = [];
     };
 
     /**
@@ -237,6 +269,11 @@
             selector: '[data-toggle="autocomplete"]',
             onLoad: autocompleteLoad,
             onUnload: autocompleteUnload
+        },
+        {
+            selector: '[data-toggle="sortable"]',
+            onLoad: sortableLoad,
+            onUnload: sortableUnload
         }
     ];
 
@@ -349,4 +386,4 @@
         $.on(document, 'resxLoaded', pageLoaded);
     }
 
-})(this.m, this.$, this.Alertify, this.pjax, this.Table, this.Tab, this.CollapsibleList, this.DatePicker, this.Autocomplete);
+})(this.m, this.$, this.Alertify, this.pjax, this.Table, this.Tab, this.CollapsibleList, this.DatePicker, this.Autocomplete, this.sortable);

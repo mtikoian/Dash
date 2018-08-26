@@ -747,9 +747,11 @@
      * Initialize the report column selector.
      */
     $.on(document, 'columnSelectorLoad', function() {
+        /*
         $.getAll('.column-item').forEach(function(x) {
             new Draggabilly(x).on('dragStart', startDrag).on('dragEnd', stopDrag);
         });
+        */
     }, true);
 
     // @todo implement columnSelectorUnload
