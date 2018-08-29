@@ -24,7 +24,7 @@ namespace Dash.Utils
                 var myAssembly = System.Reflection.Assembly.GetExecutingAssembly();
                 if (myAssembly != null)
                 {
-                    var name = myAssembly.GetName().Name + "." + resourceName + ".resources";
+                    var name = myAssembly.GetName().Name + ".Resources" + "." + resourceName + ".resources";
                     var stream = myAssembly.GetManifestResourceStream(name);
                     if (stream != null)
                     {
