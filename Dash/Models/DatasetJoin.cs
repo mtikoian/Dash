@@ -26,10 +26,10 @@ namespace Dash.Models
             DbContext = dbContext;
         }
 
-        public DatasetJoin(IDbContext dbContext, int datasetid)
+        public DatasetJoin(IDbContext dbContext, int datasetId)
         {
             DbContext = dbContext;
-            DatasetId = datasetid;
+            DatasetId = datasetId;
         }
 
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
