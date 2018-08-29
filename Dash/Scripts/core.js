@@ -268,6 +268,9 @@
      * @param {Object} thisContext - The context for the visitor.
      */
     var forEach = function(subject, fn, thisContext) {
+        if (!(subject && subject.length)) {
+            return;
+        }
         var length = subject.length,
             iterator = thisContext !== undefined ? fn.bind(thisContext) : fn,
             i;
