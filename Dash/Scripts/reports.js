@@ -674,30 +674,22 @@
         var isLeft = pointer.x + target.offsetWidth / 2 < document.documentElement.clientWidth / 2;
         var newPos = Math.max(Math.round(target.offsetTop / target.offsetHeight), 0);
 
-        $.removeClass(target, 'col-ml-auto');
-        $.removeClass(target, 'col-mr-auto');
+        $.removeClass(target, 'column-item-right');
+        $.removeClass(target, 'column-item-left');
         target.removeAttribute('style');
 
-        var leftItems = $.getAll('.col-mr-auto');
+        var leftItems = $.getAll('.column-item-left');
         leftItems.sort(columnSort);
-        var rightItems = $.getAll('.col-ml-auto');
+        var rightItems = $.getAll('.column-item-right');
         rightItems.sort(columnSort);
         newPos = Math.min(newPos, isLeft ? leftItems.length : rightItems.length);
 
         if (isLeft) {
-            $.addClass(target, 'col-mr-auto');
+            $.addClass(target, 'column-item-left');
             leftItems.splice(newPos, 0, target);
         } else {
-            $.addClass(target, 'col-ml-auto');
+            $.addClass(target, 'column-item-right');
             rightItems.splice(newPos, 0, target);
-        }
-
-        var parent = $.closest('.column-list', target);
-        if (parent) {
-            var allItems = $.getAll('.column-item');
-            var newSpot = allItems[newPos].parentNode;
-            var parentTarget = $.closest('.col-12', target);
-            parent.insertBefore(parentTarget, newSpot);
         }
 
         updateList(leftItems, true);
@@ -732,7 +724,7 @@
      * @param {bool} isLeft - True if the column is in the left list, else false.
      */
     var updateColumn = function(element, index, isLeft) {
-        //element.className = element.className.replace(/column-item-y-([0-9]*)/i, '').trim() + ' column-item-y-' + index;
+        element.className = element.className.replace(/column-item-y-([0-9]*)/i, '').trim() + ' column-item-y-' + index;
         var input = $.get('.column-grid-display-order', element);
         if (input) {
             if (isLeft) {
@@ -747,11 +739,9 @@
      * Initialize the report column selector.
      */
     $.on(document, 'columnSelectorLoad', function() {
-        /*
         $.getAll('.column-item').forEach(function(x) {
             new Draggabilly(x).on('dragStart', startDrag).on('dragEnd', stopDrag);
         });
-        */
     }, true);
 
     // @todo implement columnSelectorUnload

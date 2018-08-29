@@ -1,11 +1,11 @@
 ﻿/*!
  * Wraps content processing functionality.
  */
-(function(m, $, Alertify, pjax, Table, Tab, CollapsibleList, DatePicker, Autocomplete, sortable) {
+(function(m, $, Alertify, pjax, Table, Tab, CollapsibleList, DatePicker, Autocomplete, Draggabilly) {
     'use strict';
 
     var autocompletes = [];
-    var sortables = [];
+    var draggabillies = [];
 
     /**
      * Display context help.
@@ -106,37 +106,6 @@
     };
 
     /**
-     * Initialize sortable.
-     * @this {Node} Node the event is being bound to.
-     */
-    var sortableLoad = function() {
-        var left = $.get(this.getAttribute('data-target-left'));
-        var right = $.get(this.getAttribute('data-target-right'));
-
-        sortable(left, {
-            forcePlaceholderSize: true,
-            items: '.column-item',
-            acceptFrom: this.getAttribute('data-target-left') + ',' + this.getAttribute('data-target-right')
-        });
-        sortable(right, {
-            forcePlaceholderSize: true,
-            items: '.column-item',
-            acceptFrom: this.getAttribute('data-target-left') + ',' + this.getAttribute('data-target-right')
-        });
-    };
-
-    /**
-     * Destroy sortables on this page.
-     * @this {Node} Node the event is being bound to.
-     */
-    var sortableUnload = function() {
-        sortables.forEach(function(x) {
-            x.destroy();
-        });
-        sortables = [];
-    };
-
-    /**
      * Set focus on an element after a dialog closes.
      * @param {Event} e - Event that originally triggered this.
      */
@@ -175,6 +144,109 @@
             $.dispatch(node, $.events.tableDestroy);
             m.mount(node, null);
         }
+    };
+
+    /**
+     * Update zIndex of column being dragged so it is on top.
+     * @param {Event} event - Original mousedown or touchstart event
+     */
+    var startColumnDrag = function(event) {
+        var target = $.hasClass(event.target, 'column-item') ? event.target : event.target.parentNode;
+        target.style['z-index'] = 9999;
+    };
+
+    /**
+     * Update column lists when the user stops dragging a column.
+     * @param {Event} event - Original mouseup or touchend event
+     * @param {MouseEvent|Touch} pointer - Event object that has .pageX and .pageY
+     */
+    var stopColumnDrag = function(event, pointer) {
+        var target = $.hasClass(event.target, 'column-item') ? event.target : event.target.parentNode;
+        var isLeft = (pointer.x || pointer.clientX) + target.offsetWidth / 2 < document.documentElement.clientWidth / 2;
+        var newPos = Math.max(Math.round(target.offsetTop / target.offsetHeight), 0);
+
+        $.removeClass(target, 'column-item-right');
+        $.removeClass(target, 'column-item-left');
+        target.removeAttribute('style');
+
+        var leftItems = $.getAll('.column-item-left');
+        leftItems.sort(columnSort);
+        var rightItems = $.getAll('.column-item-right');
+        rightItems.sort(columnSort);
+        newPos = Math.min(newPos, isLeft ? leftItems.length : rightItems.length);
+
+        if (isLeft) {
+            $.addClass(target, 'column-item-left');
+            leftItems.splice(newPos, 0, target);
+        } else {
+            $.addClass(target, 'column-item-right');
+            rightItems.splice(newPos, 0, target);
+        }
+
+        updateColumnList(leftItems, true);
+        updateColumnList(rightItems, false);
+        $.addClass($.closest('form', target), 'has-changes');
+    };
+
+    /**
+     * Sort columns by their vertical position.
+     * @param {Object} a - Object for first column.
+     * @param {Object} b - Object for second column.
+     * @returns {bool} True if first column should be after second column, else false;
+     */
+    var columnSort = function(a, b) {
+        return a.offsetTop > b.offsetTop;
+    };
+
+    /**
+     * Update the position and displayOrder of columns in a list.
+     * @param {Node[]} items - Array of column nodes.
+     * @param {bool} isLeft - True if the left column list, else false.
+     */
+    var updateColumnList = function(items, isLeft) {
+        $.forEach(items, function(x, i) {
+            updateColumn(x, i, isLeft);
+        });
+    };
+
+    /**
+     * Update the class list and displayOrder for a column item.
+     * @param {Node} element - DOM node for the column.
+     * @param {number} index - New index of the column in the list.
+     * @param {bool} isLeft - True if the column is in the left list, else false.
+     */
+    var updateColumn = function(element, index, isLeft) {
+        element.className = element.className.replace(/column-item-y-([0-9]*)/i, '').trim() + ' column-item-y-' + index;
+        var input = $.get('.column-grid-display-order', element);
+        if (input) {
+            if (isLeft) {
+                input.value = 0;
+            } else {
+                input.value = index + 1;
+            }
+        }
+    };
+
+    /**
+     * Initialize the column selector.
+     */
+    var columnSelectorLoad = function() {
+        var node = $.isNode(this) ? this : this.target;
+        if (node) {
+            $.forEach($.getAll('.column-item', node), function(x) {
+                draggabillies.push(new Draggabilly(x).on('dragStart', startColumnDrag).on('dragEnd', stopColumnDrag));
+            });
+        }
+    };
+
+    /**
+     * Destroy the column selector.
+     */
+    var columnSelectorUnload = function() {
+        $.forEach(draggabillies, function(x) {
+            x.destroy();
+        });
+        draggabillies = [];
     };
 
     /**
@@ -386,4 +458,4 @@
         $.on(document, 'resxLoaded', pageLoaded);
     }
 
-})(this.m, this.$, this.Alertify, this.pjax, this.Table, this.Tab, this.CollapsibleList, this.DatePicker, this.Autocomplete, this.sortable);
+})(this.m, this.$, this.Alertify, this.pjax, this.Table, this.Tab, this.CollapsibleList, this.DatePicker, this.Autocomplete, this.Draggabilly);

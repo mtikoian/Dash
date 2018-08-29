@@ -4,7 +4,7 @@
 <body-content>
     <breadcrumb>
         <breadcrumb-item label="@Reports.ViewAll" controller="Report" action="Index"></breadcrumb-item>
-        <breadcrumb-item label="@Reports.ViewReport" controller="Report" action="Edit" route-values="@(new { Model.Id })"></breadcrumb-item>
+        <breadcrumb-item label="@Model.Name" controller="Report" action="Edit" route-values="@(new { Model.Id })"></breadcrumb-item>
         <breadcrumb-item label="@Reports.SelectColumns" controller="Report" action="SelectColumns" route-values="@(new { Model.Id })" is-active="true"></breadcrumb-item>
     </breadcrumb>
 
@@ -23,7 +23,7 @@
         <tab-item>
             <tab-active id="selectColumns">@Reports.SelectColumns</tab-active>
         </tab-item>
-        <tab-item no-render="@(!User.IsInRole("report.edit"))">
+        <tab-item no-render="@(!Model.IsOwner)">
             @Html.AuthorizedActionLink(Core.Rename, "Rename", "Report", new { Model.Id }, new { @class = "btn btn-link", role = "tab" })
         </tab-item>
         <tab-item no-render="@(!User.IsInRole("report.share"))">
@@ -38,50 +38,45 @@
     </tab-list>
 
     <tab-panel id="selectColumns">
-        @Html.ToCard(Reports.SelectColumnsExplain, CardTypes.Primary)
-
         @using (Html.BeginCustomForm("SelectColumns", "Report", method: HttpVerbs.Put))
         {
+            <div class="toast toast-info" id="reportColumnToast">
+                <i class="dash dash-cancel toast-dismiss" data-toggle="hide" data-target="#reportColumnToast"></i>
+                @Reports.SelectColumnsExplain
+            </div>
+
             @Html.HiddenFor(model => model.Id)
             @Html.HiddenFor(model => model.AllowCloseParent)
-            <div class="columns" data-toggle="sortable" data-target-left="#availableColumns" data-target-right="#selectedColumns">
-                <div class="col-5">
-                    <h4>@Reports.Available</h4>
-                    <div class="col-12 column-list" id="availableColumns">
-                        @{
-                            var i = -1;
-                            foreach (var column in Model.DatasetColumnsByDisplay.Where(x => x.DisplayOrder == 0))
-                            {
-                                ++i;
-                                <div class="col-12 column-item">
-                                    <div class="col-12" data-item-id="@column.Id">
-                                        <div>
-                                            @column.Title
-                                            <input type="hidden" name="Columns[@i].Id" value="@column.ReportColumnId" />
-                                            <input type="hidden" name="Columns[@i].ColumnId" value="@column.Id" />
-                                            <input type="hidden" name="Columns[@i].DisplayOrder" value="@column.DisplayOrder" class="column-grid-display-order" />
-                                        </div>
-                                    </div>
-                                </div>
-                            }
-                        }
+            <div class="column-list-container" data-toggle="column-selector">
+                <div class="container">
+                    <div class="columns">
+                        <div class="col-6"><h4>@Reports.Available</h4></div>
+                        <div class="col-6"><h4>@Reports.Selected</h4></div>
                     </div>
-                </div>
-                <div class="col-5 col-mx-auto">
-                    <h4>@Reports.Selected</h4>
-                    <div class="col-12 column-list" id="selectedColumns">
-                        @{
-                            foreach (var column in Model.DatasetColumnsByDisplay.Where(x => x.DisplayOrder > 0))
+                    <div class="columns column-list">
+                        @if (Model != null)
+                        {
+                            var i = -1;
+                            var left = -1;
+                            var right = -1;
+                            foreach (var column in Model.DatasetColumnsByDisplay)
                             {
+                                if (column.DisplayOrder > 0)
+                                {
+                                    ++right;
+                                }
+                                else
+                                {
+                                    ++left;
+                                }
                                 ++i;
-                                <div class="col-12 column-item">
-                                    <div class="col-12" data-item-id="@column.Id">
-                                        <div>
-                                            @column.Title
-                                            <input type="hidden" name="Columns[@i].Id" value="@column.ReportColumnId" />
-                                            <input type="hidden" name="Columns[@i].ColumnId" value="@column.Id" />
-                                            <input type="hidden" name="Columns[@i].DisplayOrder" value="@column.DisplayOrder" class="column-grid-display-order" />
-                                        </div>
+
+                                <div class="column-item column-item-y-@(column.DisplayOrder > 0 ? right : left) @(column.DisplayOrder > 0 ? "column-item-right" : "column-item-left")" data-item-id="@column.Id">
+                                    <div>
+                                        @column.Title
+                                        <input type="hidden" name="Columns[@i].Id" value="@column.ReportColumnId" />
+                                        <input type="hidden" name="Columns[@i].ColumnId" value="@column.Id" />
+                                        <input type="hidden" name="Columns[@i].DisplayOrder" value="@column.DisplayOrder" class="column-grid-display-order" />
                                     </div>
                                 </div>
                             }
@@ -89,7 +84,6 @@
                     </div>
                 </div>
             </div>
-
             @Html.FormButtons()
         }
     </tab-panel>
