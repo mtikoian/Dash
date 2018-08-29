@@ -234,13 +234,13 @@
   <data name="Permission_ControllerName" xml:space="preserve">
     <value>Enter the name of the controller. You don't need to add `Controller` at the end.</value>
   </data>
-  <data name="Report_FilterColumn" xml:space="preserve">
+  <data name="ReportFilter_ColumnId" xml:space="preserve">
     <value>Select the column to use to filter report data.</value>
   </data>
-  <data name="Report_FilterCriteria" xml:space="preserve">
+  <data name="ReportFilter_Criteria" xml:space="preserve">
     <value>Enter a text value that you want to compare to the filter column.</value>
   </data>
-  <data name="Report_FilterOperator" xml:space="preserve">
+  <data name="ReportFilter_OperatorId" xml:space="preserve">
     <value>Select the operator to use when comparing criteria.</value>
   </data>
   <data name="Report_Filters" xml:space="preserve">

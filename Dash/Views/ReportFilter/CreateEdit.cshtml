@@ -23,14 +23,16 @@
                 <div class="form-group">
                     <label class="form-label col-4 required" for="DatabaseId">@Reports.FilterColumn</label>
                     <div class="col-8">
-                        <select class="form-input form-select" data-val="true" data-val-required="@(string.Format(Core.ErrorRequired, Reports.FilterColumn))" id="ColumnId" name="ColumnId" required>
-                            <option></option>
-                            @foreach (var column in Model.Columns)
-                            {
-                                <option value="@column.Id" data-filter-type="@column.FilterTypeId" data-is-param="@column.IsParam">@column.Title</option>
-                            }
-                        </select>
-                        @Html.HelpFor(x => x.ColumnId)
+                        <div class="input-group">
+                            <select class="form-input form-select" data-val="true" data-val-required="@(string.Format(Core.ErrorRequired, Reports.FilterColumn))" id="ColumnId" name="ColumnId" required>
+                                <option></option>
+                                @foreach (var column in Model.Columns)
+                                {
+                                    <option value="@column.Id" data-filter-type="@column.FilterTypeId" data-is-param="@column.IsParam">@column.Title</option>
+                                }
+                            </select>
+                            @Html.HelpFor(x => x.ColumnId)
+                        </div>
                     </div>
                 </div>
                 @Html.LabelInputFor(x => x.OperatorId)

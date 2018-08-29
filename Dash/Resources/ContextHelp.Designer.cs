@@ -439,33 +439,6 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select the column to use to filter report data..
-        /// </summary>
-        public static string Report_FilterColumn {
-            get {
-                return ResourceManager.GetString("Report_FilterColumn", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enter a text value that you want to compare to the filter column..
-        /// </summary>
-        public static string Report_FilterCriteria {
-            get {
-                return ResourceManager.GetString("Report_FilterCriteria", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Select the operator to use when comparing criteria..
-        /// </summary>
-        public static string Report_FilterOperator {
-            get {
-                return ResourceManager.GetString("Report_FilterOperator", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Filters limit the data that shows up in the table and chart. Filters for different columns will show data matching both filters. Adding two filters for the same column will show data matching either filter. Click the `Save` button to save filters and update the report..
         /// </summary>
         public static string Report_Filters {
@@ -489,6 +462,33 @@ namespace Dash.Resources {
         public static string Report_Groups {
             get {
                 return ResourceManager.GetString("Report_Groups", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select the column to use to filter report data..
+        /// </summary>
+        public static string ReportFilter_ColumnId {
+            get {
+                return ResourceManager.GetString("ReportFilter_ColumnId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter a text value that you want to compare to the filter column..
+        /// </summary>
+        public static string ReportFilter_Criteria {
+            get {
+                return ResourceManager.GetString("ReportFilter_Criteria", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select the operator to use when comparing criteria..
+        /// </summary>
+        public static string ReportFilter_OperatorId {
+            get {
+                return ResourceManager.GetString("ReportFilter_OperatorId", resourceCulture);
             }
         }
         
