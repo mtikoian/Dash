@@ -5,22 +5,51 @@
 <body-content>
     <breadcrumb>
         <breadcrumb-item label="@Reports.ViewAll" controller="Report" action="Index"></breadcrumb-item>
-        <breadcrumb-item label="@Reports.ViewReport" controller="Report" action="Edit" route-values="@(new { Id = Model.ReportId })"></breadcrumb-item>
+        <breadcrumb-item label="@Model.ReportName" controller="Report" action="Edit" route-values="@(new { Id = Model.ReportId })"></breadcrumb-item>
         <breadcrumb-item label="@Core.ViewSql" controller="Report" action="Sql" route-values="@(new { Id = Model.ReportId })" is-active="true"></breadcrumb-item>
     </breadcrumb>
 
     <partial name="_Toast" />
 
-    <div class="col-12">
-        <div class="sql-data-content">
-            <h5>@Reports.DataQuery</h5>
-            <pre class="code" data-lang="SQL"><code class="sql-text">@Model.DataSql</code></pre>
-            <div class="sql-error">@Model.DataError</div>
+    <tab-list>
+        <tab-item>
+            @Html.AuthorizedActionLink(Reports.ViewReport, "Edit", "Report", new { Id = Model.ReportId }, new { @class = "btn btn-link", role = "tab" })
+        </tab-item>
+        <tab-item no-render="@(!User.IsInRole("reportfilter.index"))">
+            @Html.AuthorizedActionLink(Reports.Filters, "Index", "ReportFilter", new { Id = Model.ReportId }, new { @class = "btn btn-link", role = "tab" })
+        </tab-item>
+        <tab-item no-render="@(!User.IsInRole("reportgroup.index"))">
+            @Html.AuthorizedActionLink(Reports.Groups, "Index", "ReportGroup", new { Id = Model.ReportId }, new { @class = "btn btn-link", role = "tab" })
+        </tab-item>
+        <tab-item no-render="@(!Model.IsOwner)">
+            @Html.AuthorizedActionLink(Reports.SelectColumns, "SelectColumns", "Report", new { Id = Model.ReportId }, new { @class = "btn btn-link", role = "tab" })
+        </tab-item>
+        <tab-item no-render="@(!Model.IsOwner)">
+            @Html.AuthorizedActionLink(Core.Rename, "Rename", "Report", new { Id = Model.ReportId }, new { @class = "btn btn-link", role = "tab" })
+        </tab-item>
+        <tab-item no-render="@(!User.IsInRole("report.share"))">
+            @Html.AuthorizedActionLink(Reports.ShareReport, "Share", "Report", new { Id = Model.ReportId }, new { @class = "btn btn-link", role = "tab" })
+        </tab-item>
+        <tab-item no-render="@(!User.IsInRole("report.export"))">
+            @Html.AuthorizedActionLink(Core.Export, "Export", "Report", new { Id = Model.ReportId }, new { @class = "btn btn-link pjax-no-follow", role = "tab", target = "_blank" })
+        </tab-item>
+        <tab-item>
+            <tab-active id="viewSql">@Core.ViewSql</tab-active>
+        </tab-item>
+    </tab-list>
+
+    <tab-panel id="viewSql">
+        <div class="col-12 p-5">
+            <div class="sql-data-content">
+                <h5>@Reports.DataQuery</h5>
+                <pre class="code" data-lang="SQL"><code class="sql-text">@Model.DataSql</code></pre>
+                <div class="sql-error">@Model.DataError</div>
+            </div>
+            <div class="sql-count-content">
+                <h5>@Reports.CountQuery</h5>
+                <pre class="code" data-lang="SQL"><code class="sql-text">@Model.CountSql</code></pre>
+                <div class="sql-error">@Model.CountError</div>
+            </div>
         </div>
-        <div class="sql-count-content">
-            <h5>@Reports.CountQuery</h5>
-            <pre class="code" data-lang="SQL"><code class="sql-text">@Model.CountSql</code></pre>
-            <div class="sql-error">@Model.CountError</div>
-        </div>
-    </div>
+    </tab-panel>
 </body-content>

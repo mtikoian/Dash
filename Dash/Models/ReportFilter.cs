@@ -1,19 +1,59 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using Dash.Resources;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Dash.Models
 {
     public class ReportFilter : BaseModel
     {
+        private DatasetColumn _Column;
+
+        private Report _Report;
+
+        public ReportFilter()
+        {
+        }
+
+        public ReportFilter(IDbContext dbContext)
+        {
+            DbContext = dbContext;
+        }
+
+        public ReportFilter(IDbContext dbContext, int reportId)
+        {
+            DbContext = dbContext;
+            ReportId = reportId;
+        }
+
+        [Display(Name = "FilterColumn", ResourceType = typeof(Reports))]
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int ColumnId { get; set; }
 
+        [Ignore]
+        [BindNever, ValidateNever]
+        public string ColumnName
+        {
+            get
+            {
+                if (_Column == null)
+                {
+                    _Column = DbContext.Get<DatasetColumn>(ColumnId);
+                }
+                return _Column?.Title;
+            }
+        }
+
+        [Display(Name = "FilterCriteria", ResourceType = typeof(Reports))]
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         [StringLength(250, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string Criteria { get; set; }
 
+        [Display(Name = "FilterCriteria2", ResourceType = typeof(Reports))]
         [StringLength(250, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string Criteria2 { get; set; }
 
@@ -23,11 +63,31 @@ namespace Dash.Models
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int DisplayOrder { get; set; }
 
+        [Ignore]
+        public bool IsLast { get; set; }
+
+        [Display(Name = "FilterOperator", ResourceType = typeof(Reports))]
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int OperatorId { get; set; }
 
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int ReportId { get; set; }
+
+        [Ignore]
+        [BindNever, ValidateNever]
+        public string ReportName { get { return Report?.Name; } }
+
+        [BindNever, ValidateNever]
+        private Report Report { get { return _Report ?? (_Report = DbContext.Get<Report>(ReportId)); } }
+
+        [BindNever, ValidateNever]
+        public List<DatasetColumn> Columns
+        {
+            get
+            {
+                return Report?.Dataset?.DatasetColumn;
+            }
+        }
 
         public string BuildFilterSql(DatasetColumn column, ReportFilter filter, out Dictionary<string, object> parameters)
         {
@@ -166,6 +226,48 @@ namespace Dash.Models
         public bool IsRange()
         {
             return OperatorId == (int)FilterOperatorsAbstract.Range;
+        }
+
+        public bool MoveDown(out string error)
+        {
+            error = "";
+            var filters = DbContext.GetAll<ReportFilter>(new { ReportId }).ToList();
+            if (DisplayOrder == filters.Count - 1)
+            {
+                // can't move any higher
+                error = Reports.ErrorAlreadyLastFilter;
+                return false;
+            }
+            var filter = filters.First(x => x.DisplayOrder == DisplayOrder + 1);
+            DbContext.WithTransaction(() => {
+                filter.DisplayOrder--;
+                DbContext.Save(filter);
+
+                DisplayOrder++;
+                DbContext.Save(this);
+                return this;
+            });
+            return true;
+        }
+
+        public bool MoveUp(out string error)
+        {
+            error = "";
+            if (DisplayOrder == 0)
+            {
+                // can't move any lower
+                error = Reports.ErrorAlreadyFirstFilter;
+                return false;
+            }
+            var filter = DbContext.GetAll<ReportFilter>(new { ReportId }).First(x => x.DisplayOrder == DisplayOrder - 1);
+            filter.DisplayOrder++;
+            DbContext.WithTransaction(() => {
+                DbContext.Save(filter);
+                DisplayOrder--;
+                DbContext.Save(this);
+                return this;
+            });
+            return true;
         }
     }
 }

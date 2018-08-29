@@ -285,7 +285,7 @@ namespace Dash.Models
         public ReportResult GetData(IAppConfiguration appConfig, int start, int rowLimit, bool hasDatasetAccess)
         {
             // build a obj to store our results
-            var response = new ReportResult() { UpdatedDate = DateUpdated, ReportId = Id };
+            var response = new ReportResult() { UpdatedDate = DateUpdated, ReportId = Id, ReportName = Name, IsOwner = IsOwner };
 
             if (Dataset.DatasetColumn?.Any() != true)
             {

@@ -276,4 +276,25 @@
   <data name="EditReport" xml:space="preserve">
     <value>Edit Report</value>
   </data>
+  <data name="ErrorAlreadyFirstFilter" xml:space="preserve">
+    <value>This filter is already first.</value>
+  </data>
+  <data name="ErrorAlreadyLastFilter" xml:space="preserve">
+    <value>This filter is already last.</value>
+  </data>
+  <data name="SuccessSavingFilter" xml:space="preserve">
+    <value>Filter saved successfully.</value>
+  </data>
+  <data name="SuccessDeletingFilter" xml:space="preserve">
+    <value>Filter deleted successfully.</value>
+  </data>
+  <data name="ConfirmDeleteFilter" xml:space="preserve">
+    <value>Are you sure you want to delete this filter?</value>
+  </data>
+  <data name="CreateFilter" xml:space="preserve">
+    <value>Create Filter</value>
+  </data>
+  <data name="EditFilter" xml:space="preserve">
+    <value>Edit Filter</value>
+  </data>
 </root>

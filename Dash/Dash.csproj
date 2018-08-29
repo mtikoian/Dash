@@ -143,6 +143,15 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Update="Views\ReportFilter\CreateEdit.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\ReportFilter\Index.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Report\Rename.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Views\Report\Sql.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>

@@ -228,8 +228,8 @@ namespace Dash.Controllers
             return Rows(DbContext.GetAll<Report>(new { UserId = User.UserId() }));
         }
 
-        [HttpPut]
-        public IActionResult Rename(int id, string prompt)
+        [HttpGet, ParentAction("Edit")]
+        public IActionResult Rename(int id)
         {
             var report = DbContext.Get<Report>(id);
             if (report == null)
@@ -242,16 +242,28 @@ namespace Dash.Controllers
                 ViewBag.Error = Reports.ErrorOwnerOnly;
                 return Edit(id);
             }
-            if (prompt.IsEmpty())
-            {
-                ViewBag.Error = Reports.ErrorNameRequired;
-                return Edit(id);
-            }
+            return View("Rename", report);
+        }
 
-            report.Name = prompt.Trim();
-            DbContext.Save(report, false);
+        [HttpPut, ParentAction("Edit")]
+        public IActionResult Rename(RenameReport model)
+        {
+            if (model == null)
+            {
+                return Error(Core.ErrorGeneric);
+            }
+            if (!model.Report.IsOwner)
+            {
+                ViewBag.Error = Reports.ErrorOwnerOnly;
+                return Edit(model.Report.Id);
+            }
+            if (!ModelState.IsValid)
+            {
+                return Error(ModelState.ToErrorString());
+            }
+            model.Save();
             ViewBag.Message = Reports.SuccessSavingReport;
-            return Edit(id);
+            return Edit(model.Report.Id);
         }
 
         [HttpPut, AjaxRequestOnly]
@@ -282,7 +294,7 @@ namespace Dash.Controllers
             return Data(new { groups = model.Update() });
         }
 
-        [HttpGet]
+        [HttpGet, ParentAction("Edit")]
         public IActionResult SelectColumns(int id, bool closeParent = true)
         {
             var report = DbContext.Get<Report>(id);
@@ -306,7 +318,7 @@ namespace Dash.Controllers
             return View("SelectColumns", report);
         }
 
-        [HttpPut]
+        [HttpPut, ParentAction("Edit")]
         public IActionResult SelectColumns(SelectColumn model)
         {
             if (model == null)

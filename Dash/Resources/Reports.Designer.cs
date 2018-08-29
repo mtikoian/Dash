@@ -97,6 +97,15 @@ namespace Dash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to delete this filter?.
+        /// </summary>
+        public static string ConfirmDeleteFilter {
+            get {
+                return ResourceManager.GetString("ConfirmDeleteFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Copy Report.
         /// </summary>
         public static string CopyReport {
@@ -111,6 +120,15 @@ namespace Dash.Resources {
         public static string CountQuery {
             get {
                 return ResourceManager.GetString("CountQuery", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create Filter.
+        /// </summary>
+        public static string CreateFilter {
+            get {
+                return ResourceManager.GetString("CreateFilter", resourceCulture);
             }
         }
         
@@ -160,11 +178,38 @@ namespace Dash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Edit Filter.
+        /// </summary>
+        public static string EditFilter {
+            get {
+                return ResourceManager.GetString("EditFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Edit Report.
         /// </summary>
         public static string EditReport {
             get {
                 return ResourceManager.GetString("EditReport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This filter is already first..
+        /// </summary>
+        public static string ErrorAlreadyFirstFilter {
+            get {
+                return ResourceManager.GetString("ErrorAlreadyFirstFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This filter is already last..
+        /// </summary>
+        public static string ErrorAlreadyLastFilter {
+            get {
+                return ResourceManager.GetString("ErrorAlreadyLastFilter", resourceCulture);
             }
         }
         
@@ -493,11 +538,29 @@ namespace Dash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Filter deleted successfully..
+        /// </summary>
+        public static string SuccessDeletingFilter {
+            get {
+                return ResourceManager.GetString("SuccessDeletingFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Report deleted successfully..
         /// </summary>
         public static string SuccessDeletingReport {
             get {
                 return ResourceManager.GetString("SuccessDeletingReport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filter saved successfully..
+        /// </summary>
+        public static string SuccessSavingFilter {
+            get {
+                return ResourceManager.GetString("SuccessSavingFilter", resourceCulture);
             }
         }
         

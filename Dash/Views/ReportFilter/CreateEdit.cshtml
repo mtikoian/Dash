@@ -1,0 +1,43 @@
+﻿@using Dash.Resources
+@using Dash.Models
+@model ReportFilter
+
+<body-content>
+    <breadcrumb>
+        <breadcrumb-item label="@Reports.ViewAll" controller="Report" action="Index"></breadcrumb-item>
+        <breadcrumb-item label="@Model.ReportName" controller="Report" action="Edit" route-values="@(new { Id = Model.ReportId })"></breadcrumb-item>
+        <breadcrumb-item label="@Reports.Filters" controller="ReportFilter" action="Index" route-values="@(new { Id = Model.ReportId })"></breadcrumb-item>
+        <breadcrumb-item label="@(Model.IsCreate ? Reports.CreateFilter : Reports.EditFilter)" controller="ReportFilter" action="@Model.FormAction" route-values="@(Model.IsCreate ? null : new { Id = Model.Id })" is-active="true"></breadcrumb-item>
+    </breadcrumb>
+
+    @using (Html.BeginCustomForm(Model.FormAction, "ReportFilter", method: Model.FormMethod))
+    {
+        @Html.HiddenFor(model => model.Id)
+        @Html.HiddenFor(model => model.ReportId)
+        @Html.HiddenFor(model => model.DisplayOrder)
+
+        <partial name="_Toast" />
+
+        <div class="columns">
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-label col-4 required" for="DatabaseId">@Reports.FilterColumn</label>
+                    <div class="col-8">
+                        <select class="form-input form-select" data-val="true" data-val-required="@(string.Format(Core.ErrorRequired, Reports.FilterColumn))" id="ColumnId" name="ColumnId" required>
+                            <option></option>
+                            @foreach (var column in Model.Columns)
+                            {
+                                <option value="@column.Id" data-filter-type="@column.FilterTypeId" data-is-param="@column.IsParam">@column.Title</option>
+                            }
+                        </select>
+                        @Html.HelpFor(x => x.ColumnId)
+                    </div>
+                </div>
+                @Html.LabelInputFor(x => x.OperatorId)
+                @Html.LabelInputFor(x => x.Criteria)
+            </div>
+        </div>
+
+        @Html.FormButtons()
+    }
+</body-content>
