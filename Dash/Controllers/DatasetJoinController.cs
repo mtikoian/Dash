@@ -80,8 +80,8 @@ namespace Dash.Controllers
                 new TableColumn("actions", Core.Actions, sortable: false, links: new List<TableLink>()
                         .AddIf(Table.EditButton($"{Url.Action("Edit")}/{{datasetId}}/{{id}}"), User.IsInRole("datasetjoin.edit"))
                         .AddIf(Table.DeleteButton($"{Url.Action("Delete")}/{{datasetId}}/{{id}}", Datasets.ConfirmDeleteJoin), User.IsInRole("datasetjoin.delete"))
-                        .AddIf(Table.UpButton($"{Url.Action("MoveUp")}/{{datasetId}}/{{id}}", jsonLogic: new Dictionary<string, object>().Append(">", new object[] { new Dictionary<string, object>().Append("var", "joinOrder"), 0 })), User.IsInRole("datasetjoin.moveup"))
-                        .AddIf(Table.DownButton($"{Url.Action("MoveDown")}/{{datasetId}}/{{id}}", jsonLogic: new Dictionary<string, object>().Append("!", new object[] { new Dictionary<string, object>().Append("var", "isLast") })), User.IsInRole("datasetjoin.movedown"))
+                        .AddIf(Table.UpButton($"{Url.Action("MoveUp")}/{{datasetId}}/{{id}}", jsonLogic: new Dictionary<string, object>().Append(">", new object[] { new Dictionary<string, object>().Append("var", "joinOrder"), 0 })), User.IsInRole("datasetjoin.edit"))
+                        .AddIf(Table.DownButton($"{Url.Action("MoveDown")}/{{datasetId}}/{{id}}", jsonLogic: new Dictionary<string, object>().Append("!", new object[] { new Dictionary<string, object>().Append("var", "isLast") })), User.IsInRole("datasetjoin.edit"))
                 )}
             ) { StoreSettings = false };
             return View("Index", model);
