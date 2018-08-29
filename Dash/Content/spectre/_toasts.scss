@@ -25,6 +25,10 @@
         @include toast-variant($error-color);
     }
 
+    &.toast-info {
+        @include toast-variant($info-color);
+    }
+
     a {
         color: $light-color;
         text-decoration: underline;
