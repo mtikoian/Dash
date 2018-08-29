@@ -64,11 +64,17 @@
     <None Include="Views\DatasetJoin\Index.cshtml"/>
     <None Include="Views\Dataset\CreateEdit.cshtml"/>
     <None Include="Views\Dataset\Index.cshtml"/>
+    <None Include="Views\ReportFilter\CreateEdit.cshtml"/>
+    <None Include="Views\ReportFilter\Index.cshtml"/>
+    <None Include="Views\ReportFilter\_FilterCriteria.cshtml"/>
+    <None Include="Views\ReportFilter\_FilterOperators.cshtml"/>
     <None Include="Views\Report\Create.cshtml"/>
     <None Include="Views\Report\Edit.cshtml"/>
     <None Include="Views\Report\Index.cshtml"/>
+    <None Include="Views\Report\Rename.cshtml"/>
     <None Include="Views\Report\SelectColumns.cshtml"/>
     <None Include="Views\Report\Share.cshtml"/>
+    <None Include="Views\Report\Sql.cshtml"/>
     <None Include="Views\Role\CreateEdit.cshtml"/>
     <None Include="Views\Role\Index.cshtml"/>
     <None Include="Views\Shared\Error.cshtml"/>
@@ -141,20 +147,6 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Update="Views\ReportFilter\CreateEdit.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
-    <Content Update="Views\ReportFilter\Index.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
-    <Content Update="Views\Report\Rename.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
-    <Content Update="Views\Report\Sql.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Resources\Account.es.resx">

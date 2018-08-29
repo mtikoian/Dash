@@ -249,6 +249,41 @@
         draggabillies = [];
     };
 
+
+    /**
+     * Initialize content replacer.
+     * @this {Node} Node the event is being bound to.
+     */
+    var contentReplaceLoad = function() {
+        $.onChange(this, function() {
+            var params = {};
+            if (this.hasAttribute('data-params')) {
+                this.getAttribute('data-params').split(',').forEach(function(x) {
+                    var node = $.get(x);
+                    if (node) {
+                        params[node.id] = node.value;
+                    }
+                });
+            }
+
+            $.ajax({
+                method: this.getAttribute('data-method') || 'GET',
+                url: this.getAttribute('data-url'),
+                data: params
+            }, function(html) {
+                var node = $.createNode(html);
+                if (node.id) {
+                    var parent = $.get('#' + node.id);
+                    if (parent) {
+                        // @todo add code to processContent for new node
+                        processToggles(node);
+                        parent.parentNode.replaceChild(node, parent);
+                    }
+                }
+            });
+        }, false);
+    };
+
     /**
      * Focus on the first error or input.
      * @param {Node} node - Parent node to search in.
@@ -343,21 +378,19 @@
         'column-selector': {
             onLoad: columnSelectorLoad,
             onUnload: columnSelectorUnload
+        },
+        'content-replace': {
+            onLoad: contentReplaceLoad
         }
     };
 
     /**
-     * Process node content adding events.
+     * Process data-toggles for a node.
      * @param {Node} node - Node to add events to.
      * @param {bool} isUnload - True if unloading, false if loading
      */
-    var processContent = function(node, isUnload) {
-        node = $.isEvent(node) ? null : node;
-        if (!node) {
-            return;
-        }
-
-        // process all the content actions
+    var processToggles = function(node, isUnload) {
+        // process all the toggles
         var elems = $.getAll('[data-toggle]', node);
         if ($.matches(node, '[data-toggle]')) {
             elems.push(node);
@@ -371,6 +404,20 @@
                 }
             }
         });
+    };
+
+    /**
+     * Process node content adding events.
+     * @param {Node} node - Node to add events to.
+     * @param {bool} isUnload - True if unloading, false if loading
+     */
+    var processContent = function(node, isUnload) {
+        node = $.isEvent(node) ? null : node;
+        if (!node) {
+            return;
+        }
+
+        processToggles(node, isUnload);
 
         if (node.nodeName === 'BODY') {
             var lang = node.getAttribute('data-lang');

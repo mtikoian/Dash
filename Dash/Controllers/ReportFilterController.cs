@@ -69,6 +69,27 @@ namespace Dash.Controllers
             return Save(model);
         }
 
+        [HttpGet, ParentAction("Edit")]
+        public IActionResult FilterCriteria(int id, int? columnId, int? operatorId)
+        {
+            var model = DbContext.Get<ReportFilter>(id) ?? new ReportFilter(DbContext, id);
+            model.ColumnId = columnId ?? model.ColumnId;
+            model.OperatorId = operatorId ?? model.OperatorId;
+            // clear modelState so that reportId isn't treated as the new model Id
+            ModelState.Clear();
+            return PartialView("_FilterCriteria", model);
+        }
+
+        [HttpGet, ParentAction("Edit")]
+        public IActionResult FilterOperators(int id, int? columnId)
+        {
+            var model = DbContext.Get<ReportFilter>(id) ?? new ReportFilter(DbContext, id);
+            model.ColumnId = columnId ?? model.ColumnId;
+            // clear modelState so that reportId isn't treated as the new model Id
+            ModelState.Clear();
+            return PartialView("_FilterOperators", model);
+        }
+
         [HttpGet]
         public IActionResult Index(int id)
         {

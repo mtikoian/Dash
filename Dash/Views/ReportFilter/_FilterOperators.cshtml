@@ -1,0 +1,11 @@
+﻿@using Dash.Models
+@model ReportFilter
+
+<div id="filterOperatorPartial">
+    @if (Model.ColumnId > 0)
+    {
+        @Html.LabelDropDownListFor(x => x.OperatorId, Model.OperatorSelectListItems,
+            new { @data_toggle = "content-replace", @data_url = Url.Action("FilterCriteria"), @data_params = "#Id,#ColumnId,#OperatorId" })
+        <partial name="_FilterCriteria" />
+    }
+</div>

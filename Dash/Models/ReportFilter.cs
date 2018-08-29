@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Dash.Resources;
+using Dash.Utils;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -30,21 +31,40 @@ namespace Dash.Models
             ReportId = reportId;
         }
 
+        [BindNever, ValidateNever]
+        public IEnumerable<SelectListItem> BooleanSelectListItems
+        {
+            get
+            {
+                return new List<SelectListItem> {
+                    new SelectListItem(Reports.True, "1"),
+                    new SelectListItem(Reports.False, "0")
+                };
+            }
+        }
+
+        [Ignore, BindNever, ValidateNever]
+        public DatasetColumn Column { get { return _Column ?? (_Column = DbContext.Get<DatasetColumn>(ColumnId)); } }
+
         [Display(Name = "FilterColumn", ResourceType = typeof(Reports))]
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int ColumnId { get; set; }
 
-        [Ignore]
-        [BindNever, ValidateNever]
+        [Ignore, BindNever, ValidateNever]
         public string ColumnName
         {
             get
             {
-                if (_Column == null)
-                {
-                    _Column = DbContext.Get<DatasetColumn>(ColumnId);
-                }
-                return _Column?.Title;
+                return Column?.Title;
+            }
+        }
+
+        [BindNever, ValidateNever]
+        public List<DatasetColumn> Columns
+        {
+            get
+            {
+                return Report?.Dataset?.DatasetColumn;
             }
         }
 
@@ -70,6 +90,35 @@ namespace Dash.Models
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int OperatorId { get; set; }
 
+        [BindNever, ValidateNever]
+        public IEnumerable<SelectListItem> OperatorSelectListItems
+        {
+            get
+            {
+                var filterResource = new ResourceDictionary("Filters");
+                Type operatorType;
+                switch (Column?.FilterTypeId)
+                {
+                    case ((int)FilterTypes.Boolean):
+                        operatorType = typeof(FilterOperatorsBoolean);
+                        break;
+                    case ((int)FilterTypes.Date):
+                        operatorType = typeof(FilterOperatorsDate);
+                        break;
+                    case ((int)FilterTypes.Numeric):
+                        operatorType = typeof(FilterOperatorsNumeric);
+                        break;
+                    case ((int)FilterTypes.Select):
+                        operatorType = typeof(FilterOperatorsSelect);
+                        break;
+                    default:
+                        operatorType = typeof(FilterOperatorsText);
+                        break;
+                }
+                return operatorType.TranslatedSelect(filterResource, "LabelFilter_");
+            }
+        }
+
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int ReportId { get; set; }
 
@@ -79,15 +128,6 @@ namespace Dash.Models
 
         [BindNever, ValidateNever]
         private Report Report { get { return _Report ?? (_Report = DbContext.Get<Report>(ReportId)); } }
-
-        [BindNever, ValidateNever]
-        public List<DatasetColumn> Columns
-        {
-            get
-            {
-                return Report?.Dataset?.DatasetColumn;
-            }
-        }
 
         public string BuildFilterSql(DatasetColumn column, ReportFilter filter, out Dictionary<string, object> parameters)
         {
