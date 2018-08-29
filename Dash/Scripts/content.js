@@ -303,51 +303,48 @@
     /**
      * Selectors and callback function to create events.
      */
-    var _contentActions = [
-        {
-            selector: '[data-toggle="nav-menu"]',
-            onLoad: menuLoad
+    var _toggles = {
+        'nav-menu': {
+            onLoad: menuLoad,
+            onUnload: null
         },
-        {
-            selector: '[data-toggle="tab"]',
-            onLoad: function() { new Tab(this); }
+        'tab': {
+            onLoad: function() { new Tab(this); },
+            onUnload: null
         },
-        {
-            selector: '[data-toggle="table"]',
+        'table': {
             onLoad: tableLoad,
             onUnload: tableUnload
         },
-        {
-            selector: '[data-toggle="context-help"]',
-            onLoad: contextHelp
+        'context-help': {
+            onLoad: contextHelp,
+            onUnload: null
         },
-        {
-            selector: '[data-toggle="collapsible-list"]',
-            onLoad: function() { new CollapsibleList(this); }
+        'collapsible-list': {
+            onLoad: function() { new CollapsibleList(this); },
+            onUnload: null
         },
-        {
-            selector: '[data-toggle="input-replace"]',
-            onLoad: function() { $.on(this, 'click', inputReplace); }
+        'input-replace': {
+            onLoad: function() { $.on(this, 'click', inputReplace); },
+            onUnload: null
         },
-        {
-            selector: '[data-toggle="hide"]',
-            onLoad: hide
+        'hide': {
+            onLoad: hide,
+            onUnload: null
         },
-        {
-            selector: '[data-toggle="disable"]',
-            onLoad: disable
+        'disable': {
+            onLoad: disable,
+            onUnload: null
         },
-        {
-            selector: '[data-toggle="autocomplete"]',
+        'autocomplete': {
             onLoad: autocompleteLoad,
             onUnload: autocompleteUnload
         },
-        {
-            selector: '[data-toggle="sortable"]',
-            onLoad: sortableLoad,
-            onUnload: sortableUnload
+        'column-selector': {
+            onLoad: columnSelectorLoad,
+            onUnload: columnSelectorUnload
         }
-    ];
+    };
 
     /**
      * Process node content adding events.
@@ -361,21 +358,18 @@
         }
 
         // process all the content actions
-        var elems;
-        _contentActions.filter(function(x) {
-            return isUnload ? x.hasOwnProperty('onUnload') : x.hasOwnProperty('onLoad');
-        }).forEach(function(act) {
-            elems = $.getAll(act.selector, node);
-            if ($.matches(node, act.selector)) {
-                elems.push(node);
-            }
-            elems.forEach(function(x) {
-                if (isUnload) {
-                    act.onUnload.call(x);
-                } else {
-                    act.onLoad.call(x);
+        var elems = $.getAll('[data-toggle]', node);
+        if ($.matches(node, '[data-toggle]')) {
+            elems.push(node);
+        }
+        $.forEach(elems, function(x) {
+            var toggle = x.getAttribute('data-toggle');
+            if (_toggles[toggle]) {
+                var func = isUnload ? _toggles[toggle].onUnload : _toggles[toggle].onLoad;
+                if (func) {
+                    func.call(x);
                 }
-            });
+            }
         });
 
         if (node.nodeName === 'BODY') {
