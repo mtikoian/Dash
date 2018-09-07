@@ -79,6 +79,8 @@
     <None Include="Views\Role\Index.cshtml"/>
     <None Include="Views\Shared\Error.cshtml"/>
     <None Include="Views\Shared\_Chart.cshtml"/>
+    <None Include="Views\Shared\_DatasetBreadcrumbs.cshtml"/>
+    <None Include="Views\Shared\_DatasetTabs.cshtml"/>
     <None Include="Views\User\CreateEdit.cshtml"/>
     <None Include="Views\User\Index.cshtml"/>
   </ItemGroup>

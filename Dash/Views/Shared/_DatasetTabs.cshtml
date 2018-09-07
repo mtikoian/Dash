@@ -1,0 +1,36 @@
+﻿@using Dash.Resources
+@using Dash.Models
+@model DatasetView
+
+<tab-list>
+    <tab-item no-render="@(!User.IsInRole("dataset.edit"))">
+        @if (Model.ActiveTab == DatasetViewTab.Overview)
+        {
+            <tab-active id="overview">@Datasets.Overview</tab-active>
+        }
+        else
+        {
+            @Html.AuthorizedActionLink(Datasets.Overview, "Edit", "Dataset", new { Id = Model.Id }, new { @class = "btn btn-link", role = "tab" })
+        }
+    </tab-item>
+    <tab-item no-render="@(Model.IsCreate || !User.IsInRole("datasetjoin.index"))">
+        @if (Model.ActiveTab == DatasetViewTab.Joins)
+        {
+            <tab-active id="joins">@Datasets.Joins</tab-active>
+        }
+        else
+        {
+            @Html.AuthorizedActionLink(Datasets.Joins, "Index", "DatasetJoin", new { Model.Id }, new { @class = "btn btn-link", role = "tab" })
+        }
+    </tab-item>
+    <tab-item no-render="@(Model.IsCreate || !User.IsInRole("datasetcolumn.index"))">
+        @if (Model.ActiveTab == DatasetViewTab.Columns)
+        {
+            <tab-active id="columns">@Datasets.Columns</tab-active>
+        }
+        else
+        {
+            @Html.AuthorizedActionLink(Datasets.Columns, "Index", "DatasetColumn", new { Model.Id }, new { @class = "btn btn-link", role = "tab" })
+        }
+    </tab-item>
+</tab-list>

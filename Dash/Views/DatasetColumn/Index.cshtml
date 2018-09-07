@@ -4,24 +4,12 @@
 
 <body-content>
     <breadcrumb>
-        <breadcrumb-item label="@Datasets.ViewAll" controller="Dataset" action="Index"></breadcrumb-item>
-        <breadcrumb-item label="@Datasets.EditDataset" controller="Dataset" action="Edit" route-values="@(new { Id = Model.Id })"></breadcrumb-item>
+        <partial name="_DatasetBreadcrumbs" />
         <breadcrumb-item label="@Datasets.Columns" controller="DatasetColumn" action="Index" route-values="@(new { Id = Model.Id })" is-active="true"></breadcrumb-item>
     </breadcrumb>
 
     <partial name="_Toast" />
-
-    <tab-list>
-        <tab-item no-render="@(!User.IsInRole("dataset.edit"))">
-            @Html.AuthorizedActionLink(Datasets.Overview, "Edit", "Dataset", new { Id = Model.Id }, new { @class = "btn btn-link", role = "tab" })
-        </tab-item>
-        <tab-item no-render="@(!User.IsInRole("datasetjoin.index"))">
-            @Html.AuthorizedActionLink(Datasets.Joins, "Index", "DatasetJoin", new { Id = Model.Id }, new { @class = "btn btn-link", role = "tab" })
-        </tab-item>
-        <tab-item>
-            <tab-active id="columns">@Datasets.Columns</tab-active>
-        </tab-item>
-    </tab-list>
+    <partial name="_DatasetTabs" model="new DatasetView(Model.Id, Model.IsCreate, DatasetViewTab.Columns)" />
 
     <tab-panel id="columns">
         <toolbar>

@@ -9,18 +9,7 @@
     </breadcrumb>
 
     <partial name="_Toast" />
-
-    <tab-list>
-        <tab-item>
-            <tab-active id="overview">@Datasets.Overview</tab-active>
-        </tab-item>
-        <tab-item no-render="@(Model.IsCreate || !User.IsInRole("datasetjoin.index"))">
-            @Html.AuthorizedActionLink(Datasets.Joins, "Index", "DatasetJoin", new { Model.Id }, new { @class = "btn btn-link", role = "tab" })
-        </tab-item>
-        <tab-item no-render="@(Model.IsCreate || !User.IsInRole("datasetcolumn.index"))">
-            @Html.AuthorizedActionLink(Datasets.Columns, "Index", "DatasetColumn", new { Model.Id }, new { @class = "btn btn-link", role = "tab" })
-        </tab-item>
-    </tab-list>
+    <partial name="_DatasetTabs" model="new DatasetView(Model.Id, Model.IsCreate, DatasetViewTab.Overview)" />
 
     <tab-panel id="overview">
         @using (Html.BeginCustomForm(Model.FormAction, "Dataset", method: Model.FormMethod))

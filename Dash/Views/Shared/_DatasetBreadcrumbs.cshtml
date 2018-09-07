@@ -1,0 +1,4 @@
+﻿@using Dash.Resources
+@model Dataset
+<breadcrumb-item label="@Datasets.ViewAll" controller="Dataset" action="Index"></breadcrumb-item>
+<breadcrumb-item label="@Datasets.EditDataset" controller="Dataset" action="Edit" route-values="@(new { Id = Model.Id })"></breadcrumb-item>
