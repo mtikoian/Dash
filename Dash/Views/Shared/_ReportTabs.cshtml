@@ -1,0 +1,86 @@
+﻿@using Dash.Resources
+@using Dash.Models
+@model ReportView
+
+<tab-list>
+    <tab-item>
+        @if (Model.ActiveTab == ReportViewTab.Edit)
+        {
+            <tab-active id="report">@Reports.ViewReport</tab-active>
+        }
+        else
+        {
+            @Html.AuthorizedActionLink(Reports.ViewReport, "Edit", "Report", new { Model.Id }, new { @class = "btn btn-link", role = "tab" })
+        }
+    </tab-item>
+    <tab-item no-render="@(!User.IsInRole("reportfilter.index"))">
+        @if (Model.ActiveTab == ReportViewTab.Filters)
+        {
+            <tab-active id="filters">@Reports.Filters</tab-active>
+        }
+        else
+        {
+            @Html.AuthorizedActionLink(Reports.Filters, "Index", "ReportFilter", new { Model.Id }, new { @class = "btn btn-link", role = "tab" })
+        }
+    </tab-item>
+    <tab-item no-render="@(!User.IsInRole("reportgroup.index"))">
+        @if (Model.ActiveTab == ReportViewTab.Groups)
+        {
+            <tab-active id="groups">@Reports.Groups</tab-active>
+        }
+        else
+        {
+            @Html.AuthorizedActionLink(Reports.Groups, "Index", "ReportGroup", new { Model.Id }, new { @class = "btn btn-link", role = "tab" })
+        }
+    </tab-item>
+    <tab-item no-render="@(!Model.IsOwner)">
+        @if (Model.ActiveTab == ReportViewTab.Columns)
+        {
+            <tab-active id="selectColumns">@Reports.SelectColumns</tab-active>
+        }
+        else
+        {
+            @Html.AuthorizedActionLink(Reports.SelectColumns, "SelectColumns", "Report", new { Model.Id }, new { @class = "btn btn-link", role = "tab" })
+        }
+    </tab-item>
+    <tab-item no-render="@(!Model.IsOwner)">
+        @if (Model.ActiveTab == ReportViewTab.Rename)
+        {
+            <tab-active id="renameReport">@Core.Rename</tab-active>
+        }
+        else
+        {
+            @Html.AuthorizedActionLink(Core.Rename, "Rename", "Report", new { Model.Id }, new { @class = "btn btn-link", role = "tab" })
+        }
+    </tab-item>
+    <tab-item no-render="@(!User.IsInRole("reportshare.index"))">
+        @if (Model.ActiveTab == ReportViewTab.Share)
+        {
+            <tab-active id="share">@Reports.ShareReport</tab-active>
+        }
+        else
+        {
+            @Html.AuthorizedActionLink(Reports.ShareReport, "Index", "ReportShare", new { Model.Id }, new { @class = "btn btn-link", role = "tab" })
+        }
+    </tab-item>
+    <tab-item no-render="@(!User.IsInRole("report.export"))">
+        @if (Model.ActiveTab == ReportViewTab.Export)
+        {
+            <tab-active id="export">@Core.Export</tab-active>
+        }
+        else
+        {
+            @Html.AuthorizedActionLink(Core.Export, "Export", "Report", new { Model.Id }, new { @class = "btn btn-link pjax-no-follow", role = "tab", target = "_blank" })
+        }
+    </tab-item>
+    <tab-item no-render="@(!User.IsInRole("report.sql"))">
+        @if (Model.ActiveTab == ReportViewTab.Sql)
+        {
+            <tab-active id="viewSql">@Core.ViewSql</tab-active>
+        }
+        else
+        {
+            @Html.AuthorizedActionLink(Core.ViewSql, "Sql", "Report", new { Model.Id }, new { @class = "btn btn-link", role = "tab" })
+        }
+    </tab-item>
+</tab-list>

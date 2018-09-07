@@ -4,39 +4,12 @@
 
 <body-content>
     <breadcrumb>
-        <breadcrumb-item label="@Reports.ViewAll" controller="Report" action="Index"></breadcrumb-item>
-        <breadcrumb-item label="@Model.Name" controller="Report" action="Edit" route-values="@(new { Model.Id })"></breadcrumb-item>
+        <partial name="_ReportBreadcrumbs" />
         <breadcrumb-item label="@Reports.Filters" controller="ReportFilter" action="Index" route-values="@(new { Model.Id })" is-active="true"></breadcrumb-item>
     </breadcrumb>
 
     <partial name="_Toast" />
-
-    <tab-list>
-        <tab-item>
-            @Html.AuthorizedActionLink(Reports.ViewReport, "Edit", "Report", new { Model.Id }, new { @class = "btn btn-link", role = "tab" })
-        </tab-item>
-        <tab-item>
-            <tab-active id="filters">@Reports.Filters</tab-active>
-        </tab-item>
-        <tab-item no-render="@(!User.IsInRole("reportgroup.index"))">
-            @Html.AuthorizedActionLink(Reports.Groups, "Index", "ReportGroup", new { Model.Id }, new { @class = "btn btn-link", role = "tab" })
-        </tab-item>
-        <tab-item no-render="@(!Model.IsOwner)">
-            @Html.AuthorizedActionLink(Reports.SelectColumns, "SelectColumns", "Report", new { Model.Id }, new { @class = "btn btn-link", role = "tab" })
-        </tab-item>
-        <tab-item no-render="@(!Model.IsOwner)">
-            @Html.AuthorizedActionLink(Core.Rename, "Rename", "Report", new { Model.Id }, new { @class = "btn btn-link", role = "tab" })
-        </tab-item>
-        <tab-item no-render="@(!User.IsInRole("report.share"))">
-            @Html.AuthorizedActionLink(Reports.ShareReport, "Share", "Report", new { Model.Id }, new { @class = "btn btn-link", role = "tab" })
-        </tab-item>
-        <tab-item no-render="@(!User.IsInRole("report.export"))">
-            @Html.AuthorizedActionLink(Core.Export, "Export", "Report", new { Model.Id }, new { @class = "btn btn-link pjax-no-follow", role = "tab", target = "_blank" })
-        </tab-item>
-        <tab-item no-render="@(!User.IsInRole("report.sql"))">
-            @Html.AuthorizedActionLink(Core.ViewSql, "Sql", "Report", new { Model.Id }, new { @class = "btn btn-link", role = "tab" })
-        </tab-item>
-    </tab-list>
+    <partial name="_ReportTabs" model="new ReportView(Model.Id, Model.IsOwner, ReportViewTab.Filters)" />
 
     <tab-panel id="filters">
         <toolbar>

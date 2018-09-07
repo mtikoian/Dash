@@ -1,0 +1,4 @@
+﻿@using Dash.Resources
+@model Report
+<breadcrumb-item label="@Reports.ViewAll" controller="Report" action="Index"></breadcrumb-item>
+<breadcrumb-item label="@Model.Name" controller="Report" action="Edit" route-values="@(new { Model.Id })"></breadcrumb-item>
