@@ -452,16 +452,7 @@
         if (!node) {
             return;
         }
-
         processToggles(node, isUnload);
-
-        if (node.nodeName === 'BODY') {
-            var lang = node.getAttribute('data-lang');
-            if (lang && lang !== 'en') {
-                DatePicker.localize({ locale: lang });
-            }
-        }
-
         autofocus(node);
     };
 
