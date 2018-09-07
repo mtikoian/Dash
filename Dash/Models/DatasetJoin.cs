@@ -54,6 +54,15 @@ namespace Dash.Models
             }
         }
 
+        [Ignore]
+        public string JoinName
+        {
+            get
+            {
+                return ((JoinTypes)JoinTypeId).ToString();
+            }
+        }
+
         [Display(Name = "JoinKeys", ResourceType = typeof(Datasets))]
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         [StringLength(500, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]

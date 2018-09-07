@@ -76,6 +76,7 @@ namespace Dash.Controllers
             var model = DbContext.Get<Dataset>(id);
             model.Table = new Table("tableDatasetJoins", Url.Action("List", values: new { id }), new List<TableColumn> {
                 new TableColumn("tableName", Datasets.JoinTableName, Table.EditLink($"{Url.Action("Edit")}/{{datasetId}}/{{id}}", User.IsInRole("datasetjoin.edit")), false),
+                new TableColumn("joinName", Datasets.JoinType, sortable: false),
                 new TableColumn("keys", Datasets.JoinKeys, sortable: false),
                 new TableColumn("actions", Core.Actions, sortable: false, links: new List<TableLink>()
                         .AddIf(Table.EditButton($"{Url.Action("Edit")}/{{datasetId}}/{{id}}"), User.IsInRole("datasetjoin.edit"))
