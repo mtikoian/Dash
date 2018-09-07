@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Dash.Resources;
 using Dash.Utils;
+using Jil;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -13,7 +14,6 @@ namespace Dash.Models
     public class ReportFilter : BaseModel
     {
         private DatasetColumn _Column;
-
         private Report _Report;
 
         public ReportFilter()
@@ -31,8 +31,8 @@ namespace Dash.Models
             ReportId = reportId;
         }
 
-        [BindNever, ValidateNever]
-        public IEnumerable<SelectListItem> BooleanSelectListItems
+        [Ignore, BindNever, ValidateNever, JilDirective(true)]
+        public static IEnumerable<SelectListItem> BooleanSelectListItems
         {
             get
             {
@@ -43,7 +43,16 @@ namespace Dash.Models
             }
         }
 
-        [Ignore, BindNever, ValidateNever]
+        [Ignore, BindNever, ValidateNever, JilDirective(true)]
+        public static IEnumerable<SelectListItem> DateIntervalSelectListItems
+        {
+            get
+            {
+                return typeof(FilterDateRanges).TranslatedSelect(new ResourceDictionary("Filters"), "LabelDateRange_");
+            }
+        }
+
+        [Ignore, BindNever, ValidateNever, JilDirective(true)]
         public DatasetColumn Column { get { return _Column ?? (_Column = DbContext.Get<DatasetColumn>(ColumnId)); } }
 
         [Display(Name = "FilterColumn", ResourceType = typeof(Reports))]
@@ -80,8 +89,47 @@ namespace Dash.Models
         [Ignore]
         public string[] CriteriaJson { get; set; }
 
+        [Ignore, BindNever, ValidateNever]
+        public string CriteriaValue
+        {
+            get
+            {
+                if (Column.FilterTypeId == (int)FilterTypes.Boolean)
+                {
+                    return Criteria == "1" ? Reports.True : Reports.False;
+                }
+                if (OperatorId == (int)FilterOperatorsAbstract.DateInterval)
+                {
+                    var key = ((FilterDateRanges)Criteria.ToInt()).ToString();
+                    var resx = new ResourceDictionary("Filters");
+                    resx.Dictionary.TryGetValue($"LabelDateRange_{key}", out var value);
+                    return value.IsEmpty() ? key : value;
+                }
+                if (Column.FilterTypeId == (int)FilterTypes.Select)
+                {
+                    return FilterSelectListItems.FirstOrDefault(x => x.Value == Criteria)?.Text;
+                }
+                return Criteria;
+            }
+        }
+
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int DisplayOrder { get; set; }
+
+        [BindNever, ValidateNever, JilDirective(true)]
+        public IEnumerable<SelectListItem> FilterSelectListItems
+        {
+            get
+            {
+                if (!Column.IsSelect || Column.FilterQuery.IsEmpty())
+                {
+                    return new List<SelectListItem>();
+                }
+                return Report.Dataset.Database.Query<LookupItem>(Column.FilterQuery)
+                    .Prepend(new LookupItem { Value = "", Text = Reports.FilterCriteria })
+                    .Select(x => new SelectListItem("Text", "Value"));
+            }
+        }
 
         [Ignore]
         public bool IsLast { get; set; }
@@ -119,14 +167,24 @@ namespace Dash.Models
             }
         }
 
+        [Ignore, BindNever, ValidateNever]
+        public string OperatorValue
+        {
+            get
+            {
+                var key = ((FilterOperatorsAbstract)OperatorId).ToString();
+                var resx = new ResourceDictionary("Filters");
+                resx.Dictionary.TryGetValue($"LabelFilter_{key}", out var value);
+                return value.IsEmpty() ? key : value;
+            }
+        }
+
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int ReportId { get; set; }
 
-        [Ignore]
-        [BindNever, ValidateNever]
+        [Ignore, BindNever, ValidateNever]
         public string ReportName { get { return Report?.Name; } }
 
-        [BindNever, ValidateNever]
         private Report Report { get { return _Report ?? (_Report = DbContext.Get<Report>(ReportId)); } }
 
         public string BuildFilterSql(DatasetColumn column, ReportFilter filter, out Dictionary<string, object> parameters)

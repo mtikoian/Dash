@@ -4,17 +4,39 @@
 <div id="filterCriteriaPartial">
     @if (Model.OperatorId > 0)
     {
-        @if (Model.Column.FilterTypeId == (int)FilterTypes.Select)
+        @if (Model.Column.FilterTypeId == (int)FilterTypes.Boolean)
         {
-            @Html.LabelDropDownListFor(x => x.Criteria, new SelectList(new List<string>()))
+            @Html.LabelDropDownListFor(x => x.Criteria, ReportFilter.BooleanSelectListItems)
         }
-        else if (Model.Column.FilterTypeId == (int)FilterTypes.Boolean)
+        else if (Model.Column.FilterTypeId == (int)FilterTypes.Date)
         {
-            @Html.LabelDropDownListFor(x => x.Criteria, Model.BooleanSelectListItems)
+            if (Model.OperatorId == (int)FilterOperatorsAbstract.DateInterval)
+            {
+                @Html.LabelDropDownListFor(x => x.Criteria, ReportFilter.DateIntervalSelectListItems)
+            }
+            else
+            {
+                @Html.LabelInputFor(x => x.Criteria, new { data_toggle = "datepicker" })
+            }
+        }
+        else if (Model.Column.FilterTypeId == (int)FilterTypes.Select)
+        {
+            @Html.LabelDropDownListFor(x => x.Criteria, Model.FilterSelectListItems)
         }
         else
         {
             @Html.LabelInputFor(x => x.Criteria)
+        }
+    }
+    @if (Model.OperatorId == (int)FilterOperatorsAbstract.Range)
+    {
+        @if (Model.Column.FilterTypeId == (int)FilterTypes.Date)
+        {
+            @Html.LabelInputFor(x => x.Criteria2, new { data_toggle = "datepicker" })
+        }
+        else
+        {
+            @Html.LabelInputFor(x => x.Criteria2)
         }
     }
 </div>

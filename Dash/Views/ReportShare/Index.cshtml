@@ -1,0 +1,21 @@
+﻿@using Dash.Resources
+@using Dash.Models
+@model Report
+
+<body-content>
+    <breadcrumb>
+        <partial name="_ReportBreadcrumbs" />
+        <breadcrumb-item label="@Reports.ShareReport" controller="ReportShare" action="Index" route-values="@(new { Model.Id })" is-active="true"></breadcrumb-item>
+    </breadcrumb>
+
+    <partial name="_Toast" />
+    <partial name="_ReportTabs" model="new ReportView(Model.Id, Model.IsOwner, ReportViewTab.Share)" />
+
+    <tab-panel id="filters">
+        <toolbar>
+            @Html.AuthorizedButton(Core.Add, "Create", "ReportShare", new { Id = Model.Id }, DashClasses.BtnPrimary, hasAccess: User.IsInRole("reportshare.create"))
+        </toolbar>
+
+        <dynamic-table options="@Model.Table"></dynamic-table>
+    </tab-panel>
+</body-content>

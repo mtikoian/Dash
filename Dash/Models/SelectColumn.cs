@@ -23,9 +23,9 @@ namespace Dash.Models
         [BindNever, ValidateNever]
         public Report Report { get { return _Report ?? (_Report = DbContext.Get<Report>(Id)); } }
 
-        public void Update()
+        public void Update(int? userId = null)
         {
-            Report.UpdateColumns(Columns.Where(x => x.DisplayOrder > 0).ToList());
+            Report.UpdateColumns(Columns.Where(x => x.DisplayOrder > 0).ToList(), userId);
         }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)

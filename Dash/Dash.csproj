@@ -68,12 +68,13 @@
     <None Include="Views\ReportFilter\Index.cshtml"/>
     <None Include="Views\ReportFilter\_FilterCriteria.cshtml"/>
     <None Include="Views\ReportFilter\_FilterOperators.cshtml"/>
+    <None Include="Views\ReportShare\CreateEdit.cshtml"/>
+    <None Include="Views\ReportShare\Index.cshtml"/>
     <None Include="Views\Report\Create.cshtml"/>
     <None Include="Views\Report\Edit.cshtml"/>
     <None Include="Views\Report\Index.cshtml"/>
     <None Include="Views\Report\Rename.cshtml"/>
     <None Include="Views\Report\SelectColumns.cshtml"/>
-    <None Include="Views\Report\Share.cshtml"/>
     <None Include="Views\Report\Sql.cshtml"/>
     <None Include="Views\Role\CreateEdit.cshtml"/>
     <None Include="Views\Role\Index.cshtml"/>

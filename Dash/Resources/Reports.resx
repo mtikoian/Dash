@@ -199,7 +199,7 @@
     <value>Add users or roles to share this report with. These users can view the report, but only the report owner can make changes.</value>
   </data>
   <data name="ShareReport" xml:space="preserve">
-    <value>Share Report</value>
+    <value>Share</value>
   </data>
   <data name="NameSaved" xml:space="preserve">
     <value>The report name was updated.</value>
@@ -296,5 +296,20 @@
   </data>
   <data name="EditFilter" xml:space="preserve">
     <value>Edit Filter</value>
+  </data>
+  <data name="SuccessDeletingShare" xml:space="preserve">
+    <value>Share deleted successfully.</value>
+  </data>
+  <data name="SuccessSavingShare" xml:space="preserve">
+    <value>Share saved successfully.</value>
+  </data>
+  <data name="CreateShare" xml:space="preserve">
+    <value>Create Share</value>
+  </data>
+  <data name="EditShare" xml:space="preserve">
+    <value>Edit Share</value>
+  </data>
+  <data name="ConfirmDeleteShare" xml:space="preserve">
+    <value>Are you sure you want to delete this share?</value>
   </data>
 </root>

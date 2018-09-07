@@ -109,7 +109,6 @@ gulp.task('js', function() {
         paths.js + 'Form.js',              // custom form component using mithril
         paths.js + 'shared.js',            // functionality shared for reports and charts
         paths.js + 'content.js',           // content processing functionality
-        paths.js + 'reports.js',           // report functionality
         paths.js + 'charts.js',            // chart functionality
         paths.js + 'dashboard.js'          // dashboard functionality
     ])

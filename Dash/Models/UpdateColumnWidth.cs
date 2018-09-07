@@ -21,9 +21,9 @@ namespace Dash.Models
 
         public decimal Width { get; set; }
 
-        public void Update()
+        public void Update(int? userId)
         {
-            Report.UpdateColumnWidths(Width, Columns);
+            Report.UpdateColumnWidths(Width, Columns, userId);
         }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)

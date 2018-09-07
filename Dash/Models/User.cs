@@ -57,7 +57,7 @@ namespace Dash.Models
         public string FirstName { get; set; }
 
         [Ignore, JilDirective(true)]
-        public string FullName { get { return $"{FirstName.Trim()} {LastName}".Trim(); } }
+        public string FullName { get { return $"{LastName?.Trim()}, {FirstName?.Trim()}".Trim(new char[] { ' ', ',' }); } }
 
         [Ignore, BindNever, ValidateNever]
         public bool IsLocked

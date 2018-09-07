@@ -130,23 +130,7 @@ namespace Dash.Models
 
         [JilDirective(true)]
         public int RowLimit { get; set; } = 10;
-
-        [Ignore, JilDirective(true)]
-        public string ShareOptionsJson
-        {
-            get
-            {
-                return JSON.SerializeDynamic(new {
-                    reportId = Id,
-                    userList = DbContext.GetAll<User>().OrderBy(x => x.LastName).ThenBy(x => x.FirstName)
-                        .Select(x => new { x.Id, x.FullName }).Prepend(new { Id = 0, FullName = Core.SelectUser }),
-                    roleList = DbContext.GetAll<Role>().OrderBy(x => x.Name).Select(x => new { x.Id, x.Name })
-                        .Prepend(new { Id = 0, Name = Core.SelectRole }),
-                    shares = ReportShare
-                }, JilOutputFormatter.Options);
-            }
-        }
-
+        
         [JilDirective(true)]
         public decimal Width { get; set; } = 100;
         private List<DatasetColumn> _DatasetColumns { get; set; }
@@ -448,7 +432,7 @@ namespace Dash.Models
             });
         }
 
-        public void UpdateColumns(List<ReportColumn> newColumns)
+        public void UpdateColumns(List<ReportColumn> newColumns, int? userId = null)
         {
             var len = newColumns.Count();
             var currentFactor = Width / 100;
@@ -478,16 +462,21 @@ namespace Dash.Models
             newColumns.ForEach(c => { c.Width = Math.Round(c.Width / currentFactor, 4); });
 
             // try saving
+            RequestUserId = userId ?? RequestUserId;
             DbContext.Save(this, false);
-            newColumns.ForEach(r => DbContext.Save(r));
+            newColumns.ForEach(x => {
+                x.RequestUserId = userId ?? RequestUserId;
+                DbContext.Save(x);
+            });
             ReportColumn = newColumns;
         }
 
-        public void UpdateColumnWidths(decimal reportWidth, List<TableColumnWidth> newColumns = null)
+        public void UpdateColumnWidths(decimal reportWidth, List<TableColumnWidth> newColumns = null, int? userId = null)
         {
             if (Width != reportWidth)
             {
                 Width = reportWidth;
+                RequestUserId = userId ?? RequestUserId;
                 DbContext.Save(this, false);
             }
 
@@ -497,6 +486,7 @@ namespace Dash.Models
                 if (keyedReportColumns.ContainsKey(columnId) && keyedReportColumns[columnId].Width != x.Width)
                 {
                     keyedReportColumns[columnId].Width = x.Width;
+                    keyedReportColumns[columnId].RequestUserId = userId ?? RequestUserId;
                     DbContext.Save(keyedReportColumns[columnId]);
                 }
             });

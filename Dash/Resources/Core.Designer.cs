@@ -412,6 +412,15 @@ namespace Dash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You must select a user or a role..
+        /// </summary>
+        public static string ErrorUserOrRole {
+            get {
+                return ResourceManager.GetString("ErrorUserOrRole", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Export.
         /// </summary>
         public static string Export {

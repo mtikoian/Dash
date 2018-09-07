@@ -331,42 +331,7 @@ namespace Dash.Controllers
                 ViewBag.Error = ModelState.ToErrorString();
                 return View("SelectColumns", model.Report);
             }
-            model.Update();
-            ViewBag.Message = Reports.SuccessSavingReport;
-            return Edit(model.Report.Id);
-        }
-
-        [HttpGet]
-        public IActionResult Share(int id)
-        {
-            var report = DbContext.Get<Report>(id);
-            if (report == null)
-            {
-                ViewBag.Error = Core.ErrorInvalidId;
-                return Index();
-            }
-            if (!report.IsOwner)
-            {
-                ViewBag.Error = Reports.ErrorOwnerOnly;
-                return Edit(id);
-            }
-            return View("Share", report);
-        }
-
-        [HttpPut]
-        public IActionResult Share(SaveReportShare model)
-        {
-            if (model == null)
-            {
-                ViewBag.Error = Core.ErrorGeneric;
-                return Index();
-            }
-            if (!ModelState.IsValid)
-            {
-                ViewBag.Error = ModelState.ToErrorString();
-                return View("Share", model.Report);
-            }
-            model.Update();
+            model.Update(User.UserId());
             ViewBag.Message = Reports.SuccessSavingReport;
             return Edit(model.Report.Id);
         }
@@ -394,7 +359,7 @@ namespace Dash.Controllers
             {
                 return Error(ModelState.ToErrorString());
             }
-            model.Update();
+            model.Update(User.UserId());
             return Success();
         }
     }

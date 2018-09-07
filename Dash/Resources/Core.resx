@@ -351,4 +351,7 @@
   <data name="Error" xml:space="preserve">
     <value>Error</value>
   </data>
+  <data name="ErrorUserOrRole" xml:space="preserve">
+    <value>You must select a user or a role.</value>
+  </data>
 </root>

@@ -106,6 +106,15 @@ namespace Dash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to delete this share?.
+        /// </summary>
+        public static string ConfirmDeleteShare {
+            get {
+                return ResourceManager.GetString("ConfirmDeleteShare", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Copy Report.
         /// </summary>
         public static string CopyReport {
@@ -151,6 +160,15 @@ namespace Dash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Create Share.
+        /// </summary>
+        public static string CreateShare {
+            get {
+                return ResourceManager.GetString("CreateShare", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Database.
         /// </summary>
         public static string Database {
@@ -192,6 +210,15 @@ namespace Dash.Resources {
         public static string EditReport {
             get {
                 return ResourceManager.GetString("EditReport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit Share.
+        /// </summary>
+        public static string EditShare {
+            get {
+                return ResourceManager.GetString("EditShare", resourceCulture);
             }
         }
         
@@ -511,7 +538,7 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Share Report.
+        ///   Looks up a localized string similar to Share.
         /// </summary>
         public static string ShareReport {
             get {
@@ -556,6 +583,15 @@ namespace Dash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Share deleted successfully..
+        /// </summary>
+        public static string SuccessDeletingShare {
+            get {
+                return ResourceManager.GetString("SuccessDeletingShare", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Filter saved successfully..
         /// </summary>
         public static string SuccessSavingFilter {
@@ -570,6 +606,15 @@ namespace Dash.Resources {
         public static string SuccessSavingReport {
             get {
                 return ResourceManager.GetString("SuccessSavingReport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Share saved successfully..
+        /// </summary>
+        public static string SuccessSavingShare {
+            get {
+                return ResourceManager.GetString("SuccessSavingShare", resourceCulture);
             }
         }
         

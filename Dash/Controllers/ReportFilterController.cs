@@ -97,14 +97,14 @@ namespace Dash.Controllers
             var model = DbContext.Get<Report>(id);
             model.Table = new Table("tableReportFilters", Url.Action("List", values: new { id }), new List<TableColumn> {
                 new TableColumn("columnName", Reports.FilterColumn, Table.EditLink($"{Url.Action("Edit")}/{{reportId}}/{{id}}", User.IsInRole("reportfilter.edit")), false),
-                new TableColumn("operator", Reports.FilterOperator, sortable: false),
-                new TableColumn("criteria", Reports.FilterCriteria, sortable: false),
+                new TableColumn("operatorValue", Reports.FilterOperator, sortable: false),
+                new TableColumn("criteriaValue", Reports.FilterCriteria, sortable: false),
                 new TableColumn("criteria2", Reports.FilterCriteria2, sortable: false),
                 new TableColumn("actions", Core.Actions, sortable: false, links: new List<TableLink>()
                         .AddIf(Table.EditButton($"{Url.Action("Edit")}/{{reportId}}/{{id}}"), User.IsInRole("reportfilter.edit"))
                         .AddIf(Table.DeleteButton($"{Url.Action("Delete")}/{{reportId}}/{{id}}", Reports.ConfirmDeleteFilter), User.IsInRole("reportfilter.delete"))
-                        .AddIf(Table.UpButton($"{Url.Action("MoveUp")}/{{reportId}}/{{id}}", jsonLogic: new Dictionary<string, object>().Append(">", new object[] { new Dictionary<string, object>().Append("var", "displayOrder"), 0 })), User.IsInRole("reportfilter.moveup"))
-                        .AddIf(Table.DownButton($"{Url.Action("MoveDown")}/{{reportId}}/{{id}}", jsonLogic: new Dictionary<string, object>().Append("!", new object[] { new Dictionary<string, object>().Append("var", "isLast") })), User.IsInRole("reportfilter.movedown"))
+                        .AddIf(Table.UpButton($"{Url.Action("MoveUp")}/{{reportId}}/{{id}}", jsonLogic: new Dictionary<string, object>().Append(">", new object[] { new Dictionary<string, object>().Append("var", "displayOrder"), 0 })), User.IsInRole("reportfilter.edit"))
+                        .AddIf(Table.DownButton($"{Url.Action("MoveDown")}/{{reportId}}/{{id}}", jsonLogic: new Dictionary<string, object>().Append("!", new object[] { new Dictionary<string, object>().Append("var", "isLast") })), User.IsInRole("reportfilter.edit"))
                 )}
             ) { StoreSettings = false };
             return View("Index", model);
@@ -130,6 +130,7 @@ namespace Dash.Controllers
                 ViewBag.Error = Core.ErrorInvalidId;
                 return ReportRedirect();
             }
+            model.RequestUserId = User.UserId();
             if (!model.MoveDown(out var error))
             {
                 ViewBag.Error = error;
@@ -148,6 +149,7 @@ namespace Dash.Controllers
                 ViewBag.Error = Core.ErrorInvalidId;
                 return ReportRedirect();
             }
+            model.RequestUserId = User.UserId();
             if (!model.MoveUp(out var error))
             {
                 ViewBag.Error = error;
@@ -181,6 +183,7 @@ namespace Dash.Controllers
                 ViewBag.Error = ModelState.ToErrorString();
                 return CreateEditView(model);
             }
+            model.RequestUserId = User.UserId();
             DbContext.Save(model);
             ViewBag.Message = Reports.SuccessSavingFilter;
             return Index(model.ReportId);
