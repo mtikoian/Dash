@@ -103,7 +103,7 @@ namespace Dash.Models
         public bool IsParam { get; set; }
 
         [Ignore, JilDirective(true)]
-        public bool IsSelect { get { return FilterTypeId == 3; } }
+        public bool IsSelect { get { return FilterTypeId == (int)FilterTypes.Select; } }
 
         [Ignore, JilDirective(true), BindNever, ValidateNever]
         public bool IsText { get { return DataType.IsText; } }
