@@ -298,6 +298,7 @@
                 });
             }
 
+            loading();
             $.ajax({
                 method: this.getAttribute('data-method') || 'GET',
                 url: this.getAttribute('data-url'),
@@ -305,13 +306,16 @@
             }, function(html) {
                 var node = $.createNode(html);
                 if (node.id) {
-                    var parent = $.get('#' + node.id);
-                    if (parent) {
-                        // @todo add code to processContent for new node
+                    var existingNode = $.get('#' + node.id);
+                    if (existingNode) {
+                        processToggles(existingNode, true);
                         processToggles(node);
-                        parent.parentNode.replaceChild(node, parent);
+                        existingNode.parentNode.replaceChild(node, existingNode);
                     }
                 }
+                done();
+            }, function() {
+                done();
             });
         }, false);
     };
