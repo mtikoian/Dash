@@ -492,6 +492,8 @@
             if ($.hasClass('#loader', 'd-none')) {
                 return;
             }
+            // @todo maybe add a way to cancel a pending request using escape?
+
             e.preventDefault();
             e.stopPropagation();
             return false;

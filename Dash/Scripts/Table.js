@@ -76,6 +76,7 @@
                 }
                 for (j = 0; j < this.dateColumns.length; j++) {
                     x = this.dateColumns[j];
+                    // @todo switch to using flatpickr.parseDate and flatpickr.formatDate
                     data.rows[i][x] = $.isNull(data.rows[i][x]) ? null : $.fecha.parse(data.rows[i][x], this.opts.dataDateFormat);
                 }
                 for (j = 0; j < this.currencyColumns.length; j++) {
