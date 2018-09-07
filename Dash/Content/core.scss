@@ -294,7 +294,8 @@ label {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     /* Uncomment for 3D effect */
-    /* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
+    text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3);
+
     &.dash-lg {
         font-size: 1.33333333em;
         line-height: 0.75em;
