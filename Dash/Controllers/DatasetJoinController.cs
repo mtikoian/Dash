@@ -107,6 +107,7 @@ namespace Dash.Controllers
                 ViewBag.Error = Core.ErrorInvalidId;
                 return DatasetRedirect();
             }
+            model.RequestUserId = User.UserId();
             if (!model.MoveDown(out var error))
             {
                 ViewBag.Error = error;
@@ -125,6 +126,7 @@ namespace Dash.Controllers
                 ViewBag.Error = Core.ErrorInvalidId;
                 return DatasetRedirect();
             }
+            model.RequestUserId = User.UserId();
             if (!model.MoveUp(out var error))
             {
                 ViewBag.Error = error;
@@ -158,6 +160,7 @@ namespace Dash.Controllers
                 ViewBag.Error = ModelState.ToErrorString();
                 return CreateEditView(model);
             }
+            model.RequestUserId = User.UserId();
             DbContext.Save(model);
             ViewBag.Message = Datasets.SuccessSavingJoin;
             return Index(model.DatasetId);

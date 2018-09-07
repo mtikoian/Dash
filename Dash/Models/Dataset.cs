@@ -213,7 +213,7 @@ namespace Dash.Models
             return selectColumns;
         }
 
-        public bool ImportSchema(out string error)
+        public bool ImportSchema(int userId, out string error)
         {
             error = "";
             if (Database?.TestConnection(out var testError) != true)
@@ -249,7 +249,8 @@ namespace Dash.Models
                             DataTypeId = 0,
                             FilterTypeId = 0,
                             Title = row["COLUMN_NAME"].ToString(),
-                            ColumnName = columnName
+                            ColumnName = columnName,
+                            RequestUserId = userId
                         };
 
                         var dataType = row["DATA_TYPE"].ToString();
@@ -305,7 +306,6 @@ namespace Dash.Models
                     ?? new List<DatasetRole>();
             }
             ForSave = true;
-            // @todo got a bug here that is deleting all joins/columns when saving after editing the dataset overview
             DbContext.Save(this, lazySave);
             return true;
         }

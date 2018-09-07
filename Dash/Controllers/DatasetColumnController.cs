@@ -76,7 +76,7 @@ namespace Dash.Controllers
                 ViewBag.Error = Core.ErrorInvalidId;
                 return DatasetRedirect();
             }
-            if (model.ImportSchema(out var error))
+            if (model.ImportSchema(User.UserId(), out var error))
             {
                 ViewBag.Message = Datasets.SuccessReadingSchema;
             }
@@ -134,6 +134,7 @@ namespace Dash.Controllers
                 ViewBag.Error = ModelState.ToErrorString();
                 return CreateEditView(model);
             }
+            model.RequestUserId = User.UserId();
             DbContext.Save(model);
             ViewBag.Message = Datasets.SuccessSavingColumn;
             return Index(model.DatasetId);
