@@ -10,6 +10,8 @@ AS
 	ELSE IF (@ReportId IS NOT NULL)
 		INSERT INTO @Ids SELECT Id FROM ReportShare WHERE ReportId = @ReportId
 
-	SELECT rs.Id, ReportId, UserId, RoleId 
+	SELECT rs.Id, ReportId, UserId, RoleId, r.Name AS RoleName, u.FirstName AS UserFirstName, u.LastName AS UserLastName
 	FROM @Ids i
 	INNER JOIN ReportShare rs ON rs.Id = i.Id
+    LEFT JOIN [Role] r ON r.Id = rs.RoleId
+    LEFT JOIN [User] u ON u.Id = rs.UserId
