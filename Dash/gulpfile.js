@@ -92,13 +92,13 @@ gulp.task('js', function() {
         paths.js + 'Alertify.js',          // alerts/modals
         paths.js + 'pjax.js',              // pjax library
         paths.js + 'helpers.js',           // commonly used helper libraries
+        paths.js + 'flatpickr.js',         // datetime picker
         // re-used components
         paths.js + 'Autocomplete.js',      // autocomplete component
         paths.js + 'Chart.js',             // charting
         paths.js + 'CollapsibleList.js',   // lightweight library for treeviews
         paths.js + 'ColorPicker.js',       // custom color picker
         paths.js + 'DashChart.js',         // chart wrapper
-        paths.js + 'DatePicker.js',        // custom date component using mithril
         paths.js + 'Draggabilly.js',       // drag-n-drop functionality
         paths.js + 'Help.js',              // custom help component using mithril
         paths.js + 'Rect.js',              // library for rectangle geometry

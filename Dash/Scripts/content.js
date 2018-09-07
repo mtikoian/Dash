@@ -1,7 +1,7 @@
 ﻿/*!
  * Wraps content processing functionality.
  */
-(function(m, $, Alertify, pjax, Table, Tab, CollapsibleList, DatePicker, Autocomplete, Draggabilly) {
+(function(m, $, Alertify, pjax, Table, Tab, CollapsibleList, Autocomplete, Draggabilly, flatpickr) {
     'use strict';
 
     var autocompletes = [];
@@ -249,6 +249,38 @@
         draggabillies = [];
     };
 
+    /**
+     * Initialize datepicker.
+     * @this {Node} Node the event is being bound to.
+     */
+    var datepickerLoad = function() {
+        var node = $.isNode(this) ? this : this.target;
+        if (node) {
+            var opts = {
+                altInput: true,
+                defaultDate: node.value,
+                enableTime: true,
+                enableSeconds: true,
+                time_24hr: true
+            };
+            var lang = $.get('body').getAttribute('data-lang');
+            if (lang !== 'en') {
+                // @todo update this to be able to handle languages more gracefully
+                opts.locale = 'Spanish';
+            }
+            flatpickr(node, opts);
+        }
+    };
+
+    /**
+     * Destroy datepickers on this page.
+     * @this {Node} Node the event is being bound to.
+     */
+    var datepickerUnload = function() {
+        if (this._flatpickr) {
+            this._flatpickr.destroy();
+        }
+    };
 
     /**
      * Initialize content replacer.
@@ -381,6 +413,10 @@
         },
         'content-replace': {
             onLoad: contentReplaceLoad
+        },
+        'datepicker': {
+            onLoad: datepickerLoad,
+            onUnload: datepickerUnload
         }
     };
 
@@ -499,4 +535,4 @@
         $.on(document, 'resxLoaded', pageLoaded);
     }
 
-})(this.m, this.$, this.Alertify, this.pjax, this.Table, this.Tab, this.CollapsibleList, this.DatePicker, this.Autocomplete, this.Draggabilly);
+})(this.m, this.$, this.Alertify, this.pjax, this.Table, this.Tab, this.CollapsibleList, this.Autocomplete, this.Draggabilly, this.flatpickr);
