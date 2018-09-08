@@ -1,0 +1,30 @@
+﻿@using Dash.Resources
+@using Dash.Models
+@model ChartRange
+
+<body-content>
+    <breadcrumb>
+        <breadcrumb-item label="@Charts.ViewAll" controller="Chart" action="Index"></breadcrumb-item>
+        <breadcrumb-item label="@Model.ChartName" controller="Chart" action="Edit" route-values="@(new { Id = Model.ChartId })"></breadcrumb-item>
+        <breadcrumb-item label="@Charts.Ranges" controller="ChartRange" action="Index" route-values="@(new { Id = Model.ChartId })"></breadcrumb-item>
+        <breadcrumb-item label="@(Model.IsCreate ? Charts.CreateRange : Charts.EditRange)" controller="ChartRange" action="@Model.FormAction" route-values="@(Model.IsCreate ? null : new { Id = Model.Id })" is-active="true"></breadcrumb-item>
+    </breadcrumb>
+
+    @using (Html.BeginCustomForm(Model.FormAction, "ChartRange", method: Model.FormMethod))
+    {
+        @Html.HiddenFor(model => model.Id)
+        @Html.HiddenFor(model => model.ChartId)
+        @Html.HiddenFor(model => model.DisplayOrder)
+
+        <partial name="_Toast" />
+
+        <div class="columns">
+            <div class="col-6">
+                @Html.LabelDropDownListFor(x => x.ReportId, Model.ReportSelectListItems, new { @data_toggle = "content-replace", @data_url = Url.Action("Columns"), @data_params = "#Id,#ReportId" })
+                <partial name="_Columns" />
+            </div>
+        </div>
+
+        @Html.FormButtons()
+    }
+</body-content>

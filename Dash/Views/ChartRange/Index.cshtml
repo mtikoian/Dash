@@ -1,0 +1,21 @@
+﻿@using Dash.Resources
+@using Dash.Models
+@model Chart
+
+<body-content>
+    <breadcrumb>
+        <partial name="_ChartBreadcrumbs" />
+        <breadcrumb-item label="@Charts.Ranges" controller="ChartRange" action="Index" route-values="@(new { Model.Id })" is-active="true"></breadcrumb-item>
+    </breadcrumb>
+
+    <partial name="_Toast" />
+    <partial name="_ChartTabs" model="new ChartView(Model.Id, Model.IsOwner, ChartViewTab.Ranges)" />
+
+    <tab-panel id="filters">
+        <toolbar>
+            @Html.AuthorizedButton(Core.Add, "Create", "ChartRange", new { Id = Model.Id }, DashClasses.BtnPrimary, hasAccess: User.IsInRole("chartrange.create"))
+        </toolbar>
+
+        <dynamic-table options="@Model.Table"></dynamic-table>
+    </tab-panel>
+</body-content>

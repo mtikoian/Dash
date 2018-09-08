@@ -1,0 +1,4 @@
+﻿@using Dash.Resources
+@model Chart
+<breadcrumb-item label="@Charts.ViewAll" controller="Chart" action="Index"></breadcrumb-item>
+<breadcrumb-item label="@Model.Name" controller="Chart" action="Edit" route-values="@(new { Id = Model.Id })"></breadcrumb-item>

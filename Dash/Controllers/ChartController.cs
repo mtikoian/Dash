@@ -28,7 +28,7 @@ namespace Dash.Controllers
             if (!chart.IsOwner)
             {
                 ViewBag.Error = Charts.ErrorOwnerOnly;
-                return Details(id);
+                return Edit(id);
             }
             return View("ChangeType", chart);
         }
@@ -48,7 +48,7 @@ namespace Dash.Controllers
             }
             model.Update();
             ViewBag.Message = Charts.SuccessSavingChart;
-            return Details(model.Id);
+            return Edit(model.Id);
         }
 
         [HttpGet, AjaxRequestOnly]
@@ -130,7 +130,7 @@ namespace Dash.Controllers
         }
 
         [HttpGet]
-        public IActionResult Details(int id)
+        public IActionResult Edit(int id)
         {
             var chart = DbContext.Get<Chart>(id);
             if (chart == null)
@@ -144,7 +144,7 @@ namespace Dash.Controllers
                 ViewBag.Error = Charts.ErrorPermissionDenied;
                 return Index();
             }
-            return View("Details", chart);
+            return View("Edit", chart);
         }
 
         [HttpGet, AjaxRequestOnly]
@@ -210,9 +210,9 @@ namespace Dash.Controllers
             RouteData.Values.Remove("id");
             ViewBag.Title = Charts.ViewAll;
             return View("Index", new Table("tableCharts", Url.Action("List"), new List<TableColumn> {
-                new TableColumn("name", Charts.Name, Table.EditLink($"{Url.Action("Details")}/{{id}}", User.IsInRole("chart.details"))),
+                new TableColumn("name", Charts.Name, Table.EditLink($"{Url.Action("Edit")}/{{id}}", User.IsInRole("chart.edit"))),
                 new TableColumn("actions", Core.Actions, sortable: false, links: new List<TableLink>()
-                        .AddIf(Table.EditButton($"{Url.Action("Details")}/{{id}}"), User.IsInRole("chart.details"))
+                        .AddIf(Table.EditButton($"{Url.Action("Edit")}/{{id}}"), User.IsInRole("chart.edit"))
                         .AddIf(Table.DeleteButton($"{Url.Action("Delete")}/{{id}}", Charts.ConfirmDelete), User.IsInRole("chart.delete"))
                         .AddIf(Table.CopyButton($"{Url.Action("Copy")}/{{id}}", Charts.NewName), User.IsInRole("chart.copy"))
                 )}
@@ -237,18 +237,18 @@ namespace Dash.Controllers
             if (!chart.IsOwner)
             {
                 ViewBag.Error = Charts.ErrorOwnerOnly;
-                return Details(id);
+                return Edit(id);
             }
             if (prompt.IsEmpty())
             {
                 ViewBag.Error = Charts.ErrorNameRequired;
-                return Details(id);
+                return Edit(id);
             }
 
             chart.Name = prompt.Trim();
             DbContext.Save(chart, false);
             ViewBag.Message = Charts.NameSaved;
-            return Details(id);
+            return Edit(id);
         }
 
         [HttpPost, AjaxRequestOnly]
@@ -277,7 +277,7 @@ namespace Dash.Controllers
             if (!chart.IsOwner)
             {
                 ViewBag.Error = Charts.ErrorOwnerOnly;
-                return Details(id);
+                return Edit(id);
             }
             return View("Share", chart);
         }
@@ -297,7 +297,7 @@ namespace Dash.Controllers
             }
             model.Update();
             ViewBag.Message = Charts.SuccessSavingChart;
-            return Details(model.Id);
+            return Edit(model.Id);
         }
     }
 }

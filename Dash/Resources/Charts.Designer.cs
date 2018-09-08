@@ -97,6 +97,15 @@ namespace Dash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to delete this range?.
+        /// </summary>
+        public static string ConfirmDeleteRange {
+            get {
+                return ResourceManager.GetString("ConfirmDeleteRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Copy Chart.
         /// </summary>
         public static string CopyChart {
@@ -115,11 +124,47 @@ namespace Dash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Create Range.
+        /// </summary>
+        public static string CreateRange {
+            get {
+                return ResourceManager.GetString("CreateRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Date Interval.
         /// </summary>
         public static string DateInterval {
             get {
                 return ResourceManager.GetString("DateInterval", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit Range.
+        /// </summary>
+        public static string EditRange {
+            get {
+                return ResourceManager.GetString("EditRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This range is already first..
+        /// </summary>
+        public static string ErrorAlreadyFirstRange {
+            get {
+                return ResourceManager.GetString("ErrorAlreadyFirstRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This range is already last..
+        /// </summary>
+        public static string ErrorAlreadyLastRange {
+            get {
+                return ResourceManager.GetString("ErrorAlreadyLastRange", resourceCulture);
             }
         }
         
@@ -421,11 +466,29 @@ namespace Dash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Range deleted successfully..
+        /// </summary>
+        public static string SuccessDeletingRange {
+            get {
+                return ResourceManager.GetString("SuccessDeletingRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Chart saved successfully..
         /// </summary>
         public static string SuccessSavingChart {
             get {
                 return ResourceManager.GetString("SuccessSavingChart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Range saved successfully..
+        /// </summary>
+        public static string SuccessSavingRange {
+            get {
+                return ResourceManager.GetString("SuccessSavingRange", resourceCulture);
             }
         }
         

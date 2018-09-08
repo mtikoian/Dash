@@ -1,0 +1,76 @@
+﻿@using Dash.Resources
+@using Dash.Models
+@model ChartView
+
+<tab-list>
+    <tab-item no-render="@(!User.IsInRole("chart.edit"))">
+        @if (Model.ActiveTab == ChartViewTab.Edit)
+        {
+            <tab-active id="overview">@Charts.ViewChart</tab-active>
+        }
+        else
+        {
+            @Html.AuthorizedActionLink(Charts.ViewChart, "Edit", "Chart", new { Id = Model.Id }, new { @class = "btn btn-link", role = "tab" })
+        }
+    </tab-item>
+    <tab-item no-render="@(!User.IsInRole("chartrange.index"))">
+        @if (Model.ActiveTab == ChartViewTab.Ranges)
+        {
+            <tab-active id="joins">@Charts.Ranges</tab-active>
+        }
+        else
+        {
+            @Html.AuthorizedActionLink(Charts.Ranges, "Index", "ChartRange", new { Model.Id }, new { @class = "btn btn-link", role = "tab" })
+        }
+    </tab-item>
+    <tab-item no-render="@(!Model.IsOwner)">
+        @if (Model.ActiveTab == ChartViewTab.Rename)
+        {
+            <tab-active id="renameChart">@Core.Rename</tab-active>
+        }
+        else
+        {
+            @Html.AuthorizedActionLink(Core.Rename, "Rename", "Chart", new { Model.Id }, new { @class = "btn btn-link", role = "tab" })
+        }
+    </tab-item>
+    <tab-item no-render="@(!Model.IsOwner)">
+        @if (Model.ActiveTab == ChartViewTab.ChangeType)
+        {
+            <tab-active id="renameChart">@Charts.ChangeType</tab-active>
+        }
+        else
+        {
+            @Html.AuthorizedActionLink(Charts.ChangeType, "ChangeType", "Chart", new { Model.Id }, new { @class = "btn btn-link", role = "tab" })
+        }
+    </tab-item>
+    <tab-item no-render="@(!User.IsInRole("chartshare.index"))">
+        @if (Model.ActiveTab == ChartViewTab.Share)
+        {
+            <tab-active id="share">@Charts.ShareChart</tab-active>
+        }
+        else
+        {
+            @Html.AuthorizedActionLink(Charts.ShareChart, "Index", "ChartShare", new { Model.Id }, new { @class = "btn btn-link", role = "tab" })
+        }
+    </tab-item>
+    <tab-item no-render="@(!User.IsInRole("chart.export"))">
+        @if (Model.ActiveTab == ChartViewTab.Export)
+        {
+            <tab-active id="export">@Core.Export</tab-active>
+        }
+        else
+        {
+            @Html.AuthorizedActionLink(Core.Export, "Export", "Chart", new { Model.Id }, new { @class = "btn btn-link pjax-no-follow", role = "tab", target = "_blank" })
+        }
+    </tab-item>
+    <tab-item no-render="@(!User.IsInRole("chart.sql"))">
+        @if (Model.ActiveTab == ChartViewTab.Sql)
+        {
+            <tab-active id="viewSql">@Core.ViewSql</tab-active>
+        }
+        else
+        {
+            @Html.AuthorizedActionLink(Core.ViewSql, "Sql", "Chart", new { Model.Id }, new { @class = "btn btn-link", role = "tab" })
+        }
+    </tab-item>
+</tab-list>

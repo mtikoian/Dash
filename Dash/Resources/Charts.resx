@@ -255,4 +255,25 @@
   <data name="ErrorNoData" xml:space="preserve">
     <value>None of the chart ranges returned any data. Try modifying the ranges or the underlying reports.</value>
   </data>
+  <data name="ConfirmDeleteRange" xml:space="preserve">
+    <value>Are you sure you want to delete this range?</value>
+  </data>
+  <data name="ErrorAlreadyFirstRange" xml:space="preserve">
+    <value>This range is already first.</value>
+  </data>
+  <data name="ErrorAlreadyLastRange" xml:space="preserve">
+    <value>This range is already last.</value>
+  </data>
+  <data name="SuccessDeletingRange" xml:space="preserve">
+    <value>Range deleted successfully.</value>
+  </data>
+  <data name="SuccessSavingRange" xml:space="preserve">
+    <value>Range saved successfully.</value>
+  </data>
+  <data name="CreateRange" xml:space="preserve">
+    <value>Create Range</value>
+  </data>
+  <data name="EditRange" xml:space="preserve">
+    <value>Edit Range</value>
+  </data>
 </root>

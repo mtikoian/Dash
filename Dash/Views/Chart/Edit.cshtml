@@ -1,0 +1,32 @@
+﻿@using Dash.Resources
+@model Dash.Models.Chart
+
+<body-content>
+    <breadcrumb>
+        <breadcrumb-item label="@Charts.ViewAll" controller="Chart" action="Index"></breadcrumb-item>
+        <breadcrumb-item label="@Model.Name" controller="Chart" action="Edit" route-values="@(new { Id = Model.Id })" is-active="true"></breadcrumb-item>
+    </breadcrumb>
+
+    <partial name="_Toast" />
+    <partial name="_ChartTabs" model="new ChartView(Model.Id, Model.IsOwner, ChartViewTab.Edit)" />
+
+    <tab-panel id="report">
+        @if (Model.ChartRange.Any())
+        {
+            <div class="chart-container container p-2" data-toggle="chart" data-url="@Url.Action("Data", "Chart", new { Id = Model.Id })">
+                <partial name="_Chart" />
+            </div>
+        }
+        else
+        {
+            <div class="chart-data-no-ranges">
+                <div class="card text-white m-2 bg-warning">
+                    <div class="card-body">
+                        <p class="card-text">@Charts.ErrorNoRanges</p>
+                        @Html.AuthorizedActionLink(Charts.Ranges, "Index", "ChartRange", new { Model.Id }, new { @class = $"{DashClasses.Btn.ToCssClass()} {DashClasses.BtnPrimary.ToCssClass()}" }, hasAccess: Model.IsOwner)
+                    </div>
+                </div>
+            </div>
+        }
+    </tab-panel>
+</body-content>

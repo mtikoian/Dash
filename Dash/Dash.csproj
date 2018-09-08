@@ -50,9 +50,13 @@
     <None Include="Views\Alert\Index.cshtml"/>
     <None Include="Views\Chart\ChangeType.cshtml"/>
     <None Include="Views\Chart\Create.cshtml"/>
-    <None Include="Views\Chart\Details.cshtml"/>
+    <None Include="Views\Chart\Edit.cshtml"/>
     <None Include="Views\Chart\Index.cshtml"/>
     <None Include="Views\Chart\Share.cshtml"/>
+    <None Include="Views\ChartRange\CreateEdit.cshtml"/>
+    <None Include="Views\ChartRange\Index.cshtml"/>
+    <None Include="Views\ChartRange\_Columns.cshtml"/>
+    <None Include="Views\ChartRange\_DateInterval.cshtml"/>
     <None Include="Views\Dashboard\CreateEdit.cshtml"/>
     <None Include="Views\Dashboard\Index.cshtml"/>
     <None Include="Views\Dashboard\Widget.cshtml"/>
@@ -80,6 +84,8 @@
     <None Include="Views\Role\Index.cshtml"/>
     <None Include="Views\Shared\Error.cshtml"/>
     <None Include="Views\Shared\_Chart.cshtml"/>
+    <None Include="Views\Shared\_ChartBreadcrumbs.cshtml"/>
+    <None Include="Views\Shared\_ChartTabs.cshtml"/>
     <None Include="Views\Shared\_DatasetBreadcrumbs.cshtml"/>
     <None Include="Views\Shared\_DatasetTabs.cshtml"/>
     <None Include="Views\Shared\_ReportBreadcrumbs.cshtml"/>
