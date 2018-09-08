@@ -1,11 +1,12 @@
 ﻿/*!
  * Wraps content processing functionality.
  */
-(function(m, $, Alertify, pjax, Table, Tab, CollapsibleList, Autocomplete, Draggabilly, flatpickr) {
+(function(m, $, Alertify, pjax, Table, Tab, CollapsibleList, Autocomplete, Draggabilly, flatpickr, DashChart) {
     'use strict';
 
     var _autocompletes = [];
     var _draggabillies = [];
+    var _charts = [];
 
     /**
      * Display context help.
@@ -144,6 +145,28 @@
             $.dispatch(node, $.events.tableDestroy);
             m.mount(node, null);
         }
+    };
+
+    /**
+     * Initialize a chart instance
+     * @this {Node} Node the event is being bound to.
+     */
+    var chartLoad = function() {
+        var node = $.isNode(this) ? this : this.target;
+        if (node) {
+            _charts.push(new DashChart(node, true));
+        }
+    };
+
+    /**
+     * Destroy a chart instance
+     * @this {Node} Node for the chart to destroy.
+     */
+    var chartUnload = function() {
+        _charts.forEach(function(x) {
+            x.destroy();
+        });
+        _charts = [];
     };
 
     /**
@@ -421,6 +444,10 @@
         'datepicker': {
             onLoad: datepickerLoad,
             onUnload: datepickerUnload
+        },
+        'chart': {
+            onLoad: chartLoad,
+            onUnload: chartUnload
         }
     };
 
@@ -532,4 +559,4 @@
         $.on(document, 'resxLoaded', pageLoaded);
     }
 
-})(this.m, this.$, this.Alertify, this.pjax, this.Table, this.Tab, this.CollapsibleList, this.Autocomplete, this.Draggabilly, this.flatpickr);
+})(this.m, this.$, this.Alertify, this.pjax, this.Table, this.Tab, this.CollapsibleList, this.Autocomplete, this.Draggabilly, this.flatpickr, this.DashChart);
