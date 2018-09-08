@@ -63,7 +63,8 @@
                     dataCallback: this.processJson.bind(this),
                     errorCallback: this.onError.bind(this),
                     displayDateFormat: opts.displayDateFormat,
-                    displayCurrencyFormat: opts.displayCurrencyFormat
+                    displayCurrencyFormat: opts.displayCurrencyFormat,
+                    storeSettings: false
                 };
             }
 
