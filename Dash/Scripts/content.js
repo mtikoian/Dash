@@ -4,8 +4,8 @@
 (function(m, $, Alertify, pjax, Table, Tab, CollapsibleList, Autocomplete, Draggabilly, flatpickr) {
     'use strict';
 
-    var autocompletes = [];
-    var draggabillies = [];
+    var _autocompletes = [];
+    var _draggabillies = [];
 
     /**
      * Display context help.
@@ -59,14 +59,14 @@
                 url: self.getAttribute('data-url')
             }, function(data) {
                 if (data && data.length) {
-                    autocompletes.push(new Autocomplete({ selector: self, sourceData: data }));
+                    _autocompletes.push(new Autocomplete({ selector: self, sourceData: data }));
                 } else {
                     // error - @todo what do i do here?
-                    autocompletes.push(new Autocomplete({ selector: self, sourceData: null }));
+                    _autocompletes.push(new Autocomplete({ selector: self, sourceData: null }));
                 }
             });
         } else {
-            autocompletes.push(new Autocomplete({
+            _autocompletes.push(new Autocomplete({
                 selector: self, source: function(search, response) {
                     var params = { search: search };
                     if (self.hasAttribute('data-params')) {
@@ -99,10 +99,10 @@
      * @this {Node} Node the event is being bound to.
      */
     var autocompleteUnload = function() {
-        autocompletes.forEach(function(x) {
+        _autocompletes.forEach(function(x) {
             x.destroy();
         });
-        autocompletes = [];
+        _autocompletes = [];
     };
 
     /**
@@ -234,7 +234,7 @@
         var node = $.isNode(this) ? this : this.target;
         if (node) {
             $.forEach($.getAll('.column-item', node), function(x) {
-                draggabillies.push(new Draggabilly(x).on('dragStart', startColumnDrag).on('dragEnd', stopColumnDrag));
+                _draggabillies.push(new Draggabilly(x).on('dragStart', startColumnDrag).on('dragEnd', stopColumnDrag));
             });
         }
     };
@@ -243,10 +243,10 @@
      * Destroy the column selector.
      */
     var columnSelectorUnload = function() {
-        $.forEach(draggabillies, function(x) {
+        $.forEach(_draggabillies, function(x) {
             x.destroy();
         });
-        draggabillies = [];
+        _draggabillies = [];
     };
 
     /**
