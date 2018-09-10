@@ -6,6 +6,17 @@
 })(this, function($, Alertify, Chart) {
     'use strict';
 
+    // Change global chart settings.
+    Chart.defaults.global.responsive = true;
+    Chart.defaults.global.maintainAspectRatio = false;
+    Chart.defaults.global.title.display = false;
+    Chart.defaults.global.legend.position = 'bottom';
+    Chart.defaults.global.legend.labels.fontSize = 16;
+    Chart.defaults.global.legend.labels.fontFamily = 'Calibri';
+    Chart.defaults.global.layout = { padding: 10 };
+    Chart.defaults.scale.ticks.fontFamily = 'Calibri';
+    Chart.defaults.scale.ticks.fontSize = 12;
+
     /**
      * Declare DashChart class.
      * @param {Node} content - DOM node that contains the chart.

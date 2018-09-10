@@ -97,18 +97,13 @@ gulp.task('js', function() {
         paths.js + 'Autocomplete.js',      // autocomplete component
         paths.js + 'Chart.js',             // charting
         paths.js + 'CollapsibleList.js',   // lightweight library for treeviews
-        paths.js + 'ColorPicker.js',       // custom color picker
         paths.js + 'DashChart.js',         // chart wrapper
         paths.js + 'Draggabilly.js',       // drag-n-drop functionality
-        paths.js + 'Help.js',              // custom help component using mithril
+        paths.js + 'ColorPicker.js',       // custom color picker
         paths.js + 'Rect.js',              // library for rectangle geometry
-        paths.js + 'Tab.js',               // Tab component
         paths.js + 'Table.js',             // custom table component using mithril
         paths.js + 'Widget.js',            // widget component using mithril
         // functional areas
-        paths.js + 'Form.js',              // custom form component using mithril
-        paths.js + 'shared.js',            // functionality shared for reports and charts
-        paths.js + 'charts.js',            // chart functionality
         paths.js + 'content.js',           // content processing functionality
         paths.js + 'dashboard.js'          // dashboard functionality
     ])

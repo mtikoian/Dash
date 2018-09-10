@@ -5,20 +5,9 @@
     'use strict';
 
     var events = {
-        chartLoad: new CustomEvent('chartLoad'),
-        chartShareLoad: new CustomEvent('chartShareLoad'),
-        chartShareUnload: new CustomEvent('chartShareUnload'),
-        chartUnload: new CustomEvent('chartUnload'),
-        columnSelectorLoad: new CustomEvent('columnSelectorLoad'),
         dashboardLoad: new CustomEvent('dashboardLoad'),
         dashboardUnload: new CustomEvent('dashboardUnload'),
-        datasetFormLoad: new CustomEvent('datasetFormLoad'),
-        datasetFormUnload: new CustomEvent('datasetFormUnload'),
         layoutUpdate: new CustomEvent('layoutUpdate'),
-        reportLoad: new CustomEvent('reportLoad'),
-        reportUnload: new CustomEvent('reportUnload'),
-        reportShareLoad: new CustomEvent('reportShareLoad'),
-        reportShareUnload: new CustomEvent('reportShareUnload'),
         resxLoaded: new CustomEvent('resxLoaded'),
         tableLoad: new CustomEvent('tableLoad'),
         tableUnload: new CustomEvent('tableUnload'),
@@ -93,8 +82,7 @@
                 if (url.indexOf('LogJavascriptError') > -1) {
                     return;
                 }
-                // @todo not sure what to log here
-                logError(data.message);
+
                 if (data.response && data.response.status && [400, 401, 402, 403].indexOf(data.response.status) > -1) {
                     location.reload(true);
                 } else {

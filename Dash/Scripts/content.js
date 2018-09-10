@@ -316,7 +316,7 @@
 
     /**
      * Destroy datepickers on this page.
-     * @this {Node} Node the event is being bound to.
+     * @this {Node} Node the event is being unbound from.
      */
     var datepickerUnload = function() {
         if (this._flatpickr) {
@@ -455,10 +455,6 @@
     var _toggles = {
         'nav-menu': {
             onLoad: menuLoad,
-            onUnload: null
-        },
-        'tab': {
-            onLoad: function() { new Tab(this); },
             onUnload: null
         },
         'table': {
