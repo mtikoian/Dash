@@ -1,0 +1,26 @@
+﻿@using Dash.Resources
+@using Dash.Models
+@model ChartResult
+
+<body-content>
+    <breadcrumb>
+        <breadcrumb-item label="@Charts.ViewAll" controller="Chart" action="Index"></breadcrumb-item>
+        <breadcrumb-item label="@Model.ChartName" controller="Report" action="Edit" route-values="@(new { Model.ChartId })"></breadcrumb-item>
+        <breadcrumb-item label="@Core.ViewSql" controller="Report" action="Sql" route-values="@(new { Id = Model.ChartId })" is-active="true"></breadcrumb-item>
+    </breadcrumb>
+
+    <partial name="_Toast" />
+    <partial name="_ChartTabs" model="new ChartView(Model.ChartId, Model.IsOwner, ChartViewTab.Sql)" />
+
+    <tab-panel id="viewSql">
+        <div class="col-12 p-5">
+            @foreach (var range in Model.Ranges)
+            {
+                <div class="sql-range-content">
+                    <pre class="code" data-lang="SQL"><code class="sql-text">@range.Sql</code></pre>
+                    <div class="sql-error">@range.Error</div>
+                </div>
+            }
+        </div>
+    </tab-panel>
+</body-content>

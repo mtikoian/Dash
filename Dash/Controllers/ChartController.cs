@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Dash.Configuration;
 using Dash.Models;
 using Dash.Resources;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dash.Controllers
@@ -67,7 +65,7 @@ namespace Dash.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            return View(new CreateChart(DbContext, User.UserId()));
+            return View("Create", new CreateChart(DbContext, User.UserId()));
         }
 
         [HttpPost, ValidateAntiForgeryToken]
@@ -147,49 +145,6 @@ namespace Dash.Controllers
             return View("Edit", chart);
         }
 
-        [HttpGet, AjaxRequestOnly]
-        public IActionResult DetailsOptions(int id)
-        {
-            var chart = DbContext.Get<Chart>(id);
-            if (chart == null)
-            {
-                return Error(Core.ErrorInvalidId);
-            }
-            var user = DbContext.Get<User>(User.UserId());
-            if (!user.CanViewChart(chart))
-            {
-                return Error(Charts.ErrorPermissionDenied);
-            }
-
-            var columns = new Dictionary<int, List<RangeColumn>>();
-            DbContext.GetAll<RangeColumn>(new { UserId = user.Id }).ToList().ForEach(x => {
-                if (!columns.ContainsKey(x.ReportId))
-                {
-                    columns.Add(x.ReportId, new List<RangeColumn>());
-                }
-                columns[x.ReportId].Add(x);
-            });
-
-            return Data(new {
-                chartId = chart.Id,
-                dateIntervals = chart.DateIntervalList.Prepend(new { Id = 0, Name = Charts.DateInterval }),
-                aggregators = chart.AggregatorList.Prepend(new { Id = 0, Name = Charts.Aggregator }),
-                ranges = chart.ChartRange,
-                reports = DbContext.GetAll<Report>(new { UserId = user.Id })
-                    .Select(x => new { id = x.Id, name = x.Name }).Prepend(new { id = 0, name = Charts.Report }),
-                columns = columns.Select(x => new { reportId = x.Key, columns = x.Value }),
-                filterTypes = new {
-                    boolean = (int)FilterTypes.Boolean,
-                    date = (int)FilterTypes.Date,
-                    select = (int)FilterTypes.Select,
-                    numeric = (int)FilterTypes.Numeric
-                },
-                allowEdit = chart.IsOwner,
-                wantsHelp = HttpContext.Session.GetString("ContextHelp").ToBool(),
-                saveRangesUrl = Url.Action("SaveRanges", "Chart", new { chart.Id })
-            });
-        }
-
         [HttpPost]
         public IActionResult Export(ExportChart model)
         {
@@ -225,8 +180,9 @@ namespace Dash.Controllers
             return Rows(DbContext.GetAll<Chart>(new { UserId = User.UserId() }));
         }
 
-        [HttpPut]
-        public IActionResult Rename(int id, string prompt)
+
+        [HttpGet, ParentAction("Edit")]
+        public IActionResult Rename(int id)
         {
             var chart = DbContext.Get<Chart>(id);
             if (chart == null)
@@ -239,34 +195,32 @@ namespace Dash.Controllers
                 ViewBag.Error = Charts.ErrorOwnerOnly;
                 return Edit(id);
             }
-            if (prompt.IsEmpty())
-            {
-                ViewBag.Error = Charts.ErrorNameRequired;
-                return Edit(id);
-            }
-
-            chart.Name = prompt.Trim();
-            DbContext.Save(chart, false);
-            ViewBag.Message = Charts.NameSaved;
-            return Edit(id);
+            return View("Rename", chart);
         }
 
-        [HttpPost, AjaxRequestOnly]
-        public IActionResult SaveRanges([FromBody] SaveRange model)
+        [HttpPut, ParentAction("Edit")]
+        public IActionResult Rename(RenameChart model)
         {
             if (model == null)
             {
-                return Error(Core.ErrorInvalidId);
+                return Error(Core.ErrorGeneric);
+            }
+            if (!model.Chart.IsOwner)
+            {
+                ViewBag.Error = Charts.ErrorOwnerOnly;
+                return Edit(model.Chart.Id);
             }
             if (!ModelState.IsValid)
             {
                 return Error(ModelState.ToErrorString());
             }
-            return Data(new { ranges = model.Update() });
+            model.Save();
+            ViewBag.Message = Charts.NameSaved;
+            return Edit(model.Chart.Id);
         }
 
         [HttpGet]
-        public IActionResult Share(int id)
+        public IActionResult Sql(int id)
         {
             var chart = DbContext.Get<Chart>(id);
             if (chart == null)
@@ -274,30 +228,7 @@ namespace Dash.Controllers
                 ViewBag.Error = Core.ErrorInvalidId;
                 return Index();
             }
-            if (!chart.IsOwner)
-            {
-                ViewBag.Error = Charts.ErrorOwnerOnly;
-                return Edit(id);
-            }
-            return View("Share", chart);
-        }
-
-        [HttpPut]
-        public IActionResult Share(SaveChartShare model)
-        {
-            if (model == null)
-            {
-                ViewBag.Error = Core.ErrorInvalidId;
-                return Index();
-            }
-            if (!ModelState.IsValid)
-            {
-                ViewBag.Error = ModelState.ToErrorString();
-                return View("Share", model.Chart);
-            }
-            model.Update();
-            ViewBag.Message = Charts.SuccessSavingChart;
-            return Edit(model.Id);
+            return View("Sql", chart.GetData(true));
         }
     }
 }

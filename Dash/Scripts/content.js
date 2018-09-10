@@ -1,12 +1,13 @@
 ﻿/*!
  * Wraps content processing functionality.
  */
-(function(m, $, Alertify, pjax, Table, Tab, CollapsibleList, Autocomplete, Draggabilly, flatpickr, DashChart) {
+(function(m, $, Alertify, pjax, Table, Tab, CollapsibleList, Autocomplete, Draggabilly, flatpickr, DashChart, ColorPicker) {
     'use strict';
 
     var _autocompletes = [];
     var _draggabillies = [];
     var _charts = [];
+    var _colorpickers = [];
 
     /**
      * Display context help.
@@ -170,6 +171,24 @@
     };
 
     /**
+     * Toggle for exporting a chart.
+     */
+    var chartExportLoad = function() {
+        var node = $.isNode(this) ? this : this.target;
+        if (node) {
+            $.on(node, 'click', function() {
+                var chartContainer = $.get('.chart-container');
+                if (chartContainer) {
+                    // @todo this is sloppy - probably need a data- attribute of some sort to help narrow querySelector down
+                    $.get('.export-width').value = chartContainer.offsetWidth;
+                    $.get('.export-data').value = _charts.length ? _charts[0].chart.toBase64Image() : null;
+                    $.get('.export-form').submit();
+                }
+            }, true);
+        }
+    };
+
+    /**
      * Update zIndex of column being dragged so it is on top.
      * @param {Event} event - Original mousedown or touchstart event
      */
@@ -303,6 +322,42 @@
         if (this._flatpickr) {
             this._flatpickr.destroy();
         }
+    };
+
+    /**
+     * Initialize colorpicker.
+     * @this {Node} Node the picker is being bound to.
+     */
+    var colorpickerLoad = function() {
+        var node = $.isNode(this) ? this : this.target;
+        if (node) {
+            // @todo probably want to replace this with a better looking picker later, but it'll do for now
+            var newNode = $.createNode('<div id="colorpickerContainer" class="cp-fancy"></div>');
+            node.parentNode.insertBefore(newNode, node.nextSibling);
+            var picker = new ColorPicker(newNode, function(hex) {
+                node.value = hex;
+                //$.style('#selectedColorSwatch', { 'background-color': hex });
+            });
+            picker.setHex(node.value);
+            //$.style('#selectedColorSwatch', { 'background-color': node.value });
+
+            $.on(node, 'change', function() {
+                picker.setHex(this.value);
+            });
+
+            _colorpickers.push(picker);
+        }
+    };
+
+    /**
+     * Destroy colorpickers on this page.
+     * @this {Node} Node the event is being unbound from.
+     */
+    var colorpickerUnload = function() {
+        $.forEach(_colorpickers, function(x) {
+            x.destroy();
+        });
+        _colorpickers = [];
     };
 
     /**
@@ -448,6 +503,14 @@
         'chart': {
             onLoad: chartLoad,
             onUnload: chartUnload
+        },
+        'chart-export': {
+            onLoad: chartExportLoad,
+            onUnload: null
+        },
+        'colorpicker': {
+            onLoad: colorpickerLoad,
+            onUnload: colorpickerUnload
         }
     };
 
@@ -559,4 +622,4 @@
         $.on(document, 'resxLoaded', pageLoaded);
     }
 
-})(this.m, this.$, this.Alertify, this.pjax, this.Table, this.Tab, this.CollapsibleList, this.Autocomplete, this.Draggabilly, this.flatpickr, this.DashChart);
+})(this.m, this.$, this.Alertify, this.pjax, this.Table, this.Tab, this.CollapsibleList, this.Autocomplete, this.Draggabilly, this.flatpickr, this.DashChart, this.ColorPicker);

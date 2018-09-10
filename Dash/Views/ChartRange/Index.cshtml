@@ -11,7 +11,7 @@
     <partial name="_Toast" />
     <partial name="_ChartTabs" model="new ChartView(Model.Id, Model.IsOwner, ChartViewTab.Ranges)" />
 
-    <tab-panel id="filters">
+    <tab-panel id="ranges">
         <toolbar>
             @Html.AuthorizedButton(Core.Add, "Create", "ChartRange", new { Id = Model.Id }, DashClasses.BtnPrimary, hasAccess: User.IsInRole("chartrange.create"))
         </toolbar>

@@ -1,24 +1,27 @@
 ﻿@model Dash.Models.Chart
 @using Dash.Resources
 
-@using (Html.BeginBodyContent())
-{
-    @Html.Breadcrumbs(new List<Breadcrumb> {
-        new Breadcrumb(Charts.ViewAll, "Index", "Chart"),
-        new Breadcrumb(Charts.ChangeType, "ChangeType", "Chart")
-    });
+<body-content>
+    <breadcrumb>
+        <partial name="_ChartBreadcrumbs" />
+        <breadcrumb-item label="@Charts.ChangeType" controller="Chart" action="ChangeType" route-values="@(new { Id = Model.Id })" is-active="true"></breadcrumb-item>
+    </breadcrumb>
 
-    @using (Html.BeginCustomForm("ChangeType", "Chart"))
-    {
-        @Html.HiddenFor(model => model.Id)
+    <partial name="_Toast" />
+    <partial name="_ChartTabs" model="new ChartView(Model.Id, Model.IsOwner, ChartViewTab.Ranges)" />
 
-        <partial name="_Toast" />
+    <tab-panel id="changeType">
+        @using (Html.BeginCustomForm("ChangeType", "Chart"))
+        {
+            @Html.HiddenFor(model => model.Id)
 
-        <div class="columns">
-            <div class="col-6">
-                @Html.LabelInputFor(model => model.Name, new { disabled = true })
-                @Html.LabelDropDownListFor(model => model.ChartTypeId, Dash.Models.Chart.ChartTypeSelectList)
+            <div class="columns">
+                <div class="col-6">
+                    @Html.LabelDropDownListFor(model => model.ChartTypeId, Dash.Models.Chart.ChartTypeSelectList)
+                </div>
             </div>
-        </div>
-    }
-}
+
+            @Html.FormButtons()
+        }
+    </tab-panel>
+</body-content>

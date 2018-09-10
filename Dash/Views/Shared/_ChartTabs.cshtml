@@ -16,7 +16,7 @@
     <tab-item no-render="@(!User.IsInRole("chartrange.index"))">
         @if (Model.ActiveTab == ChartViewTab.Ranges)
         {
-            <tab-active id="joins">@Charts.Ranges</tab-active>
+            <tab-active id="ranges">@Charts.Ranges</tab-active>
         }
         else
         {
@@ -36,7 +36,7 @@
     <tab-item no-render="@(!Model.IsOwner)">
         @if (Model.ActiveTab == ChartViewTab.ChangeType)
         {
-            <tab-active id="renameChart">@Charts.ChangeType</tab-active>
+            <tab-active id="changeType">@Charts.ChangeType</tab-active>
         }
         else
         {
@@ -51,16 +51,6 @@
         else
         {
             @Html.AuthorizedActionLink(Charts.ShareChart, "Index", "ChartShare", new { Model.Id }, new { @class = "btn btn-link", role = "tab" })
-        }
-    </tab-item>
-    <tab-item no-render="@(!User.IsInRole("chart.export"))">
-        @if (Model.ActiveTab == ChartViewTab.Export)
-        {
-            <tab-active id="export">@Core.Export</tab-active>
-        }
-        else
-        {
-            @Html.AuthorizedActionLink(Core.Export, "Export", "Chart", new { Model.Id }, new { @class = "btn btn-link pjax-no-follow", role = "tab", target = "_blank" })
         }
     </tab-item>
     <tab-item no-render="@(!User.IsInRole("chart.sql"))">

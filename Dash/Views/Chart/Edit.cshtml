@@ -1,6 +1,11 @@
 ﻿@using Dash.Resources
 @model Dash.Models.Chart
 
+@if (!Model.ChartRange.Any())
+{
+    ViewBag.Error = Charts.ErrorNoRanges;
+}
+
 <body-content>
     <breadcrumb>
         <breadcrumb-item label="@Charts.ViewAll" controller="Chart" action="Index"></breadcrumb-item>
@@ -13,20 +18,20 @@
     <tab-panel id="report">
         @if (Model.ChartRange.Any())
         {
+            @using (Html.BeginToolbar())
+            {
+                <button class="btn btn-primary" data-toggle="chart-export">@Core.Export</button>
+            }
+
             <div class="chart-container container p-2" data-toggle="chart" data-url="@Url.Action("Data", "Chart", new { Id = Model.Id })">
                 <partial name="_Chart" />
             </div>
-        }
-        else
-        {
-            <div class="chart-data-no-ranges">
-                <div class="card text-white m-2 bg-warning">
-                    <div class="card-body">
-                        <p class="card-text">@Charts.ErrorNoRanges</p>
-                        @Html.AuthorizedActionLink(Charts.Ranges, "Index", "ChartRange", new { Model.Id }, new { @class = $"{DashClasses.Btn.ToCssClass()} {DashClasses.BtnPrimary.ToCssClass()}" }, hasAccess: Model.IsOwner)
-                    </div>
-                </div>
-            </div>
+
+            <form action="@Url.Action("Export", "Chart")" class="export-form" method="POST" target="_blank">
+                <input type="hidden" name="filename" class="export-filename" value="@Model.Name" />
+                <input type="hidden" name="width" value="" class="export-width" />
+                <input type="hidden" name="data" value="" class="export-data" />
+            </form>
         }
     </tab-panel>
 </body-content>

@@ -7,7 +7,7 @@
         @Html.LabelDropDownListFor(x => x.XAxisColumnId, Model.ColumnSelectListItems,
             new { @data_toggle = "content-replace", @data_url = Url.Action("DateInterval"), @data_params = "#Id,#XAxisColumnId" })
         @Html.LabelDropDownListFor(x => x.YAxisColumnId, Model.ColumnSelectListItems)
-        @Html.LabelInputFor(x => x.Color, new { data_toggle = "colorpicker" })
         <partial name="_DateInterval" />
+        @Html.LabelInputFor(x => x.Color, new { data_toggle = "colorpicker" })
     }
 </div>

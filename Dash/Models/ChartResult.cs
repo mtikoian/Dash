@@ -6,8 +6,11 @@ namespace Dash.Models
 {
     public class ChartResult : BaseModel
     {
+        public int ChartId { get; set; }
+        public string ChartName { get; set; }
         public string Error { get; set; }
         public string ExportName { get; set; }
+        public bool IsOwner { get; set; }
         public List<ChartResultRange> Ranges { get; set; } = new List<ChartResultRange>();
         public string Title { get; set; }
         public string Type { get; set; }

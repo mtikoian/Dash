@@ -1,0 +1,25 @@
+﻿@model Dash.Models.Chart
+@using Dash.Resources
+
+<body-content>
+    <breadcrumb>
+        <partial name="_ChartBreadcrumbs" />
+        <breadcrumb-item label="@Core.Rename" controller="Chart" action="Rename" route-values="@(new { Id = Model.Id })" is-active="true"></breadcrumb-item>
+    </breadcrumb>
+
+    <partial name="_Toast" />
+    <partial name="_ChartTabs" model="new ChartView(Model.Id, Model.IsOwner, ChartViewTab.Rename)" />
+
+    <tab-panel id="renameChart">
+        @using (Html.BeginCustomForm("Rename", "Chart", method: HttpVerbs.Put))
+        {
+            <div class="columns">
+                <div class="col-6">
+                    @Html.LabelInputFor(model => model.Name)
+                </div>
+            </div>
+
+            @Html.FormButtons()
+        }
+    </tab-panel>
+</body-content>

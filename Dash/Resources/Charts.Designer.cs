@@ -70,7 +70,7 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Change Chart Type.
+        ///   Looks up a localized string similar to Change Type.
         /// </summary>
         public static string ChangeType {
             get {
@@ -106,6 +106,15 @@ namespace Dash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to delete this share?.
+        /// </summary>
+        public static string ConfirmDeleteShare {
+            get {
+                return ResourceManager.GetString("ConfirmDeleteShare", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Copy Chart.
         /// </summary>
         public static string CopyChart {
@@ -133,6 +142,15 @@ namespace Dash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Create Share.
+        /// </summary>
+        public static string CreateShare {
+            get {
+                return ResourceManager.GetString("CreateShare", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Date Interval.
         /// </summary>
         public static string DateInterval {
@@ -147,6 +165,15 @@ namespace Dash.Resources {
         public static string EditRange {
             get {
                 return ResourceManager.GetString("EditRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit Share.
+        /// </summary>
+        public static string EditShare {
+            get {
+                return ResourceManager.GetString("EditShare", resourceCulture);
             }
         }
         
@@ -205,7 +232,7 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You have to add at least one range before you can view the chart..
+        ///   Looks up a localized string similar to There are no ranges created for this chart. Use `Ranges` from the menu to create ranges..
         /// </summary>
         public static string ErrorNoRanges {
             get {
@@ -475,6 +502,15 @@ namespace Dash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Share deleted successfully..
+        /// </summary>
+        public static string SuccessDeletingShare {
+            get {
+                return ResourceManager.GetString("SuccessDeletingShare", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Chart saved successfully..
         /// </summary>
         public static string SuccessSavingChart {
@@ -489,6 +525,15 @@ namespace Dash.Resources {
         public static string SuccessSavingRange {
             get {
                 return ResourceManager.GetString("SuccessSavingRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Share saved successfully..
+        /// </summary>
+        public static string SuccessSavingShare {
+            get {
+                return ResourceManager.GetString("SuccessSavingShare", resourceCulture);
             }
         }
         

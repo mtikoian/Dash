@@ -229,16 +229,13 @@
     <value>Chart type is required.</value>
   </data>
   <data name="ChangeType" xml:space="preserve">
-    <value>Change Chart Type</value>
+    <value>Change Type</value>
   </data>
   <data name="Color" xml:space="preserve">
     <value>Color</value>
   </data>
   <data name="ErrorChartModified" xml:space="preserve">
     <value>The chart was modified by the owner. You should close the chart and re-open it to see the latest version.</value>
-  </data>
-  <data name="ErrorNoRanges" xml:space="preserve">
-    <value>You have to add at least one range before you can view the chart.</value>
   </data>
   <data name="ErrorGettingData" xml:space="preserve">
     <value>An error occurred querying the database. Check your reports. Or, try reloading the page.</value>
@@ -275,5 +272,23 @@
   </data>
   <data name="EditRange" xml:space="preserve">
     <value>Edit Range</value>
+  </data>
+  <data name="SuccessDeletingShare" xml:space="preserve">
+    <value>Share deleted successfully.</value>
+  </data>
+  <data name="ConfirmDeleteShare" xml:space="preserve">
+    <value>Are you sure you want to delete this share?</value>
+  </data>
+  <data name="SuccessSavingShare" xml:space="preserve">
+    <value>Share saved successfully.</value>
+  </data>
+  <data name="CreateShare" xml:space="preserve">
+    <value>Create Share</value>
+  </data>
+  <data name="EditShare" xml:space="preserve">
+    <value>Edit Share</value>
+  </data>
+  <data name="ErrorNoRanges" xml:space="preserve">
+    <value>There are no ranges created for this chart. Use `Ranges` from the menu to create ranges.</value>
   </data>
 </root>

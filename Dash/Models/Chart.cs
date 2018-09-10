@@ -164,7 +164,7 @@ namespace Dash.Models
 
         public ChartResult GetData(bool hasDatasetAccess)
         {
-            var response = new ChartResult() { UpdatedDate = DateUpdated };
+            var response = new ChartResult() { UpdatedDate = DateUpdated, ChartId = Id, ChartName = Name, IsOwner = IsOwner };
             if (ChartRange?.Any() != true)
             {
                 response.Error = Charts.ErrorNoRanges;

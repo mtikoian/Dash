@@ -1,0 +1,21 @@
+﻿@using Dash.Resources
+@using Dash.Models
+@model Chart
+
+<body-content>
+    <breadcrumb>
+        <partial name="_ChartBreadcrumbs" />
+        <breadcrumb-item label="@Charts.ShareChart" controller="ChartShare" action="Index" route-values="@(new { Id = Model.Id })" is-active="true"></breadcrumb-item>
+    </breadcrumb>
+
+    <partial name="_Toast" />
+    <partial name="_ChartTabs" model="new ChartView(Model.Id, Model.IsOwner, ChartViewTab.Share)" />
+
+    <tab-panel id="share">
+        <toolbar>
+            @Html.AuthorizedButton(Core.Add, "Create", "ChartShare", new { Id = Model.Id }, DashClasses.BtnPrimary, hasAccess: User.IsInRole("chartshare.create"))
+        </toolbar>
+
+        <dynamic-table options="@Model.Table"></dynamic-table>
+    </tab-panel>
+</body-content>

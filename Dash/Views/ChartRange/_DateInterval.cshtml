@@ -1,6 +1,6 @@
 ﻿@using Dash.Models
 @model ChartRange
 
-<div id="rangeDateIntervalPartial">
+<div id="rangeDateIntervalPartial" class="pb-2">
     @Html.LabelDropDownListFor(x => x.DateIntervalId, Model.DateIntervalSelectListItems, disabled: Model.XAxisColumn?.FilterTypeId != (int)FilterTypes.Date)
 </div>
