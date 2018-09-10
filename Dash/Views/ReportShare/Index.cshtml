@@ -11,7 +11,7 @@
     <partial name="_Toast" />
     <partial name="_ReportTabs" model="new ReportView(Model.Id, Model.IsOwner, ReportViewTab.Share)" />
 
-    <tab-panel id="filters">
+    <tab-panel id="share">
         <toolbar>
             @Html.AuthorizedButton(Core.Add, "Create", "ReportShare", new { Id = Model.Id }, DashClasses.BtnPrimary, hasAccess: User.IsInRole("reportshare.create"))
         </toolbar>

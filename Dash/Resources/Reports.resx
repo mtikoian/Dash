@@ -271,7 +271,7 @@
     <value>This dataset doesn't allow grouping.</value>
   </data>
   <data name="ErrorNoColumnsSelectedChange" xml:space="preserve">
-    <value>There are no columns selected for this report. Use `Change Columns` from the `Actions` menu to select columns.</value>
+    <value>There are no columns selected for this report. Use `Select Columns` from the menu to select columns.</value>
   </data>
   <data name="EditReport" xml:space="preserve">
     <value>Edit Report</value>

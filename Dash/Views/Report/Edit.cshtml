@@ -2,6 +2,11 @@
 @using Dash.Models
 @model Report
 
+@if (!Model.ReportColumn.Any())
+{
+    ViewBag.Error = Reports.ErrorNoColumnsSelectedChange;
+}
+
 <body-content>
     <breadcrumb>
         <breadcrumb-item label="@Reports.ViewAll" controller="Report" action="Index"></breadcrumb-item>
@@ -14,20 +19,15 @@
     <tab-panel id="report">
         @if (Model.ReportColumn.Any())
         {
+            @using (Html.BeginToolbar())
+            {
+                @Html.AuthorizedActionLink(Core.Export, "Export", "Report", new { Model.Id }, new { @class = "btn btn-primary pjax-no-follow", role = "tab", target = "_blank" })
+            }
+
             <div class="report-data-container container p-2">
                 <dynamic-table options="@Model.TableOptions(Url)"></dynamic-table>
             </div>
         }
-        else
-        {
-            <div class="report-data-no-columns">
-                <div class="card text-white m-2 bg-warning">
-                    <div class="card-body">
-                        <p class="card-text">@Reports.ErrorNoColumnsSelected</p>
-                        @Html.AuthorizedActionLink(Reports.SelectColumns, "SelectColumns", "Report", new { Model.Id }, new { @class = $"{DashClasses.Btn.ToCssClass()} {DashClasses.BtnPrimary.ToCssClass()}" }, hasAccess: Model.IsOwner)
-                    </div>
-                </div>
-            </div>
-        }
+
     </tab-panel>
 </body-content>

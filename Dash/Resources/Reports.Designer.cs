@@ -304,7 +304,7 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There are no columns selected for this report. Use `Change Columns` from the `Actions` menu to select columns..
+        ///   Looks up a localized string similar to There are no columns selected for this report. Use `Select Columns` from the menu to select columns..
         /// </summary>
         public static string ErrorNoColumnsSelectedChange {
             get {

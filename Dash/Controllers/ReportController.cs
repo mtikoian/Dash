@@ -4,7 +4,6 @@ using Dash.Configuration;
 using Dash.Models;
 using Dash.Resources;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dash.Controllers
@@ -37,7 +36,7 @@ namespace Dash.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            return View(new CreateReport(DbContext, User.UserId()));
+            return View("Create", new CreateReport(DbContext, User.UserId()));
         }
 
         [HttpPost, ValidateAntiForgeryToken]
@@ -131,60 +130,6 @@ namespace Dash.Controllers
             return View("Edit", report);
         }
 
-        [HttpGet, AjaxRequestOnly]
-        public IActionResult EditOptions(int id)
-        {
-            var report = DbContext.Get<Report>(id);
-            if (report == null)
-            {
-                return Error(Core.ErrorInvalidId);
-            }
-            var user = DbContext.Get<User>(User.UserId());
-            if (!user.CanViewReport(report))
-            {
-                return Error(Reports.ErrorPermissionDenied);
-            }
-
-            return Data(new {
-                reportId = report.Id,
-                allowEdit = report.IsOwner,
-                loadAllData = report.Dataset.IsProc,
-                wantsHelp = HttpContext.Session.GetString("ContextHelp").ToBool(),
-                columns = report.Dataset.DatasetColumn.Select(x => new { x.Id, x.Title, x.FilterTypeId, x.IsParam })
-                    .Prepend(new { Id = 0, Title = Reports.FilterColumn, FilterTypeId = 0, IsParam = true }),
-                filterOperators = FilterType.FilterOperators,
-                dateOperators = FilterType.DateOperators,
-                filters = report.ReportFilter,
-                lookups = report.Lookups(),
-                saveFiltersUrl = Url.Action("SaveFilters", "Report", new { report.Id }),
-                saveGroupsUrl = Url.Action("SaveGroups", "Report", new { report.Id }),
-                saveColumnsUrl = Url.Action("UpdateColumnWidths", "Report", new { report.Id }),
-                dataUrl = Url.Action("Data", "Report", new { report.Id }),
-                exportUrl = Url.Action("Export", "Report", new { report.Id }),
-                aggregators = report.AggregatorList.Prepend(new { Id = 0, Name = Reports.Aggregator }),
-                groups = report.ReportGroup,
-                aggregatorId = report.AggregatorId,
-                dateFormat = report.Dataset.DateFormat,
-                currencyFormat = report.Dataset.CurrencyFormat,
-                filterTypes = new {
-                    boolean = (int)FilterTypes.Boolean,
-                    date = (int)FilterTypes.Date,
-                    select = (int)FilterTypes.Select,
-                    numeric = (int)FilterTypes.Numeric
-                },
-                filterOperatorIds = new {
-                    dateInterval = (int)FilterOperatorsAbstract.DateInterval,
-                    equal = (int)FilterOperatorsAbstract.Equal,
-                    range = (int)FilterOperatorsAbstract.Range,
-                },
-                rowLimit = report.RowLimit,
-                sortColumns = report.SortColumns(),
-                width = report.Width,
-                reportColumns = report.ReportColumns(),
-                countAggregatorId = (int)Aggregators.Count
-            });
-        }
-
         [HttpGet]
         public IActionResult Export(int id)
         {
@@ -264,34 +209,6 @@ namespace Dash.Controllers
             model.Save();
             ViewBag.Message = Reports.SuccessSavingReport;
             return Edit(model.Report.Id);
-        }
-
-        [HttpPut, AjaxRequestOnly]
-        public IActionResult SaveFilters([FromBody] SaveFilter model)
-        {
-            if (model == null)
-            {
-                return Error(Core.ErrorGeneric);
-            }
-            if (!ModelState.IsValid)
-            {
-                return Error(ModelState.ToErrorString());
-            }
-            return Data(new { filters = model.Update() });
-        }
-
-        [HttpPut, AjaxRequestOnly]
-        public IActionResult SaveGroups([FromBody] SaveGroup model)
-        {
-            if (model == null)
-            {
-                return Error(Core.ErrorGeneric);
-            }
-            if (!ModelState.IsValid)
-            {
-                return Error(ModelState.ToErrorString());
-            }
-            return Data(new { groups = model.Update() });
         }
 
         [HttpGet, ParentAction("Edit")]
