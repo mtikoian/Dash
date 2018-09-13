@@ -1,21 +1,20 @@
 ﻿@using Dash.Resources
 @model Dash.Models.Alert
 
-@using (Html.BeginBodyContent())
-{
-    @Html.Breadcrumbs(new List<Breadcrumb> {
-        new Breadcrumb(Alerts.ViewAll, "Index", "Alert"),
-        new Breadcrumb(Model.IsCreate ? Alerts.CreateAlert : Alerts.EditAlert, Model.FormAction, "Alert", Model.IsCreate ? null : new { id = Model.Id })
-    });
+<body-content>
+    <breadcrumb>
+        <breadcrumb-item label="@Alerts.ViewAll" controller="Alert" action="Index"></breadcrumb-item>
+        <breadcrumb-item label="@(Model.IsCreate ? Alerts.CreateAlert : Alerts.EditAlert)" controller="Alert" action="@Model.FormAction" route-values="@(Model.IsCreate ? null : new { Id = Model.Id })" is-active="true"></breadcrumb-item>
+    </breadcrumb>
 
-    @using (Html.BeginCustomForm(Model.FormAction, "Role", method: Model.FormMethod))
+    <partial name="_Toast" />
+
+    @using (Html.BeginCustomForm(Model.FormAction, "Alert", method: Model.FormMethod))
     {
         @Html.HiddenFor(model => model.Id)
 
-        <partial name="_Toast" />
-
         <div class="columns">
-            <div class="col-6">
+            <div class="col-6 col-lg-9">
                 @Html.LabelInputFor(model => model.Name)
                 @Html.LabelDropDownListFor(model => model.ReportId, Model.GetReportsForUser(User.UserId()).ToSelectList(x => x.Name, x => x.Id.ToString()))
                 @Html.LabelInputFor(model => model.Subject)
@@ -23,9 +22,7 @@
                 @Html.LabelInputFor(model => model.ResultCount)
                 @Html.LabelInputFor(model => model.NotificationInterval)
                 @Html.LabelCheckBoxFor(model => model.IsActive)
-            </div>
 
-            <div class="col-6">
                 @Html.ControlLabel("Schedule", Alerts.Schedule)
                 <div class="col-12">
                     @Html.LabelInputFor(model => model.CronMinute, new { TypeHint = "text" })
@@ -41,4 +38,4 @@
 
         @Html.FormButtons()
     }
-}
+</body-content>

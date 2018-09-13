@@ -15,7 +15,7 @@ namespace Dash.Controllers
         {
         }
 
-        [HttpGet]
+        [HttpGet, ParentAction("Create")]
         public IActionResult Copy(CopyAlert model)
         {
             if (model == null)
@@ -92,7 +92,7 @@ namespace Dash.Controllers
                     new TableColumn("actions", Core.Actions, sortable: false, links: new List<TableLink>()
                         .AddIf(Table.EditButton($"{Url.Action("Edit")}/{{id}}"), User.IsInRole("alert.edit"))
                         .AddIf(Table.DeleteButton($"{Url.Action("Delete")}/{{id}}", string.Format(Core.ConfirmDeleteBody, Alerts.AlertLower)), User.IsInRole("alert.delete"))
-                        .AddIf(Table.CopyButton($"{Url.Action("Copy")}/{{id}}", Alerts.CopyBody), User.IsInRole("alert.copy")))
+                        .AddIf(Table.CopyButton($"{Url.Action("Copy")}/{{id}}", Alerts.CopyBody), User.IsInRole("alert.create")))
                 }
             ));
         }
@@ -120,7 +120,7 @@ namespace Dash.Controllers
                 ViewBag.Error = ModelState.ToErrorString();
                 return CreateEditView(model);
             }
-            model.Save();
+            DbContext.Save(model);
             ViewBag.Message = Alerts.SuccessSavingAlert;
             return Index();
         }

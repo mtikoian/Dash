@@ -21,6 +21,11 @@ namespace Dash.Models
         {
         }
 
+        public Alert(IDbContext dbContext)
+        {
+            DbContext = dbContext;
+        }
+
         public Alert(IDbContext dbContext, int userId)
         {
             DbContext = dbContext;
@@ -90,6 +95,7 @@ namespace Dash.Models
         public int NotificationInterval { get; set; }
 
         [Ignore, JilDirective(true)]
+        [BindNever, ValidateNever]
         public User Owner { get { return _Owner ?? (_Owner = DbContext.Get<User>(OwnerId)); } }
 
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
@@ -129,12 +135,6 @@ namespace Dash.Models
         public IEnumerable<Report> GetReportsForUser(int userId)
         {
             return DbContext.GetAll<Report>(new { UserId = userId }).OrderBy(x => x.Name);
-        }
-
-        public bool Save()
-        {
-            DbContext.Save(this);
-            return true;
         }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
@@ -195,7 +195,7 @@ namespace Dash.Models
             }
 
             // currently the hash will include name so this won't work as expected. need to modify hash creation to only use alert criteria instead
-            var duplicateAlert = DbContext.GetAll<Alert>(new { UserId = OwnerId }).FirstOrDefault(x => x.Hash == Hash);
+            var duplicateAlert = DbContext.GetAll<Alert>(new { UserId = RequestUserId ?? OwnerId }).FirstOrDefault(x => x.Hash == Hash);
             if (duplicateAlert != null)
             {
                 yield return new ValidationResult(string.Format(Alerts.ErrorHash, duplicateAlert.Name));
