@@ -301,6 +301,18 @@
         if (target.getAttribute('data-confirm')) {
             Alertify.dismissAll();
             Alertify.confirm(target.getAttribute('data-confirm'), pjax.handle.bind(null, options), function(e) { e.target.focus(); });
+        } else if (target.getAttribute('data-prompt')) {
+            // @TODO haven't tested this yet
+            options.history = false;
+            Alertify.dismissAll();
+            Alertify.prompt(target.getAttribute('data-prompt'), function(promptValue) {
+                if (!$.hasValue(promptValue)) {
+                    Alertify.error($.resx('errorNameRequired'));
+                    return false;
+                }
+                options.url += ((!/[?&]/.test(options.url)) ? '?prompt' : '&prompt') + '=' + encodeURIComponent(promptValue);
+                pjax.invoke(options);
+            });
         } else {
             var form = $.get('form.has-changes');
             if (form) {
