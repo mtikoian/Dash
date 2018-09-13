@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Dash.Resources;
@@ -9,7 +10,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Dash.Models
 {
-    public class DatasetColumn : BaseModel
+    public class DatasetColumn : BaseModel, IEquatable<DatasetColumn>
     {
         private DataType _DataType;
 
@@ -177,6 +178,26 @@ namespace Dash.Models
                 columnSql = $"({(IsText || IsDateTime ? "MAX" : ((Aggregators)aggregatorId).ToString().ToUpper())}{columnSql})";
             }
             return includeAlias ? $"{columnSql} AS {Alias}" : columnSql;
+        }
+
+        public bool Equals(DatasetColumn other)
+        {
+            return other.DatasetId == DatasetId && other.Title == Title && other.ColumnName == ColumnName && other.Derived == Derived
+                && other.FilterTypeId == FilterTypeId && other.FilterQuery == FilterQuery && other.IsParam == IsParam && other.DataTypeId == DataTypeId
+                && other.Link == Link;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
+            return Equals(obj as DatasetColumn);
+        }
+
+        public override int GetHashCode()
+        {
+            throw new NotImplementedException();
         }
     }
 }

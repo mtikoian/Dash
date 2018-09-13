@@ -343,7 +343,6 @@ namespace Dash.Models
 
                 DisplayOrder++;
                 DbContext.Save(this);
-                return this;
             });
             return true;
         }
@@ -363,7 +362,6 @@ namespace Dash.Models
                 DbContext.Save(filter);
                 DisplayOrder--;
                 DbContext.Save(this);
-                return this;
             });
             return true;
         }

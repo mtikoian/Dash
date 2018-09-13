@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Dash.Resources;
@@ -15,7 +16,7 @@ namespace Dash.Models
         Right = 3
     }
 
-    public class DatasetJoin : BaseModel
+    public class DatasetJoin : BaseModel, IEquatable<DatasetJoin>
     {
         public DatasetJoin()
         {
@@ -38,6 +39,15 @@ namespace Dash.Models
         [Ignore]
         public bool IsLast { get; set; }
 
+        [Ignore]
+        public string JoinName
+        {
+            get
+            {
+                return ((JoinTypes)JoinTypeId).ToString();
+            }
+        }
+
         [Required]
         public int JoinOrder { get; set; }
 
@@ -54,15 +64,6 @@ namespace Dash.Models
             }
         }
 
-        [Ignore]
-        public string JoinName
-        {
-            get
-            {
-                return ((JoinTypes)JoinTypeId).ToString();
-            }
-        }
-
         [Display(Name = "JoinKeys", ResourceType = typeof(Datasets))]
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         [StringLength(500, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
@@ -72,6 +73,24 @@ namespace Dash.Models
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         [StringLength(100, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string TableName { get; set; }
+
+        public bool Equals(DatasetJoin other)
+        {
+            return other.DatasetId == DatasetId && other.TableName == TableName && other.JoinTypeId == JoinTypeId && other.Keys == Keys && other.JoinOrder == JoinOrder;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
+            return Equals(obj as DatasetJoin);
+        }
+
+        public override int GetHashCode()
+        {
+            throw new NotImplementedException();
+        }
 
         public bool MoveDown(out string error)
         {
@@ -90,7 +109,6 @@ namespace Dash.Models
 
                 JoinOrder++;
                 DbContext.Save(this);
-                return this;
             });
             return true;
         }
@@ -110,7 +128,6 @@ namespace Dash.Models
                 DbContext.Save(join);
                 JoinOrder--;
                 DbContext.Save(this);
-                return this;
             });
             return true;
         }

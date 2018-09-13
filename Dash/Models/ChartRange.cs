@@ -136,7 +136,6 @@ namespace Dash.Models
 
                 DisplayOrder++;
                 DbContext.Save(this);
-                return this;
             });
             return true;
         }
@@ -156,7 +155,6 @@ namespace Dash.Models
                 DbContext.Save(range);
                 DisplayOrder--;
                 DbContext.Save(this);
-                return this;
             });
             return true;
         }

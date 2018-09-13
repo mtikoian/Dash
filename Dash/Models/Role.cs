@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Dash.Resources;
@@ -9,14 +8,10 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace Dash.Models
 {
-    [HasMany(typeof(RolePermission))]
-    [HasMany(typeof(UserRole))]
     public class Role : BaseModel, IValidatableObject
     {
-        private List<User> _AllUsers;
         private Dictionary<string, List<Permission>> _ControllerPermissions;
         private List<RolePermission> _RolePermission;
-        private List<UserRole> _UserRole;
 
         public Role()
         {
@@ -27,15 +22,7 @@ namespace Dash.Models
             DbContext = dbContext;
         }
 
-        [JilDirective(true)]
-        [BindNever, ValidateNever]
-        public List<User> AllUsers
-        {
-            get { return _AllUsers ?? (_AllUsers = DbContext.GetAll<User>().ToList()); }
-        }
-
-        [JilDirective(true)]
-        [BindNever, ValidateNever]
+        [JilDirective(true), BindNever, ValidateNever]
         public Dictionary<string, List<Permission>> ControllerPermissions
         {
             get
@@ -63,32 +50,24 @@ namespace Dash.Models
         [Ignore]
         public List<int> PermissionIds { get; set; }
 
-        [JilDirective(true)]
-        [BindNever, ValidateNever]
+        [JilDirective(true), BindNever, ValidateNever]
         public List<RolePermission> RolePermission
         {
             get { return _RolePermission ?? (_RolePermission = DbContext.GetAll<RolePermission>(new { RoleId = Id }).ToList()); }
             set { _RolePermission = value; }
         }
 
-        [Ignore]
-        public List<int> UserIds { get; set; }
-
-        [JilDirective(true)]
-        [BindNever, ValidateNever]
-        public List<UserRole> UserRole
-        {
-            get { return _UserRole ?? (_UserRole = DbContext.GetAll<UserRole>(new { RoleId = Id }).ToList()); }
-            set { _UserRole = value; }
-        }
+        [JilDirective(true), BindNever, ValidateNever]
+        public List<UserRole> UserRole { get; set; }
 
         public Role Copy(string name = null)
         {
             var newRole = this.Clone();
             newRole.Id = 0;
             newRole.Name = name.IsEmpty() ? string.Format(Core.CopyOf, Name) : name;
-            newRole.RolePermission = (RolePermission ?? DbContext.GetAll<RolePermission>(new { RoleId = Id }))?.Select(x => new RolePermission { PermissionId = x.PermissionId }).ToList();
-            newRole.UserRole = (UserRole ?? DbContext.GetAll<UserRole>(new { RoleId = Id }))?.Select(x => new UserRole { UserId = x.UserId }).ToList();
+            newRole.RequestUserId = RequestUserId;
+            newRole.RolePermission = (RolePermission ?? DbContext.GetAll<RolePermission>(new { RoleId = Id }))?.Select(x => new RolePermission { PermissionId = x.PermissionId, RequestUserId = RequestUserId }).ToList();
+            newRole.UserRole = (UserRole ?? DbContext.GetAll<UserRole>(new { RoleId = Id }))?.Select(x => new UserRole { UserId = x.UserId, RequestUserId = RequestUserId }).ToList();
             return newRole;
         }
 
@@ -103,10 +82,11 @@ namespace Dash.Models
             RolePermission = PermissionIds?.Where(x => x > 0)
                 .Select(id => keyedRolePermissions.ContainsKey(id) ? keyedRolePermissions[id] : new RolePermission { PermissionId = id, RoleId = Id }).ToList()
                 ?? new List<RolePermission>();
-            var keyedUserRoles = DbContext.GetAll<UserRole>(new { RoleId = Id }).ToDictionary(x => x.UserId, x => x);
-            UserRole = UserIds?.Where(x => x > 0).Select(id => keyedUserRoles.ContainsKey(id) ? keyedUserRoles[id] : new UserRole { UserId = id, RoleId = Id }).ToList()
-                ?? new List<UserRole>();
-            DbContext.Save(this, forceSaveNulls: true);
+            RolePermission.Each(x => x.RequestUserId = RequestUserId);
+            DbContext.WithTransaction(() => {
+                DbContext.Save(this);
+                DbContext.SaveMany(this, RolePermission);
+            });
         }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)

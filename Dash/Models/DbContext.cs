@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -129,14 +128,13 @@ namespace Dash.Models
             }
         }
 
-        public override void Save<T>(T model, bool lazySave = true, bool forceSaveNulls = false)
+        public override void Save<T>(T model)
         {
             var myType = model.GetType();
             using (var conn = GetConnection())
             {
                 // build the parameters for saving
                 var paramList = new DynamicParameters();
-
                 var accessor = Cached(myType.Name, () => { return TypeAccessor.Create(myType); });
 
                 // iterate through all the properties of the object adding to param list
@@ -153,69 +151,69 @@ namespace Dash.Models
 
                 conn.Execute($"{myType.Name}Save", paramList, commandType: CommandType.StoredProcedure);
                 var id = paramList.Get<int>("Id");
-                accessor[model, "Id"] = id;
+                model.Id = paramList.Get<int>("Id");
+            }
+        }
 
-                if (!lazySave)
-                {
-                    return;
-                }
-                // process the hasMany relationships
-                myType.GetTypeInfo().GetCustomAttributes(typeof(HasMany)).ToList().ForEach(x => {
-                    var childType = ((HasMany)x)?.ChildType;
-                    if (childType == null)
-                    {
-                        return;
-                    }
-
-                    var children = (IList)accessor[model, childType.Name];
+        public override void SaveMany<T, T2>(T model, List<T2> children, bool forceSaveNulls = true)
+        {
+            using (var conn = GetConnection())
+            {
+                WithTransaction(() => {
+                    var parentType = typeof(T);
+                    var childType = typeof(T2);
                     if (children == null && !forceSaveNulls)
                     {
                         return;
                     }
-                    var existingIds = new List<int>();
+
+                    var existingObjs = new Dictionary<int, T2>();
                     try
                     {
                         // first lets get the full list from the db so we can figure out who to delete
                         var childParams = new DynamicParameters();
-                        childParams.Add($"{myType.Name}Id", id);
-                        var res = conn.Query($"{childType.Name}Get", childParams, commandType: CommandType.StoredProcedure);
-                        res.Select(y => y.Id).ToList().ForEach(y => existingIds.Add(y));
+                        childParams.Add($"{parentType.Name}Id", model.Id);
+                        existingObjs = conn.Query<T2>($"{childType.Name}Get", childParams, commandType: CommandType.StoredProcedure).ToList().ToDictionary(x => x.Id, x => x);
                     }
                     catch { }
 
-                    if (children != null && children.Count > 0)
+                    if (children.Count > 0)
                     {
                         var childAccessor = TypeAccessor.Create(childType);
                         var saveMethod = childType.GetMethod("Save");
-                        foreach (BaseModel child in children)
+                        foreach (var child in children)
                         {
-                            // remove this id from the list that has to be cleaned up later
-                            existingIds.Remove(childAccessor[child, "Id"].ToInt());
-                            // make sure the parent Id is set on the child object
-                            childAccessor[child, $"{myType.Name}Id"] = id;
-                            // now save the child
-                            Save(child, lazySave, forceSaveNulls);
+                            if (existingObjs.TryGetValue(child.Id, out var savedChild))
+                            {
+                                // remove this id from the list that has to be cleaned up later
+                                existingObjs.Remove(child.Id);
+                            }
+                            if (savedChild == null || !child.Equals(savedChild))
+                            {
+                                // make sure the parent Id is set on the child object
+                                childAccessor[child, $"{parentType.Name}Id"] = model.Id;
+                                // now save the child
+                                Save(child);
+                            }
                         }
                     }
 
                     // delete any child ids are that are leftover
-                    existingIds.ForEach(y => Delete(y.ToInt(), childType));
+                    existingObjs.Keys.ToList().ForEach(y => Delete(y, childType));
                 });
-                conn.Close();
             }
         }
 
-        public override T WithTransaction<T>(Func<T> commands)
+        public override void WithTransaction(Action commands)
         {
             using (var conn = GetConnection())
             {
                 conn.Open();
                 using (var tran = conn.BeginTransaction())
                 {
-                    var result = default(T);
                     try
                     {
-                        result = commands();
+                        commands();
                         tran.Commit();
                         conn.Close();
                     }
@@ -229,7 +227,6 @@ namespace Dash.Models
                         conn.Close();
                         throw;
                     }
-                    return result;
                 }
             }
         }

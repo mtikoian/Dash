@@ -22,8 +22,10 @@ namespace Dash.Models
 
         public abstract IEnumerable<T> Query<T>(string procName, object parameters = null);
 
-        public abstract void Save<T>(T model, bool lazySave = true, bool forceSaveNulls = false) where T : BaseModel;
+        public abstract void Save<T>(T model) where T : BaseModel;
 
-        public abstract T WithTransaction<T>(Func<T> commands);
+        public abstract void SaveMany<T, T2>(T model, List<T2> children, bool forceSaveNulls = true) where T : BaseModel where T2 : BaseModel;
+
+        public abstract void WithTransaction(Action commands);
     }
 }

@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace Dash.Models
 {
-    [HasMany(typeof(UserRole))]
     public class User : BaseModel, IValidatableObject
     {
         private List<Role> _AllRoles;
@@ -143,13 +142,21 @@ namespace Dash.Models
             var keyedUserRoles = DbContext.GetAll<UserRole>(new { UserId = Id }).ToDictionary(x => x.RoleId, x => x);
             UserRole = RoleIds?.Where(x => x > 0).Select(id => keyedUserRoles.ContainsKey(id) ? keyedUserRoles[id] : new UserRole { UserId = Id, RoleId = id }).ToList()
                 ?? new List<UserRole>();
+            UserRole.Each(x => x.RequestUserId = RequestUserId);
 
-            DbContext.Save(this, lazySave);
-            if (!Password.IsEmpty())
-            {
-                var salt = Hasher.GenerateSalt();
-                DbContext.Execute("UserPasswordSave", new { Id = Id, Password = Hasher.HashPassword(Password, salt), Salt = salt, RequestUserId = RequestUserId });
-            }
+            DbContext.WithTransaction(() => {
+                DbContext.Save(this);
+                if (lazySave)
+                {
+                    DbContext.SaveMany(this, UserRole);
+                }
+
+                if (!Password.IsEmpty())
+                {
+                    var salt = Hasher.GenerateSalt();
+                    DbContext.Execute("UserPasswordSave", new { Id = Id, Password = Hasher.HashPassword(Password, salt), Salt = salt, RequestUserId = RequestUserId });
+                }
+            });
 
             return true;
         }

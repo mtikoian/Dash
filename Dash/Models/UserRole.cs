@@ -1,12 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using Dash.Resources;
 
 namespace Dash.Models
 {
-    /// <summary>
-    /// UserRole is the link between a role and a user.
-    /// </summary>
-    public class UserRole : BaseModel
+    public class UserRole : BaseModel, IEquatable<UserRole>
     {
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int RoleId { get; set; }
@@ -16,5 +14,23 @@ namespace Dash.Models
 
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int UserId { get; set; }
+
+        public bool Equals(UserRole other)
+        {
+            return other.UserId == UserId && other.RoleId == RoleId;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
+            return Equals(obj as UserRole);
+        }
+
+        public override int GetHashCode()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -43,8 +43,6 @@ namespace Dash.Models
         Year = 1
     }
 
-    [HasMany(typeof(ChartRange))]
-    [HasMany(typeof(ChartShare))]
     public class Chart : BaseModel
     {
         private Regex _AlphaNumeric = new Regex("[^a-zA-Z0-9-]", RegexOptions.Compiled);
@@ -241,19 +239,18 @@ namespace Dash.Models
             return response;
         }
 
-        public List<ChartRange> UpdateRanges(List<ChartRange> newRanges = null)
+        public bool Save(bool lazySave = true)
         {
-            var keyedRanges = new Dictionary<int, ChartRange>();
-            newRanges.ForEach(x => {
-                x.ChartId = Id;
-                DbContext.Save(x);
-                keyedRanges.Add(x.Id, x);
+            DbContext.WithTransaction(() => {
+                DbContext.Save(this);
+                if (lazySave)
+                {
+                    DbContext.SaveMany(this, ChartRange);
+                    DbContext.SaveMany(this, ChartShare);
+                }
             });
-            if (ChartRange?.Any() == true)
-            {
-                ChartRange.Where(x => !keyedRanges.ContainsKey(x.Id)).ToList().ForEach(x => DbContext.Delete(x));
-            }
-            return keyedRanges.Values.ToList();
+
+            return true;
         }
     }
 }

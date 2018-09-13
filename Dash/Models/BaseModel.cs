@@ -77,20 +77,6 @@ namespace Dash.Models
     }
 
     /// <summary>
-    /// Attribute for specifying has many relationships.
-    /// </summary>
-    [AttributeUsage(AttributeTargets.Class, Inherited = true, AllowMultiple = true)]
-    public class HasMany : Attribute
-    {
-        public HasMany(Type childType)
-        {
-            ChildType = childType;
-        }
-
-        public Type ChildType { get; set; }
-    }
-
-    /// <summary>
     /// Attribute that specifies a property should be ignored when inserting into or updating the db.
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, Inherited = true)]

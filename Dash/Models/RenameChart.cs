@@ -27,7 +27,7 @@ namespace Dash.Models
         public void Save()
         {
             Chart.Name = Name.Trim();
-            DbContext.Save(Chart, false);
+            Chart.Save(false);
         }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)

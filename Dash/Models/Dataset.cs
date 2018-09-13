@@ -17,9 +17,6 @@ namespace Dash.Models
         Proc = 2
     }
 
-    [HasMany(typeof(DatasetColumn))]
-    [HasMany(typeof(DatasetJoin))]
-    [HasMany(typeof(DatasetRole))]
     public class Dataset : BaseModel, IValidatableObject
     {
         private List<Role> _AllRoles;
@@ -63,22 +60,24 @@ namespace Dash.Models
         [Ignore]
         public string DatabaseName { get; set; }
 
+        [JilDirective(true), BindNever, ValidateNever]
         public List<DatasetColumn> DatasetColumn
         {
-            get { return _DatasetColumn ?? (_DatasetColumn = ForSave ? null : DbContext?.GetAll<DatasetColumn>(new { DatasetId = Id }).ToList()); }
+            get { return _DatasetColumn ?? (_DatasetColumn = DbContext?.GetAll<DatasetColumn>(new { DatasetId = Id }).ToList()); }
             set { _DatasetColumn = value; }
         }
 
+        [JilDirective(true), BindNever, ValidateNever]
         public List<DatasetJoin> DatasetJoin
         {
-            get { return _DatasetJoin ?? (_DatasetJoin = ForSave ? null : DbContext?.GetAll<DatasetJoin>(new { DatasetId = Id }).ToList()); }
+            get { return _DatasetJoin ?? (_DatasetJoin = DbContext?.GetAll<DatasetJoin>(new { DatasetId = Id }).ToList()); }
             set { _DatasetJoin = value; }
         }
 
-        [BindNever, ValidateNever]
+        [JilDirective(true), BindNever, ValidateNever]
         public List<DatasetRole> DatasetRole
         {
-            get { return _DatasetRole ?? (_DatasetRole = ForSave ? null : DbContext.GetAll<DatasetRole>(new { DatasetId = Id }).ToList()); }
+            get { return _DatasetRole ?? (_DatasetRole = DbContext.GetAll<DatasetRole>(new { DatasetId = Id }).ToList()); }
             set { _DatasetRole = value; }
         }
 
@@ -297,17 +296,26 @@ namespace Dash.Models
             return !DbContext.GetAll<Dataset>(new { Name = name }).Any(x => x.Id != id);
         }
 
-        public bool Save(bool lazySave = true)
+        public void Save(bool lazySave = true, bool rolesOnly = false)
         {
-            if (RoleIds != null)
-            {
-                var keyedDatasetRoles = DbContext.GetAll<DatasetRole>(new { DatasetId = Id }).ToDictionary(x => x.RoleId, x => x);
-                DatasetRole = RoleIds?.Where(x => x > 0).Select(id => keyedDatasetRoles.ContainsKey(id) ? keyedDatasetRoles[id] : new DatasetRole { DatasetId = Id, RoleId = id }).ToList()
-                    ?? new List<DatasetRole>();
-            }
-            ForSave = true;
-            DbContext.Save(this, lazySave);
-            return true;
+            var keyedDatasetRoles = DbContext.GetAll<DatasetRole>(new { DatasetId = Id }).ToDictionary(x => x.RoleId, x => x);
+            DatasetRole = RoleIds?.Where(x => x > 0).Select(id => keyedDatasetRoles.ContainsKey(id) ? keyedDatasetRoles[id] : new DatasetRole { DatasetId = Id, RoleId = id }).ToList()
+                ?? new List<DatasetRole>();
+            DatasetRole.Each(x => x.RequestUserId = RequestUserId);
+
+            DbContext.WithTransaction(() => {
+                DbContext.Save(this);
+                if (lazySave)
+                {
+                    DbContext.SaveMany(this, DatasetColumn);
+                    DbContext.SaveMany(this, DatasetJoin);
+                    DbContext.SaveMany(this, DatasetRole);
+                }
+                if (rolesOnly)
+                {
+                    DbContext.SaveMany(this, DatasetRole);
+                }
+            });
         }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)

@@ -60,8 +60,7 @@ namespace Dash.Controllers
                 Width = 0,
                 OwnerId = userId,
                 RequestUserId = userId
-            };
-            DbContext.Save(newReport, false);
+            }.Save(false);
             ViewBag.Message = Reports.SuccessSavingReport;
             return Index();
         }

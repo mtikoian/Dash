@@ -82,8 +82,7 @@ namespace Dash.Controllers
                 return View("Create", model);
             }
 
-            var newChart = Chart.Create(model, User.UserId());
-            DbContext.Save(newChart, false);
+            DbContext.Save(Chart.Create(model, User.UserId()));
             ViewBag.Message = Charts.SuccessSavingChart;
             return Index();
         }

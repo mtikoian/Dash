@@ -22,7 +22,7 @@ namespace Dash.Models
         public void Update()
         {
             Chart.ChartTypeId = ChartTypeId;
-            DbContext.Save(Chart, false);
+            Chart.Save();
         }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)

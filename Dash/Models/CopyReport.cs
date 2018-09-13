@@ -26,7 +26,7 @@ namespace Dash.Models
         public void Save()
         {
             Report = Report.Copy(Prompt);
-            DbContext.Save(Report);
+            Report.Save(true);
             Id = Report.Id;
         }
 

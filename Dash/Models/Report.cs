@@ -15,10 +15,6 @@ namespace Dash.Models
         Avg = 1, Count = 2, Max = 3, Min = 4, Sum = 5
     }
 
-    [HasMany(typeof(ReportColumn))]
-    [HasMany(typeof(ReportFilter))]
-    [HasMany(typeof(ReportGroup))]
-    [HasMany(typeof(ReportShare))]
     public class Report : BaseModel
     {
         private Dataset _Dataset;
@@ -130,41 +126,12 @@ namespace Dash.Models
 
         [JilDirective(true)]
         public int RowLimit { get; set; } = 10;
-        
+
         [JilDirective(true)]
         public decimal Width { get; set; } = 100;
         private List<DatasetColumn> _DatasetColumns { get; set; }
         private List<DatasetColumn> _DatasetColumnsByDisplay { get; set; }
         private User _Owner { get; set; }
-
-        public Table TableOptions(IUrlHelper urlHelper)
-        {
-            return new Table($"report{Id}", urlHelper.Action("Data", "Report", new { Id = Id, Save = true }),
-                ReportColumn.Select(x => {
-                    var datasetColumn = Dataset.DatasetColumn.FirstOrDefault(c => c.Id == x.ColumnId);
-                    var link = datasetColumn?.Link;
-                    if (!link.IsEmpty())
-                    {
-                        Dataset.DatasetColumn.ForEach(dc => link = link.ReplaceCase(dc.ColumnName, $"{{{dc.Alias}}}"));
-                    }
-                    return new TableColumn(datasetColumn?.Alias ?? "", datasetColumn?.Title, true, datasetColumn?.TableDataType ?? TableDataType.String,
-                        new List<TableLink>().AddIf(new TableLink(link, Html.Classes().Append("target", "_blank")), !link.IsEmpty()), x.Width
-                    );
-                })
-            ) {
-                RequestMethod = HttpVerbs.Post,
-                Searchable = false,
-                LoadAllData = false,
-                Editable = IsOwner,
-                Sorting = SortColumns(),
-                StoreUrl = urlHelper.Action("UpdateColumnWidths", "Report", new { Id = Id, Save = IsOwner }),
-                StoreRequestMethod = HttpVerbs.Put,
-                Width = Width,
-                DisplayDateFormat = Dataset.DateFormat,
-                DisplayCurrencyFormat = Dataset.CurrencyFormat,
-                RequestParams = new { Id = Id, Save = IsOwner }
-            };
-        }
 
         public Report Copy(string name = null)
         {
@@ -210,7 +177,7 @@ namespace Dash.Models
             if (rowLimit != RowLimit)
             {
                 RowLimit = rowLimit;
-                DbContext.Save(this, false);
+                DbContext.Save(this);
             }
 
             if (sort != null)
@@ -419,6 +386,22 @@ namespace Dash.Models
             });
         }
 
+        public bool Save(bool lazySave = true)
+        {
+            DbContext.WithTransaction(() => {
+                DbContext.Save(this);
+                if (lazySave)
+                {
+                    DbContext.SaveMany(this, ReportColumn);
+                    DbContext.SaveMany(this, ReportFilter);
+                    DbContext.SaveMany(this, ReportGroup);
+                    DbContext.SaveMany(this, ReportShare);
+                }
+            });
+
+            return true;
+        }
+
         public IEnumerable<TableSorting> SortColumns()
         {
             if (ReportColumn == null)
@@ -430,6 +413,35 @@ namespace Dash.Models
                 var datasetColumn = Dataset.DatasetColumn.FirstOrDefault(c => c.Id == x.ColumnId);
                 return new TableSorting { Field = datasetColumn?.Alias ?? "", Dir = x.SortDirection, DataType = datasetColumn?.TableDataType.ToString() ?? "" };
             });
+        }
+
+        public Table TableOptions(IUrlHelper urlHelper)
+        {
+            return new Table($"report{Id}", urlHelper.Action("Data", "Report", new { Id = Id, Save = true }),
+                ReportColumn.Select(x => {
+                    var datasetColumn = Dataset.DatasetColumn.FirstOrDefault(c => c.Id == x.ColumnId);
+                    var link = datasetColumn?.Link;
+                    if (!link.IsEmpty())
+                    {
+                        Dataset.DatasetColumn.ForEach(dc => link = link.ReplaceCase(dc.ColumnName, $"{{{dc.Alias}}}"));
+                    }
+                    return new TableColumn(datasetColumn?.Alias ?? "", datasetColumn?.Title, true, datasetColumn?.TableDataType ?? TableDataType.String,
+                        new List<TableLink>().AddIf(new TableLink(link, Html.Classes().Append("target", "_blank")), !link.IsEmpty()), x.Width
+                    );
+                })
+            ) {
+                RequestMethod = HttpVerbs.Post,
+                Searchable = false,
+                LoadAllData = false,
+                Editable = IsOwner,
+                Sorting = SortColumns(),
+                StoreUrl = urlHelper.Action("UpdateColumnWidths", "Report", new { Id = Id, Save = IsOwner }),
+                StoreRequestMethod = HttpVerbs.Put,
+                Width = Width,
+                DisplayDateFormat = Dataset.DateFormat,
+                DisplayCurrencyFormat = Dataset.CurrencyFormat,
+                RequestParams = new { Id = Id, Save = IsOwner }
+            };
         }
 
         public void UpdateColumns(List<ReportColumn> newColumns, int? userId = null)
@@ -463,7 +475,7 @@ namespace Dash.Models
 
             // try saving
             RequestUserId = userId ?? RequestUserId;
-            DbContext.Save(this, false);
+            DbContext.Save(this);
             newColumns.ForEach(x => {
                 x.RequestUserId = userId ?? RequestUserId;
                 DbContext.Save(x);
@@ -477,7 +489,7 @@ namespace Dash.Models
             {
                 Width = reportWidth;
                 RequestUserId = userId ?? RequestUserId;
-                DbContext.Save(this, false);
+                DbContext.Save(this);
             }
 
             var keyedReportColumns = ReportColumn.ToDictionary(x => x.ColumnId, x => x);
@@ -490,47 +502,6 @@ namespace Dash.Models
                     DbContext.Save(keyedReportColumns[columnId]);
                 }
             });
-        }
-
-        public List<ReportFilter> UpdateFilters(List<ReportFilter> newFilters = null)
-        {
-            newFilters?.Each(x => {
-                if (x.CriteriaJson != null)
-                {
-                    x.Criteria = JSON.Serialize(x.CriteriaJson);
-                }
-                x.ReportId = Id;
-                DbContext.Save(x);
-            });
-            var keyedFilters = newFilters?.ToDictionary(x => x.Id, x => x);
-            if (ReportFilter?.Any() == true)
-            {
-                // delete any old filter that weren't in the new list
-                ReportFilter.Where(x => keyedFilters?.ContainsKey(x.Id) != true).ToList().ForEach(x => DbContext.Delete(x));
-            }
-            return keyedFilters?.Values.ToList();
-        }
-
-        public List<ReportGroup> UpdateGroups(int groupAggregator, List<ReportGroup> newGroups = null)
-        {
-            if (AggregatorId != groupAggregator)
-            {
-                AggregatorId = groupAggregator;
-                DbContext.Save(this, false);
-            }
-
-            // save the submitted groups
-            var keyedGroups = new Dictionary<int, ReportGroup>();
-            newGroups?.Each(x => {
-                x.ReportId = Id;
-                DbContext.Save(x);
-                keyedGroups.Add(x.Id, x);
-            });
-
-            // delete any old groups that weren't in the new list
-            ReportGroup?.Where(x => !keyedGroups.ContainsKey(x.Id)).ToList().ForEach(x => DbContext.Delete(x));
-
-            return keyedGroups.Values.ToList();
         }
     }
 }

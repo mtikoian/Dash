@@ -27,7 +27,7 @@ namespace Dash.Models
         public void Save()
         {
             Report.Name = Name.Trim();
-            DbContext.Save(Report, false);
+            Report.Save(false);
         }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)

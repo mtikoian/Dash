@@ -158,8 +158,7 @@ namespace Dash.Controllers
                 ViewBag.Error = ModelState.ToErrorString();
                 return CreateEditView(model);
             }
-            model.RequestUserId = User.UserId();
-            model.Save(false);
+            model.Save(false, rolesOnly: true);
             ViewBag.Message = Datasets.SuccessSavingDataset;
             return CreateEditView(model);
         }

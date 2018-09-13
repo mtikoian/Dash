@@ -24,7 +24,7 @@ namespace Dash.Models
         public void Save()
         {
             Chart = Chart.Copy(Prompt);
-            DbContext.Save(Chart);
+            Chart.Save();
             Id = Chart.Id;
         }
 
