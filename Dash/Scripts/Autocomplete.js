@@ -197,7 +197,9 @@
                             that.sc.style.display = 'none';
                         }, 20);
                     } else {
-                        that.value = '';
+                        if (o.sourceData && o.sourceData.indexOf(that.value) === -1) {
+                            that.value = '';
+                        }
                     }
                 }
             };
