@@ -39,18 +39,6 @@
                     </div>
                 </div>
             </div>
-            <div class="col-6">
-                <div class="form-group columns">
-                    @Html.ControlLabel("UserIds", Dash.Resources.Roles.Users)
-                    <div class="col-8 checkbox-block">
-                        @foreach (var user in Model.AllUsers)
-                        {
-                            @Html.CustomCheckbox("UserIds", Html.IsChecked(Model.UserRole, x => x.UserId == user.Id, ((int[])ViewBag.SelectedUserIds), user.Id), user.Id.ToString(), user.FullName, isMultiple: true)
-                        }
-                        @Html.Help("Role", "Users", false)
-                    </div>
-                </div>
-            </div>
         </div>
 
         @Html.FormButtons()
