@@ -77,6 +77,7 @@ namespace Dash
                 .WithStyleSource("'self'", "'unsafe-inline'") // allow styles from self and inline from js
                 .WithFontSource(CSPConstants.Self)
                 .WithFrameAncestors(CSPConstants.None)
+                .WithScriptSource("'self'", "'unsafe-eval'")
                 .BuildPolicy()
             );
 

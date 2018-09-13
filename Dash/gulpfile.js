@@ -92,6 +92,7 @@ gulp.task('js', function() {
         paths.js + 'Alertify.js',          // alerts/modals
         paths.js + 'pjax.js',              // pjax library
         paths.js + 'helpers.js',           // commonly used helper libraries
+        paths.js + 'doT.js',               // template engine
         paths.js + 'flatpickr.js',         // datetime picker
         // re-used components
         paths.js + 'Autocomplete.js',      // autocomplete component
@@ -102,6 +103,7 @@ gulp.task('js', function() {
         paths.js + 'ColorPicker.js',       // custom color picker
         paths.js + 'Rect.js',              // library for rectangle geometry
         paths.js + 'Table.js',             // custom table component using mithril
+        paths.js + 'doTable.js',           // new table component
         paths.js + 'Widget.js',            // widget component using mithril
         // functional areas
         paths.js + 'content.js',           // content processing functionality

@@ -8,11 +8,12 @@ namespace Dash.TagHelpers
     public class DynamicTableTagHelper : BaseTagHelper
     {
         public Table Options { get; set; }
+        public string Type { get; set; }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             var table = new TagBuilder("div");
-            table.Attributes.Add("data-toggle", "table");
+            table.Attributes.Add("data-toggle", Type == "doT" ? "dotable" : "table");
             table.Attributes.Add("data-json", Options.ToJson);
 
             output.TagName = "div";

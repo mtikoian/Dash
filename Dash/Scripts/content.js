@@ -1,13 +1,14 @@
 ﻿/*!
  * Wraps content processing functionality.
  */
-(function(m, $, Alertify, pjax, Table, Tab, CollapsibleList, Autocomplete, Draggabilly, flatpickr, DashChart, ColorPicker) {
+(function(m, $, Alertify, pjax, Table, Tab, CollapsibleList, Autocomplete, Draggabilly, flatpickr, DashChart, ColorPicker, doTable) {
     'use strict';
 
     var _autocompletes = [];
     var _draggabillies = [];
     var _charts = [];
     var _colorpickers = [];
+    var _tables = [];
 
     /**
      * Display context help.
@@ -69,7 +70,8 @@
             });
         } else {
             _autocompletes.push(new Autocomplete({
-                selector: self, source: function(search, response) {
+                selector: self,
+                source: function(search, response) {
                     var params = { search: search };
                     if (self.hasAttribute('data-params')) {
                         self.getAttribute('data-params').split(',').forEach(function(x) {
@@ -146,6 +148,28 @@
             $.dispatch(node, $.events.tableDestroy);
             m.mount(node, null);
         }
+    };
+
+    /**
+     * Initialize a doTable instance
+     * @this {Node} Node the event is being bound to.
+     */
+    var doTableLoad = function() {
+        var node = $.isNode(this) ? this : this.target;
+        if (node) {
+            _tables.push(new doTable(node));
+        }
+    };
+
+    /**
+     * Destroy a doTable instance
+     * @this {Node} Node for the table to destroy.
+     */
+    var doTableUnload = function() {
+        _tables.forEach(function(x) {
+            x.destroy();
+        });
+        _tables = [];
     };
 
     /**
@@ -461,6 +485,10 @@
             onLoad: tableLoad,
             onUnload: tableUnload
         },
+        'dotable': {
+            onLoad: doTableLoad,
+            onUnload: doTableUnload
+        },
         'context-help': {
             onLoad: contextHelp,
             onUnload: null
@@ -618,4 +646,4 @@
         $.on(document, 'resxLoaded', pageLoaded);
     }
 
-})(this.m, this.$, this.Alertify, this.pjax, this.Table, this.Tab, this.CollapsibleList, this.Autocomplete, this.Draggabilly, this.flatpickr, this.DashChart, this.ColorPicker);
+})(this.m, this.$, this.Alertify, this.pjax, this.Table, this.Tab, this.CollapsibleList, this.Autocomplete, this.Draggabilly, this.flatpickr, this.DashChart, this.ColorPicker, this.doTable);

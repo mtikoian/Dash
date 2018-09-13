@@ -9,8 +9,33 @@
     <partial name="_Toast" />
 
     <toolbar no-render="@(!User.IsInRole("role.create"))">
-        @Html.AuthorizedButton(Roles.CreateRole, "Create", "Role", null, DashClasses.BtnPrimary)
+        @Html.AuthorizedButton(Roles.CreateRole, "Create", "Role", btnType: DashClasses.BtnPrimary)
     </toolbar>
 
-    <dynamic-table options="@Model"></dynamic-table>
+    <dynamic-table options="@Model" type="doT"></dynamic-table>
+
+    <script id="roleRowTemplate" type="text/x-dot-template">
+        <tr>
+            <td>
+                {{=it.name}}
+            </td>
+            <td>
+                @if (User.IsInRole("role.edit"))
+                {
+                    <a href="@Url.Action(" Edit", "Role" , new {Id="{{=it.id}}" })" title="@Core.Edit" data-method="GET" class="btn btn-warning"><i class="dash dash-edit"></i></a>
+                }
+                @if (User.IsInRole("role.delete"))
+                {
+                    <a href="@Url.Action(" Delete", "Role" , new {Id="{{=it.id}}" })" title="@Core.Delete" data-method="DELETE"
+                       data-confirm="@string.Format(Core.ConfirmDeleteBody, Roles.RoleLower)"
+                       class="btn btn-error dash-confirm"><i class="dash dash-trash"></i></a>
+                }
+                @if (User.IsInRole("role.create"))
+                {
+                    <a href="@Url.Action("Copy", "Role", new {Id = "{{=it.id}}" })" title="@Core.Copy" data-method="GET"
+                       data-prompt="@Roles.CopyBody" class="btn btn-info dash-prompt"><i class="dash dash-trash"></i></a>
+                }
+            </td>
+        </tr>
+    </script>
 </body-content>
