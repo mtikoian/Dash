@@ -14,7 +14,7 @@ namespace Dash.Controllers
         {
         }
 
-        [HttpGet]
+        [HttpGet, ParentAction("Create")]
         public IActionResult Copy(CopyRole model)
         {
             if (model == null)
@@ -86,7 +86,7 @@ namespace Dash.Controllers
                     new TableColumn("actions", Core.Actions, sortable: false, links: new List<TableLink>()
                         .AddIf(Table.EditButton($"{Url.Action("Edit")}/{{id}}"), User.IsInRole("role.edit"))
                         .AddIf(Table.DeleteButton($"{Url.Action("Delete")}/{{id}}", string.Format(Core.ConfirmDeleteBody, Roles.RoleLower)), User.IsInRole("role.delete"))
-                        .AddIf(Table.CopyButton($"{Url.Action("Copy")}/{{id}}", Roles.CopyBody), User.IsInRole("role.copy")))
+                        .AddIf(Table.CopyButton($"{Url.Action("Copy")}/{{id}}", Roles.CopyBody), User.IsInRole("role.create")))
                 }
             ));
         }

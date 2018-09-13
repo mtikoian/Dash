@@ -73,7 +73,7 @@ namespace Dash.Controllers
                         .AddIf(Table.EditButton($"{Url.Action("Edit")}/{{id}}"), User.IsInRole("database.edit"))
                         .AddIf(Table.DeleteButton($"{Url.Action("Delete")}/{{id}}", string.Format(Core.ConfirmDeleteBody, Databases.DatabaseLower)), User.IsInRole("database.delete"))
                         .AddIf(new TableLink($"{Url.Action("TestConnection")}/{{id}}", Html.Classes(DashClasses.DashAjax, DashClasses.BtnInfo), Databases.TestConnection, TableIcon.HeartBeat),
-                            User.IsInRole("database.testconnection"))
+                            User.IsInRole("database.create") || User.IsInRole("database.edit"))
                 )}
             ));
         }

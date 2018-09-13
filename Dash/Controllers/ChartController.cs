@@ -49,7 +49,7 @@ namespace Dash.Controllers
             return Edit(model.Id);
         }
 
-        [HttpGet, AjaxRequestOnly]
+        [HttpGet, ParentAction("Create")]
         public IActionResult Copy(CopyChart model)
         {
             if (!ModelState.IsValid)
@@ -107,7 +107,7 @@ namespace Dash.Controllers
             return Data(chart.GetData(User.IsInRole("dataset.create")));
         }
 
-        [HttpDelete, AjaxRequestOnly]
+        [HttpDelete]
         public IActionResult Delete(int id)
         {
             var chart = DbContext.Get<Chart>(id);
@@ -168,7 +168,7 @@ namespace Dash.Controllers
                 new TableColumn("actions", Core.Actions, sortable: false, links: new List<TableLink>()
                         .AddIf(Table.EditButton($"{Url.Action("Edit")}/{{id}}"), User.IsInRole("chart.edit"))
                         .AddIf(Table.DeleteButton($"{Url.Action("Delete")}/{{id}}", Charts.ConfirmDelete), User.IsInRole("chart.delete"))
-                        .AddIf(Table.CopyButton($"{Url.Action("Copy")}/{{id}}", Charts.NewName), User.IsInRole("chart.copy"))
+                        .AddIf(Table.CopyButton($"{Url.Action("Copy")}/{{id}}", Charts.NewName), User.IsInRole("chart.create"))
                 )}
             ));
         }

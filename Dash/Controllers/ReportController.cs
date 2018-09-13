@@ -15,7 +15,7 @@ namespace Dash.Controllers
         {
         }
 
-        [HttpGet, AjaxRequestOnly]
+        [HttpGet, ParentAction("Create")]
         public IActionResult Copy(CopyReport model)
         {
             if (model == null)
@@ -161,7 +161,7 @@ namespace Dash.Controllers
                 new TableColumn("actions", Core.Actions, sortable: false, links: new List<TableLink>()
                         .AddIf(Table.EditButton($"{Url.Action("Edit")}/{{id}}"), User.IsInRole("report.edit"))
                         .AddIf(Table.DeleteButton($"{Url.Action("Delete")}/{{id}}", Reports.ConfirmDelete), User.IsInRole("report.delete"))
-                        .AddIf(Table.CopyButton($"{Url.Action("Copy")}/{{id}}", Reports.NewName), User.IsInRole("report.copy"))
+                        .AddIf(Table.CopyButton($"{Url.Action("Copy")}/{{id}}", Reports.NewName), User.IsInRole("report.create"))
                 )}
             ));
         }
