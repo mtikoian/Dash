@@ -15,13 +15,8 @@
         @Html.HiddenFor(model => model.Id)
 
         <div class="columns">
-            <div class="col-6">
+            <div class="col-6 col-xl-9">
                 @Html.LabelInputFor(model => model.Name, new { autofocus = true })
-            </div>
-        </div>
-
-        <div class="columns">
-            <div class="col-6">
                 <div class="form-group">
                     @Html.ControlLabel("PermissionIds", Dash.Resources.Roles.Permissions)
                     <div class="col-8 c-hand" data-toggle="collapsible-list">

@@ -16,7 +16,7 @@
         @Html.HiddenFor(model => model.Id)
 
         <div class="columns">
-            <div class="col-6">
+            <div class="col-6 col-xl-9">
                 @Html.LabelInputFor(model => model.UserName, new { autofocus = true })
                 @Html.LabelInputFor(model => model.FirstName)
                 @Html.LabelInputFor(model => model.LastName)
@@ -25,9 +25,6 @@
                 @Html.LabelInputFor(model => model.Email, inputType: Dash.Html.InputFieldType.Email)
                 @Html.LabelDropDownListFor(model => model.LanguageId, new SelectList(Model.DbContext.GetAll<Language>(), "Id", "Name"))
                 @Html.LabelCheckBoxFor(model => model.AllowSingleFactor)
-            </div>
-
-            <div class="col-6">
                 <div class="form-group columns">
                     @Html.ControlLabel("RoleIds", Users.Roles)
                     <div class="col-8 checkbox-block">
