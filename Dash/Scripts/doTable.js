@@ -84,6 +84,7 @@
             } catch (e) {
                 // placeholder
             }
+            node.removeAttribute('data-json');
         }
 
         var data = null;
@@ -112,6 +113,7 @@
             itemsPerPage: null,
             searchQuery: null,
             currentStartItem: null,
+            currentEndItem: null,
             sorting: null,
             dataCallback: null,
             errorCallback: null,
@@ -256,9 +258,6 @@
         } else {
             this.loadData();
         }
-
-        this.init();
-
     };
 
     /**
@@ -342,16 +341,7 @@
         this.loading = false;
         this.sort(false);
         this.filterResults();
-        // redraw is needed because $.ajax uses fetch which is async
         this.draw();
-    };
-
-    doTable.prototype.redraw = function() {
-        // @TODO All of this...
-
-
-        this.updateLayout();
-
     };
 
     /**
@@ -420,6 +410,7 @@
         this.currentStartItem = index;
         this.store('currentStartItem', index);
         this.filterResults(true);
+        this.currentEndItem = Math.min(this.currentStartItem + this.itemsPerPage, this.filteredTotal);
     };
 
     /**
@@ -463,6 +454,7 @@
         this.store('searchQuery', query);
         this.requestTimer = null;
         this.currentStartItem = 0;
+        this.currentEndItem = 0;
         this.filterResults(true);
     };
 
@@ -496,6 +488,7 @@
             }
 
             this.filteredTotal = filteredTotal;
+            this.currentEndItem = Math.min(this.currentStartItem + this.itemsPerPage, this.filteredTotal);
             this.pageTotal = Math.ceil(filteredTotal / this.itemsPerPage);
         }
     };
@@ -521,7 +514,7 @@
         var page = (isNaN(e) ? e.target.value : e) * 1;
         if (page <= this.pageTotal && page > 0) {
             this.setCurrentStartItem((page - 1) * this.itemsPerPage);
-            this.redraw();
+            this.draw();
         }
     };
 
@@ -559,7 +552,7 @@
 
         this.sort();
         this.setCurrentStartItem(0);
-        this.redraw();
+        this.draw();
     };
 
     /**
@@ -572,7 +565,7 @@
         this.filterResults(refresh);
         this.store('sorting', JSON.stringify(this.sorting));
         // sure you need this?
-        this.redraw();
+        this.draw();
     };
 
     /**
@@ -584,7 +577,7 @@
         }
 
         this.layoutSet = true;
-        this.table = $.get('.table-data', this.content);
+        this.table = $.get('.dotable-data', this.content);
         this.table.style.tableLayout = 'fixed';
         this.tableHeaderRow = this.table.tHead.rows[0];
 
@@ -630,8 +623,8 @@
         if (!$.isVisible(this.table)) {
             return;
         }
-        $.get('.table-scrollable', this.content).style.paddingTop = this.table.tHead.offsetHeight + 'px';
-        var colGroup = $.get('.table-column-group', this.content);
+        $.get('.dotable-scrollable', this.content).style.paddingTop = this.table.tHead.offsetHeight + 'px';
+        var colGroup = $.get('.dotable-column-group', this.content);
         for (var i = 0; i < this.opts.columns.length; i++) {
             colGroup.children[i].style.width = this.tableHeaderRow.cells[i].style.width;
         }
@@ -669,9 +662,9 @@
             self.resizeContext = {
                 colIndex: cellEl.cellIndex,
                 initX: e.clientX,
-                scrWidth: $.get('.table-scrollable', self.content).offsetWidth,
+                scrWidth: $.get('.dotable-scrollable', self.content).offsetWidth,
                 initTblWidth: self.table.offsetWidth,
-                initColWidth: pixelToFloat($.get('.table-column-group', self.content).children[cellEl.cellIndex].style.width),
+                initColWidth: pixelToFloat($.get('.dotable-column-group', self.content).children[cellEl.cellIndex].style.width),
                 layoutTimer: null
             };
         };
@@ -702,7 +695,7 @@
 
         var newColWidth = Math.max(ctx.initColWidth + e.clientX - ctx.initX, this.opts.columnMinWidth);
         this.table.tHead.style.width = this.table.style.width = (ctx.initTblWidth + (newColWidth - ctx.initColWidth)) + 'px';
-        $.get('.table-column-group', this.content).children[ctx.colIndex].style.width = this.tableHeaderRow.cells[ctx.colIndex].style.width = newColWidth + 'px';
+        $.get('.dotable-column-group', this.content).children[ctx.colIndex].style.width = this.tableHeaderRow.cells[ctx.colIndex].style.width = newColWidth + 'px';
 
         if (ctx.layoutTimer === null) {
             var self = this;
@@ -887,12 +880,9 @@
     doTable.prototype.draw = function() {
         var container = $.get('.dash-table', this.content);
         if (!container) {
+            this.content.innerHTML = '';
+
             container = $.createNode('<div class="dash-table" data-toggle="table" data-unload-event="tableUnload"></div>');
-
-            while (this.content.firstChild) {
-                this.content.removeChild(this.content.firstChild);
-            }
-
             container.innerHTML = _templates.headerFn(this) +
                 _templates.bodyFn(this) +
                 _templates.footerFn(this);
@@ -903,25 +893,86 @@
             $.on(container, $.events.tableDestroy, this.destroy.bind(this));
             $.on(container, $.events.layoutUpdate, this.updateLayout.bind(this));
 
-            $.on($.get('.table-search-input', container), 'oninput', this.setSearchQuery.bind(this));
-            $.on($.get('.table-items-input', container), 'onchange', this.setItemsPerPage.bind(this));
+            $.on($.get('.dotable-search-input', container), 'oninput', this.setSearchQuery.bind(this));
+            $.on($.get('.dotable-items-input', container), 'onchange', this.setItemsPerPage.bind(this));
 
-            var thead = $.get('thead', container);
-            var handler = this.touchHandler.bind(this);
-            $.on(thead, 'touchstart', handler);
-            $.on(thead, 'touchend', handler);
-            $.on(thead, 'touchmove', handler);
-            $.on(thead, 'touchcancel', handler);
+            // bind footer buttons/dropdowns
+
+            if (this.opts.editable) {
+                // bind column sort and column resize events
+                var thead = $.get('.dotable-head', container);
+                if (thead) {
+                    var handler = this.touchHandler.bind(this);
+                    $.on(thead, 'touchstart', handler);
+                    $.on(thead, 'touchend', handler);
+                    $.on(thead, 'touchmove', handler);
+                    $.on(thead, 'touchcancel', handler);
+
+                    var ths = $.getAll('th', thead);
+                    if (ths && ths.length) {
+                        $.forEach(ths, this.onHeaderMouseDown, this);
+                    }
+
+                    var self = this;
+                    var arrows = $.getAll('.dotable-arrow', thead);
+                    if (arrows && arrows.length) {
+                        $.forEach(arrows, function(x) {
+                            $.on(x, 'click', self.changeSort.bind(self, x.getAttribute('data-field'), x.getAttribute('data-type').toLowerCase()));
+                        });
+                    }
+                }
+
+                this.events = {
+                    resize: $.debounce(this.onResize.bind(this), 50),
+                    move: this.onMouseMove.bind(this),
+                    up: this.onMouseUp.bind(this)
+                };
+                $.on(window, 'resize', this.events.resize);
+                $.on(window, 'mousemove', this.events.move);
+                $.on(window, 'mouseup', this.events.up);
+            }
+
+            this.setLayout();
+            this.updateLayout();
+
         }
 
-        var body = $.get('tbody', this.content);
-        while (body.firstChild) {
-            body.removeChild(body.firstChild);
+        // update column sort icons
+        var sortArrows = $.getAll('.dotable-arrow', thead);
+        if (sortArrows && sortArrows.length) {
+            $.forEach(sortArrows, function(x) {
+                var val = $.findByKey(this.sorting, 'field', x.getAttribute('data-field'));
+                if (val) {
+                    $.removeClass(x, 'dash-sort-up');
+                    $.removeClass(x, 'dash-sort-down');
+                    $.removeClass(x, 'dash-sort');
+                    if (val.dir === 'ASC') {
+                        $.addClass(x, 'dash-sort-up');
+                    } else {
+                        $.addClass(x, 'dash-sort-down');
+                    }
+                } else {
+                    $.removeClass(x, 'dash-sort-up');
+                    $.removeClass(x, 'dash-sort-down');
+                    $.addClass(x, 'dash-sort');
+                }
+            }, this);
         }
 
-        var roleRowTemplateFn = doT.template(document.getElementById('roleRowTemplate').text);
-        body.innerHTML = roleRowTemplateFn(this.results[0]);
+        // update table body
+        var body = $.get('.dotable-body', this.content);
+        if (body) {
+            body.innerHTML = '';
 
+            var roleRowTemplateFn = doT.template(document.getElementById('roleRowTemplate').text);
+            var bodyHTML = '';
+            $.forEach(this.results, function(x) {
+                bodyHTML += roleRowTemplateFn(x);
+            });
+            body.innerHTML = bodyHTML;
+        }
+
+        //this.updateLayout();
 
     };
 

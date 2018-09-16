@@ -30,6 +30,7 @@
                     @Html.LabelInputFor(model => model.DateFormat, groupAddOn: Html.InputGroupButton("DateFormat", Html.Icon("list-numbered", false, true), Model.DefaultDateFormats))
                     @Html.LabelInputFor(model => model.CurrencyFormat, groupAddOn: Html.InputGroupButton("CurrencyFormat", Html.Icon("list-numbered", false, true), Model.DefaultCurrencyFormats))
 
+                    <!-- TODO needs to be replaced - probably with a sharing mechanism like reports/charts have  -->
                     <div class="form-group">
                         @Html.ControlLabel("RoleIds", Datasets.Roles)
                         <div class="col-8 checkbox-block">

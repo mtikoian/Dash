@@ -27,12 +27,20 @@
         <div class="container">
             <div class="columns form-horizontal m-2">
                 <div class="col-6">
-                    <div class="input-group col-8 col-mr-auto"><span class="input-group-addon text-no-select"><i class="dash dash-search"></i></span><input type="text" class="form-input table-search-input" value="{{=it.searchQuery}}"></div>
+                    <div class="input-group col-5 col-xl-8 col-mr-auto">
+                        <span class="input-group-addon text-no-select" title="@Core.Search"><i class="dash dash-search"></i></span>
+                        <input type="text" class="form-input dotable-search-input" value="{{=x.searchQuery}}">
+                    </div>
                 </div>
                 <div class="col-6">
-                    <div class="input-group col-8 col-ml-auto">
-                        <span class="input-group-addon text-no-select">@Core.PerPage</span>
-                        <select id="table-items-per-page" class="form-select table-items-input"><option value="10">10</option><option value="20">20</option><option value="50">50</option><option value="100">100</option></select>
+                    <div class="input-group col-5 col-xl-8 col-ml-auto">
+                        <span class="input-group-addon text-no-select" title="@Core.PerPage"><i class="dash dash-list-bullet"></i></span>
+                        <select class="form-select dotable-items-input">
+                            <option value="10">10</option>
+                            <option value="20">20</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
                     </div>
                 </div>
             </div>
@@ -42,46 +50,36 @@
     <script id="tableFooterTemplate" type="text/x-dot-template">
         <div class="container">
             <div class="columns m-2">
-                <div class="col-4 btn-toolbar">
-                    <button type="button" role="button" title="@Core.FirstPage" class="btn btn-secondary"><i class="dash dash-to-start-alt text-primary"></i></button>
-                    <button type="button" role="button" title="@Core.PreviousPage" class="btn btn-secondary"><i class="dash dash-to-start text-primary"></i></button>
-                    <button type="button" role="button" title="@Core.NextPage" class="btn btn-secondary"><i class="dash dash-to-end text-primary"></i></button>
-                    <button type="button" role="button" title="@Core.LastPage" class="btn btn-secondary"><i class="dash dash-to-end-alt text-primary"></i></button>
+                <div class="col-6 col-xs-12 my-auto">{{=x.currentStartItem+1}} - {{=x.currentEndItem}} of {{=x.filteredTotal}}</div>
+                <div class="col-6 col-xs-12 btn-toolbar text-right">
+                    <button type="button" role="button" title="@Core.FirstPage" class="btn"><i class="dash dash-to-start-alt text-primary"></i></button>
+                    <button type="button" role="button" title="@Core.PreviousPage" class="btn"><i class="dash dash-to-start text-primary"></i></button>
+                    <button type="button" role="button" title="@Core.NextPage" class="btn"><i class="dash dash-to-end text-primary"></i></button>
+                    <button type="button" role="button" title="@Core.LastPage" class="btn"><i class="dash dash-to-end-alt text-primary"></i></button>
                 </div>
-                <div class="col-4">
-                    <div class="input-group col-8 col-mx-auto">
-                        <span class="input-group-addon text-no-select">@Core.Page</span>
-                        <select class="form-select">
-                            {{~it.pages :value:index}}
-                            <option value="{{=value}}">{{=value}}</option>
-                            {{~}}
-                        </select>
-                    </div>
-                </div>
-                <div class="col-4 text-right my-auto">{{=it.startItem}} - {{=it.endItem}} of {{=it.totalItems}}</div>
             </div>
         </div>
     </script>
 
     <script id="tableBodyTemplate" type="text/x-dot-template">
-        <div class="table-scrollable">
-            <div class="table-area">
-                <table class="table table-hover table-sm table-striped table-data">
-                    <colgroup class="table-column-group">
-                        {{~it.columns :value:index}}
+        <div class="dotable-scrollable">
+            <div class="dotable-area">
+                <table class="table table-hover table-sm table-striped dotable-data">
+                    <colgroup class="dotable-column-group">
+                        {{~x.opts.columns :value:index}}
                         <col>
                         {{~}}
                     </colgroup>
-                    <thead>
+                    <thead class="dotable-head">
                         <tr>
-                            {{~it.columns :value:index}}
+                            {{~x.opts.columns :value:index}}
                             <th class="text-no-select{{? !value.sortable }} disabled{{?}}">
-                                {{=value.name}} {{? value.sortable }}<i class="float-right dash data-table-arrow dash-sort-{{=value.sortDirection}}" />{{?}}
+                                {{=value.label}} {{? value.sortable }}<i class="float-right dash dotable-arrow {{?!value.dir}}dash-sort{{??value.dir === 'desc'}}dash-sort-down{{??value.dir === 'asc'}}dash-sort-up{{?}}" data-type="{{=value.dataType}}" data-field="{{=value.field}}" />{{?}}
                             </th>
                             {{~}}
                         </tr>
                     </thead>
-                    <tbody></tbody>
+                    <tbody class="dotable-body"></tbody>
                 </table>
             </div>
         </div>
@@ -89,7 +87,7 @@
 
     <script id="rowTemplate" type="text/x-dot-template">
         <tr>
-            {{~it.columns :col:index}}
+            {{~x.columns :col:index}}
             <td>
                 {{=col.value}}
             </td>

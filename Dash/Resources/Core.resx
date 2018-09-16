@@ -354,4 +354,7 @@
   <data name="ErrorUserOrRole" xml:space="preserve">
     <value>You must select a user or a role.</value>
   </data>
+  <data name="Search" xml:space="preserve">
+    <value>Search</value>
+  </data>
 </root>

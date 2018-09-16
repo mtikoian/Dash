@@ -141,22 +141,6 @@ li {
     }
 }
 
-/*
-* Delete buttons
-*/
-a {
-    .dash-trash {
-        color: $error-color;
-
-        &:focus,
-        &:hover,
-        &:active,
-        &.active {
-            color: $error-color-dark;
-        }
-    }
-}
-
 .input-group {
     .input-group-btn {
         .dropdown-toggle {

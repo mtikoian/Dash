@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using Dash.Configuration;
 using Dash.Models;
 using Dash.Utils;
@@ -77,7 +79,7 @@ namespace Dash
                 .WithStyleSource("'self'", "'unsafe-inline'") // allow styles from self and inline from js
                 .WithFontSource(CSPConstants.Self)
                 .WithFrameAncestors(CSPConstants.None)
-                .WithScriptSource("'self'", "'unsafe-eval'")
+                .WithScriptSource("'self'", "'unsafe-eval'") // @TODO add proper support for nonce to HardHat then I can use something like CSPConstants.Nonce(nonce), and set a nonce on my script templates
                 .BuildPolicy()
             );
 
@@ -238,6 +240,14 @@ namespace Dash
             permissions.Where(x => !actionList.ContainsKey(x.Key)).Each(x => {
                 dbContext.Delete(x.Value);
             });
+        }
+
+        private string GenerateNonce()
+        {
+            var rng = new RNGCryptoServiceProvider();
+            var nonceBytes = new byte[32];
+            rng.GetBytes(nonceBytes);
+            return Convert.ToBase64String(nonceBytes);
         }
     }
 }
