@@ -357,4 +357,7 @@
   <data name="Search" xml:space="preserve">
     <value>Search</value>
   </data>
+  <data name="TableOf" xml:space="preserve">
+    <value>of</value>
+  </data>
 </root>

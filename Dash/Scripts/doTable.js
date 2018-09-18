@@ -7,10 +7,13 @@
     'use strict';
 
     var _templates = {
-        headerFn: doT.template(document.getElementById('tableHeaderTemplate').text),
-        footerFn: doT.template(document.getElementById('tableFooterTemplate').text),
-        bodyFn: doT.template(document.getElementById('tableBodyTemplate').text),
-        rowTemplateFn: doT.template(document.getElementById('rowTemplate').text)
+        headerFn: doT.template($.get('#tableHeaderTemplate').text),
+        footerFn: doT.template($.get('#tableFooterTemplate').text),
+        bodyFn: doT.template($.get('#tableBodyTemplate').text),
+        loadingFn: doT.template($.get('#tableLoadingTemplate').text),
+        noDataFn: doT.template($.get('#tableNoDataTemplate').text),
+        errorFn: doT.template($.get('#tableLoadingError').text),
+
     };
 
     /**
@@ -76,6 +79,18 @@
         return val.replace('px', '').replace('%', '') * 1.0;
     };
 
+    var disableIf = function(node, disable) {
+        if (!node) {
+            return;
+        }
+        if (disable) {
+            node.setAttribute('disabled', true);
+        } else {
+            node.removeAttribute('disabled');
+        }
+    };
+
+
     var doTable = function(node) {
         var opts = {};
         if (node.hasAttribute('data-json')) {
@@ -85,6 +100,12 @@
                 // placeholder
             }
             node.removeAttribute('data-json');
+        } else {
+            opts.id = node.getAttribute('id');
+            opts.searchable = node.getAttribute('data-searchable').toLowerCase() === 'true';
+            opts.loadAll = node.getAttribute('data-load-all').toLowerCase() === 'true';
+            opts.url = node.getAttribute('data-url');
+            opts.template = node.getAttribute('data-template');
         }
 
         var data = null;
@@ -102,11 +123,10 @@
             requestUsePascalCase: true,
             requestParams: {},
             searchable: true,
-            loadAllData: true,
+            loadAll: true,
             columnMinWidth: 50,
             width: 100,
             editable: true,
-            pageDropdown: true,
             storeSettings: true,
             storeUrl: null,
             storeRequestMethod: 'PUT',
@@ -162,88 +182,32 @@
             }, 250);
         }
 
-        var self = this;
-        for (var i = 0; i < this.opts.columns.length; i++) {
-            var column = this.opts.columns[i];
-            column.width = $.hasPositiveValue(column.width) ? column.width : this.store(column.field + '.width');
-            if (!($.isNull(column.links) || column.links.length === 0)) {
-                column.links = column.links.filter(function(link) {
-                    return !$.isNull(link);
+        var template = $.get(this.opts.template);
+        this.opts.rowTemplateFn = doT.template(template ? template.text : '');
+        if (template) {
+            var tempNode = $.createNode();
+            tempNode.innerHTML = '<table>' + this.opts.rowTemplateFn({}) + '</table>';
+            var columns = $.getAll('td', tempNode);
+            $.forEach(columns, function(x) {
+                var field = x.getAttribute('data-field');
+                var width = x.getAttribute('data-width');
+                width = isNaN(width) ? null : width * 1;
+                var type = x.getAttribute('data-type').toLowerCase();
+                this.opts.columns.push({
+                    width: $.hasPositiveValue(width) ? width : this.store(field + '.width'),
+                    sortable: x.getAttribute('data-sortable').toLowerCase() === 'true',
+                    label: x.getAttribute('data-label'),
+                    field: field,
+                    dataType: type
                 });
-            }
-
-            this.columnRenderer[column.field] = $.isNull(column.links) || column.links.length === 0 ?
-                function(obj, column) { return self.getDisplayValue(obj[column.field], column.dataType.toLowerCase()); } :
-                function(obj, column) {
-                    return $.map(column.links, function(link) {
-                        if (link.jsonLogic && !$.jsonLogic.apply(link.jsonLogic, obj)) {
-                            return null;
-                        }
-                        var label = $.coalesce(link.label, self.getDisplayValue(obj[column.field], column.dataType.toLowerCase()));
-                        var attr = $.clone(link.attributes) || {};
-                        var href = link.href || null;
-                        if (href) {
-                            for (var prop in obj) {
-                                if (href.indexOf('{' + prop + '}') > -1 && obj.hasOwnProperty(prop)) {
-                                    href = href.replace(new RegExp('{' + prop + '}', 'g'), obj[prop]);
-                                }
-                            }
-                        }
-                        var classes = (attr['class'] || '').split(' ');
-                        var isBtn = classes.indexOf('btn') !== -1;
-                        if (isBtn) {
-                            attr['type'] = attr['role'] = 'button';
-                        } else {
-                            classes.push('btn');
-                            classes.push('btn-link');
-                        }
-                        attr['class'] = classes.filter(function(x) { return x && x.length; }).join(' ');
-                        attr['title'] = label;
-                        if (attr['target']) {
-                            attr['href'] = href;
-                        } else {
-                            attr['data-method'] = link.method ? link.method.toUpperCase() : 'GET';
-                            attr['data-href'] = href;
-                            attr['onclick'] = function() {
-                                var node = this.getAttribute('data-href') ? this : this.parentNode;
-                                var options = {
-                                    url: node.getAttribute('data-href'), method: node.getAttribute('data-method')
-                                };
-                                if (node.getAttribute('data-confirm')) {
-                                    options.history = false;
-                                    Alertify.dismissAll();
-                                    Alertify.confirm(node.getAttribute('data-confirm'), pjax.invoke.bind(null, options));
-                                } else if (node.getAttribute('data-prompt')) {
-                                    options.history = false;
-                                    Alertify.dismissAll();
-                                    Alertify.prompt(node.getAttribute('data-prompt'), function(promptValue) {
-                                        if (!$.hasValue(promptValue)) {
-                                            Alertify.error($.resx('errorNameRequired'));
-                                            return false;
-                                        }
-                                        options.url += ((!/[?&]/.test(options.url)) ? '?prompt' : '&prompt') + '=' + encodeURIComponent(promptValue);
-                                        pjax.invoke(options);
-                                    });
-                                } else {
-                                    options.history = node.getAttribute('data-method') === 'GET';
-                                    pjax.invoke(options);
-                                }
-                            };
-                        }
-                        //return m(isBtn ? 'button' : 'a', attr, $.isNull(link.icon) ? label : m('i', { class: 'dash dash-' + link.icon.toLowerCase() }));
-                    });
-                };
-
-            //this.colGroups.push(m('col'));
-
-            var type = column.dataType.toLowerCase();
-            if (type === 'int') {
-                this.intColumns.push(column.field);
-            } else if (type === 'date') {
-                this.dateColumns.push(column.field);
-            } else if (type === 'currency') {
-                this.currencyColumns.push(column.field);
-            }
+                if (type === 'int') {
+                    this.intColumns.push(field);
+                } else if (type === 'date') {
+                    this.dateColumns.push(field);
+                } else if (type === 'currency') {
+                    this.currencyColumns.push(field);
+                }
+            }, this);
         }
 
         this.itemsPerPage = this.store('itemsPerPage') * 1 || 10;
@@ -341,7 +305,6 @@
         this.loading = false;
         this.sort(false);
         this.filterResults();
-        this.draw();
     };
 
     /**
@@ -410,7 +373,6 @@
         this.currentStartItem = index;
         this.store('currentStartItem', index);
         this.filterResults(true);
-        this.currentEndItem = Math.min(this.currentStartItem + this.itemsPerPage, this.filteredTotal);
     };
 
     /**
@@ -467,13 +429,16 @@
             return;
         }
 
-        if (refresh && !this.opts.loadAllData) {
+        if (refresh && !this.opts.loadAll) {
             // force the data to reload. filterResults will get called again after the data loads
             this.loadData();
-        } else if (!this.opts.loadAllData) {
+        } else if (!this.opts.loadAll) {
             // we're not loading all the data to begin with. so whatever data we have should be displayed.
             this.results = this.data;
+            this.filteredTotal = this.results.length;
+            this.currentEndItem = Math.min(this.currentStartItem + this.itemsPerPage, this.filteredTotal);
             this.pageTotal = Math.ceil(this.filteredTotal / this.itemsPerPage);
+            this.draw();
         } else {
             // we're loading all the data to begin with. so figure out what data to display.
             var filteredTotal = 0;
@@ -490,6 +455,7 @@
             this.filteredTotal = filteredTotal;
             this.currentEndItem = Math.min(this.currentStartItem + this.itemsPerPage, this.filteredTotal);
             this.pageTotal = Math.ceil(filteredTotal / this.itemsPerPage);
+            this.draw();
         }
     };
 
@@ -562,10 +528,8 @@
     doTable.prototype.sort = function(refresh) {
         refresh = $.coalesce(refresh, true);
         this.data.sort(this.sorting.length > 0 ? compare.bind(this) : defaultCompare);
-        this.filterResults(refresh);
         this.store('sorting', JSON.stringify(this.sorting));
-        // sure you need this?
-        this.draw();
+        this.filterResults(refresh);
     };
 
     /**
@@ -852,7 +816,7 @@
     doTable.prototype.tableHeaders = function(obj) {
         var field = obj.field;
         var attrs = { class: obj.classes || '' };
-
+    
         var content = [obj.label || field];
         if ($.isUndefined(obj.sortable) || obj.sortable === true) {
             var val = $.findByKey(this.sorting, 'field', field);
@@ -893,8 +857,8 @@
             $.on(container, $.events.tableDestroy, this.destroy.bind(this));
             $.on(container, $.events.layoutUpdate, this.updateLayout.bind(this));
 
-            $.on($.get('.dotable-search-input', container), 'oninput', this.setSearchQuery.bind(this));
-            $.on($.get('.dotable-items-input', container), 'onchange', this.setItemsPerPage.bind(this));
+            $.on($.get('.dotable-search-input', container), 'input', this.setSearchQuery.bind(this));
+            $.on($.get('.dotable-items-input', container), 'change', this.setItemsPerPage.bind(this));
 
             // bind footer buttons/dropdowns
 
@@ -910,7 +874,10 @@
 
                     var ths = $.getAll('th', thead);
                     if (ths && ths.length) {
-                        $.forEach(ths, this.onHeaderMouseDown, this);
+                        var mouseFunc = this.onHeaderMouseDown.bind(this);
+                        $.forEach(ths, function(x) {
+                            $.on(x, 'mousedown', mouseFunc);
+                        });
                     }
 
                     var self = this;
@@ -932,9 +899,12 @@
                 $.on(window, 'mouseup', this.events.up);
             }
 
-            this.setLayout();
-            this.updateLayout();
+            $.on('.dotable-btn-first', 'click', this.moveToPage.bind(this, -1, true));
+            $.on('.dotable-btn-previous', 'click', this.moveToPage.bind(this, -1, false));
+            $.on('.dotable-btn-next', 'click', this.moveToPage.bind(this, 1, false));
+            $.on('.dotable-btn-last', 'click', this.moveToPage.bind(this, 1, true));
 
+            this.setLayout();
         }
 
         // update column sort icons
@@ -959,114 +929,40 @@
             }, this);
         }
 
+        // toggle disabled status for pagination buttons
+        disableIf($.get('.dotable-btn-first', this.content), this.currentStartItem === 0);
+        disableIf($.get('.dotable-btn-previous', this.content), this.currentStartItem === 0);
+        disableIf($.get('.dotable-btn-next', this.content), this.currentStartItem >= this.filteredTotal - this.itemsPerPage);
+        disableIf($.get('.dotable-btn-last', this.content), this.currentStartItem >= this.filteredTotal - this.itemsPerPage);
+
+        // set values for showing `x - x of x` rows
+        $.setText($.get('.dotable-start-item', this.content), this.currentStartItem + 1);
+        $.setText($.get('.dotable-end-item', this.content), this.currentEndItem);
+        $.setText($.get('.dotable-total-items', this.content), this.filteredTotal);
+
         // update table body
         var body = $.get('.dotable-body', this.content);
         if (body) {
             body.innerHTML = '';
 
-            var roleRowTemplateFn = doT.template(document.getElementById('roleRowTemplate').text);
-            var bodyHTML = '';
-            $.forEach(this.results, function(x) {
-                bodyHTML += roleRowTemplateFn(x);
-            });
-            body.innerHTML = bodyHTML;
-        }
-
-        //this.updateLayout();
-
-    };
-
-    /**
-     * Build a single table cell.
-     * @param {Object} obj - Table record to build cell for.
-     * @param {number} index - Row index of this row.
-     * @param {Object} column - Column to build cell for.
-     * @returns {Object} Mithril TD node.
-     */
-    /*
-    doTable.prototype.tableCellView = function(obj, index, column) {
-        return m('td', this.columnRenderer[column.field](obj, column, index));
-    };
-    */
-
-    /**
-     * Build the table footer nodes
-     * @returns {Object} Mithril TR node(s).
-     */
-    /*
-    doTable.prototype.tableBodyView = function() {
-        if (this.loading) {
-            return m('tr', m('td', { colspan: this.opts.columns.length }, m('.loading.loading-lg')));
-        }
-        if (this.loadingError) {
-            return m('tr.table-loading-error', m('td', { colspan: this.opts.columns.length }, [
-                m('.table-loading-error-message', this.opts.resources.loadingError),
-                m('.btn.btn-info', { onclick: this.refresh.bind(this) }, this.opts.resources.tryAgain)
-            ]));
-        }
-        if (this.filteredTotal === 0) {
-            return m('tr', [m('td', { colspan: this.opts.columns.length }, this.opts.resources.noData)]);
-        }
-        var self = this;
-        return $.map(self.results, function(row, index) {
-            return m('tr', { key: row._index }, $.map(self.opts.columns, function(column) {
-                return m('td', self.columnRenderer[column.field](row, column, index));
-            }));
-        });
-    };
-    */
-
-    /**
-     * Build the table footer nodes.
-     * @returns {Object} Mithril DIV node.
-     */
-    /*
-    doTable.prototype.tableFooterView = function() {
-        if (this.loading || this.loadingError) {
-            return null;
-        }
-
-        var currentPage = (this.currentStartItem + this.itemsPerPage) / this.itemsPerPage;
-        if (this.opts.pageDropdown) {
-            // limit page dropdown to 10000 options
-            var max = Math.min(this.pageTotal, 10000);
-            var optionList = [max], i = max;
-            while (i > 0) {
-                optionList[i] = m('option', { value: i }, i);
-                --i;
+            if (this.loading) {
+                body.innerHTML = _templates.loadingFn(this.opts.columns.length);
+            } else if (this.loadingError) {
+                body.innerHTML = _templates.errorFn(this.opts.columns.length);
+                $.on($.get('.dotable-btn-refresh', body), 'click', this.refresh.bind(this));
+            } else if (this.filteredTotal === 0) {
+                body.innerHTML = _templates.noDataFn(this.opts.columns.length);
+            } else {
+                var bodyHTML = '';
+                $.forEach(this.results, function(x) {
+                    bodyHTML += this(x);
+                }, this.opts.rowTemplateFn);
+                body.innerHTML = bodyHTML;
             }
         }
 
-        var res = this.opts.resources;
-        return m('.container', m('.columns.m-2', [
-            m('.col-4.btn-toolbar', { class: this.filteredTotal > this.itemsPerPage ? '' : ' invisible' }, [
-                m('button.btn.btn-secondary', {
-                    type: 'button', role: 'button', title: res.firstPage, onclick: this.moveToPage.bind(this, -1, true)
-                }, m('i.dash.dash-to-start-alt.text-primary')),
-                m('button.btn.btn-secondary', {
-                    type: 'button', role: 'button', title: res.previousPage, onclick: this.moveToPage.bind(this, -1, false)
-                }, m('i.dash.dash-to-start.text-primary')),
-                m('button.btn.btn-secondary', {
-                    type: 'button', role: 'button', title: res.nextPage, onclick: this.moveToPage.bind(this, 1, false)
-                }, m('i.dash.dash-to-end.text-primary')),
-                m('button.btn.btn-secondary', {
-                    type: 'button', role: 'button', title: res.lastPage, onclick: this.moveToPage.bind(this, 1, true)
-                }, m('i.dash.dash-to-end-alt.text-primary'))
-            ]),
-            m('.col-4', { class: this.filteredTotal > this.itemsPerPage ? '' : ' invisible' },
-                !this.opts.pageDropdown ? null : m('.input-group.col-8.col-mx-auto', [
-                    m('span.input-group-addon.text-no-select', res.page),
-                    m('select.form-select', { onchange: this.changePage.bind(this), value: currentPage, disabled: this.pageTotal === 0 }, optionList)
-                ])
-            ),
-            m('.col-4.text-right.my-auto', res.showing
-                .replace('{0}', Math.min(this.currentStartItem + 1, this.filteredTotal))
-                .replace('{1}', Math.min(this.currentStartItem + this.itemsPerPage, this.filteredTotal))
-                .replace('{2}', this.filteredTotal)
-            )
-        ]));
+        this.updateLayout();
     };
-    */
 
     doTable.prototype.destroy = function() {
         if (this.opts.editable) {
@@ -1074,24 +970,6 @@
             $.off(window, 'mousemove', this.events.move);
             $.off(window, 'mouseup', this.events.up);
         }
-    };
-
-    doTable.prototype.init = function() {
-        if (this.opts.editable) {
-            this.events = {
-                resize: $.debounce(this.onResize.bind(this), 50),
-                move: this.onMouseMove.bind(this),
-                up: this.onMouseUp.bind(this)
-            };
-            /* turn back on once table builds correctly
-            $.on(window, 'resize', this.events.resize);
-            $.on(window, 'mousemove', this.events.move);
-            $.on(window, 'mouseup', this.events.up);
-            */
-        }
-
-        this.setLayout();
-        this.updateLayout();
     };
 
     return doTable;

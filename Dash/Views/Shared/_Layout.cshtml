@@ -36,10 +36,10 @@
                     <div class="input-group col-5 col-xl-8 col-ml-auto">
                         <span class="input-group-addon text-no-select" title="@Core.PerPage"><i class="dash dash-list-bullet"></i></span>
                         <select class="form-select dotable-items-input">
-                            <option value="10">10</option>
-                            <option value="20">20</option>
-                            <option value="50">50</option>
-                            <option value="100">100</option>
+                            <option value="10" {{?x.itemsPerPage === 10}} selected{{?}}>10</option>
+                            <option value="20" {{?x.itemsPerPage === 20}} selected{{?}}>20</option>
+                            <option value="50" {{?x.itemsPerPage === 50}} selected{{?}}>50</option>
+                            <option value="100" {{?x.itemsPerPage === 100}} selected{{?}}>100</option>
                         </select>
                     </div>
                 </div>
@@ -50,12 +50,12 @@
     <script id="tableFooterTemplate" type="text/x-dot-template">
         <div class="container">
             <div class="columns m-2">
-                <div class="col-6 col-xs-12 my-auto">{{=x.currentStartItem+1}} - {{=x.currentEndItem}} of {{=x.filteredTotal}}</div>
+                <div class="col-6 col-xs-12 my-auto"><span class="dotable-start-item">{{=x.currentStartItem+1}}</span> - <span class="dotable-end-item">{{=x.currentEndItem}}</span> @Core.TableOf <span class="dotable-total-items">{{=x.filteredTotal}}</span></div>
                 <div class="col-6 col-xs-12 btn-toolbar text-right">
-                    <button type="button" role="button" title="@Core.FirstPage" class="btn"><i class="dash dash-to-start-alt text-primary"></i></button>
-                    <button type="button" role="button" title="@Core.PreviousPage" class="btn"><i class="dash dash-to-start text-primary"></i></button>
-                    <button type="button" role="button" title="@Core.NextPage" class="btn"><i class="dash dash-to-end text-primary"></i></button>
-                    <button type="button" role="button" title="@Core.LastPage" class="btn"><i class="dash dash-to-end-alt text-primary"></i></button>
+                    <button type="button" role="button" title="@Core.FirstPage" class="btn dotable-btn-first"><i class="dash dash-to-start-alt text-primary"></i></button>
+                    <button type="button" role="button" title="@Core.PreviousPage" class="btn dotable-btn-previous"><i class="dash dash-to-start text-primary"></i></button>
+                    <button type="button" role="button" title="@Core.NextPage" class="btn dotable-btn-next"><i class="dash dash-to-end text-primary"></i></button>
+                    <button type="button" role="button" title="@Core.LastPage" class="btn dotable-btn-last"><i class="dash dash-to-end-alt text-primary"></i></button>
                 </div>
             </div>
         </div>
@@ -73,8 +73,8 @@
                     <thead class="dotable-head">
                         <tr>
                             {{~x.opts.columns :value:index}}
-                            <th class="text-no-select{{? !value.sortable }} disabled{{?}}">
-                                {{=value.label}} {{? value.sortable }}<i class="float-right dash dotable-arrow {{?!value.dir}}dash-sort{{??value.dir === 'desc'}}dash-sort-down{{??value.dir === 'asc'}}dash-sort-up{{?}}" data-type="{{=value.dataType}}" data-field="{{=value.field}}" />{{?}}
+                            <th class="text-no-select{{?!value.sortable}} disabled{{?}}">
+                                {{=value.label}} {{?value.sortable}}<i class="float-right dash dotable-arrow {{?!value.dir}}dash-sort{{??value.dir === 'desc'}}dash-sort-down{{??value.dir === 'asc'}}dash-sort-up{{?}}" data-type="{{=value.dataType}}" data-field="{{=value.field}}" />{{?}}
                             </th>
                             {{~}}
                         </tr>
@@ -85,13 +85,22 @@
         </div>
     </script>
 
-    <script id="rowTemplate" type="text/x-dot-template">
-        <tr>
-            {{~x.columns :col:index}}
-            <td>
-                {{=col.value}}
+    <script id="tableLoadingTemplate" type="text/x-dot-template">
+        <tr><td colspan="{{=x}}"><div class="loading loading-lg"></div></td></tr>
+    </script>
+
+    <script id="tableNoDataTemplate" type="text/x-dot-template">
+        <tr><td colspan="{{=x}}">@Core.NoData</td></tr>
+    </script>
+
+    <script id="tableLoadingError" type="text/x-dot-template">
+        <tr class="table-loading-error">
+            <td colspan="{{=x}}">
+                <div class="table-loading-error-message">
+                    @Core.LoadingError
+                    <button type="button" role="button" title="@Core.TryAgain" class="btn btn-info dotable-btn-refresh">@Core.TryAgain</button>
+                </div>
             </td>
-            {{~}}
         </tr>
     </script>
 

@@ -691,6 +691,15 @@ namespace Dash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to of.
+        /// </summary>
+        public static string TableOf {
+            get {
+                return ResourceManager.GetString("TableOf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Create a chart using one or many reports. Select the report(s) you want to use, and the X and Y axis columns from each. Preview the chart as you build it..
         /// </summary>
         public static string TextChart {

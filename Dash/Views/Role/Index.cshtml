@@ -12,34 +12,34 @@
         @Html.AuthorizedButton(Roles.CreateRole, "Create", "Role", btnType: DashClasses.BtnPrimary)
     </toolbar>
 
-    <dynamic-table options="@Model" type="doT"></dynamic-table>
+    <do-table searchable="true" load-all="true" url="@Url.Action("List")" id="tableRoles" template="#roleTemplate"></do-table>
 
-    <script id="roleRowTemplate" type="text/x-dot-template">
+    <script id="roleTemplate" type="text/x-dot-template">
         <tr>
-            <td>
+            <td data-width="" data-sortable="true" data-type="string" data-label="@Roles.Name" data-field="name">
                 @if (User.IsInRole("role.edit"))
                 {
-                    <a href="@Url.Action("Edit", "Role")/{{=x.id}}" title="@Core.Edit" data-method="GET" class="btn btn-link">{{=x.name}}</a>
+                    <a href="@Url.Action(" Edit", "Role" )/{{=x.id}}" title="@Core.Edit" data-method="GET" class="btn btn-link">{{=x.name}}</a>
                 }
                 else
                 {
                     @Html.Raw("{{=x.name}}")
                 }
             </td>
-            <td>
+            <td data-width="" data-sortable="false" data-type="string" data-label="@Core.Actions" data-field="actions">
                 @if (User.IsInRole("role.edit"))
                 {
-                    <a href="@Url.Action("Edit", "Role")/{{=x.id}}" title="@Core.Edit" data-method="GET" class="btn btn-warning"><i class="dash dash-edit"></i></a>
+                    <a href="@Url.Action(" Edit", "Role" )/{{=x.id}}" title="@Core.Edit" data-method="GET" class="btn btn-warning"><i class="dash dash-edit"></i></a>
                 }
                 @if (User.IsInRole("role.delete"))
                 {
-                    <a href="@Url.Action("Delete", "Role")/{{=x.id}}" title="@Core.Delete" data-method="DELETE"
+                    <a href="@Url.Action(" Delete", "Role" )/{{=x.id}}" title="@Core.Delete" data-method="DELETE"
                        data-confirm="@string.Format(Core.ConfirmDeleteBody, Roles.RoleLower)"
                        class="btn btn-error dash-confirm"><i class="dash dash-trash"></i></a>
                 }
                 @if (User.IsInRole("role.create"))
                 {
-                    <a href="@Url.Action("Copy", "Role")/{{=x.id}}" title="@Core.Copy" data-method="GET"
+                    <a href="@Url.Action(" Copy", "Role" )/{{=x.id}}" title="@Core.Copy" data-method="GET"
                        data-prompt="@Roles.CopyBody" class="btn btn-info dash-prompt"><i class="dash dash-clone"></i></a>
                 }
             </td>
