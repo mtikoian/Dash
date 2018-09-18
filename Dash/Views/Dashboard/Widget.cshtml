@@ -14,7 +14,7 @@
                 <i class="dash dash-info"></i>
             </a>
             <a href="@Url.Action("Edit", "Dashboard", new { @id = Model.Id })" title="@Widgets.EditWidget" class="btn btn-link dash-ajax fs-disabled"><i class="dash dash-pencil"></i></a>
-            <a href="@Url.Action("Delete", "Dashboard", new { @id = Model.Id })" title="@Widgets.DeleteWidget" data-method="DELETE" data-confirm="@Core.AreYouSure" class="btn btn-link btn-delete fs-disabled"><i class="dash dash-trash"></i></a>
+            <a href="@Url.Action("Delete", "Dashboard", new { @id = Model.Id })" title="@Widgets.DeleteWidget" data-method="DELETE" data-confirm="@Core.AreYouSure" class="btn btn-link btn-delete fs-disabled"><i class="dash dash-trash text-error"></i></a>
         </span>
     </div>
     <div class="grid-body">
