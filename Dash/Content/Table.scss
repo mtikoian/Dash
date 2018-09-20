@@ -29,6 +29,10 @@
                             .data-table-arrow, .dotable-arrow {
                                 font-size: 1rem;
                                 cursor: pointer;
+
+                                &.disabled {
+                                    cursor: default;
+                                }
                             }
                         }
 
