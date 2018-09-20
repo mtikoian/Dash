@@ -15,6 +15,7 @@ namespace Dash.TagHelpers
 
             output.TagName = "div";
             output.AddClass("col-12", HtmlEncoder.Default);
+            output.AddClass("pb-2", HtmlEncoder.Default);
             output.Content.AppendHtml(div);
             base.Process(context, output);
         }

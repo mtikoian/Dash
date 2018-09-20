@@ -7,11 +7,12 @@ namespace Dash.TagHelpers
 {
     public class DoTableTagHelper : BaseTagHelper
     {
+        public bool Editable { get; set; } = true;
         public string Id { get; set; }
+        public bool LoadAll { get; set; } = true;
+        public bool Searchable { get; set; } = true;
         public string Template { get; set; }
         public string Url { get; set; }
-        public bool Searchable { get; set; } = true;
-        public bool LoadAll { get; set; } = true;
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
@@ -20,6 +21,7 @@ namespace Dash.TagHelpers
             table.Attributes.Add("data-toggle", "dotable");
             table.Attributes.Add("data-template", Template);
             table.Attributes.Add("data-url", Url);
+            table.Attributes.Add("data-editable", Editable.ToString());
             table.Attributes.Add("data-searchable", Searchable.ToString());
             table.Attributes.Add("data-load-all", LoadAll.ToString());
 

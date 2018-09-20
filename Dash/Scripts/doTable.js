@@ -2,8 +2,8 @@
  * doT based table component. Supports ajax data, searching, sorting, paging, & resizing columns.
  */
 (function(root, factory) {
-    root.doTable = factory(root.doT, root.$, root.pjax, root.Alertify);
-})(this, function(doT, $, pjax, Alertify) {
+    root.doTable = factory(root.doT, root.$);
+})(this, function(doT, $) {
     'use strict';
 
     var _templates = {
@@ -102,7 +102,8 @@
             node.removeAttribute('data-json');
         } else {
             opts.id = node.getAttribute('id');
-            opts.searchable = node.getAttribute('data-searchable').toLowerCase() === 'true';
+            opts.editable = node.getAttribute('data-editable').toLowerCase() === 'true';
+            opts.searchable = node.getAttribute('data-searchable').toLowerCase() === 'true' && opts.editable;
             opts.loadAll = node.getAttribute('data-load-all').toLowerCase() === 'true';
             opts.url = node.getAttribute('data-url');
             opts.template = node.getAttribute('data-template');
