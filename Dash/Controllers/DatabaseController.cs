@@ -64,18 +64,7 @@ namespace Dash.Controllers
         public IActionResult Index()
         {
             RouteData.Values.Remove("id");
-            return View("Index", new Table("tableDatabases", Url.Action("List"), new List<TableColumn> {
-                new TableColumn("name", Databases.Name, Table.EditLink($"{Url.Action("Edit")}/{{id}}", User.IsInRole("database.edit"))),
-                new TableColumn("databaseName", Databases.DatabaseName),
-                new TableColumn("host", Databases.Host),
-                new TableColumn("user", Databases.User),
-                new TableColumn("actions", Core.Actions, sortable: false, links: new List<TableLink>()
-                        .AddIf(Table.EditButton($"{Url.Action("Edit")}/{{id}}"), User.IsInRole("database.edit"))
-                        .AddIf(Table.DeleteButton($"{Url.Action("Delete")}/{{id}}", string.Format(Core.ConfirmDeleteBody, Databases.DatabaseLower)), User.IsInRole("database.delete"))
-                        .AddIf(new TableLink($"{Url.Action("TestConnection")}/{{id}}", Html.Classes(DashClasses.DashAjax, DashClasses.BtnInfo), Databases.TestConnection, TableIcon.HeartBeat),
-                            User.IsInRole("database.create") || User.IsInRole("database.edit"))
-                )}
-            ));
+            return View("Index");
         }
 
         [HttpGet, AjaxRequestOnly, ParentAction("Index")]

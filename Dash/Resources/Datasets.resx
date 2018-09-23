@@ -190,7 +190,7 @@
     <value>Primary Source</value>
   </data>
   <data name="ConfirmImportColumns" xml:space="preserve">
-    <value>This will import any columns for the primary table and joined tables that have not already been created, and delete any columns that no longer exist. Don't forget to save the dataset after the import.</value>
+    <value>This will import any columns for the primary table and joined tables that have not already been created.</value>
   </data>
   <data name="ImportErrorDatabaseRequired" xml:space="preserve">
     <value>You must select a database before importing columns.</value>

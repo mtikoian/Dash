@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Dash.Configuration;
 using Dash.Models;
 using Dash.Resources;
@@ -63,22 +62,7 @@ namespace Dash.Controllers
         public IActionResult Index()
         {
             RouteData.Values.Remove("id");
-            return View("Index", new Table("tableUsers", Url.Action("List"),
-                new List<TableColumn> {
-                    new TableColumn("userName", Users.UserName, Table.EditLink($"{Url.Action("Edit")}/{{id}}", User.IsInRole("user.edit"))),
-                    new TableColumn("firstName", Users.FirstName),
-                    new TableColumn("lastName", Users.LastName),
-                    new TableColumn("email", Users.Email),
-                    new TableColumn("actions", Core.Actions, false, links: new List<TableLink>()
-                        .AddIf(Table.EditButton($"{Url.Action("Edit")}/{{id}}"), User.IsInRole("user.edit"))
-                        .AddIf(Table.DeleteButton($"{Url.Action("Delete")}/{{id}}", string.Format(Core.ConfirmDeleteBody, Users.UserLower)), User.IsInRole("user.delete"))
-                        .AddIf(new TableLink($"{Url.Action("Unlock")}/{{id}}", Html.Classes(DashClasses.DashAjax, DashClasses.BtnInfo),
-                            Users.Unlock, TableIcon.Unlock, HttpVerbs.Put,
-                            new Dictionary<string, object>().Append("!!", new object[] { new Dictionary<string, object>().Append("var", "isLocked") })
-                        ), User.IsInRole("user.unlock"))
-                    )
-                }
-            ));
+            return View("Index");
         }
 
         [HttpGet, AjaxRequestOnly, ParentAction("Index")]

@@ -26,19 +26,26 @@
         return a._index > b._index ? 1 : a._index < b._index ? -1 : 0;
     };
 
+    var getFieldValue = function(value) {
+        if ($.isNull(value)) {
+            return null;
+        }
+        return value.getMonth ? value : value.toLowerCase ? value.toLowerCase() : value;
+    };
+
     /**
      * Multi-sorting function for the data.
+     * @this Object[] - Array that defines current sort columns.
      * @param {Object} a - First object to compare.
      * @param {Object} b - Object to compare to.
      * @returns {number} 1 if a comes first, -1 if b comes first, else 0.
      */
     var compare = function(a, b) {
-        var sorting = this.sorting;
-        var i = 0, len = sorting.length;
+        var i = 0, len = this.length;
         for (; i < len; i++) {
-            var sort = sorting[i];
-            var aa = this.getFieldValue(a[sort.field]);
-            var bb = this.getFieldValue(b[sort.field]);
+            var sort = this[i];
+            var aa = getFieldValue(a[sort.field]);
+            var bb = getFieldValue(b[sort.field]);
 
             if (aa === null) {
                 return 1;
@@ -90,6 +97,19 @@
         }
     };
 
+    var getDisplayValue = function(displayCurrencyFormat, displayDateFormat, value, dataType) {
+        if (!dataType || $.isNull(value)) {
+            return value;
+        }
+
+        var val = value;
+        if (dataType === 'currency') {
+            val = $.accounting.formatMoney(val, displayCurrencyFormat);
+        } else if (dataType === 'date') {
+            val = $.fecha.format(val, displayDateFormat);
+        }
+        return val;
+    };
 
     var doTable = function(node) {
         var opts = {};
@@ -104,15 +124,10 @@
             opts.id = node.getAttribute('id');
             opts.editable = node.getAttribute('data-editable').toLowerCase() === 'true';
             opts.searchable = node.getAttribute('data-searchable').toLowerCase() === 'true' && opts.editable;
+            opts.storeSettings = node.getAttribute('data-store-settings').toLowerCase() === 'true';
             opts.loadAll = node.getAttribute('data-load-all').toLowerCase() === 'true';
             opts.url = node.getAttribute('data-url');
             opts.template = node.getAttribute('data-template');
-        }
-
-        var data = null;
-        if (opts.data) {
-            data = opts.data;
-            delete opts.data;
         }
 
         this.content = node;
@@ -185,6 +200,8 @@
 
         var template = $.get(this.opts.template);
         this.opts.rowTemplateFn = doT.template(template ? template.text : '');
+        this.opts.displayValueFn = getDisplayValue.bind(null, this.opts.displayCurrencyFormat, this.opts.displayDateFormat);
+
         if (template) {
             var tempNode = $.createNode();
             tempNode.innerHTML = '<table>' + this.opts.rowTemplateFn({}) + '</table>';
@@ -218,11 +235,7 @@
         var sorting = this.store('sorting');
         this.sorting = (typeof sorting === 'string' ? JSON.parse(sorting) : sorting) || [];
 
-        if (data) {
-            this.processData({ rows: data });
-        } else {
-            this.loadData();
-        }
+        this.loadData();
     };
 
     /**
@@ -405,20 +418,12 @@
         var query = val.target ? val.target.value : val;
         if (this.searchQuery !== query) {
             this.searchQuery = query;
-            this.runSearch(query);
+            this.store('searchQuery', query);
+            this.requestTimer = null;
+            this.currentStartItem = 0;
+            this.currentEndItem = 0;
+            this.filterResults(true);
         }
-    };
-
-    /**
-     * Change search query and filter results.
-     * @param {string} query - New search text.
-     */
-    doTable.prototype.runSearch = function(query) {
-        this.store('searchQuery', query);
-        this.requestTimer = null;
-        this.currentStartItem = 0;
-        this.currentEndItem = 0;
-        this.filterResults(true);
     };
 
     /**
@@ -528,7 +533,7 @@
      */
     doTable.prototype.sort = function(refresh) {
         refresh = $.coalesce(refresh, true);
-        this.data.sort(this.sorting.length > 0 ? compare.bind(this) : defaultCompare);
+        this.data.sort(this.sorting.length > 0 ? compare.bind(this.sorting) : defaultCompare);
         this.store('sorting', JSON.stringify(this.sorting));
         this.filterResults(refresh);
     };
@@ -777,68 +782,6 @@
     };
 
     /**
-     * Get the value for the field coverted to the correct data type.
-     * @param {string} value - Value to convert.
-     * @returns {*} Converted value.
-     */
-    doTable.prototype.getFieldValue = function(value) {
-        if ($.isNull(value)) {
-            return null;
-        }
-        return value.getMonth ? value : value.toLowerCase ? value.toLowerCase() : value;
-    };
-
-    /**
-     * Get the formatted value to display for the field.
-     * @param {string} value - Value to format.
-     * @param {string} dataType - Data type to format to.
-     * @returns {*} Converted value.
-     */
-    doTable.prototype.getDisplayValue = function(value, dataType) {
-        if (!dataType || $.isNull(value)) {
-            return value;
-        }
-
-        var val = value;
-        if (dataType === 'currency') {
-            val = $.accounting.formatMoney(val, this.opts.displayCurrencyFormat);
-        } else if (dataType === 'date') {
-            val = $.fecha.format(val, this.opts.displayDateFormat);
-        }
-        return val;
-    };
-
-    /**
-     * Build the table header tags.
-     * @param {Object} obj - Column to build the tag for.
-     * @returns {Object} Mithril TH node.
-     */
-    /*
-    doTable.prototype.tableHeaders = function(obj) {
-        var field = obj.field;
-        var attrs = { class: obj.classes || '' };
-    
-        var content = [obj.label || field];
-        if ($.isUndefined(obj.sortable) || obj.sortable === true) {
-            var val = $.findByKey(this.sorting, 'field', field);
-            var arrowAttrs = {
-                class: val ? (val.dir === 'ASC' ? 'dash-sort-up' : 'dash-sort-down') : this.opts.editable ? 'dash-sort' : ''
-            };
-            if (this.opts.editable) {
-                arrowAttrs.onclick = this.changeSort.bind(this, field, obj.dataType.toLowerCase());
-            }
-            content.push(m('i.float-right.dash.data-table-arrow', arrowAttrs));
-        } else {
-            attrs.class += ' disabled';
-        }
-        if (this.opts.editable) {
-            attrs.onmousedown = this.onHeaderMouseDown.bind(this);
-        }
-        return m('th.text-no-select', attrs, content);
-    };
-    */
-
-    /**
      * Build the view that actually shows the table.
      * @returns {Object}  Mithril DIV node.
      */
@@ -881,9 +824,9 @@
                         });
                     }
 
-                    var self = this;
                     var arrows = $.getAll('.dotable-arrow', thead);
                     if (arrows && arrows.length) {
+                        var self = this;
                         $.forEach(arrows, function(x) {
                             $.on(x, 'click', self.changeSort.bind(self, x.getAttribute('data-field'), x.getAttribute('data-type').toLowerCase()));
                         });
@@ -904,6 +847,8 @@
             $.on('.dotable-btn-previous', 'click', this.moveToPage.bind(this, -1, false));
             $.on('.dotable-btn-next', 'click', this.moveToPage.bind(this, 1, false));
             $.on('.dotable-btn-last', 'click', this.moveToPage.bind(this, 1, true));
+
+            $.on('.dotable-area', 'scroll', this.onScroll.bind(this));
 
             this.setLayout();
         }
@@ -937,7 +882,7 @@
         disableIf($.get('.dotable-btn-last', this.content), this.currentStartItem >= this.filteredTotal - this.itemsPerPage);
 
         // set values for showing `x - x of x` rows
-        $.setText($.get('.dotable-start-item', this.content), this.currentStartItem + 1);
+        $.setText($.get('.dotable-start-item', this.content), this.filteredTotal ? this.currentStartItem + 1 : 0);
         $.setText($.get('.dotable-end-item', this.content), this.currentEndItem);
         $.setText($.get('.dotable-total-items', this.content), this.filteredTotal);
 
@@ -955,7 +900,8 @@
                 body.innerHTML = _templates.noDataFn(this.opts.columns.length);
             } else {
                 var bodyHTML = '';
-                $.forEach(this.results, function(x) {
+                var rows = $.map(this.results, doTable.prototype.makeRow.bind(this));
+                $.forEach(rows, function(x) {
                     bodyHTML += this(x);
                 }, this.opts.rowTemplateFn);
                 body.innerHTML = bodyHTML;
@@ -963,6 +909,16 @@
         }
 
         this.updateLayout();
+    };
+
+    doTable.prototype.makeRow = function(obj) {
+        var newObj = $.clone(obj);
+        $.forEach(this.opts.columns, function(x) {
+            if (newObj.hasOwnProperty(x.field)) {
+                newObj[x.field] = this(newObj[x.field], x.dataType);
+            }
+        }, this.opts.displayValueFn);
+        return newObj;
     };
 
     doTable.prototype.destroy = function() {

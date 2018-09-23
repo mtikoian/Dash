@@ -22,18 +22,19 @@ namespace Dash.TagHelpers
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
-            (HtmlHelper as IViewContextAware).Contextualize(ViewContext);
+            Contextualize();
+            output.TagMode = TagMode.StartTagAndEndTag;
             output.TagName = "li";
             output.AddClass("breadcrumb-item", HtmlEncoder.Default);
             if (IsActive)
             {
                 output.Attributes.Add("data-pjax-title", Label);
-                HtmlHelper.ViewBag.Title = Label;
-                var urlHelper = new UrlHelper(HtmlHelper.ViewContext);
+                _HtmlHelper.ViewBag.Title = Label;
+                var urlHelper = new UrlHelper(_HtmlHelper.ViewContext);
                 output.Attributes.Add("data-pjax-url", urlHelper.Action(Action, Controller, RouteValues));
                 output.Attributes.Add("data-pjax-method", "GET");
             }
-            output.Content.AppendHtml(Html.AuthorizedActionLink(HtmlHelper, Label, Action, Controller, RouteValues, returnEmpty: false, hasAccess: !IsActive));
+            output.Content.AppendHtml(Html.AuthorizedActionLink(_HtmlHelper, Label, Action, Controller, RouteValues, returnEmpty: false, hasAccess: !IsActive));
             base.Process(context, output);
         }
     }

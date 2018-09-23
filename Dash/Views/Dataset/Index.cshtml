@@ -1,16 +1,31 @@
 ﻿@using Dash.Resources
-@model Table
 
 <body-content>
     <breadcrumb>
-        <breadcrumb-item label="@Datasets.ViewAll" controller="Dataset" action="Index" is-active="true"></breadcrumb-item>
+        <breadcrumb-item label="@Datasets.ViewAll" controller="Dataset" action="Index" is-active="true" />
     </breadcrumb>
 
     <partial name="_Toast" />
 
-    <toolbar no-render="@(!User.IsInRole("dataset.create"))">
-        @Html.AuthorizedButton(Datasets.CreateDataset, "Create", "Dataset", null, DashClasses.BtnPrimary)
+    <toolbar>
+        <authorized-button controller="Dataset" action="Create" title="@Datasets.CreateDataset" />
     </toolbar>
 
-    <dynamic-table options="@Model"></dynamic-table>
+    <do-table url="@Url.Action("List")" id="tableDatabases" template="#databaseTemplate" />
+
+    <do-row id="databaseTemplate">
+        <do-column label="@Datasets.Name" field="name">
+            <do-edit-link controller="Dataset" text-property="name" />
+        </do-column>
+        <do-column label="@Databases.DatabaseName" field="databaseName">
+            <do-edit-link controller="Database" text-property="databaseName" id-property="databaseId" />
+        </do-column>
+        <do-column label="@Databases.Host" field="databaseHost" text-property="databaseHost" />
+        <do-column label="@Datasets.PrimarySource" field="primarySource" text-property="primarySource" />
+        <do-column label="@Core.Actions" field="actions" sortable="false">
+            <do-edit-button controller="Dataset" />
+            <do-delete-button controller="Dataset" confirm="@Datasets.ConfirmDelete" />
+            <do-copy-button controller="Dataset" prompt="@Datasets.NewName" />
+        </do-column>
+    </do-row>
 </body-content>

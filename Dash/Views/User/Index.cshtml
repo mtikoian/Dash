@@ -1,16 +1,31 @@
 ﻿@using Dash.Resources
-@model Table
 
 <body-content>
     <breadcrumb>
-        <breadcrumb-item label="@Users.ViewAll" controller="User" action="Index" is-active="true"></breadcrumb-item>
+        <breadcrumb-item label="@Users.ViewAll" controller="User" action="Index" is-active="true" />
     </breadcrumb>
 
     <partial name="_Toast" />
 
-    <toolbar no-render="@(!User.IsInRole("user.create"))">
-        @Html.AuthorizedButton(Users.CreateUser, "Create", "User", null, DashClasses.BtnPrimary)
+    <toolbar>
+        <authorized-button controller="User" action="Create" title="@Users.CreateUser" />
     </toolbar>
 
-    <dynamic-table options="@Model"></dynamic-table>
+    <do-table url="@Url.Action("List")" id="tableUsers" template="#userTemplate" />
+
+    <do-row id="userTemplate">
+        <do-column label="@Users.UserName" field="userName">
+            <do-edit-link controller="User" text-property="userName" />
+        </do-column>
+        <do-column label="@Users.FirstName" field="firstName" text-property="firstName" />
+        <do-column label="@Users.LastName" field="lastName" text-property="lastName" />
+        <do-column label="@Users.Email" field="email" text-property="email" />
+        <do-column label="@Core.Actions" field="actions" sortable="false">
+            <do-edit-button controller="User" />
+            <do-delete-button controller="User" confirm="@string.Format(Core.ConfirmDeleteBody, Users.UserLower)" />
+            {{?x.isLocked}}
+            <do-link controller="User" action="Unlock" title="@Users.Unlock" class="btn btn-info" method="Put"><i class="dash dash-unlock"></i></do-link>
+            {{?}}
+        </do-column>
+    </do-row>
 </body-content>

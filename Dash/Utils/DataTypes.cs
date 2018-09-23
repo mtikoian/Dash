@@ -668,6 +668,19 @@ namespace Dash
         }
 
         /// <summary>
+        /// Check if the user has access to a controller/action combo.
+        /// </summary>
+        /// <param name="claimsPrincipal">Claims principal for user.</param>
+        /// <param name="controller">Requested controller.</param>
+        /// <param name="action">Requested action.</param>
+        /// <returns>True if user has access, else false.</returns>
+        public static bool HasAccess(this ClaimsPrincipal claimsPrincipal, string controller, string action, HttpVerbs method = HttpVerbs.Get)
+        {
+            var permissions = new ControllerAction(controller, action, method).EffectivePermissions();
+            return permissions.Any(x => claimsPrincipal.IsInRole(x));
+        }
+
+        /// <summary>
         /// Check if user has help enabled.
         /// </summary>
         /// <param name="httpContext">Current request context.</param>

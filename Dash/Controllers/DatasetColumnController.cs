@@ -91,17 +91,7 @@ namespace Dash.Controllers
         public IActionResult Index(int id)
         {
             RouteData.Values.Remove("id");
-            var model = DbContext.Get<Dataset>(id);
-            model.Table = new Table("tableDatasetColumns", Url.Action("List", values: new { id }), new List<TableColumn> {
-                new TableColumn("title", Datasets.ColumnTitle, Table.EditLink($"{Url.Action("Edit")}/{{id}}", User.IsInRole("datasetcolumn.edit"))),
-                new TableColumn("columnName", Datasets.ColumnName),
-                new TableColumn("dataTypeName", Datasets.ColumnDataType),
-                new TableColumn("actions", Core.Actions, sortable: false, links: new List<TableLink>()
-                        .AddIf(Table.EditButton($"{Url.Action("Edit")}/{{id}}"), User.IsInRole("datasetcolumn.edit"))
-                        .AddIf(Table.DeleteButton($"{Url.Action("Delete")}/{{id}}", Datasets.ConfirmDeleteColumn), User.IsInRole("datasetcolumn.delete"))
-                )}
-            ) { StoreSettings = false };
-            return View("Index", model);
+            return View("Index", DbContext.Get<Dataset>(id));
         }
 
         [HttpGet, AjaxRequestOnly, ParentAction("Index")]

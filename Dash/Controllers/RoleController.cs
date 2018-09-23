@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Dash.Configuration;
+﻿using Dash.Configuration;
 using Dash.Models;
 using Dash.Resources;
 using Microsoft.AspNetCore.Authorization;

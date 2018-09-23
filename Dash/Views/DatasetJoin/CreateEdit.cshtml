@@ -5,8 +5,8 @@
 <body-content>
     <breadcrumb>
         <breadcrumb-item label="@Datasets.ViewAll" controller="Dataset" action="Index"></breadcrumb-item>
-        <breadcrumb-item label="@Datasets.EditDataset" controller="Dataset" action="Edit" route-values="@(new { Id = Model.Id })"></breadcrumb-item>
-        <breadcrumb-item label="@Datasets.Columns" controller="DatasetColumn" action="Index" route-values="@(new { Id = Model.DatasetId })"></breadcrumb-item>
+        <breadcrumb-item label="@Datasets.EditDataset" controller="Dataset" action="Edit" route-values="@(new { Id = Model.DatasetId })"></breadcrumb-item>
+        <breadcrumb-item label="@Datasets.Joins" controller="DatasetJoin" action="Index" route-values="@(new { Id = Model.DatasetId })"></breadcrumb-item>
         <breadcrumb-item label="@(Model.IsCreate ? Datasets.CreateJoin : Datasets.EditJoin)" controller="DatasetJoin" action="@Model.FormAction" route-values="@(Model.IsCreate ? null : new { Id = Model.Id })" is-active="true"></breadcrumb-item>
     </breadcrumb>
 

@@ -1,16 +1,29 @@
 ﻿@using Dash.Resources
-@model Table
 
 <body-content>
     <breadcrumb>
-        <breadcrumb-item label="@Databases.ViewAll" controller="Database" action="Index" is-active="true"></breadcrumb-item>
+        <breadcrumb-item label="@Databases.ViewAll" controller="Database" action="Index" is-active="true" />
     </breadcrumb>
 
     <partial name="_Toast" />
 
-    <toolbar no-render="@(!User.IsInRole("database.create"))">
-        @Html.AuthorizedButton(Databases.CreateDatabase, "Create", "Database", null, DashClasses.BtnPrimary)
+    <toolbar>
+        <authorized-button controller="Database" action="Create" title="@Databases.CreateDatabase" />
     </toolbar>
 
-    <dynamic-table options="@Model"></dynamic-table>
+    <do-table url="@Url.Action("List")" id="tableDatabases" template="#databaseTemplate" />
+
+    <do-row id="databaseTemplate">
+        <do-column label="@Databases.Name" field="name">
+            <do-edit-link controller="Database" text-property="name" />
+        </do-column>
+        <do-column label="@Databases.DatabaseName" field="databaseName" text-property="databaseName" />
+        <do-column label="@Databases.Host" field="host" text-property="host" />
+        <do-column label="@Databases.User" field="user" text-property="user" />
+        <do-column label="@Core.Actions" field="actions" sortable="false">
+            <do-edit-button controller="Database" />
+            <do-delete-button controller="Database" confirm="@string.Format(Core.ConfirmDeleteBody, Databases.DatabaseLower)" />
+            <do-link controller="Database" action="TestConnection" title="@Databases.TestConnection" class="btn btn-info"><i class="dash dash-heartbeat"></i></do-link>
+        </do-column>
+    </do-row>
 </body-content>

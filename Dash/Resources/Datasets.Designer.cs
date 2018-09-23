@@ -178,7 +178,7 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This will import any columns for the primary table and joined tables that have not already been created, and delete any columns that no longer exist. Don&apos;t forget to save the dataset after the import..
+        ///   Looks up a localized string similar to This will import any columns for the primary table and joined tables that have not already been created..
         /// </summary>
         public static string ConfirmImportColumns {
             get {

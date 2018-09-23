@@ -11,6 +11,7 @@ namespace Dash.TagHelpers
         public string Id { get; set; }
         public bool LoadAll { get; set; } = true;
         public bool Searchable { get; set; } = true;
+        public bool StoreSettings { get; set; } = true;
         public string Template { get; set; }
         public string Url { get; set; }
 
@@ -23,8 +24,10 @@ namespace Dash.TagHelpers
             table.Attributes.Add("data-url", Url);
             table.Attributes.Add("data-editable", Editable.ToString());
             table.Attributes.Add("data-searchable", Searchable.ToString());
+            table.Attributes.Add("data-store-settings", StoreSettings.ToString());
             table.Attributes.Add("data-load-all", LoadAll.ToString());
 
+            output.TagMode = TagMode.StartTagAndEndTag;
             output.TagName = "div";
             output.AddClass("col-12", HtmlEncoder.Default);
             output.Content.AppendHtml(table);

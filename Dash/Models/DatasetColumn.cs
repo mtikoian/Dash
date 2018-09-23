@@ -38,7 +38,6 @@ namespace Dash.Models
         public string ColumnName { get; set; }
 
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
-        [JilDirective(true)]
         public int DatasetId { get; set; }
 
         [JilDirective(true), BindNever, ValidateNever]

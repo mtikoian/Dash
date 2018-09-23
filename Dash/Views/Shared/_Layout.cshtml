@@ -54,7 +54,7 @@
     <script id="tableFooterTemplate" type="text/html">
         <div class="container">
             <div class="columns m-2">
-                <div class="col-6 col-sm-12 text-bold"><span class="dotable-start-item">{{=x.currentStartItem+1}}</span> - <span class="dotable-end-item">{{=x.currentEndItem}}</span> @Core.TableOf <span class="dotable-total-items">{{=x.filteredTotal}}</span></div>
+                <div class="col-6 col-sm-12 text-bold"><span class="dotable-start-item">{{=(x.filteredTotal ? x.currentStartItem + 1 : 0)}}</span> - <span class="dotable-end-item">{{=x.currentEndItem}}</span> @Core.TableOf <span class="dotable-total-items">{{=x.filteredTotal}}</span></div>
                 <div class="col-6 col-sm-12 btn-toolbar text-right">
                     <button type="button" role="button" title="@Core.FirstPage" class="btn dotable-btn-first"><i class="dash dash-to-start-alt text-primary"></i></button>
                     <button type="button" role="button" title="@Core.PreviousPage" class="btn dotable-btn-previous"><i class="dash dash-to-start text-primary"></i></button>

@@ -2,25 +2,25 @@
 
 <body-content>
     <breadcrumb>
-        <breadcrumb-item label="@Roles.ViewAll" controller="Role" action="Index" is-active="true"></breadcrumb-item>
+        <breadcrumb-item label="@Roles.ViewAll" controller="Role" action="Index" is-active="true" />
     </breadcrumb>
 
     <partial name="_Toast" />
 
-    <toolbar no-render="@(!User.IsInRole("role.create"))">
-        @Html.AuthorizedButton(Roles.CreateRole, "Create", "Role", btnType: DashClasses.BtnPrimary)
+    <toolbar>
+        <authorized-button controller="Role" action="Create" title="@Roles.CreateRole" />
     </toolbar>
 
-    <do-table url="@Url.Action("List")" id="tableRoles" template="#roleTemplate"></do-table>
+    <do-table url="@Url.Action("List")" id="tableRoles" template="#roleTemplate" />
 
     <do-row id="roleTemplate">
         <do-column label="@Roles.Name" field="name">
-            <do-edit-link controller="Role" action="Edit" has-access="@User.IsInRole("role.edit")"></do-edit-link>
+            <do-edit-link controller="Role" text-property="name" />
         </do-column>
         <do-column label="@Core.Actions" field="actions" sortable="false">
-            <do-edit-button controller="Role" action="Edit" has-access="@User.IsInRole("role.edit")"></do-edit-button>
-            <do-delete-button controller="Role" action="Delete" confirm="@string.Format(Core.ConfirmDeleteBody, Roles.RoleLower)" has-access="@User.IsInRole("role.delete")"></do-delete-button>
-            <do-copy-button controller="Role" action="Copy" prompt="@Roles.CopyBody" has-access="@User.IsInRole("role.create")"></do-copy-button>
+            <do-edit-button controller="Role" />
+            <do-delete-button controller="Role" confirm="@string.Format(Core.ConfirmDeleteBody, Roles.RoleLower)" />
+            <do-copy-button controller="Role" prompt="@Roles.CopyBody" />
         </do-column>
     </do-row>
 </body-content>

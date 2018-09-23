@@ -13,9 +13,27 @@
 
     <tab-panel id="joins">
         <toolbar>
-            @Html.AuthorizedButton(Core.Add, "Create", "DatasetJoin", new { Id = Model.Id }, DashClasses.BtnPrimary, hasAccess: User.IsInRole("datasetjoin.create"))
+            <authorized-button controller="DatasetJoin" action="Create" route-values="@(new { Id = Model.Id })" title="@Core.Add" />
         </toolbar>
 
-        <dynamic-table options="@Model.Table"></dynamic-table>
+        <do-table url="@Url.Action("List", new { Id = Model.Id })" id="tableDatasetJoins_@Model.Id" template="#datasetJoinTemplate" searchable="false" />
+
+        <do-row id="datasetJoinTemplate">
+            <do-column label="@Datasets.JoinTableName" field="tableName" sortable="false">
+                <do-edit-link controller="DatasetJoin" text-property="tableName" parent-id-property="datasetId" />
+            </do-column>
+            <do-column label="@Datasets.JoinType" field="joinName" text-property="joinName" sortable="false" />
+            <do-column label="@Datasets.JoinKeys" field="keys" text-property="keys" sortable="false" />
+            <do-column label="@Core.Actions" field="actions" sortable="false">
+                <do-edit-button controller="DatasetJoin" parent-id-property="datasetId" />
+                <do-delete-button controller="DatasetJoin" parent-id-property="datasetId" confirm="@Datasets.ConfirmDeleteJoin" />
+                {{?x.joinOrder > 0}}
+                <do-up-button controller="DatasetJoin" parent-id-property="datasetId" />
+                {{?}}
+                {{?!x.isLast}}
+                <do-down-button controller="DatasetJoin" parent-id-property="datasetId" />
+                {{?}}
+            </do-column>
+        </do-row>
     </tab-panel>
 </body-content>

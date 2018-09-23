@@ -73,19 +73,7 @@ namespace Dash.Controllers
         public IActionResult Index(int id)
         {
             RouteData.Values.Remove("id");
-            var model = DbContext.Get<Dataset>(id);
-            model.Table = new Table("tableDatasetJoins", Url.Action("List", values: new { id }), new List<TableColumn> {
-                new TableColumn("tableName", Datasets.JoinTableName, Table.EditLink($"{Url.Action("Edit")}/{{datasetId}}/{{id}}", User.IsInRole("datasetjoin.edit")), false),
-                new TableColumn("joinName", Datasets.JoinType, sortable: false),
-                new TableColumn("keys", Datasets.JoinKeys, sortable: false),
-                new TableColumn("actions", Core.Actions, sortable: false, links: new List<TableLink>()
-                        .AddIf(Table.EditButton($"{Url.Action("Edit")}/{{datasetId}}/{{id}}"), User.IsInRole("datasetjoin.edit"))
-                        .AddIf(Table.DeleteButton($"{Url.Action("Delete")}/{{datasetId}}/{{id}}", Datasets.ConfirmDeleteJoin), User.IsInRole("datasetjoin.delete"))
-                        .AddIf(Table.UpButton($"{Url.Action("MoveUp")}/{{datasetId}}/{{id}}", jsonLogic: new Dictionary<string, object>().Append(">", new object[] { new Dictionary<string, object>().Append("var", "joinOrder"), 0 })), User.IsInRole("datasetjoin.edit"))
-                        .AddIf(Table.DownButton($"{Url.Action("MoveDown")}/{{datasetId}}/{{id}}", jsonLogic: new Dictionary<string, object>().Append("!", new object[] { new Dictionary<string, object>().Append("var", "isLast") })), User.IsInRole("datasetjoin.edit"))
-                )}
-            ) { StoreSettings = false };
-            return View("Index", model);
+            return View("Index", DbContext.Get<Dataset>(id));
         }
 
         [HttpGet, AjaxRequestOnly, ParentAction("Index")]

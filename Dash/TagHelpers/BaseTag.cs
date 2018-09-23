@@ -6,7 +6,7 @@ namespace Dash.TagHelpers
 {
     public class BaseTagHelper : TagHelper
     {
-        public IHtmlHelper HtmlHelper;
+        public IHtmlHelper _HtmlHelper;
 
         public BaseTagHelper()
         {
@@ -14,7 +14,7 @@ namespace Dash.TagHelpers
 
         public BaseTagHelper(IHtmlHelper htmlHelper)
         {
-            HtmlHelper = htmlHelper;
+            _HtmlHelper = htmlHelper;
         }
 
         public bool NoRender { get; set; }
@@ -30,6 +30,11 @@ namespace Dash.TagHelpers
                 output.SuppressOutput();
             }
             base.Process(context, output);
+        }
+
+        public void Contextualize()
+        {
+            (_HtmlHelper as IViewContextAware).Contextualize(ViewContext);
         }
     }
 }

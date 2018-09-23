@@ -13,13 +13,12 @@ namespace Dash.TagHelpers
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
-            (HtmlHelper as IViewContextAware).Contextualize(ViewContext);
-
+            Contextualize();
             var ul = new TagBuilder("ul");
             ul.AddCssClass("breadcrumb");
             var li = new TagBuilder("li");
             li.AddCssClass("breadcrumb-item");
-            li.InnerHtml.AppendHtml(Html.AuthorizedActionLink(HtmlHelper, Core.Dashboard, "Index", "Dashboard"));
+            li.InnerHtml.AppendHtml(Html.AuthorizedActionLink(_HtmlHelper, Core.Dashboard, "Index", "Dashboard"));
             ul.InnerHtml.AppendHtml(li);
             ul.InnerHtml.AppendHtml(output.GetChildContentAsync().Result);
 

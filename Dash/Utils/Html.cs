@@ -619,7 +619,7 @@ namespace Dash
             return explorer.Metadata.IsRequired ? true : (attrs != null && attrs.ContainsKey("required") && attrs["required"].ToString().ToLower() == "true");
         }
 
-        private static void Merge(this List<string> list, string item)
+        public static void Merge(this List<string> list, string item)
         {
             if (!list.Contains(item, StringComparer.OrdinalIgnoreCase))
             {

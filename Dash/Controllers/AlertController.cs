@@ -82,19 +82,7 @@ namespace Dash.Controllers
         public IActionResult Index()
         {
             RouteData.Values.Remove("id");
-            return View("Index", new Table("tableAlerts", Url.Action("List"),
-                new List<TableColumn> {
-                    new TableColumn("name", Alerts.Name, Table.EditLink($"{Url.Action("Edit")}/{{id}}", User.IsInRole("alert.edit"))),
-                    new TableColumn("subject", Alerts.Subject),
-                    new TableColumn("sendTo", Alerts.SendTo),
-                    new TableColumn("isActive", Alerts.IsActive),
-                    new TableColumn("lastRunDate", Alerts.LastRunDate, dataType: TableDataType.Date),
-                    new TableColumn("actions", Core.Actions, sortable: false, links: new List<TableLink>()
-                        .AddIf(Table.EditButton($"{Url.Action("Edit")}/{{id}}"), User.IsInRole("alert.edit"))
-                        .AddIf(Table.DeleteButton($"{Url.Action("Delete")}/{{id}}", string.Format(Core.ConfirmDeleteBody, Alerts.AlertLower)), User.IsInRole("alert.delete"))
-                        .AddIf(Table.CopyButton($"{Url.Action("Copy")}/{{id}}", Alerts.CopyBody), User.IsInRole("alert.create")))
-                }
-            ));
+            return View("Index");
         }
 
         [HttpGet, AjaxRequestOnly, ParentAction("Index")]

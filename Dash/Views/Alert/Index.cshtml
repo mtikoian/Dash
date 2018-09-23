@@ -1,16 +1,30 @@
 ﻿@using Dash.Resources
-@model Table
 
 <body-content>
     <breadcrumb>
-        <breadcrumb-item label="@Alerts.ViewAll" controller="Alert" action="Index" is-active="true"></breadcrumb-item>
+        <breadcrumb-item label="@Alerts.ViewAll" controller="Alert" action="Index" is-active="true" />
     </breadcrumb>
 
     <partial name="_Toast" />
 
-    <toolbar no-render="@(!User.IsInRole("alert.create"))">
-        @Html.AuthorizedButton(Alerts.CreateAlert, "Create", "Alert", null, DashClasses.BtnPrimary)
+    <toolbar>
+        <authorized-button controller="Alert" action="Create" title="@Alerts.CreateAlert" />
     </toolbar>
 
-    <dynamic-table options="@Model"></dynamic-table>
+    <do-table url="@Url.Action("List")" id="tableAlerts" template="#alertTemplate" />
+
+    <do-row id="alertTemplate">
+        <do-column label="@Alerts.Name" field="name">
+            <do-edit-link controller="Alert" text-property="name" />
+        </do-column>
+        <do-column label="@Alerts.Subject" field="subject" text-property="subject" />
+        <do-column label="@Alerts.SendTo" field="sendTo" text-property="sendTo" />
+        <do-column label="@Alerts.IsActive" field="isActive" text-property="isActive" />
+        <do-column label="@Alerts.LastRunDate" field="lastRunDate" text-property="lastRunDate" type="Date" />
+        <do-column label="@Core.Actions" field="actions" sortable="false">
+            <do-edit-button controller="Alert" />
+            <do-delete-button controller="Alert" confirm="@string.Format(Core.ConfirmDeleteBody, Alerts.AlertLower)" />
+            <do-copy-button controller="Alert" prompt="@Alerts.CopyBody" />
+        </do-column>
+    </do-row>
 </body-content>
