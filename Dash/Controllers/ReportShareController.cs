@@ -114,7 +114,6 @@ namespace Dash.Controllers
                 ViewBag.Error = ModelState.ToErrorString();
                 return CreateEditView(model);
             }
-            model.RequestUserId = User.UserId();
             DbContext.Save(model);
             ViewBag.Message = Reports.SuccessSavingShare;
             return Index(model.ReportId);

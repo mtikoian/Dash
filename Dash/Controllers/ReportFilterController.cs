@@ -130,7 +130,6 @@ namespace Dash.Controllers
                 ViewBag.Error = Core.ErrorInvalidId;
                 return ReportRedirect();
             }
-            model.RequestUserId = User.UserId();
             if (!model.MoveDown(out var error))
             {
                 ViewBag.Error = error;
@@ -149,7 +148,6 @@ namespace Dash.Controllers
                 ViewBag.Error = Core.ErrorInvalidId;
                 return ReportRedirect();
             }
-            model.RequestUserId = User.UserId();
             if (!model.MoveUp(out var error))
             {
                 ViewBag.Error = error;
@@ -183,7 +181,6 @@ namespace Dash.Controllers
                 ViewBag.Error = ModelState.ToErrorString();
                 return CreateEditView(model);
             }
-            model.RequestUserId = User.UserId();
             DbContext.Save(model);
             ViewBag.Message = Reports.SuccessSavingFilter;
             return Index(model.ReportId);
