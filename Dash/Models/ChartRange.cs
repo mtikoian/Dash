@@ -122,7 +122,7 @@ namespace Dash.Models
         public bool MoveDown(out string error)
         {
             error = "";
-            var ranges = DbContext.GetAll<ChartRange>(new { ReportId }).ToList();
+            var ranges = DbContext.GetAll<ChartRange>(new { ChartId }).ToList();
             if (DisplayOrder == ranges.Count - 1)
             {
                 // can't move any higher

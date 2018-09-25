@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Dash.Configuration;
+﻿using Dash.Configuration;
 using Dash.Models;
 using Dash.Resources;
 using Microsoft.AspNetCore.Authorization;
@@ -72,19 +70,10 @@ namespace Dash.Controllers
         public IActionResult Index(int id)
         {
             RouteData.Values.Remove("id");
-            var model = DbContext.Get<Chart>(id);
-            model.Table = new Table("tableChartShares", Url.Action("List", values: new { id }), new List<TableColumn> {
-                new TableColumn("userName", Core.User, Table.EditLink($"{Url.Action("Edit")}/{{chartId}}/{{id}}", User.IsInRole("chartshare.edit"))),
-                new TableColumn("roleName", Core.Role, Table.EditLink($"{Url.Action("Edit")}/{{chartId}}/{{id}}", User.IsInRole("chartshare.edit"))),
-                new TableColumn("actions", Core.Actions, sortable: false, links: new List<TableLink>()
-                        .AddIf(Table.EditButton($"{Url.Action("Edit")}/{{chartId}}/{{id}}"), User.IsInRole("chartshare.edit"))
-                        .AddIf(Table.DeleteButton($"{Url.Action("Delete")}/{{chartId}}/{{id}}", Charts.ConfirmDeleteShare), User.IsInRole("chartshare.delete"))
-                )}
-            ) { StoreSettings = false };
-            return View("Index", model);
+            return View("Index", DbContext.Get<Chart>(id));
         }
 
-        [HttpGet, AjaxRequestOnly, ParentAction("Index")]
+        [HttpPost, AjaxRequestOnly, ParentAction("Index")]
         public IActionResult List(int id)
         {
             return Rows(DbContext.Get<Chart>(id).ChartShare);

@@ -5,7 +5,7 @@
 <body-content>
     <breadcrumb>
         <breadcrumb-item label="@Reports.ViewAll" controller="Report" action="Index"></breadcrumb-item>
-        <breadcrumb-item label="@Model.ReportName" controller="Report" action="Edit" route-values="@(new { Model.ReportId })"></breadcrumb-item>
+        <breadcrumb-item label="@Model.ReportName" controller="Report" action="Edit" route-values="@(new { Id = Model.ReportId })"></breadcrumb-item>
         <breadcrumb-item label="@Core.ViewSql" controller="Report" action="Sql" route-values="@(new { Id = Model.ReportId })" is-active="true"></breadcrumb-item>
     </breadcrumb>
 

@@ -133,6 +133,8 @@ namespace Dash.Models
         private List<DatasetColumn> _DatasetColumnsByDisplay { get; set; }
         private User _Owner { get; set; }
 
+        public bool IsDashboard { get; set; } = false;
+
         public Report Copy(string name = null)
         {
             var newReport = this.Clone();
@@ -190,17 +192,17 @@ namespace Dash.Models
                     if (keyedSorts.ContainsKey(x.ColumnId.ToString()))
                     {
                         var sortColumn = keyedSorts[x.ColumnId.ToString()];
-                        var dir = sortColumn.Dir.ToUpper();
+                        var dir = sortColumn.SortDir.ToUpper();
 
                         if (x.SortDirection != dir)
                         {
                             changed = true;
                             x.SortDirection = dir;
                         }
-                        if (x.SortOrder != sortColumn.Index + 1)
+                        if (x.SortOrder != sortColumn.SortOrder + 1)
                         {
                             changed = true;
-                            x.SortOrder = sortColumn.Index + 1;
+                            x.SortOrder = sortColumn.SortOrder + 1;
                         }
                     }
                     else
@@ -233,7 +235,7 @@ namespace Dash.Models
             }
         }
 
-        public ReportResult GetData(IAppConfiguration appConfig, int start, int rowLimit, bool hasDatasetAccess)
+        public ReportResult GetData(IAppConfiguration appConfig, int start, int rowLimit, bool includeSql)
         {
             // build a obj to store our results
             var response = new ReportResult() { UpdatedDate = DateUpdated, ReportId = Id, ReportName = Name, IsOwner = IsOwner };
@@ -264,7 +266,7 @@ namespace Dash.Models
             {
                 // build the final sql for getting the record count
                 var countSql = sqlQuery.CountStatement(true);
-                if (hasDatasetAccess)
+                if (includeSql)
                 {
                     response.CountSql = countSql;
                 }
@@ -300,7 +302,7 @@ namespace Dash.Models
             response.Total = totalRecords;
             response.FilteredTotal = totalRecords;
             response.Rows = new List<object>();
-            if (hasDatasetAccess)
+            if (includeSql)
             {
                 response.DataSql = Dataset.IsProc ? sqlQuery.ExecStatement(true) : sqlQuery.SelectStatement(start, rowLimit, true);
             }
@@ -362,30 +364,6 @@ namespace Dash.Models
             return result;
         }
 
-        public IEnumerable<object> ReportColumns()
-        {
-            if (ReportColumn == null)
-            {
-                return null;
-            }
-            return ReportColumn.Select(x => {
-                var datasetColumn = Dataset.DatasetColumn.FirstOrDefault(c => c.Id == x.ColumnId);
-                var link = datasetColumn?.Link;
-                if (!link.IsEmpty())
-                {
-                    Dataset.DatasetColumn.ForEach(dc => link = link.ReplaceCase(dc.ColumnName, $"{{{dc.Alias}}}"));
-                }
-                return new {
-                    Field = datasetColumn?.Alias ?? "",
-                    Label = datasetColumn?.Title,
-                    Sortable = true,
-                    DataType = datasetColumn?.TableDataType.ToString() ?? "",
-                    Width = x.Width,
-                    Links = new List<TableLink>().AddIf(new TableLink(link, Html.Classes().Append("target", "_blank")), !link.IsEmpty())
-                };
-            });
-        }
-
         public bool Save(bool lazySave = true)
         {
             DbContext.WithTransaction(() => {
@@ -400,48 +378,6 @@ namespace Dash.Models
             });
 
             return true;
-        }
-
-        public IEnumerable<TableSorting> SortColumns()
-        {
-            if (ReportColumn == null)
-            {
-                return null;
-            }
-            var sortColumns = ReportColumn.Where(c => c.SortOrder > 0).OrderBy(c => c.SortOrder);
-            return sortColumns.Select(x => {
-                var datasetColumn = Dataset.DatasetColumn.FirstOrDefault(c => c.Id == x.ColumnId);
-                return new TableSorting { Field = datasetColumn?.Alias ?? "", Dir = x.SortDirection, DataType = datasetColumn?.TableDataType.ToString() ?? "" };
-            });
-        }
-
-        public Table TableOptions(IUrlHelper urlHelper)
-        {
-            return new Table($"report{Id}", urlHelper.Action("Data", "Report", new { Id = Id, Save = true }),
-                ReportColumn.Select(x => {
-                    var datasetColumn = Dataset.DatasetColumn.FirstOrDefault(c => c.Id == x.ColumnId);
-                    var link = datasetColumn?.Link;
-                    if (!link.IsEmpty())
-                    {
-                        Dataset.DatasetColumn.ForEach(dc => link = link.ReplaceCase(dc.ColumnName, $"{{{dc.Alias}}}"));
-                    }
-                    return new TableColumn(datasetColumn?.Alias ?? "", datasetColumn?.Title, true, datasetColumn?.TableDataType ?? TableDataType.String,
-                        new List<TableLink>().AddIf(new TableLink(link, Html.Classes().Append("target", "_blank")), !link.IsEmpty()), x.Width
-                    );
-                })
-            ) {
-                RequestMethod = HttpVerbs.Post,
-                Searchable = false,
-                LoadAllData = false,
-                Editable = IsOwner,
-                Sorting = SortColumns(),
-                StoreUrl = urlHelper.Action("UpdateColumnWidths", "Report", new { Id = Id, Save = IsOwner }),
-                StoreRequestMethod = HttpVerbs.Put,
-                Width = Width,
-                DisplayDateFormat = Dataset.DateFormat,
-                DisplayCurrencyFormat = Dataset.CurrencyFormat,
-                RequestParams = new { Id = Id, Save = IsOwner }
-            };
         }
 
         public void UpdateColumns(List<ReportColumn> newColumns, int? userId = null)

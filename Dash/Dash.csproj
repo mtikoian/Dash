@@ -163,6 +163,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Update="Views\Shared\_Report.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
     <EmbeddedResource Update="Resources\Account.es.resx">
       <Generator/>
     </EmbeddedResource>

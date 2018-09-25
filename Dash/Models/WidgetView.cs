@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using Dash.Resources;
 using Jil;
 using Microsoft.AspNetCore.Mvc;
@@ -28,8 +27,7 @@ namespace Dash.Models
 
     public class WidgetView : BaseModel
     {
-        private List<Column> _Columns;
-        private List<DatasetColumn> _DatasetColumns;
+        private Report _Report;
 
         public WidgetView()
         {
@@ -50,46 +48,6 @@ namespace Dash.Models
 
         [Display(Name = "Chart", ResourceType = typeof(Widgets))]
         public int? ChartId { get; set; }
-
-        [Ignore]
-        [BindNever, ValidateNever]
-        public IEnumerable<object> Columns
-        {
-            get
-            {
-                if (_Columns == null && ReportId.HasPositiveValue())
-                {
-                    _Columns = DbContext.Query<Column>("ColumnGetForReport", new { ReportId })
-                        .Each(x => x.DbContext = DbContext).ToList();
-                }
-                if (ReportId.HasPositiveValue() && DatasetId == 0)
-                {
-                    DatasetId = DbContext.Get<Report>(ReportId.Value)?.DatasetId ?? 0;
-                }
-
-                // may want to rework how i query columns since i have to make another query for datasetcolumns anyway
-                if (_DatasetColumns == null && DatasetId > 0)
-                {
-                    _DatasetColumns = DbContext.GetAll<DatasetColumn>(new { DatasetId }).ToList();
-                }
-
-                return _Columns?.Any() == true ? _Columns.Select(c => {
-                    var link = c.Link;
-                    if (!link.IsEmpty())
-                    {
-                        _DatasetColumns.ForEach(dc => link = link.ReplaceCase(dc.ColumnName, String.Format("{{{0}}}", dc.Alias)));
-                    }
-                    return new {
-                        Field = c.Alias ?? "",
-                        Label = c.Title,
-                        Sortable = true,
-                        DataType = c.TableDataType,
-                        Width = c.Width,
-                        Links = new List<TableLink>().AddIf(new TableLink(link, Html.Classes().Append("target", "_blank")), !link.IsEmpty())
-                    };
-                }) : null;
-            }
-        }
 
         [Ignore]
         public int DatasetId { get; set; }
@@ -152,21 +110,23 @@ namespace Dash.Models
         [Ignore]
         public decimal ReportWidth { get; set; }
 
-        [Ignore]
-        public IEnumerable<TableSorting> SortColumns
+        public Report Report
         {
             get
             {
-                if (_Columns == null && ReportId.HasPositiveValue())
+                if (!ReportId.HasValue)
                 {
-                    _Columns = DbContext.Query<Column>("ColumnGetForReport", new { ReportId }).ToList();
+                    return null;
                 }
-                return _Columns?.Any() == true ? _Columns.Where(c => c.SortOrder > 0).OrderBy(c => c.SortOrder).Select(c => new TableSorting {
-                    Field = c.Alias,
-                    Dir = c.SortDirection,
-                    Index = c.SortOrder + 1,
-                    DataType = c.TableDataType.ToString()
-                }) : null;
+                if (_Report == null)
+                {
+                    _Report = DbContext.Get<Report>(ReportId.Value);
+                    if (_Report != null)
+                    {
+                        _Report.IsDashboard = true;
+                    }
+                }
+                return _Report;
             }
         }
 
@@ -199,6 +159,5 @@ namespace Dash.Models
         public int X { get; set; } = -1;
 
         public int Y { get; set; } = -1;
-
     }
 }

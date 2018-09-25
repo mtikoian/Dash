@@ -12,8 +12,7 @@
         bodyFn: doT.template($.get('#tableBodyTemplate').text),
         loadingFn: doT.template($.get('#tableLoadingTemplate').text),
         noDataFn: doT.template($.get('#tableNoDataTemplate').text),
-        errorFn: doT.template($.get('#tableLoadingError').text),
-
+        errorFn: doT.template($.get('#tableLoadingError').text)
     };
 
     /**
@@ -54,10 +53,10 @@
                 return -1;
             }
             if (aa < bb) {
-                return sort.dir === 'ASC' ? -1 : 1;
+                return sort.sortDir === 'ASC' ? -1 : 1;
             }
             if (aa > bb) {
-                return sort.dir === 'ASC' ? 1 : -1;
+                return sort.sortDir === 'ASC' ? 1 : -1;
             }
         }
         return 0;
@@ -113,29 +112,36 @@
 
     var doTable = function(node) {
         var opts = {};
-        if (node.hasAttribute('data-json')) {
+
+        opts.id = node.getAttribute('id');
+        opts.editable = node.getAttribute('data-editable').toLowerCase() === 'true';
+        opts.searchable = node.getAttribute('data-searchable').toLowerCase() === 'true' && opts.editable;
+        opts.storeSettings = node.getAttribute('data-store-settings').toLowerCase() === 'true';
+        opts.loadAll = node.getAttribute('data-load-all').toLowerCase() === 'true';
+        opts.url = node.getAttribute('data-url');
+        opts.template = node.getAttribute('data-template');
+
+        opts.requestMethod = node.getAttribute('data-request-method');
+        opts.storeUrl = node.getAttribute('data-store-url');
+        opts.width = node.hasAttribute('data-width') ? node.getAttribute('data-width') * 1 : null;
+        opts.storeRequestMethod = node.getAttribute('data-store-request-method');
+        opts.displayDateFormat = node.getAttribute('data-display-date-format');
+        opts.displayCurrencyFormat = node.getAttribute('data-display-currency-format');
+        if (node.hasAttribute('data-request-params')) {
+            var params = node.getAttribute('data-request-params');
             try {
-                opts = JSON.parse(node.getAttribute('data-json'));
+                opts.requestParams = JSON.parse(params);
             } catch (e) {
                 // placeholder
             }
-            node.removeAttribute('data-json');
-        } else {
-            opts.id = node.getAttribute('id');
-            opts.editable = node.getAttribute('data-editable').toLowerCase() === 'true';
-            opts.searchable = node.getAttribute('data-searchable').toLowerCase() === 'true' && opts.editable;
-            opts.storeSettings = node.getAttribute('data-store-settings').toLowerCase() === 'true';
-            opts.loadAll = node.getAttribute('data-load-all').toLowerCase() === 'true';
-            opts.url = node.getAttribute('data-url');
-            opts.template = node.getAttribute('data-template');
         }
 
-        this.content = node;
+        node.doTable = this;
         this.opts = $.extend({
             id: null,
             columns: [],
             url: '',
-            requestMethod: 'GET',
+            requestMethod: 'POST',
             requestUsePascalCase: true,
             requestParams: {},
             searchable: true,
@@ -151,23 +157,9 @@
             currentStartItem: null,
             currentEndItem: null,
             sorting: null,
-            dataCallback: null,
-            errorCallback: null,
             dataDateFormat: 'YYYY-MM-DD HH:mm:ss',
             displayDateFormat: 'YYYY-MM-DD HH:mm',
-            displayCurrencyFormat: '{s:$} {[t:,][d:.][p:2]}',
-            resources: {
-                firstPage: $.resx('firstPage'),
-                previousPage: $.resx('previousPage'),
-                nextPage: $.resx('nextPage'),
-                lastPage: $.resx('lastPage'),
-                noData: $.resx('noData'),
-                showing: $.resx('showing'),
-                page: $.resx('page') || 'Page',
-                perPage: $.resx('perPage'),
-                loadingError: $.resx('loadingError'),
-                tryAgain: $.resx('tryAgain')
-            }
+            displayCurrencyFormat: '{s:$} {[t:,][d:.][p:2]}'
         }, opts);
 
         this.layoutSet = false;
@@ -202,6 +194,16 @@
         this.opts.rowTemplateFn = doT.template(template ? template.text : '');
         this.opts.displayValueFn = getDisplayValue.bind(null, this.opts.displayCurrencyFormat, this.opts.displayDateFormat);
 
+        var sorting = this.store('sorting');
+        var sortColumns = [];
+        if (sorting) {
+            try {
+                sortColumns = (typeof sorting === 'string' ? JSON.parse(sorting) : sorting) || [];
+            } catch (e) {
+                // placeholder
+            }
+        }
+
         if (template) {
             var tempNode = $.createNode();
             tempNode.innerHTML = '<table>' + this.opts.rowTemplateFn({}) + '</table>';
@@ -211,13 +213,13 @@
                 var width = x.getAttribute('data-width');
                 width = isNaN(width) ? null : width * 1;
                 var type = x.getAttribute('data-type').toLowerCase();
-                this.opts.columns.push({
+                var column = {
                     width: $.hasPositiveValue(width) ? width : this.store(field + '.width'),
                     sortable: x.getAttribute('data-sortable').toLowerCase() === 'true',
                     label: x.getAttribute('data-label'),
                     field: field,
                     dataType: type
-                });
+                };
                 if (type === 'int') {
                     this.intColumns.push(field);
                 } else if (type === 'date') {
@@ -225,6 +227,20 @@
                 } else if (type === 'currency') {
                     this.currencyColumns.push(field);
                 }
+
+                var dir = x.getAttribute('data-sort-dir');
+                if (dir) {
+                    column.sortDir = dir.toUpperCase();
+                    column.sortOrder = x.getAttribute('data-sort-order');
+                }
+
+                var sortColumn = $.findByKey(sortColumns, 'field', field);
+                if (sortColumn) {
+                    column.sortDir = sortColumn.sortDir;
+                    column.sortOrder = sortColumn.sortOrder;
+                }
+
+                this.opts.columns.push(column);
             }, this);
         }
 
@@ -232,9 +248,8 @@
         this.currentStartItem = this.store('currentStartItem') * 1 || 0;
         this.searchQuery = this.store('searchQuery') || '';
         this.width = this.store('width') * 1 || 100;
-        var sorting = this.store('sorting');
-        this.sorting = (typeof sorting === 'string' ? JSON.parse(sorting) : sorting) || [];
 
+        this.draw();
         this.loadData();
     };
 
@@ -265,7 +280,7 @@
                     CurrentStartItem: this.currentStartItem,
                     SearchQuery: this.searchQuery,
                     Width: this.width,
-                    Sorting: this.sorting,
+                    Sorting: this.buildSortList(),
                     Columns: $.toPascalKeys($.map(this.opts.columns, function(c) { return { field: c.field, width: c.width * 1.0 }; }))
                 });
             } else {
@@ -274,7 +289,7 @@
                     currentStartItem: this.currentStartItem,
                     searchQuery: this.searchQuery,
                     width: this.width,
-                    sorting: this.sorting,
+                    sorting: this.buildSortList(),
                     columns: $.map(this.opts.columns, function(c) { return { field: c.field, width: c.width * 1.0 }; })
                 });
             }
@@ -288,10 +303,6 @@
      * @param {Object[]} data - Array of records to display.
      */
     doTable.prototype.processData = function(data) {
-        if (this.opts.dataCallback) {
-            this.opts.dataCallback(data);
-        }
-
         var i = 0, len = data.rows.length, j = 0;
         for (; i < len; i++) {
             // add an index to the data so we can reset to the default sort order later if the user wants
@@ -341,9 +352,6 @@
         }, this.processData.bind(this), function(data) {
             self.loading = false;
             self.loadingError = true;
-            if (self.opts.errorCallback) {
-                self.opts.errorCallback(data);
-            }
             self.draw();
         });
     };
@@ -358,11 +366,24 @@
     };
 
     /**
+     * Build an array containing the sorting info.
+     */
+    doTable.prototype.buildSortList = function() {
+        var sorting = [];
+        $.forEach(this.opts.columns, function(x) {
+            if (x.sortDir) {
+                sorting.push({ field: x.field, sortDir: x.sortDir, sortOrder: x.sortOrder });
+            }
+        });
+        return sorting.length ? sorting : null;
+    };
+
+    /**
      * Build querystring params to fetch data from the server.
      * @returns {Object} Request parameters.
      */
     doTable.prototype.buildParams = function() {
-        var sort = this.sorting.length > 0 ? $.map(this.sorting, function(obj, i) { return { field: obj.field, dir: obj.dir, index: i }; }) : null;
+        var sort = this.buildSortList();
         if (this.opts.requestUsePascalCase) {
             return $.extend($.toPascalKeys(this.opts.requestParams), {
                 StartItem: this.currentStartItem,
@@ -441,7 +462,6 @@
         } else if (!this.opts.loadAll) {
             // we're not loading all the data to begin with. so whatever data we have should be displayed.
             this.results = this.data;
-            this.filteredTotal = this.results.length;
             this.currentEndItem = Math.min(this.currentStartItem + this.itemsPerPage, this.filteredTotal);
             this.pageTotal = Math.ceil(this.filteredTotal / this.itemsPerPage);
             this.draw();
@@ -457,10 +477,9 @@
                 filteredTotal = res.length;
                 this.results = res.slice(startItem, startItem + this.itemsPerPage);
             }
-
-            this.filteredTotal = filteredTotal;
-            this.currentEndItem = Math.min(this.currentStartItem + this.itemsPerPage, this.filteredTotal);
+            this.currentEndItem = Math.min(this.currentStartItem + this.itemsPerPage, filteredTotal);
             this.pageTotal = Math.ceil(filteredTotal / this.itemsPerPage);
+            this.filteredTotal = filteredTotal;
             this.draw();
         }
     };
@@ -491,6 +510,20 @@
     };
 
     /**
+     * Reset table sorting.
+     */
+    doTable.prototype.resetSort = function(column) {
+        $.forEach(this.opts.columns, function(x) {
+            if (x !== this) {
+                delete x.sortOrder;
+                delete x.sortDir;
+            }
+        }, column);
+    };
+
+
+
+    /**
      * Change the sorting order.
      * @param {string} fieldName - Name of the field to sort on.
      * @param {string} dataType - Data type of the field.
@@ -501,25 +534,30 @@
             return;
         }
 
-        var val = $.findByKey(this.sorting, 'field', fieldName);
+        var sortOrder = this.opts.columns.filter(function(x) {
+            return x.sortDir;
+        }).length + 1;
+
+        var column = $.findByKey(this.opts.columns, 'field', fieldName);
         if (e.shiftKey) {
             document.getSelection().removeAllRanges();
         } else {
-            this.sorting = [];
+            sortOrder = 0;
+            this.resetSort(column);
         }
 
-        if (val === null) {
-            this.sorting.push({ field: fieldName, dir: 'ASC', dataType: dataType || 'string' });
+        if ($.isNull(column.sortDir)) {
+            column.sortDir = 'ASC';
+            column.sortOrder = sortOrder;
         } else if (e.shiftKey) {
-            if (val.dir === 'DESC') {
-                this.sorting.splice(val._i, 1);
+            if (column.dir === 'DESC') {
+                delete column.sortDir;
+                delete column.sortOrder;
             } else {
-                val.dir = 'DESC';
-                this.sorting[val._i] = val;
+                column.sortDir = 'DESC';
             }
         } else {
-            val.dir = val.dir === 'ASC' ? 'DESC' : 'ASC';
-            this.sorting.push(val);
+            column.sortDir = column.sortDir === 'ASC' ? 'DESC' : 'ASC';
         }
 
         this.sort();
@@ -533,8 +571,10 @@
      */
     doTable.prototype.sort = function(refresh) {
         refresh = $.coalesce(refresh, true);
-        this.data.sort(this.sorting.length > 0 ? compare.bind(this.sorting) : defaultCompare);
-        this.store('sorting', JSON.stringify(this.sorting));
+
+        var sortColumns = this.buildSortList();
+        this.data.sort(sortColumns && sortColumns.length > 0 ? compare.bind(sortColumns) : defaultCompare);
+        this.store('sorting', JSON.stringify(sortColumns));
         this.filterResults(refresh);
     };
 
@@ -546,13 +586,14 @@
             return;
         }
 
+        var contentNode = this.getContainer();
         this.layoutSet = true;
-        this.table = $.get('.dotable-data', this.content);
+        this.table = $.get('.dotable-data', contentNode);
         this.table.style.tableLayout = 'fixed';
         this.tableHeaderRow = this.table.tHead.rows[0];
 
         if (this.table !== null) {
-            this.clientWidth = this.content.clientWidth;
+            this.clientWidth = contentNode.clientWidth;
             this.table.tHead.style.width = this.table.style.width = (this.width / 100 * this.table.offsetWidth) + 'px';
 
             var hWidth = this.table.tHead.offsetWidth;
@@ -573,7 +614,7 @@
      * Update the table and column widths based on a window resize.
      */
     doTable.prototype.onResize = function() {
-        var cWidth = this.content.clientWidth;
+        var cWidth = this.getContainer().clientWidth;
         if (cWidth === 0) {
             return;
         }
@@ -593,12 +634,13 @@
         if (!$.isVisible(this.table)) {
             return;
         }
-        $.get('.dotable-scrollable', this.content).style.paddingTop = this.table.tHead.offsetHeight + 'px';
-        var colGroup = $.get('.dotable-column-group', this.content);
+        var contentNode = this.getContainer();
+        $.get('.dotable-scrollable', contentNode).style.paddingTop = this.table.tHead.offsetHeight + 'px';
+        var colGroup = $.get('.dotable-column-group', contentNode);
         for (var i = 0; i < this.opts.columns.length; i++) {
             colGroup.children[i].style.width = this.tableHeaderRow.cells[i].style.width;
         }
-        if (this.clientWidth > 0 && this.content.clientWidth / this.clientWidth !== 1) {
+        if (this.clientWidth > 0 && contentNode.clientWidth / this.clientWidth !== 1) {
             this.onResize();
         }
     };
@@ -629,12 +671,13 @@
             e.stopImmediatePropagation();
             e.preventDefault();
 
+            var contentNode = this.getContainer();
             self.resizeContext = {
                 colIndex: cellEl.cellIndex,
                 initX: e.clientX,
-                scrWidth: $.get('.dotable-scrollable', self.content).offsetWidth,
+                scrWidth: $.get('.dotable-scrollable', contentNode).offsetWidth,
                 initTblWidth: self.table.offsetWidth,
-                initColWidth: pixelToFloat($.get('.dotable-column-group', self.content).children[cellEl.cellIndex].style.width),
+                initColWidth: pixelToFloat($.get('.dotable-column-group', contentNode).children[cellEl.cellIndex].style.width),
                 layoutTimer: null
             };
         };
@@ -665,7 +708,7 @@
 
         var newColWidth = Math.max(ctx.initColWidth + e.clientX - ctx.initX, this.opts.columnMinWidth);
         this.table.tHead.style.width = this.table.style.width = (ctx.initTblWidth + (newColWidth - ctx.initColWidth)) + 'px';
-        $.get('.dotable-column-group', this.content).children[ctx.colIndex].style.width = this.tableHeaderRow.cells[ctx.colIndex].style.width = newColWidth + 'px';
+        $.get('.dotable-column-group', this.getContainer()).children[ctx.colIndex].style.width = this.tableHeaderRow.cells[ctx.colIndex].style.width = newColWidth + 'px';
 
         if (ctx.layoutTimer === null) {
             var self = this;
@@ -781,113 +824,118 @@
         e.preventDefault();
     };
 
-    /**
-     * Build the view that actually shows the table.
-     * @returns {Object}  Mithril DIV node.
-     */
-    doTable.prototype.draw = function() {
-        var container = $.get('.dash-table', this.content);
-        if (!container) {
-            this.content.innerHTML = '';
+    doTable.prototype.getContainer = function() {
+        return $.get('#' + this.opts.id);
+    };
 
-            container = $.createNode('<div class="dash-table" data-toggle="table" data-unload-event="tableUnload"></div>');
-            container.innerHTML = _templates.headerFn(this) +
-                _templates.bodyFn(this) +
-                _templates.footerFn(this);
+    doTable.prototype.create = function() {
+        var contentNode = this.getContainer();
+        contentNode.innerHTML = '';
 
-            this.content.appendChild(container);
+        var container = $.createNode('<div class="dash-table"></div>');
+        container.innerHTML = _templates.headerFn(this) +
+            _templates.bodyFn(this) +
+            _templates.footerFn(this);
 
-            $.on(container, $.events.tableRefresh, this.refresh.bind(this));
-            $.on(container, $.events.tableDestroy, this.destroy.bind(this));
-            $.on(container, $.events.layoutUpdate, this.updateLayout.bind(this));
+        contentNode.appendChild(container);
 
-            $.on($.get('.dotable-search-input', container), 'input', this.setSearchQuery.bind(this));
-            $.on($.get('.dotable-items-input', container), 'change', this.setItemsPerPage.bind(this));
+        $.on($.get('.dotable-search-input', container), 'input', this.setSearchQuery.bind(this));
+        $.on($.get('.dotable-items-input', container), 'change', this.setItemsPerPage.bind(this));
 
-            // bind footer buttons/dropdowns
+        if (this.opts.editable) {
+            // bind column sort and column resize events
+            var thead = $.get('.dotable-head', container);
+            if (thead) {
+                var handler = this.touchHandler.bind(this);
+                $.on(thead, 'touchstart', handler);
+                $.on(thead, 'touchend', handler);
+                $.on(thead, 'touchmove', handler);
+                $.on(thead, 'touchcancel', handler);
 
-            if (this.opts.editable) {
-                // bind column sort and column resize events
-                var thead = $.get('.dotable-head', container);
-                if (thead) {
-                    var handler = this.touchHandler.bind(this);
-                    $.on(thead, 'touchstart', handler);
-                    $.on(thead, 'touchend', handler);
-                    $.on(thead, 'touchmove', handler);
-                    $.on(thead, 'touchcancel', handler);
-
-                    var ths = $.getAll('th', thead);
-                    if (ths && ths.length) {
-                        var mouseFunc = this.onHeaderMouseDown.bind(this);
-                        $.forEach(ths, function(x) {
-                            $.on(x, 'mousedown', mouseFunc);
-                        });
-                    }
-
-                    var arrows = $.getAll('.dotable-arrow', thead);
-                    if (arrows && arrows.length) {
-                        var self = this;
-                        $.forEach(arrows, function(x) {
-                            $.on(x, 'click', self.changeSort.bind(self, x.getAttribute('data-field'), x.getAttribute('data-type').toLowerCase()));
-                        });
-                    }
+                var ths = $.getAll('th', thead);
+                if (ths && ths.length) {
+                    var mouseFunc = this.onHeaderMouseDown.bind(this);
+                    $.forEach(ths, function(x) {
+                        $.on(x, 'mousedown', mouseFunc);
+                    });
                 }
 
-                this.events = {
-                    resize: $.debounce(this.onResize.bind(this), 50),
-                    move: this.onMouseMove.bind(this),
-                    up: this.onMouseUp.bind(this)
-                };
-                $.on(window, 'resize', this.events.resize);
-                $.on(window, 'mousemove', this.events.move);
-                $.on(window, 'mouseup', this.events.up);
+                var arrows = $.getAll('.dotable-arrow', thead);
+                if (arrows && arrows.length) {
+                    var self = this;
+                    $.forEach(arrows, function(x) {
+                        $.on(x, 'click', self.changeSort.bind(self, x.getAttribute('data-field'), x.getAttribute('data-type').toLowerCase()));
+                    });
+                }
             }
 
-            $.on('.dotable-btn-first', 'click', this.moveToPage.bind(this, -1, true));
-            $.on('.dotable-btn-previous', 'click', this.moveToPage.bind(this, -1, false));
-            $.on('.dotable-btn-next', 'click', this.moveToPage.bind(this, 1, false));
-            $.on('.dotable-btn-last', 'click', this.moveToPage.bind(this, 1, true));
-
-            $.on('.dotable-area', 'scroll', this.onScroll.bind(this));
-
-            this.setLayout();
+            this.events = {
+                resize: $.debounce(this.onResize.bind(this), 50),
+                move: this.onMouseMove.bind(this),
+                up: this.onMouseUp.bind(this)
+            };
+            $.on(window, 'resize', this.events.resize);
+            $.on(window, 'mousemove', this.events.move);
+            $.on(window, 'mouseup', this.events.up);
         }
 
-        // update column sort icons
-        var sortArrows = $.getAll('.dotable-arrow', thead);
-        if (sortArrows && sortArrows.length) {
-            $.forEach(sortArrows, function(x) {
-                var val = $.findByKey(this.sorting, 'field', x.getAttribute('data-field'));
-                if (val) {
-                    $.removeClass(x, 'dash-sort-up');
-                    $.removeClass(x, 'dash-sort-down');
-                    $.removeClass(x, 'dash-sort');
-                    if (val.dir === 'ASC') {
-                        $.addClass(x, 'dash-sort-up');
+        $.on('.dotable-btn-first', 'click', this.moveToPage.bind(this, -1, true));
+        $.on('.dotable-btn-previous', 'click', this.moveToPage.bind(this, -1, false));
+        $.on('.dotable-btn-next', 'click', this.moveToPage.bind(this, 1, false));
+        $.on('.dotable-btn-last', 'click', this.moveToPage.bind(this, 1, true));
+
+        $.on('.dotable-area', 'scroll', this.onScroll.bind(this));
+
+        this.setLayout();
+    };
+
+    /**
+     * Build the view that actually shows the table.
+     */
+    doTable.prototype.draw = function() {
+        var contentNode = this.getContainer();
+        var container = $.get('.dash-table', contentNode);
+        if (!container) {
+            this.create();
+        }
+
+        if (this.opts.editable) {
+            // update column sort icons
+            var sortArrows = $.getAll('.dotable-arrow', $.get('.dotable-head', container));
+            if (sortArrows && sortArrows.length) {
+                $.forEach(sortArrows, function(x) {
+                    var val = $.findByKey(this.opts.columns, 'field', x.getAttribute('data-field'));
+                    if (val && val.sortDir) {
+                        $.removeClass(x, 'dash-sort-up');
+                        $.removeClass(x, 'dash-sort-down');
+                        $.removeClass(x, 'dash-sort');
+                        if (val.sortDir === 'ASC') {
+                            $.addClass(x, 'dash-sort-up');
+                        } else {
+                            $.addClass(x, 'dash-sort-down');
+                        }
                     } else {
-                        $.addClass(x, 'dash-sort-down');
+                        $.removeClass(x, 'dash-sort-up');
+                        $.removeClass(x, 'dash-sort-down');
+                        $.addClass(x, 'dash-sort');
                     }
-                } else {
-                    $.removeClass(x, 'dash-sort-up');
-                    $.removeClass(x, 'dash-sort-down');
-                    $.addClass(x, 'dash-sort');
-                }
-            }, this);
+                }, this);
+            }
         }
 
         // toggle disabled status for pagination buttons
-        disableIf($.get('.dotable-btn-first', this.content), this.currentStartItem === 0);
-        disableIf($.get('.dotable-btn-previous', this.content), this.currentStartItem === 0);
-        disableIf($.get('.dotable-btn-next', this.content), this.currentStartItem >= this.filteredTotal - this.itemsPerPage);
-        disableIf($.get('.dotable-btn-last', this.content), this.currentStartItem >= this.filteredTotal - this.itemsPerPage);
+        disableIf($.get('.dotable-btn-first', contentNode), this.currentStartItem === 0);
+        disableIf($.get('.dotable-btn-previous', contentNode), this.currentStartItem === 0);
+        disableIf($.get('.dotable-btn-next', contentNode), this.currentStartItem >= this.filteredTotal - this.itemsPerPage);
+        disableIf($.get('.dotable-btn-last', contentNode), this.currentStartItem >= this.filteredTotal - this.itemsPerPage);
 
         // set values for showing `x - x of x` rows
-        $.setText($.get('.dotable-start-item', this.content), this.filteredTotal ? this.currentStartItem + 1 : 0);
-        $.setText($.get('.dotable-end-item', this.content), this.currentEndItem);
-        $.setText($.get('.dotable-total-items', this.content), this.filteredTotal);
+        $.setText($.get('.dotable-start-item', contentNode), this.filteredTotal ? this.currentStartItem + 1 : 0);
+        $.setText($.get('.dotable-end-item', contentNode), this.currentEndItem);
+        $.setText($.get('.dotable-total-items', contentNode), this.filteredTotal);
 
         // update table body
-        var body = $.get('.dotable-body', this.content);
+        var body = $.get('.dotable-body', contentNode);
         if (body) {
             body.innerHTML = '';
 

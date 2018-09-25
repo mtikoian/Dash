@@ -16,6 +16,25 @@
             @Html.AuthorizedButton(Core.Add, "Create", "ChartRange", new { Id = Model.Id }, DashClasses.BtnPrimary, hasAccess: User.IsInRole("chartrange.create"))
         </toolbar>
 
-        <dynamic-table options="@Model.Table"></dynamic-table>
+        <do-table url="@Url.Action("List", new { Id = Model.Id })" id="tableChartRanges_@Model.Id" template="#chartRangeTemplate" />
+
+        <do-row id="chartRangeTemplate">
+            <do-column label="@Charts.Report" field="reportName" sortable="false">
+                <do-edit-link controller="ChartRange" text-property="reportName" parent-id-property="chartId" />
+            </do-column>
+            <do-column label="@Charts.XAxisColumn" field="xAxisColumnName" text-property="xAxisColumnName" sortable="false" />
+            <do-column label="@Charts.YAxisColumn" field="yAxisColumnName" text-property="yAxisColumnName" sortable="false" />
+            <do-column label="@Core.Actions" field="actions" sortable="false">
+                <do-edit-button controller="ChartRange" parent-id-property="chartId" />
+                <do-delete-button controller="ChartRange" confirm="@Charts.ConfirmDeleteRange" parent-id-property="chartId" />
+                {{?x.displayOrder > 0}}
+                <do-up-button controller="ChartRange" parent-id-property="chartId" />
+                {{?}}
+                {{?!x.isLast}}
+                <do-down-button controller="ChartRange" parent-id-property="chartId" />
+                {{?}}
+            </do-column>
+        </do-row>
+
     </tab-panel>
 </body-content>

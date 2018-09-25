@@ -13,9 +13,22 @@
 
     <tab-panel id="share">
         <toolbar>
-            @Html.AuthorizedButton(Core.Add, "Create", "ChartShare", new { Id = Model.Id }, DashClasses.BtnPrimary, hasAccess: User.IsInRole("chartshare.create"))
+            <authorized-button controller="ChartShare" action="Create" route-values="@(new { Id = Model.Id })" title="@Core.Add" />
         </toolbar>
 
-        <dynamic-table options="@Model.Table"></dynamic-table>
+        <do-table url="@Url.Action("List", new { Id = Model.Id })" id="tableChartShares_@Model.Id" template="#chartShareTemplate" />
+
+        <do-row id="chartShareTemplate">
+            <do-column label="@Core.User" field="userName">
+                <do-edit-link controller="ChartShare" text-property="userName" parent-id-property="chartId" />
+            </do-column>
+            <do-column label="@Core.Role" field="roleName">
+                <do-edit-link controller="ChartShare" text-property="roleName" parent-id-property="chartId" />
+            </do-column>
+            <do-column label="@Core.Actions" field="actions" sortable="false">
+                <do-edit-button controller="ChartShare" parent-id-property="chartId" />
+                <do-delete-button controller="ChartShare" confirm="@Charts.ConfirmDeleteShare" parent-id-property="chartId" />
+            </do-column>
+        </do-row>
     </tab-panel>
 </body-content>

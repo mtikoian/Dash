@@ -94,7 +94,7 @@ namespace Dash.Controllers
             return View("Index", DbContext.Get<Dataset>(id));
         }
 
-        [HttpGet, AjaxRequestOnly, ParentAction("Index")]
+        [HttpPost, AjaxRequestOnly, ParentAction("Index")]
         public IActionResult List(int id)
         {
             return Rows(DbContext.Get<Dataset>(id).DatasetColumn);

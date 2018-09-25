@@ -1,20 +1,29 @@
 ﻿@using Dash.Resources
-@model Table
 
-@using (Html.BeginBodyContent())
-{
-    @Html.Breadcrumbs(new List<Breadcrumb> {
-        new Breadcrumb(Reports.ViewAll, "Index", "Report")
-    });
+<body-content>
+    <breadcrumb>
+        <breadcrumb-item label="@Reports.ViewAll" controller="Report" action="Index" is-active="true" />
+    </breadcrumb>
 
     <partial name="_Toast" />
 
-    @using (Html.BeginToolbar())
-    {
-        @Html.AuthorizedButton(Reports.CreateReport, "Create", "Report", null, DashClasses.BtnPrimary, hasAccess: User.IsInRole("report.create"))
-    }
+    <toolbar>
+        <authorized-button controller="Report" action="Create" title="@Reports.CreateReport" />
+    </toolbar>
 
-    <div class="col-12">
-        <div data-toggle="table" data-json="@Model.ToJson"></div>
-    </div>
-}
+    <do-table url="@Url.Action("List")" id="tableReports" template="#reportTemplate" />
+
+    <do-row id="reportTemplate">
+        <do-column label="@Reports.Name" field="name">
+            <do-edit-link controller="Report" text-property="name" />
+        </do-column>
+        <do-column label="@Reports.Dataset" field="datasetName">
+            <do-edit-link controller="Dataset" text-property="datasetName" id-property="datasetId" />
+        </do-column>
+        <do-column label="@Core.Actions" field="actions" sortable="false">
+            <do-edit-button controller="Report" />
+            <do-delete-button controller="Report" confirm="@Reports.ConfirmDelete" />
+            <do-copy-button controller="Report" prompt="@Reports.NewName" />
+        </do-column>
+    </do-row>
+</body-content>

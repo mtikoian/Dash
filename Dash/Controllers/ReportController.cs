@@ -155,18 +155,10 @@ namespace Dash.Controllers
         public IActionResult Index()
         {
             RouteData.Values.Remove("id");
-            return View("Index", new Table("tableReports", Url.Action("List"), new List<TableColumn> {
-                new TableColumn("name", Reports.Name, Table.EditLink($"{Url.Action("Edit")}/{{id}}", User.IsInRole("report.edit"))),
-                new TableColumn("datasetName", Reports.Dataset, Table.EditLink($"{Url.Action("Edit", "Dataset")}/{{datasetId}}", User.IsInRole("dataset.edit"))),
-                new TableColumn("actions", Core.Actions, sortable: false, links: new List<TableLink>()
-                        .AddIf(Table.EditButton($"{Url.Action("Edit")}/{{id}}"), User.IsInRole("report.edit"))
-                        .AddIf(Table.DeleteButton($"{Url.Action("Delete")}/{{id}}", Reports.ConfirmDelete), User.IsInRole("report.delete"))
-                        .AddIf(Table.CopyButton($"{Url.Action("Copy")}/{{id}}", Reports.NewName), User.IsInRole("report.create"))
-                )}
-            ));
+            return View("Index");
         }
 
-        [HttpGet, AjaxRequestOnly, ParentAction("Index")]
+        [HttpPost, AjaxRequestOnly, ParentAction("Index")]
         public IActionResult List()
         {
             return Rows(DbContext.GetAll<Report>(new { UserId = User.UserId() }));

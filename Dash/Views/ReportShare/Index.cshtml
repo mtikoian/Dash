@@ -5,7 +5,7 @@
 <body-content>
     <breadcrumb>
         <partial name="_ReportBreadcrumbs" />
-        <breadcrumb-item label="@Reports.ShareReport" controller="ReportShare" action="Index" route-values="@(new { Model.Id })" is-active="true"></breadcrumb-item>
+        <breadcrumb-item label="@Reports.ShareReport" controller="ReportShare" action="Index" route-values="@(new { Id = Model.Id })" is-active="true"></breadcrumb-item>
     </breadcrumb>
 
     <partial name="_Toast" />
@@ -13,9 +13,22 @@
 
     <tab-panel id="share">
         <toolbar>
-            @Html.AuthorizedButton(Core.Add, "Create", "ReportShare", new { Id = Model.Id }, DashClasses.BtnPrimary, hasAccess: User.IsInRole("reportshare.create"))
+            <authorized-button controller="ReportShare" action="Create" route-values="@(new { Id = Model.Id })" title="@Core.Add" />
         </toolbar>
 
-        <dynamic-table options="@Model.Table"></dynamic-table>
+        <do-table url="@Url.Action("List", new { Id = Model.Id })" id="tableReportShares_@Model.Id" template="#reportShareTemplate" />
+
+        <do-row id="reportShareTemplate">
+            <do-column label="@Core.User" field="userName">
+                <do-edit-link controller="ReportShare" text-property="userName" parent-id-property="reportId" />
+            </do-column>
+            <do-column label="@Core.Role" field="roleName">
+                <do-edit-link controller="ReportShare" text-property="roleName" parent-id-property="reportId" />
+            </do-column>
+            <do-column label="@Core.Actions" field="actions" sortable="false">
+                <do-edit-button controller="ReportShare" parent-id-property="reportId" />
+                <do-delete-button controller="ReportShare" confirm="@Reports.ConfirmDeleteShare" parent-id-property="reportId" />
+            </do-column>
+        </do-row>
     </tab-panel>
 </body-content>

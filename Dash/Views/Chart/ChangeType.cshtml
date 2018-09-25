@@ -8,7 +8,7 @@
     </breadcrumb>
 
     <partial name="_Toast" />
-    <partial name="_ChartTabs" model="new ChartView(Model.Id, Model.IsOwner, ChartViewTab.Ranges)" />
+    <partial name="_ChartTabs" model="new ChartView(Model.Id, Model.IsOwner, ChartViewTab.ChangeType)" />
 
     <tab-panel id="changeType">
         @using (Html.BeginCustomForm("ChangeType", "Chart"))

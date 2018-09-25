@@ -67,7 +67,7 @@ namespace Dash.Controllers
             return View("Index");
         }
 
-        [HttpGet, AjaxRequestOnly, ParentAction("Index")]
+        [HttpPost, AjaxRequestOnly, ParentAction("Index")]
         public IActionResult List()
         {
             return Rows(DbContext.GetAll<Database>().Select(x => new { x.Id, x.Name, x.DatabaseName, x.Host, x.User }));

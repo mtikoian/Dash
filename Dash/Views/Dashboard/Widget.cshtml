@@ -1,10 +1,7 @@
 ﻿@model Dash.Models.WidgetView
 @using Dash.Resources;
 
-<div id="widget_@Model.Id" class="grid-item grid-item-width-@Model.Width grid-item-height-@Model.Height grid-item-x-@Model.X grid-item-y-@Model.Y"
-     data-id="@Model.Id" data-report-id="@Model.ReportId" data-options-url="@Url.Action("WidgetOptions", new { id = Model.Id })"
-     data-delete-url="@Url.Action("Delete", new { id = Model.Id })">
-
+<div id="widget_@Model.Id" class="grid-item grid-item-width-@Model.Width grid-item-height-@Model.Height grid-item-x-@Model.X grid-item-y-@Model.Y">
     <div class="grid-header columns">
         <span class="grid-title col-8">@Model.Title</span>
         <span class="grid-buttons col-4 text-right">
@@ -20,7 +17,9 @@
     <div class="grid-body">
         @if (Model.IsData)
         {
-            <div class="widget-data" id="widgetData_@Model.Id"></div>
+            <div class="widget-data" id="widgetData_@Model.Id">
+                <partial name="_Report" for="@Model.Report" />
+            </div>
         }
         else
         {

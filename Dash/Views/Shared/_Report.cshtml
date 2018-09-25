@@ -1,0 +1,26 @@
+﻿@using Dash.Resources
+@using Dash.Models
+@model Report
+
+<do-table url="@Url.Action("Data", "Report", new { Id = Model.Id, Save = Model.IsOwner && !Model.IsDashboard })" id="tableReport_@Model.Id" template="#reportTemplate_@Model.Id"
+          request-method="@HttpVerbs.Post" searchable="false" load-all="false" editable="@Model.IsOwner && !Model.IsDashboard" store-url="@Url.Action("UpdateColumnWidths", "Report", new { Id = Model.Id, Save = Model.IsOwner && !Model.IsDashboard })"
+          store-request-method="@HttpVerbs.Put" width="@Model.Width" display-date-format="@Model.Dataset.DateFormat" display-currency-format="@Model.Dataset.CurrencyFormat" request-params="@(new { Id = Model.Id, Save = Model.IsOwner && !Model.IsDashboard })" />
+
+<do-row id="reportTemplate_@Model.Id">
+    @foreach (var column in Model.ReportColumn)
+    {
+        var datasetColumn = Model.Dataset.DatasetColumn.FirstOrDefault(c => c.Id == column.ColumnId);
+        var link = datasetColumn?.Link;
+        if (!link.IsEmpty())
+        {
+            Model.Dataset.DatasetColumn.ForEach(dc => link = link.ReplaceCase(dc.ColumnName, $"{{{{=x.{dc.Alias}}}}}"));
+        }
+
+        <do-column label="@datasetColumn?.Title" field="@datasetColumn?.Alias" type="@(datasetColumn?.TableDataType ?? TableDataType.String)" width="@column.Width" text-property="@(link.IsEmpty() ? datasetColumn?.Alias : "")" sort-direction="@column.SortDirection" sort-order="@(column.SortDirection.IsEmpty() ? (int?)null : column.SortOrder)">
+            @if (!link.IsEmpty())
+            {
+                <a href="@link" class="btn btn-link" target="_blank">{{=x.@datasetColumn?.Alias}}</a>
+            }
+        </do-column>
+    }
+</do-row>

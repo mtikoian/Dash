@@ -22,6 +22,7 @@ namespace Dash.TagHelpers
         public object RouteValues { get; set; }
         public string Controller { get; set; }
         public bool? HasAccess { get; set; }
+        public string Target { get; set; }
         public string Title { get; set; }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
@@ -42,11 +43,19 @@ namespace Dash.TagHelpers
             output.Attributes.Add("href", urlHelper.Action(Action, Controller, RouteValues));
             output.Attributes.Add("data-method", "GET");
             output.Attributes.Add("title", Title);
+            if (!Target.IsEmpty())
+            {
+                output.Attributes.Add("target", Target);
+            }
             output.Content.Append(Title);
 
             var classList = new List<string>();
             classList.Merge("btn");
             classList.Merge("mr-1");
+            if (!Target.IsEmpty())
+            {
+                classList.Merge("pjax-no-follow");
+            }
             classList.Merge(Class.ToCssClass());
             output.Attributes.Add("class", classList.Join(" "));
 

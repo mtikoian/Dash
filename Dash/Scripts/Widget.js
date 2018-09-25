@@ -2,8 +2,8 @@
  * Wraps functionality needed to display a dashboard widget.
  */
 (function(root, factory) {
-    root.Widget = factory(root.m, root.$, root.Alertify, root.Table, root.DashChart, root.Draggabilly, root.Rect);
-})(this, function(m, $, Alertify, Table, DashChart, Draggabilly, Rect) {
+    root.Widget = factory(root.$, root.Alertify, root.DashChart, root.Draggabilly, root.Rect);
+})(this, function($, Alertify, DashChart, Draggabilly, Rect) {
     'use strict';
 
     /**
@@ -46,28 +46,6 @@
             this.initDate = new Date();
             this.dragMargin = 0;
 
-            if (opts.isData) {
-                this.tableOpts = {
-                    id: 'widgetTable_' + opts.id,
-                    url: opts.url,
-                    requestMethod: 'POST',
-                    requestParams: { Id: opts.reportId },
-                    loadAllData: false,
-                    editable: false,
-                    itemsPerPage: opts.reportRowLimit || 10,
-                    currentStartItem: 0,
-                    sorting: opts.sortColumns,
-                    storageFunction: $.noop,
-                    width: Math.max(opts.reportWidth || 100, 100),
-                    columns: opts.columns,
-                    dataCallback: this.processJson.bind(this),
-                    errorCallback: this.onError.bind(this),
-                    displayDateFormat: opts.displayDateFormat,
-                    displayCurrencyFormat: opts.displayCurrencyFormat,
-                    storeSettings: false
-                };
-            }
-
             this.render();
 
             var container = this.getContainer();
@@ -89,26 +67,8 @@
         render: function() {
             var parentNode = $.get('#widget_' + this.opts.id);
 
-            var self = this;
-            if (this.opts.isData) {
-                var tableNode = $.get('.widget-data', parentNode);
-                if (tableNode) {
-                    m.mount(tableNode, {
-                        view: function() {
-                            return m(Table, self.tableOpts);
-                        }
-                    });
-                }
-            }
-
-            // add our system wide events
-            //$.content.processContent($.get('#widget_' + this.opts.id));
-
-            // maybe simpler?
-            // $.on(parentNode, 'dashboardUnload', self.destroy.bind(self));
-
-            $.on($.get('.btn-refresh', parentNode), 'click', self.forceRefresh.bind(self));
-            $.on($.get('.btn-fullscreen', parentNode), 'click', self.toggleFullScreen.bind(self));
+            $.on($.get('.btn-refresh', parentNode), 'click', this.forceRefresh.bind(this));
+            $.on($.get('.btn-fullscreen', parentNode), 'click', this.toggleFullScreen.bind(this));
         },
 
         /**
@@ -249,7 +209,10 @@
 
         refresh: function() {
             if (this.opts.isData) {
-                $.dispatch($.get('[data-toggle="table"]', this.getContainer()), $.events.tableRefresh);
+                var table = $.get('[data-toggle="dotable"]', this.getContainer());
+                if (table && table.doTable) {
+                    table.doTable.refresh();
+                }
             } else {
                 this.chart.run();
             }
@@ -258,7 +221,10 @@
 
         updateLayout: function() {
             if (this.opts.isData) {
-                $.dispatch($.get('[data-toggle="table"]', this.getContainer()), $.events.layoutUpdate);
+                var table = $.get('[data-toggle="dotable"]', this.getContainer());
+                if (table && table.doTable) {
+                    table.doTable.updateLayout();
+                }
             } else {
                 this.chart.resize();
             }
@@ -320,7 +286,10 @@
          */
         destroy: function(totalDestruction) {
             if (this.opts.isData) {
-                $.dispatch($.get('[data-toggle="table"]', this.getContainer()), $.events.tableDestroy);
+                var table = $.get('[data-toggle="dotable"]', this.getContainer());
+                if (table && table.doTable) {
+                    table.doTable.destroy();
+                }
             } else {
                 $.destroy(this.chart);
             }

@@ -28,7 +28,7 @@ namespace Dash.Models
 
         public ReportResult GetResult()
         {
-            return Report.GetData(AppConfig, StartItem ?? 0, TotalItems, _HttpContextAccessor.HttpContext.User.IsInRole("dataset.create"));
+            return Report.GetData(AppConfig, StartItem ?? 0, TotalItems, false);
         }
 
         public void Update()

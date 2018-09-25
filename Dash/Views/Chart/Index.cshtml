@@ -1,20 +1,26 @@
 ﻿@using Dash.Resources
-@model Table
 
-@using (Html.BeginBodyContent())
-{
-    @Html.Breadcrumbs(new List<Breadcrumb> {
-        new Breadcrumb(Charts.ViewAll, "Index", "Chart")
-    });
+<body-content>
+    <breadcrumb>
+        <breadcrumb-item label="@Charts.ViewAll" controller="Chart" action="Index" is-active="true" />
+    </breadcrumb>
 
     <partial name="_Toast" />
 
-    @using (Html.BeginToolbar())
-    {
-        @Html.AuthorizedButton(Charts.CreateChart, "Create", "Chart", null, DashClasses.BtnPrimary, hasAccess: User.IsInRole("chart.create"))
-    }
+    <toolbar>
+        <authorized-button controller="Chart" action="Create" title="@Charts.CreateChart" />
+    </toolbar>
 
-    <div class="col-12">
-        <div data-toggle="table" data-json="@Model.ToJson"></div>
-    </div>
-}
+    <do-table url="@Url.Action("List")" id="tableCharts" template="#chartTemplate" />
+
+    <do-row id="chartTemplate">
+        <do-column label="@Charts.Name" field="name">
+            <do-edit-link controller="Chart" text-property="name" />
+        </do-column>
+        <do-column label="@Core.Actions" field="actions" sortable="false">
+            <do-edit-button controller="Chart" />
+            <do-delete-button controller="Chart" confirm="@Charts.ConfirmDelete" />
+            <do-copy-button controller="Chart" prompt="@Charts.NewName" />
+        </do-column>
+    </do-row>
+</body-content>

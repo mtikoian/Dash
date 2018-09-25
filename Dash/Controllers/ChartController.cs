@@ -162,18 +162,10 @@ namespace Dash.Controllers
         public IActionResult Index()
         {
             RouteData.Values.Remove("id");
-            ViewBag.Title = Charts.ViewAll;
-            return View("Index", new Table("tableCharts", Url.Action("List"), new List<TableColumn> {
-                new TableColumn("name", Charts.Name, Table.EditLink($"{Url.Action("Edit")}/{{id}}", User.IsInRole("chart.edit"))),
-                new TableColumn("actions", Core.Actions, sortable: false, links: new List<TableLink>()
-                        .AddIf(Table.EditButton($"{Url.Action("Edit")}/{{id}}"), User.IsInRole("chart.edit"))
-                        .AddIf(Table.DeleteButton($"{Url.Action("Delete")}/{{id}}", Charts.ConfirmDelete), User.IsInRole("chart.delete"))
-                        .AddIf(Table.CopyButton($"{Url.Action("Copy")}/{{id}}", Charts.NewName), User.IsInRole("chart.create"))
-                )}
-            ));
+            return View("Index");
         }
 
-        [HttpGet, AjaxRequestOnly, ParentAction("Index")]
+        [HttpPost, AjaxRequestOnly, ParentAction("Index")]
         public IActionResult List()
         {
             return Rows(DbContext.GetAll<Chart>(new { UserId = User.UserId() }));

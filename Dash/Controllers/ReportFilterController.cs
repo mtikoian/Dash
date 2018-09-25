@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Dash.Configuration;
 using Dash.Models;
 using Dash.Resources;
@@ -94,23 +93,10 @@ namespace Dash.Controllers
         public IActionResult Index(int id)
         {
             RouteData.Values.Remove("id");
-            var model = DbContext.Get<Report>(id);
-            model.Table = new Table("tableReportFilters", Url.Action("List", values: new { id }), new List<TableColumn> {
-                new TableColumn("columnName", Reports.FilterColumn, Table.EditLink($"{Url.Action("Edit")}/{{reportId}}/{{id}}", User.IsInRole("reportfilter.edit")), false),
-                new TableColumn("operatorValue", Reports.FilterOperator, sortable: false),
-                new TableColumn("criteriaValue", Reports.FilterCriteria, sortable: false),
-                new TableColumn("criteria2", Reports.FilterCriteria2, sortable: false),
-                new TableColumn("actions", Core.Actions, sortable: false, links: new List<TableLink>()
-                        .AddIf(Table.EditButton($"{Url.Action("Edit")}/{{reportId}}/{{id}}"), User.IsInRole("reportfilter.edit"))
-                        .AddIf(Table.DeleteButton($"{Url.Action("Delete")}/{{reportId}}/{{id}}", Reports.ConfirmDeleteFilter), User.IsInRole("reportfilter.delete"))
-                        .AddIf(Table.UpButton($"{Url.Action("MoveUp")}/{{reportId}}/{{id}}", jsonLogic: new Dictionary<string, object>().Append(">", new object[] { new Dictionary<string, object>().Append("var", "displayOrder"), 0 })), User.IsInRole("reportfilter.edit"))
-                        .AddIf(Table.DownButton($"{Url.Action("MoveDown")}/{{reportId}}/{{id}}", jsonLogic: new Dictionary<string, object>().Append("!", new object[] { new Dictionary<string, object>().Append("var", "isLast") })), User.IsInRole("reportfilter.edit"))
-                )}
-            ) { StoreSettings = false };
-            return View("Index", model);
+            return View("Index", DbContext.Get<Report>(id));
         }
 
-        [HttpGet, AjaxRequestOnly, ParentAction("Index")]
+        [HttpPost, AjaxRequestOnly, ParentAction("Index")]
         public IActionResult List(int id)
         {
             var filters = DbContext.Get<Report>(id).ReportFilter.OrderBy(x => x.DisplayOrder).ToList();

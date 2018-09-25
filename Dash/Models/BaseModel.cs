@@ -42,9 +42,6 @@ namespace Dash.Models
         public HttpVerbs FormMethod { get { return IsCreate ? HttpVerbs.Post : HttpVerbs.Put; } }
 
         [Ignore, JilDirective(true)]
-        public Table Table { get; set; }
-
-        [Ignore, JilDirective(true)]
         public bool ForSave { get; set; } = false;
 
         public int Id { get; set; }

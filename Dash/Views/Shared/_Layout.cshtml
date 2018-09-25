@@ -78,7 +78,8 @@
                         <tr>
                             {{~x.opts.columns :value:index}}
                             <th class="text-no-select{{?!value.sortable}} disabled{{?}}">
-                                {{=value.label}} {{?value.sortable}}<i class="float-right dash dotable-arrow {{?!value.dir}}dash-sort{{??value.dir === 'desc'}}dash-sort-down{{??value.dir === 'asc'}}dash-sort-up{{?}} {{?!x.opts.editable}}disabled{{?}}" data-type="{{=value.dataType}}" data-field="{{=value.field}}" />{{?}}
+                                {{=value.label}}
+                                {{?value.sortable}}<i class="float-right dash dotable-arrow {{?!value.sortDir && x.opts.editable}}dash-sort{{??value.sortDir === 'DESC'}}dash-sort-down{{??value.sortDir === 'ASC'}}dash-sort-up{{?}} {{?!x.opts.editable}}disabled{{?}}" data-type="{{=value.dataType}}" data-field="{{=value.field}}" />{{?}}
                             </th>
                             {{~}}
                         </tr>

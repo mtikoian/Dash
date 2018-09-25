@@ -87,7 +87,6 @@ gulp.task('js', function() {
     return gulp.src([
         // core libraries and helpers
         paths.js + 'polyfills.js',         // Polyfills for promise/fetch
-        paths.js + 'mithril.js',           // mithril rendering library, includes promise polyfill for ie
         paths.js + 'core.js',              // common js functions for the site
         paths.js + 'Alertify.js',          // alerts/modals
         paths.js + 'pjax.js',              // pjax library
@@ -102,7 +101,6 @@ gulp.task('js', function() {
         paths.js + 'Draggabilly.js',       // drag-n-drop functionality
         paths.js + 'ColorPicker.js',       // custom color picker
         paths.js + 'Rect.js',              // library for rectangle geometry
-        paths.js + 'Table.js',             // custom table component using mithril
         paths.js + 'doTable.js',           // new table component
         paths.js + 'Widget.js',            // widget component using mithril
         // functional areas

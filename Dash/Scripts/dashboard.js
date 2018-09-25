@@ -34,6 +34,7 @@
         if (json) {
             dash.removeAttribute('data-json');
 
+            // @todo Refactor to use data attributes on the widgets instead of needing this json
             var widgets = $.coalesce(JSON.parse(json), []);
             var opts = makeWidgetOpts(dash);
             if (widgets.length) {

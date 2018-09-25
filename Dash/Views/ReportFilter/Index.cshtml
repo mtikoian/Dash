@@ -13,9 +13,28 @@
 
     <tab-panel id="filters">
         <toolbar>
-            @Html.AuthorizedButton(Core.Add, "Create", "ReportFilter", new { Id = Model.Id }, DashClasses.BtnPrimary, hasAccess: User.IsInRole("reportfilter.create"))
+            <authorized-button controller="ReportFilter" action="Create" route-values="@(new { Id = Model.Id })" title="@Core.Add" />
         </toolbar>
 
-        <dynamic-table options="@Model.Table"></dynamic-table>
+        <do-table url="@Url.Action("List", new { Id = Model.Id })" id="tableReportFilters_@Model.Id" template="#reportFilterTemplate" searchable="false" />
+
+        <do-row id="reportFilterTemplate">
+            <do-column label="@Reports.FilterColumn" field="columnName" sortable="false">
+                <do-edit-link controller="ReportFilter" text-property="columnName" parent-id-property="reportId" />
+            </do-column>
+            <do-column label="@Reports.FilterOperator" field="operatorValue" text-property="operatorValue" sortable="false" />
+            <do-column label="@Reports.FilterCriteria" field="criteriaValue" text-property="criteriaValue" sortable="false" />
+            <do-column label="@Reports.FilterCriteria2" field="criteria2" text-property="criteria2" sortable="false" />
+            <do-column label="@Core.Actions" field="actions" sortable="false">
+                <do-edit-button controller="ReportFilter" parent-id-property="reportId" />
+                <do-delete-button controller="ReportFilter" parent-id-property="reportId" confirm="@Reports.ConfirmDeleteFilter" />
+                {{?x.displayOrder > 0}}
+                <do-up-button controller="ReportFilter" parent-id-property="reportId" />
+                {{?}}
+                {{?!x.isLast}}
+                <do-down-button controller="ReportFilter" parent-id-property="reportId" />
+                {{?}}
+            </do-column>
+        </do-row>
     </tab-panel>
 </body-content>

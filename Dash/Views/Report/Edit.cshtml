@@ -19,15 +19,13 @@
     <tab-panel id="report">
         @if (Model.ReportColumn.Any())
         {
-            @using (Html.BeginToolbar())
-            {
-                @Html.AuthorizedActionLink(Core.Export, "Export", "Report", new { Model.Id }, new { @class = "btn btn-primary pjax-no-follow", role = "tab", target = "_blank" })
-            }
+            <toolbar>
+                <authorized-button controller="Report" action="Export" route-values="@(new { Id = Model.Id })" title="@Core.Export" target="_blank" />
+            </toolbar>
 
             <div class="report-data-container container p-2">
-                <dynamic-table options="@Model.TableOptions(Url)"></dynamic-table>
+                <partial name="_Report" />
             </div>
         }
-
     </tab-panel>
 </body-content>

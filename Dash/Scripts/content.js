@@ -1,14 +1,13 @@
 ﻿/*!
  * Wraps content processing functionality.
  */
-(function(m, $, Alertify, pjax, Table, Tab, CollapsibleList, Autocomplete, Draggabilly, flatpickr, DashChart, ColorPicker, doTable) {
+(function(m, $, Alertify, pjax, doTable, CollapsibleList, Autocomplete, Draggabilly, flatpickr, DashChart, ColorPicker) {
     'use strict';
 
     var _autocompletes = [];
     var _draggabillies = [];
     var _charts = [];
     var _colorpickers = [];
-    var _tables = [];
 
     /**
      * Display context help.
@@ -120,44 +119,13 @@
     };
 
     /**
-     * Initialize a table instance
-     * @this {Node} Node the event is being bound to.
-     */
-    var tableLoad = function() {
-        var node = $.isNode(this) ? this : this.target;
-        if (node) {
-            var json = node.getAttribute('data-json');
-            if (json) {
-                var opts = JSON.parse(json);
-                m.mount(node.parentElement, {
-                    view: function() {
-                        return m(Table, opts);
-                    }
-                });
-            }
-        }
-    };
-
-    /**
-     * Destroy a table instance
-     * @this {Node} Node for the table to destroy.
-     */
-    var tableUnload = function() {
-        var node = $.isNode(this) ? this : this.target;
-        if (node) {
-            $.dispatch(node, $.events.tableDestroy);
-            m.mount(node, null);
-        }
-    };
-
-    /**
      * Initialize a doTable instance
      * @this {Node} Node the event is being bound to.
      */
     var doTableLoad = function() {
         var node = $.isNode(this) ? this : this.target;
         if (node) {
-            _tables.push(new doTable(node));
+            new doTable(node);
         }
     };
 
@@ -166,10 +134,10 @@
      * @this {Node} Node for the table to destroy.
      */
     var doTableUnload = function() {
-        _tables.forEach(function(x) {
-            x.destroy();
-        });
-        _tables = [];
+        var node = $.isNode(this) ? this : this.target;
+        if (node && node.doTable) {
+            node.doTable.destroy();
+        }
     };
 
     /**
@@ -481,10 +449,6 @@
             onLoad: menuLoad,
             onUnload: null
         },
-        'table': {
-            onLoad: tableLoad,
-            onUnload: tableUnload
-        },
         'dotable': {
             onLoad: doTableLoad,
             onUnload: doTableUnload
@@ -646,4 +610,4 @@
         $.on(document, 'resxLoaded', pageLoaded);
     }
 
-})(this.m, this.$, this.Alertify, this.pjax, this.Table, this.Tab, this.CollapsibleList, this.Autocomplete, this.Draggabilly, this.flatpickr, this.DashChart, this.ColorPicker, this.doTable);
+})(this.m, this.$, this.Alertify, this.pjax, this.doTable, this.CollapsibleList, this.Autocomplete, this.Draggabilly, this.flatpickr, this.DashChart, this.ColorPicker);

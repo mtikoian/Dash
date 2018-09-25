@@ -5,8 +5,8 @@
 <body-content>
     <breadcrumb>
         <breadcrumb-item label="@Charts.ViewAll" controller="Chart" action="Index"></breadcrumb-item>
-        <breadcrumb-item label="@Model.ChartName" controller="Report" action="Edit" route-values="@(new { Model.ChartId })"></breadcrumb-item>
-        <breadcrumb-item label="@Core.ViewSql" controller="Report" action="Sql" route-values="@(new { Id = Model.ChartId })" is-active="true"></breadcrumb-item>
+        <breadcrumb-item label="@Model.ChartName" controller="Chart" action="Edit" route-values="@(new { Id = Model.ChartId })"></breadcrumb-item>
+        <breadcrumb-item label="@Core.ViewSql" controller="Chart" action="Sql" route-values="@(new { Id = Model.ChartId })" is-active="true"></breadcrumb-item>
     </breadcrumb>
 
     <partial name="_Toast" />
