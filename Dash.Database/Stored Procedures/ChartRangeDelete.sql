@@ -6,12 +6,17 @@ AS
 
 	BEGIN TRY
 		BEGIN TRAN
+            DECLARE @ChartId INT
+            DECLARE @DisplayOrder INT
+            SELECT TOP 1 @ChartId = ChartId, @DisplayOrder = DisplayOrder FROM ChartRange WHERE Id = @Id
+            
 			UPDATE c SET DateUpdated = SYSDATETIMEOFFSET(), UserUpdated = @RequestUserId
-			FROM Chart c
-			INNER JOIN ChartRange cd ON cd.ChartId = c.Id
-			WHERE cd.Id = @Id
+    			FROM Chart c
+	    		INNER JOIN ChartRange cd ON cd.ChartId = c.Id
+		    	WHERE cd.Id = @Id
 
-			DELETE FROM ChartRange WHERE Id = @Id
+            DELETE FROM ChartRange WHERE Id = @Id
+            UPDATE ChartRange SET DisplayOrder = DisplayOrder - 1 WHERE ChartId = @ChartId AND DisplayOrder > @DisplayOrder
 		COMMIT
 		RETURN 0
 	END TRY
