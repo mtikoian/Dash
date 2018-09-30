@@ -1,7 +1,7 @@
 ﻿/*!
  * Wraps content processing functionality.
  */
-(function(m, $, Alertify, pjax, doTable, CollapsibleList, Autocomplete, Draggabilly, flatpickr, DashChart, ColorPicker) {
+(function($, Alertify, pjax, doTable, CollapsibleList, Autocomplete, Draggabilly, flatpickr, DashChart, ColorPicker) {
     'use strict';
 
     var _autocompletes = [];
@@ -18,6 +18,15 @@
     };
 
     /**
+     * Get the correct node from the object.
+     * @param {Node|Event} node - Object to check.
+     * @returns {Node} Returns DOM node.
+     */
+    var getNode = function(node) {
+        return $.isNode(node) ? node : node.target;
+    };
+
+    /**
      * Hide content.
      * @this {Node} Node the event is being bound to.
      */
@@ -28,13 +37,15 @@
         }
     };
 
+    /**
+     * Conditionally disable inputs.
+     * @this {Node} Input the event is being bound to.
+     */
     var conditionallyDisable = function() {
-        var n = $.get(this.getAttribute('data-target'));
-        if (this.value == this.getAttribute('data-match')) {
-            n.removeAttribute('disabled');
-        } else {
-            n.value = '';
-            n.setAttribute('disabled', true);
+        var node = $.get(this.getAttribute('data-target'));
+        $.disableIf(node, this.value == this.getAttribute('data-match'));
+        if (this.value != this.getAttribute('data-match')) {
+            node.value = '';
         }
     };
 
@@ -123,7 +134,7 @@
      * @this {Node} Node the event is being bound to.
      */
     var doTableLoad = function() {
-        var node = $.isNode(this) ? this : this.target;
+        var node = getNode(this);
         if (node) {
             new doTable(node);
         }
@@ -134,7 +145,7 @@
      * @this {Node} Node for the table to destroy.
      */
     var doTableUnload = function() {
-        var node = $.isNode(this) ? this : this.target;
+        var node = getNode(this);
         if (node && node.doTable) {
             node.doTable.destroy();
         }
@@ -145,7 +156,7 @@
      * @this {Node} Node the event is being bound to.
      */
     var chartLoad = function() {
-        var node = $.isNode(this) ? this : this.target;
+        var node = getNode(this);
         if (node) {
             _charts.push(new DashChart(node, true));
         }
@@ -166,7 +177,7 @@
      * Toggle for exporting a chart.
      */
     var chartExportLoad = function() {
-        var node = $.isNode(this) ? this : this.target;
+        var node = getNode(this);
         if (node) {
             $.on(node, 'click', function() {
                 var chartContainer = $.get('.chart-container');
@@ -265,7 +276,7 @@
      * Initialize the column selector.
      */
     var columnSelectorLoad = function() {
-        var node = $.isNode(this) ? this : this.target;
+        var node = getNode(this);
         if (node) {
             $.forEach($.getAll('.column-item', node), function(x) {
                 _draggabillies.push(new Draggabilly(x).on('dragStart', startColumnDrag).on('dragEnd', stopColumnDrag));
@@ -288,7 +299,7 @@
      * @this {Node} Node the event is being bound to.
      */
     var datepickerLoad = function() {
-        var node = $.isNode(this) ? this : this.target;
+        var node = getNode(this);
         if (node) {
             var opts = {
                 altInput: true,
@@ -321,7 +332,7 @@
      * @this {Node} Node the picker is being bound to.
      */
     var colorpickerLoad = function() {
-        var node = $.isNode(this) ? this : this.target;
+        var node = getNode(this);
         if (node) {
             // @todo probably want to replace this with a better looking picker later, but it'll do for now
             var newNode = $.createNode('<div id="colorpickerContainer" class="cp-fancy"></div>');
@@ -555,13 +566,6 @@
     };
 
     /**
-     * Set up content after page has loaded.
-     */
-    var pageLoaded = function() {
-        pjax.init();
-    };
-
-    /**
      * Closure to set up the loading splash screen and return the node for it.
      */
     var _loadingDiv = (function() {
@@ -604,18 +608,15 @@
     $.content = {
         done: done,
         focusOnClose: focusOnClose,
+        forceRefresh: forceRefresh,
         load: load,
         loading: loading,
-        unload: unload
+        unload: unload,
     };
 
     /**
      * Run events needed for the inital page load.
      */
-    if ($.resxLoaded) {
-        pageLoaded();
-    } else {
-        $.on(document, 'resxLoaded', pageLoaded);
-    }
+    $.ready(pjax.init);
 
-})(this.m, this.$, this.Alertify, this.pjax, this.doTable, this.CollapsibleList, this.Autocomplete, this.Draggabilly, this.flatpickr, this.DashChart, this.ColorPicker);
+})(this.$, this.Alertify, this.pjax, this.doTable, this.CollapsibleList, this.Autocomplete, this.Draggabilly, this.flatpickr, this.DashChart, this.ColorPicker);

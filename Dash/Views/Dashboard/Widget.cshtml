@@ -1,15 +1,24 @@
 ﻿@model Dash.Models.WidgetView
 @using Dash.Resources;
 
-<div id="widget_@Model.Id" class="grid-item grid-item-width-@Model.Width grid-item-height-@Model.Height grid-item-x-@Model.X grid-item-y-@Model.Y">
+<div id="widget_@Model.Id" class="grid-item grid-item-width-@Model.Width grid-item-height-@Model.Height grid-item-x-@Model.X grid-item-y-@Model.Y" data-refresh="@Model.RefreshSeconds">
     <div class="grid-header columns">
         <span class="grid-title col-8">@Model.Title</span>
         <span class="grid-buttons col-4 text-right">
             <a title="@Widgets.Refresh" class="btn btn-link btn-refresh"><i class="dash dash-arrows-cw"></i></a>
             <a title="@Widgets.ToggleFullScreen" class="btn btn-link btn-fullscreen"><i class="dash dash-max"></i></a>
-            <a href="@Url.Action("Edit", "Report", new { @id = Model.ReportId })" title="@Widgets.Report" class="btn btn-link dash-ajax fs-disabled" data-title="@Widgets.ViewReport">
-                <i class="dash dash-info"></i>
-            </a>
+            @if (Model.IsData)
+            {
+                <a href="@Url.Action("Edit", "Report", new { @id = Model.ReportId })" title="@Widgets.Report" class="btn btn-link dash-ajax fs-disabled" data-title="@Widgets.ViewReport">
+                    <i class="dash dash-info"></i>
+                </a>
+            }
+            else
+            {
+                <a href="@Url.Action("Edit", "Chart", new { @id = Model.ChartId })" title="@Widgets.Chart" class="btn btn-link dash-ajax fs-disabled" data-title="@Widgets.ViewChart">
+                    <i class="dash dash-info"></i>
+                </a>
+            }
             <a href="@Url.Action("Edit", "Dashboard", new { @id = Model.Id })" title="@Widgets.EditWidget" class="btn btn-link dash-ajax fs-disabled"><i class="dash dash-pencil"></i></a>
             <a href="@Url.Action("Delete", "Dashboard", new { @id = Model.Id })" title="@Widgets.DeleteWidget" data-method="DELETE" data-confirm="@Core.AreYouSure" class="btn btn-link btn-delete fs-disabled"><i class="dash dash-trash text-error"></i></a>
         </span>

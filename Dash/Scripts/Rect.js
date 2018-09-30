@@ -8,16 +8,28 @@
 
     /**
      * Constructor for a rect.
-     * @param {Number} width
-     * @param {Number} height
-     * @param {Number} x
-     * @param {Number} y
+     * @param {Node} node - Node to build the rect for.
      */
-    function Rect(width, height, x, y) {
-        this.x = $.coalesce(x, 0);
-        this.y = $.coalesce(y, 0);
-        this.width = $.coalesce(width, 0);
-        this.height = $.coalesce(height, 0);
+    function Rect(node) {
+        var classList = [].slice.call(node.classList);
+        var opts = {};
+        $.forEach(classList, function(x) {
+            var lx = x.toLowerCase();
+            if (lx.indexOf('grid-item-x-') === 0) {
+                this.x = x.replace('grid-item-x-', '') * 1;
+            } else if (lx.indexOf('grid-item-y-') === 0) {
+                this.y = x.replace('grid-item-y-', '') * 1;
+            } else if (lx.indexOf('grid-item-width-') === 0) {
+                this.width = x.replace('grid-item-width-', '') * 1;
+            } else if (lx.indexOf('grid-item-height-') === 0) {
+                this.height = x.replace('grid-item-height-', '') * 1;
+            }
+        }, opts);
+
+        this.x = $.coalesce(opts.x, 0);
+        this.y = $.coalesce(opts.y, 0);
+        this.width = $.coalesce(opts.width, 0);
+        this.height = $.coalesce(opts.height, 0);
         this.updated = false;
     }
 

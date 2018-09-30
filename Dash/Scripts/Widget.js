@@ -22,10 +22,8 @@
      */
     var Widget = function(opts) {
         this.init(opts);
-
         // attach this to the container for reference in the dashboard
-        var container = this.getContainer();
-        container.widget = this;
+        this.getContainer().widget = this;
     };
 
     Widget.prototype = {
@@ -34,41 +32,27 @@
          * @param {Object} opts - Widget settings
          */
         init: function(opts) {
-            opts.isData = $.coalesce(opts.isData, true);
-            opts.refreshSeconds = $.coalesce(opts.refreshSeconds, 0);
-            opts.baseUrl = $.get('body').getAttribute('data-base-url');
             this.opts = opts;
-
-            this.id = opts.id;
             this.chart = null;
             this.interval = null;
             this.isFullscreen = false;
             this.initDate = new Date();
             this.dragMargin = 0;
 
-            this.render();
-
             var container = this.getContainer();
-            this.rect = new Rect(opts.width, opts.height, opts.x, opts.y);
+            $.on($.get('.btn-refresh', container), 'click', this.forceRefresh.bind(this));
+            $.on($.get('.btn-fullscreen', container), 'click', this.toggleFullScreen.bind(this));
+            this.rect = new Rect(container);
             this.setupDraggie(container);
 
-            if (!opts.isData) {
-                this.chart = new DashChart($.get('.widget-chart', container), false, this.processJson.bind(this), this.onError.bind(this));
+            var chartNode = $.get('.widget-chart', container);
+            if (chartNode) {
+                this.chart = new DashChart(chartNode, false);
             }
-            if (opts.refreshSeconds > 0) {
-                this.interval = setInterval(this.refresh.bind(this), opts.refreshSeconds * 1000);
+            var refreshSeconds = this.getRefreshRate();
+            if (refreshSeconds > 0) {
+                this.interval = setInterval(this.refresh.bind(this), refreshSeconds * 1000);
             }
-
-            if (opts.title) {
-                $.setText($.get('.grid-title', container), opts.title);
-            }
-        },
-
-        render: function() {
-            var parentNode = $.get('#widget_' + this.opts.id);
-
-            $.on($.get('.btn-refresh', parentNode), 'click', this.forceRefresh.bind(this));
-            $.on($.get('.btn-fullscreen', parentNode), 'click', this.toggleFullScreen.bind(this));
         },
 
         /**
@@ -77,6 +61,15 @@
          */
         getContainer: function() {
             return $.get('#widget_' + this.opts.id);
+        },
+
+        /**
+         * Get the refresh rate in seconds for the widget.
+         * @returns {Number} Refresh rate in seconds. Zero means no refresh.
+         */
+        getRefreshRate: function() {
+            var container = this.getContainer();
+            return container.hasAttribute('data-refresh') ? container.getAttribute('data-refresh') * 1 : 0;
         },
 
         /**
@@ -159,81 +152,31 @@
             this.rect.updated = true;
         },
 
-        /**
-         * Handle the result of a query for report data.
-         * @param {Object} json - Data to display in the widget.
-         * @returns {bool} True if the json data is valid
-         */
-        processJson: function(json) {
-            if (json.updatedDate && this.initDate) {
-                var updateDate = new Date(json.updatedDate);
-                if (updateDate && updateDate > this.initDate) {
-                    this.reload();
-                    return false;
-                }
-            }
-            if ((this.opts.isData && $.isNull(json.rows)) || (!this.opts.isData && ($.isNull(json.ranges) || json.ranges.length === 0))) {
-                Alertify.error($.resx('errorConnectingToDataSource'));
-                return false;
-            }
-            return true;
-        },
-
-        /**
-         * Reload the widget options and reinitialize.
-         * @param {bool} showMsg - If true show the widget reloaded message to the user.
-         * @param {Object} options - Options to use to reload the widget instead of requesting from the server.
-         */
-        reload: function(showMsg, options) {
-            var callback = function(opts) {
-                this.destroy(false);
-                this.init($.extend(this.opts, opts));
-                if ($.coalesce(showMsg, true)) {
-                    Alertify.success($.resx('widgetReloaded').replace('{0}', this.opts.title));
-                }
-                return;
-            };
-
-            if (!$.isNull(options)) {
-                callback.call(this, options);
-            } else {
-                $.ajax({
-                    method: 'GET', url: this.opts.baseUrl + 'Dashboard/WidgetOptions/' + this.opts.id,
-                    headers: {
-                        'Content-Type': 'application/jil; charset=utf-8',
-                        'Accept': 'application/jil'
-                    }
-                }, callback.bind(this));
-            }
-        },
-
         refresh: function() {
-            if (this.opts.isData) {
-                var table = $.get('[data-toggle="dotable"]', this.getContainer());
-                if (table && table.doTable) {
-                    table.doTable.refresh();
-                }
+            var container = this.getContainer();
+            var table = $.get('[data-toggle="dotable"]', container);
+            if (table && table.doTable) {
+                table.doTable.refresh();
             } else {
                 this.chart.run();
             }
-            $.setText($.get('.grid-updated-time', this.getContainer()), new Date().toLocaleTimeString());
+            $.setText($.get('.grid-updated-time', container), new Date().toLocaleTimeString());
         },
 
         updateLayout: function() {
-            if (this.opts.isData) {
-                var table = $.get('[data-toggle="dotable"]', this.getContainer());
-                if (table && table.doTable) {
-                    table.doTable.updateLayout();
-                }
+            var table = $.get('[data-toggle="dotable"]', this.getContainer());
+            if (table && table.doTable) {
+                table.doTable.updateLayout();
             } else {
                 this.chart.resize();
             }
         },
 
         forceRefresh: function() {
-            if (this.opts.refreshSeconds > 0) {
+            var refreshSeconds = this.getRefreshRate();
+            if (refreshSeconds > 0) {
                 clearInterval(this.interval);
-                this.interval = setInterval(this.refresh.bind(this), this.opts.refreshSeconds * 1000);
+                this.interval = setInterval(this.refresh.bind(this), refreshSeconds * 1000);
             }
             this.refresh();
         },
@@ -270,26 +213,13 @@
         },
 
         /**
-         * Handle an error.
-         * @returns {bool} Always returns true.
-         */
-        onError: function() {
-            if (this.interval) {
-                clearInterval(this.interval);
-            }
-            return true;
-        },
-
-        /**
          * Destroy the widget.
          * @param {bool} totalDestruction - Remove the container node and null out the widget object if true.
          */
         destroy: function(totalDestruction) {
-            if (this.opts.isData) {
-                var table = $.get('[data-toggle="dotable"]', this.getContainer());
-                if (table && table.doTable) {
-                    table.doTable.destroy();
-                }
+            var table = $.get('[data-toggle="dotable"]', this.getContainer());
+            if (table && table.doTable) {
+                table.doTable.destroy();
             } else {
                 $.destroy(this.chart);
             }
