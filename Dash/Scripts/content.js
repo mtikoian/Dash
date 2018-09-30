@@ -587,6 +587,14 @@
     };
 
     /**
+     * Show refresh message and spinner.
+     */
+    var forceRefresh = function() {
+        $.show('#reloader');
+        Alertify.error($.get('body').getAttribute('data-error-refresh') || 'There was an error. Please refresh the page.');
+    };
+
+    /**
      * Hide loading indicator.
      */
     var done = function() {
