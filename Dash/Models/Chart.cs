@@ -160,7 +160,7 @@ namespace Dash.Models
             return newChart;
         }
 
-        public ChartResult GetData(bool hasDatasetAccess)
+        public ChartResult GetData(bool includeSql)
         {
             var response = new ChartResult() { UpdatedDate = DateUpdated, ChartId = Id, ChartName = Name, IsOwner = IsOwner };
             if (ChartRange?.Any() != true)
@@ -204,7 +204,7 @@ namespace Dash.Models
                     Title = $"{report.Name} ({xColumn.Title})",
                     XType = xColumn.TableDataType.ToString(),
                     YType = yColumn.TableDataType.ToString(),
-                    Sql = hasDatasetAccess ? (report.Dataset.IsProc ? sqlQuery.ExecStatement(true) : sqlQuery.SelectStatement(prepare: true)) : null
+                    Sql = includeSql ? (report.Dataset.IsProc ? sqlQuery.ExecStatement(true) : sqlQuery.SelectStatement(prepare: true)) : null
                 };
 
                 if (range.AggregatorId == 0)

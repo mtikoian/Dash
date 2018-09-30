@@ -104,7 +104,7 @@ namespace Dash.Controllers
             {
                 return Error(Charts.ErrorNoRanges);
             }
-            return Data(chart.GetData(User.IsInRole("dataset.create")));
+            return Data(chart.GetData(false));
         }
 
         [HttpDelete]
