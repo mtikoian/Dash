@@ -360,4 +360,7 @@
   <data name="TableOf" xml:space="preserve">
     <value>of</value>
   </data>
+  <data name="ErrorRefresh" xml:space="preserve">
+    <value>The report/chart you are viewing is out of sync. Please refresh the page.</value>
+  </data>
 </root>

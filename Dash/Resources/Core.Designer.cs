@@ -403,6 +403,15 @@ namespace Dash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The report/chart you are viewing is out of sync. Please refresh the page..
+        /// </summary>
+        public static string ErrorRefresh {
+            get {
+                return ResourceManager.GetString("ErrorRefresh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} is required..
         /// </summary>
         public static string ErrorRequired {
