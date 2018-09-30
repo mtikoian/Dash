@@ -1,35 +1,22 @@
-﻿/*
-    JavaScript autoComplete v1.0.4
-    Copyright (c) 2014 Simon Steinberger / Pixabay
-    GitHub: https://github.com/Pixabay/JavaScript-autoComplete
-    License: http://www.opensource.org/licenses/mit-license.php
-*/
+﻿/*!
+ * JavaScript autoComplete v1.0.4
+ * Copyright (c) 2014 Simon Steinberger / Pixabay
+ * GitHub: https://github.com/Pixabay/JavaScript-autoComplete
+ * License: http://www.opensource.org/licenses/mit-license.php
+ */
 
 (function(root, factory) {
-    root.Autocomplete = factory();
-})(this, function() {
+    root.Autocomplete = factory(root.$);
+})(this, function($) {
     'use strict';
 
     function Autocomplete(options) {
-        if (!document.querySelector) return;
-
         // helpers
-        function hasClass(el, className) {
-            return el.classList.contains(className);
-        }
-
-        function addEvent(el, type, handler) {
-            el.addEventListener(type, handler);
-        }
-
-        function removeEvent(el, type, handler) {
-            el.removeEventListener(type, handler);
-        }
 
         function live(elClass, event, cb, context) {
-            addEvent(context || document, event, function(e) {
+            $.on(context || document, event, function(e) {
                 var found, el = e.target || e.srcElement;
-                while (el && !(found = hasClass(el, elClass))) {
+                while (el && !(found = $.hasClass(el, elClass))) {
                     el = el.parentElement;
                 }
                 if (found) {
@@ -92,7 +79,7 @@
                         }
                 }
             };
-            addEvent(window, 'resize', that.updateSC);
+            $.on(window, 'resize', that.updateSC);
             document.body.appendChild(that.sc);
 
             live('autocomplete-suggestion', 'mouseleave', function() {
@@ -107,7 +94,7 @@
             }, that.sc);
 
             live('autocomplete-suggestion', 'mousedown', function(e) {
-                if (hasClass(this, 'autocomplete-suggestion')) { // else outside click
+                if ($.hasClass(this, 'autocomplete-suggestion')) { // else outside click
                     var v = this.getAttribute('data-val');
                     that.value = v;
                     o.onSelect(e, v, this);
@@ -133,7 +120,7 @@
                     setTimeout(function() { that.focus(); }, 20);
                 }
             };
-            addEvent(that, 'blur', that.blurHandler);
+            $.on(that, 'blur', that.blurHandler);
 
             var suggest = function(data) {
                 var val = that.value;
@@ -203,7 +190,7 @@
                     }
                 }
             };
-            addEvent(that, 'keydown', that.keydownHandler);
+            $.on(that, 'keydown', that.keydownHandler);
 
             that.keyupHandler = function(e) {
                 var key = window.event ? e.keyCode : e.which;
@@ -229,14 +216,14 @@
                     }
                 }
             };
-            addEvent(that, 'keyup', that.keyupHandler);
+            $.on(that, 'keyup', that.keyupHandler);
 
             that.focusHandler = function(e) {
                 that.last_val = '\n';
                 that.keyupHandler(e);
             };
             if (!o.minChars) {
-                addEvent(that, 'focus', that.focusHandler);
+                $.on(that, 'focus', that.focusHandler);
             }
         }
 
@@ -244,11 +231,11 @@
         this.destroy = function() {
             for (var i = 0; i < elems.length; i++) {
                 var that = elems[i];
-                removeEvent(window, 'resize', that.updateSC);
-                removeEvent(that, 'blur', that.blurHandler);
-                removeEvent(that, 'focus', that.focusHandler);
-                removeEvent(that, 'keydown', that.keydownHandler);
-                removeEvent(that, 'keyup', that.keyupHandler);
+                $.off(window, 'resize', that.updateSC);
+                $.off(that, 'blur', that.blurHandler);
+                $.off(that, 'focus', that.focusHandler);
+                $.off(that, 'keydown', that.keydownHandler);
+                $.off(that, 'keyup', that.keyupHandler);
                 if (that.autocompleteAttr) {
                     that.setAttribute('autocomplete', that.autocompleteAttr);
                 } else {
