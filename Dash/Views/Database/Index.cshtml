@@ -11,7 +11,7 @@
         <authorized-button controller="Database" action="Create" title="@Databases.CreateDatabase" />
     </toolbar>
 
-    <do-table url="@Url.Action("List")" id="tableDatabases" template="#databaseTemplate" />
+    <do-table result-url="@Url.Action("List")" id="tableDatabases" template="#databaseTemplate" />
 
     <do-row id="databaseTemplate">
         <do-column label="@Databases.Name" field="name">

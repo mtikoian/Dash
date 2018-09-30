@@ -256,7 +256,7 @@ namespace Dash.Controllers
             return View("Sql", report.GetData(AppConfig, 0, report.RowLimit, true));
         }
 
-        [HttpPut, AjaxRequestOnly]
+        [HttpPost, AjaxRequestOnly]
         public IActionResult UpdateColumnWidths([FromBody] UpdateColumnWidth model)
         {
             if (model == null)

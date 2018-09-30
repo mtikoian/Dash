@@ -11,7 +11,7 @@
         <authorized-button controller="Alert" action="Create" title="@Alerts.CreateAlert" />
     </toolbar>
 
-    <do-table url="@Url.Action("List")" id="tableAlerts" template="#alertTemplate" />
+    <do-table result-url="@Url.Action("List")" id="tableAlerts" template="#alertTemplate" />
 
     <do-row id="alertTemplate">
         <do-column label="@Alerts.Name" field="name">

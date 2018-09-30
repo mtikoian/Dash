@@ -17,11 +17,11 @@ namespace Dash.TagHelpers
         public object RequestParams { get; set; }
         public bool Searchable { get; set; } = true;
         public HttpVerbs? StoreRequestMethod { get; set; }
-        public bool StoreSettings { get; set; } = true;
         public string StoreUrl { get; set; }
         public string Template { get; set; }
-        public string Url { get; set; }
+        public string ResultUrl { get; set; }
         public string Width { get; set; }
+        public bool CheckUpdateDate { get; set; }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
@@ -29,12 +29,12 @@ namespace Dash.TagHelpers
             table.Attributes.Add("id", Id);
             table.Attributes.Add("data-toggle", "dotable");
             table.Attributes.Add("data-template", Template);
-            table.Attributes.Add("data-url", Url);
+            table.Attributes.Add("data-result-url", ResultUrl);
             table.Attributes.Add("data-editable", Editable.ToString());
             table.Attributes.Add("data-searchable", Searchable.ToString());
-            table.Attributes.Add("data-store-settings", StoreSettings.ToString());
             table.Attributes.Add("data-load-all", LoadAll.ToString());
             table.Attributes.Add("data-request-method", RequestMethod.ToString());
+            table.Attributes.Add("data-check-update-date", CheckUpdateDate.ToString());
             if (!StoreUrl.IsEmpty())
             {
                 table.Attributes.Add("data-store-url", StoreUrl);
@@ -57,7 +57,7 @@ namespace Dash.TagHelpers
             }
             if (RequestParams != null)
             {
-                table.Attributes.Add("data-request-params", JSON.SerializeDynamic(RequestParams));
+                table.Attributes.Add("json-request-params", JSON.SerializeDynamic(RequestParams, JilOutputFormatter.Options));
             }
 
             output.TagMode = TagMode.StartTagAndEndTag;

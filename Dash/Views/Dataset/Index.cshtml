@@ -11,7 +11,7 @@
         <authorized-button controller="Dataset" action="Create" title="@Datasets.CreateDataset" />
     </toolbar>
 
-    <do-table url="@Url.Action("List")" id="tableDatabases" template="#databaseTemplate" />
+    <do-table result-url="@Url.Action("List")" id="tableDatabases" template="#databaseTemplate" />
 
     <do-row id="databaseTemplate">
         <do-column label="@Datasets.Name" field="name">

@@ -11,7 +11,7 @@
         <authorized-button controller="User" action="Create" title="@Users.CreateUser" />
     </toolbar>
 
-    <do-table url="@Url.Action("List")" id="tableUsers" template="#userTemplate" />
+    <do-table result-url="@Url.Action("List")" id="tableUsers" template="#userTemplate" />
 
     <do-row id="userTemplate">
         <do-column label="@Users.UserName" field="userName">

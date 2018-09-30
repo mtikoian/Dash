@@ -162,6 +162,22 @@
     };
 
     /**
+     * Conditionally disable a input.
+     * @param {Node} node - Input to enable/disable.
+     * @param {bool} disable - True to disable, false to enable.
+     */
+    var disableIf = function(node, disable) {
+        if (!node) {
+            return;
+        }
+        if (disable) {
+            node.setAttribute('disabled', true);
+        } else {
+            node.removeAttribute('disabled');
+        }
+    };
+
+    /**
      * Dispatch event to an element.
      * @param {Node} element - Element to dispatch the event to.
      * @param {string} event - Event name to dispatch.
@@ -732,6 +748,7 @@
         createNode: createNode,
         debounce: debounce,
         destroy: destroy,
+        disableIf: disableIf,
         dispatch: dispatch,
         equals: equals,
         extend: extend,

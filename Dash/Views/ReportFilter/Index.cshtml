@@ -16,7 +16,7 @@
             <authorized-button controller="ReportFilter" action="Create" route-values="@(new { Id = Model.Id })" title="@Core.Add" />
         </toolbar>
 
-        <do-table url="@Url.Action("List", new { Id = Model.Id })" id="tableReportFilters_@Model.Id" template="#reportFilterTemplate" searchable="false" />
+        <do-table result-url="@Url.Action("List", new { Id = Model.Id })" id="tableReportFilters_@Model.Id" template="#reportFilterTemplate" searchable="false" />
 
         <do-row id="reportFilterTemplate">
             <do-column label="@Reports.FilterColumn" field="columnName" sortable="false">

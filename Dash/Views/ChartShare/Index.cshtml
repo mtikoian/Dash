@@ -16,7 +16,7 @@
             <authorized-button controller="ChartShare" action="Create" route-values="@(new { Id = Model.Id })" title="@Core.Add" />
         </toolbar>
 
-        <do-table url="@Url.Action("List", new { Id = Model.Id })" id="tableChartShares_@Model.Id" template="#chartShareTemplate" />
+        <do-table result-url="@Url.Action("List", new { Id = Model.Id })" id="tableChartShares_@Model.Id" template="#chartShareTemplate" />
 
         <do-row id="chartShareTemplate">
             <do-column label="@Core.User" field="userName">

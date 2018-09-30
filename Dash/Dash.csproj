@@ -91,6 +91,7 @@
     <None Include="Views\Shared\_ChartTabs.cshtml"/>
     <None Include="Views\Shared\_DatasetBreadcrumbs.cshtml"/>
     <None Include="Views\Shared\_DatasetTabs.cshtml"/>
+    <None Include="Views\Shared\_Report.cshtml"/>
     <None Include="Views\Shared\_ReportBreadcrumbs.cshtml"/>
     <None Include="Views\Shared\_ReportTabs.cshtml"/>
     <None Include="Views\User\CreateEdit.cshtml"/>
@@ -161,11 +162,6 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Update="Views\Shared\_Report.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Resources\Account.es.resx">

@@ -16,7 +16,7 @@
             <authorized-button controller="DatasetJoin" action="Create" route-values="@(new { Id = Model.Id })" title="@Core.Add" />
         </toolbar>
 
-        <do-table url="@Url.Action("List", new { Id = Model.Id })" id="tableDatasetJoins_@Model.Id" template="#datasetJoinTemplate" searchable="false" />
+        <do-table result-url="@Url.Action("List", new { Id = Model.Id })" id="tableDatasetJoins_@Model.Id" template="#datasetJoinTemplate" searchable="false" />
 
         <do-row id="datasetJoinTemplate">
             <do-column label="@Datasets.JoinTableName" field="tableName" sortable="false">

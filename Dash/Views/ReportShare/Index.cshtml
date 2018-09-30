@@ -16,7 +16,7 @@
             <authorized-button controller="ReportShare" action="Create" route-values="@(new { Id = Model.Id })" title="@Core.Add" />
         </toolbar>
 
-        <do-table url="@Url.Action("List", new { Id = Model.Id })" id="tableReportShares_@Model.Id" template="#reportShareTemplate" />
+        <do-table result-url="@Url.Action("List", new { Id = Model.Id })" id="tableReportShares_@Model.Id" template="#reportShareTemplate" />
 
         <do-row id="reportShareTemplate">
             <do-column label="@Core.User" field="userName">

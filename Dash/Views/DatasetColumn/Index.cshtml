@@ -17,7 +17,7 @@
             <authorized-button controller="DatasetColumn" action="Import" route-values="@(new { Id = Model.Id })" title="@Datasets.Import" class="BtnWarning" data-confirm="@Datasets.ConfirmImportColumns" />
         </toolbar>
 
-        <do-table url="@Url.Action("List", new { Id = Model.Id })" id="tableDatasetColumns_@Model.Id" template="#datasetColumnTemplate" />
+        <do-table result-url="@Url.Action("List", new { Id = Model.Id })" id="tableDatasetColumns_@Model.Id" template="#datasetColumnTemplate" />
 
         <do-row id="datasetColumnTemplate">
             <do-column label="@Datasets.ColumnTitle" field="title">

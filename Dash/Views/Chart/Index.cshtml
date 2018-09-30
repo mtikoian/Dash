@@ -11,7 +11,7 @@
         <authorized-button controller="Chart" action="Create" title="@Charts.CreateChart" />
     </toolbar>
 
-    <do-table url="@Url.Action("List")" id="tableCharts" template="#chartTemplate" />
+    <do-table result-url="@Url.Action("List")" id="tableCharts" template="#chartTemplate" />
 
     <do-row id="chartTemplate">
         <do-column label="@Charts.Name" field="name">

@@ -16,7 +16,7 @@
             @Html.AuthorizedButton(Core.Add, "Create", "ChartRange", new { Id = Model.Id }, DashClasses.BtnPrimary, hasAccess: User.IsInRole("chartrange.create"))
         </toolbar>
 
-        <do-table url="@Url.Action("List", new { Id = Model.Id })" id="tableChartRanges_@Model.Id" template="#chartRangeTemplate" />
+        <do-table result-url="@Url.Action("List", new { Id = Model.Id })" id="tableChartRanges_@Model.Id" template="#chartRangeTemplate" />
 
         <do-row id="chartRangeTemplate">
             <do-column label="@Charts.Report" field="reportName" sortable="false">

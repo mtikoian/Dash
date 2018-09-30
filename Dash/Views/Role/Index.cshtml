@@ -11,7 +11,7 @@
         <authorized-button controller="Role" action="Create" title="@Roles.CreateRole" />
     </toolbar>
 
-    <do-table url="@Url.Action("List")" id="tableRoles" template="#roleTemplate" />
+    <do-table result-url="@Url.Action("List")" id="tableRoles" template="#roleTemplate" />
 
     <do-row id="roleTemplate">
         <do-column label="@Roles.Name" field="name">

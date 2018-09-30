@@ -11,7 +11,7 @@
         <authorized-button controller="Report" action="Create" title="@Reports.CreateReport" />
     </toolbar>
 
-    <do-table url="@Url.Action("List")" id="tableReports" template="#reportTemplate" />
+    <do-table result-url="@Url.Action("List")" id="tableReports" template="#reportTemplate" />
 
     <do-row id="reportTemplate">
         <do-column label="@Reports.Name" field="name">
