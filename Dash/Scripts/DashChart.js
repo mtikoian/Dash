@@ -104,16 +104,8 @@
             $.ajax({
                 method: 'POST',
                 url: self.url,
-                block: false,
-                headers: {
-                    'Content-Type': 'application/jil; charset=utf-8',
-                    'Accept': 'application/jil'
-                }
+                block: false
             }, function(data) {
-                if ($.isFunction(self.dataFn)) {
-                    if (!self.dataFn(data)) {
-                        return;
-                    }
                 if (data.updatedDate && new Date(data.updatedDate) > this.initDate) {
                     $.content.forceRefresh();
                     return;
