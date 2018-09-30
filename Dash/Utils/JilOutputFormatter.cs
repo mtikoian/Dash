@@ -15,7 +15,7 @@ namespace Dash
         {
             SupportedEncodings.Add(Encoding.UTF8);
             SupportedEncodings.Add(Encoding.Unicode);
-            SupportedMediaTypes.Add(MediaTypeHeaderValue.Parse("application/jil"));
+            SupportedMediaTypes.Add(MediaTypeHeaderValue.Parse("application/json"));
         }
 
         public override Task WriteResponseBodyAsync(OutputFormatterWriteContext context, Encoding selectedEncoding)

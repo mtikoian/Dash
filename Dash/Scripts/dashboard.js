@@ -164,11 +164,7 @@
             method: 'POST',
             url: dash.getAttribute('data-save-url'),
             data: { Widgets: positions },
-            block: false,
-            headers: {
-                'Content-Type': 'application/jil; charset=utf-8',
-                'Accept': 'application/jil'
-            }
+            block: false
         }, null);
     };
 
