@@ -173,7 +173,6 @@ namespace Dash
             services.AddHangfire(x => x.UseSqlServerStorage(appConfig.Database.ConnectionString));
 
             services.AddMvc(options => {
-                options.InputFormatters.Insert(0, new JilInputFormatter());
                 options.OutputFormatters.Insert(0, new JilOutputFormatter());
                 options.Filters.Add(new RequireHttpsAttribute());
             });
