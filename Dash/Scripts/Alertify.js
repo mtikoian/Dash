@@ -90,8 +90,7 @@
                 $.on(elem, 'click', _hideElement.bind(null, elem));
             }
 
-            wait = wait && !isNaN(+wait) ? +wait : this.delay;
-
+            wait = !isNaN(+wait) ? +wait : this.delay;
             if (wait < 0) {
                 _hideElement(elem);
             } else if (wait > 0) {
@@ -180,7 +179,7 @@
                 $.addClass(log, 'show');
             }, 10);
 
-            this.close(log, this.delay);
+            this.close(log, type === 'error' ? 0 : this.delay);
         },
 
         /**
