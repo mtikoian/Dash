@@ -8,7 +8,8 @@
         firstRun: true,
         ignoreFileTypes: ['pdf', 'doc', 'docx', 'zip', 'rar', '7z', 'gif', 'jpeg', 'jpg', 'png'],
         excludeClass: 'pjax-no-follow',
-        container: '#contentWrapper'
+        container: '#contentWrapper',
+        errorMessageName: null
     };
 
     /**
@@ -213,6 +214,9 @@
      */
     pjax.init = function() {
         var body = $.get('body');
+        if (body.hasAttribute('data-error-name')) {
+            pjax.errorMessageName = body.getAttribute('data-error-name');
+        }
         $.content.load(body);
         pjax.checkEvents(body, 'data-load-event');
     };
@@ -307,7 +311,7 @@
             Alertify.dismissAll();
             Alertify.prompt(target.getAttribute('data-prompt'), function(promptValue) {
                 if (!$.hasValue(promptValue)) {
-                    Alertify.error($.resx('errorNameRequired'));
+                    Alertify.error(pjax.errorMessageName);
                     return false;
                 }
                 options.url += ((!/[?&]/.test(options.url)) ? '?prompt' : '&prompt') + '=' + encodeURIComponent(promptValue);
