@@ -217,7 +217,32 @@
     <value>Add the roles that can access this dataset.  Administrators will be able to view/modify any dataset. </value>
   </data>
   <data name="Dataset_DateFormat" xml:space="preserve">
-    <value>&lt;table class="table table-hover table-bordered table-sm table-striped"&gt;&lt;tbody&gt;&lt;tr&gt;&lt;th&gt;&lt;/th&gt;&lt;th&gt;Token&lt;/th&gt;&lt;th&gt;Output&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Month&lt;/b&gt;&lt;/td&gt;&lt;td&gt;M&lt;/td&gt;&lt;td&gt;1 2 ... 11 12&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;MM&lt;/td&gt;&lt;td&gt;01 02 ... 11 12&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;MMM&lt;/td&gt;&lt;td&gt;Jan Feb ... Nov Dec&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;MMMM&lt;/td&gt;&lt;td&gt;January February ... November December&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Day of Month&lt;/b&gt;&lt;/td&gt;&lt;td&gt;D&lt;/td&gt;&lt;td&gt;1 2 ... 30 31&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;Do&lt;/td&gt;&lt;td&gt;1st 2nd ... 30th 31st&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;DD&lt;/td&gt;&lt;td&gt;01 02 ... 30 31&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Day of Week&lt;/b&gt;&lt;/td&gt;&lt;td&gt;d&lt;/td&gt;&lt;td&gt;0 1 ... 5 6&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;ddd&lt;/td&gt;&lt;td&gt;Sun Mon ... Fri Sat&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;dddd&lt;/td&gt;&lt;td&gt;Sunday Monday ... Friday Saturday&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Year&lt;/b&gt;&lt;/td&gt;&lt;td&gt;YY&lt;/td&gt;&lt;td&gt;70 71 ... 29 30&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;YYYY&lt;/td&gt;&lt;td&gt;1970 1971 ... 2029 2030&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;AM/PM&lt;/b&gt;&lt;/td&gt;&lt;td&gt;A&lt;/td&gt;&lt;td&gt;AM PM&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;a&lt;/td&gt;&lt;td&gt;am pm&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Hour&lt;/b&gt;&lt;/td&gt;&lt;td&gt;H&lt;/td&gt;&lt;td&gt;0 1 ... 22 23&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;HH&lt;/td&gt;&lt;td&gt;00 01 ... 22 23&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;h&lt;/td&gt;&lt;td&gt;1 2 ... 11 12&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;hh&lt;/td&gt;&lt;td&gt;01 02 ... 11 12&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Minute&lt;/b&gt;&lt;/td&gt;&lt;td&gt;m&lt;/td&gt;&lt;td&gt;0 1 ... 58 59&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;mm&lt;/td&gt;&lt;td&gt;00 01 ... 58 59&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Second&lt;/b&gt;&lt;/td&gt;&lt;td&gt;s&lt;/td&gt;&lt;td&gt;0 1 ... 58 59&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;ss&lt;/td&gt;&lt;td&gt;00 01 ... 58 59&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Fractional Second&lt;/b&gt;&lt;/td&gt;&lt;td&gt;S&lt;/td&gt;&lt;td&gt;0 1 ... 8 9&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;SS&lt;/td&gt;&lt;td&gt;0 1 ... 98 99&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;SSS&lt;/td&gt;&lt;td&gt;0 1 ... 998 999&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Timezone&lt;/b&gt;&lt;/td&gt;&lt;td&gt;ZZ&lt;/td&gt;&lt;td&gt;-0700 -0600 ... +0600 +0700&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;</value>
+    <value>&lt;table class="table table-hover table-bordered table-sm table-striped"&gt;
+&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Character&lt;/th&gt;&lt;th&gt;Description&lt;/th&gt;&lt;th&gt;Example&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;&lt;td&gt;d&lt;/td&gt;&lt;td&gt;Day of the month, 2 digits with leading zeros&lt;/td&gt;&lt;td&gt;01 to 31&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;D&lt;/td&gt;&lt;td&gt;A textual representation of a day&lt;/td&gt;&lt;td&gt;Mon through Sun&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;l&lt;/td&gt;&lt;td&gt;A full textual representation of the day of the week&lt;/td&gt;&lt;td&gt;Sunday through Saturday&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;j&lt;/td&gt;&lt;td&gt;Day of the month without leading zeros&lt;/td&gt;&lt;td&gt;1 to 31&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;J&lt;/td&gt;&lt;td&gt;Day of the month without leading zeros and ordinal suffix&lt;/td&gt;&lt;td&gt;1st, 2nd, to 31st&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;w&lt;/td&gt;&lt;td&gt;Numeric representation of the day of the week&lt;/td&gt;&lt;td&gt;0 (for Sunday) through 6 (for Saturday)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;F&lt;/td&gt;&lt;td&gt;A full textual representation of a month&lt;/td&gt;&lt;td&gt;January through December&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;m&lt;/td&gt;&lt;td&gt;Numeric representation of a month, with leading zero&lt;/td&gt;&lt;td&gt;01 through 12&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;n&lt;/td&gt;&lt;td&gt;Numeric representation of a month, without leading zeros&lt;/td&gt;&lt;td&gt;1 through 12&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;M&lt;/td&gt;&lt;td&gt;A short textual representation of a month&lt;/td&gt;&lt;td&gt;Jan through Dec&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;U&lt;/td&gt;&lt;td&gt;The number of seconds since the Unix Epoch&lt;/td&gt;&lt;td&gt;1413704993&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;y&lt;/td&gt;&lt;td&gt;A two digit representation of a year&lt;/td&gt;&lt;td&gt;99 or 03&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Y&lt;/td&gt;&lt;td&gt;A full numeric representation of a year, 4 digits&lt;/td&gt;&lt;td&gt;1999 or 2003&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Z&lt;/td&gt;&lt;td&gt;ISO Date format&lt;/td&gt;&lt;td&gt;2017-03-04T01:23:43.000Z&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;H&lt;/td&gt;&lt;td&gt;Hours (24 hours)&lt;/td&gt;&lt;td&gt;00 to 23&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;h&lt;/td&gt;&lt;td&gt;Hours&lt;/td&gt;&lt;td&gt;1 to 12&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;i&lt;/td&gt;&lt;td&gt;Minutes&lt;/td&gt;&lt;td&gt;00 to 59&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;S&lt;/td&gt;&lt;td&gt;Seconds, 2 digits&lt;/td&gt;&lt;td&gt;00 to 59&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;s&lt;/td&gt;&lt;td&gt;Seconds&lt;/td&gt;&lt;td&gt;0, 1 to 59&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;K&lt;/td&gt;&lt;td&gt;AM/PM&lt;/td&gt;&lt;td&gt;AM or PM&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;More info about formatting on &lt;a href="https://flatpickr.js.org/formatting/" target="_blank"&gt;flatpickr.js.org&lt;/a&gt;&lt;/p&gt;</value>
   </data>
   <data name="Dataset_Description" xml:space="preserve">
     <value>Enter an optional description to make it easier for users to select a dataset when creating reports.</value>

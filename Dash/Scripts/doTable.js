@@ -2,8 +2,8 @@
  * doT based table component. Supports ajax data, searching, sorting, paging, & resizing columns.
  */
 (function(root, factory) {
-    root.doTable = factory(root.doT, root.$);
-})(this, function(doT, $) {
+    root.doTable = factory(root.doT, root.$, root.flatpickr);
+})(this, function(doT, $, flatpickr) {
     'use strict';
 
     var _templates = {
@@ -95,7 +95,14 @@
             node.removeAttribute('disabled');
         }
     };
-
+    /**
+     * Format a field value for display.
+     * @param {string} displayCurrencyFormat - Format to use for currency.
+     * @param {string} displayDateFormat - Format to use for dates.
+     * @param {string} value - Value to format.
+     * @param {string} dataType - Datatype of column.
+     * @returns
+     */
     var getDisplayValue = function(displayCurrencyFormat, displayDateFormat, value, dataType) {
         if (!dataType || $.isNull(value)) {
             return value;
@@ -105,7 +112,7 @@
         if (dataType === 'currency') {
             val = $.accounting.formatMoney(val, displayCurrencyFormat);
         } else if (dataType === 'date') {
-            val = $.fecha.format(val, displayDateFormat);
+            val = flatpickr.formatDate(val, displayDateFormat);
         }
         return val;
     };

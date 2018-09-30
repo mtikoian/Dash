@@ -259,7 +259,13 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;table class=&quot;table table-hover table-bordered table-sm table-striped&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;th&gt;&lt;/th&gt;&lt;th&gt;Token&lt;/th&gt;&lt;th&gt;Output&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Month&lt;/b&gt;&lt;/td&gt;&lt;td&gt;M&lt;/td&gt;&lt;td&gt;1 2 ... 11 12&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;MM&lt;/td&gt;&lt;td&gt;01 02 ... 11 12&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;MMM&lt;/td&gt;&lt;td&gt;Jan Feb ... Nov Dec&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;MMMM&lt;/td&gt;&lt;td&gt;January February ... November December&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Day of Month&lt;/b&gt;&lt;/td&gt;&lt;td&gt;D&lt;/td&gt;&lt;td&gt;1 2 ... 30 31&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;Do&lt;/td&gt;&lt;td&gt;1st 2nd ... 30th 31st&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt; [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to &lt;table class=&quot;table table-hover table-bordered table-sm table-striped&quot;&gt;
+        ///&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Character&lt;/th&gt;&lt;th&gt;Description&lt;/th&gt;&lt;th&gt;Example&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+        ///&lt;tbody&gt;
+        ///&lt;tr&gt;&lt;td&gt;d&lt;/td&gt;&lt;td&gt;Day of the month, 2 digits with leading zeros&lt;/td&gt;&lt;td&gt;01 to 31&lt;/td&gt;&lt;/tr&gt;
+        ///&lt;tr&gt;&lt;td&gt;D&lt;/td&gt;&lt;td&gt;A textual representation of a day&lt;/td&gt;&lt;td&gt;Mon through Sun&lt;/td&gt;&lt;/tr&gt;
+        ///&lt;tr&gt;&lt;td&gt;l&lt;/td&gt;&lt;td&gt;A full textual representation of the day of the week&lt;/td&gt;&lt;td&gt;Sunday through Saturday&lt;/td&gt;&lt;/tr&gt;
+        ///&lt;tr&gt;&lt;td&gt;j&lt;/td&gt;&lt;td&gt;Day of the month without leading zeros&lt; [rest of string was truncated]&quot;;.
         /// </summary>
         public static string Dataset_DateFormat {
             get {

@@ -2,8 +2,8 @@
  * Wraps functionality needed for creating charts using Chart.js.
  */
 (function(root, factory) {
-    root.DashChart = factory(root.$, root.Alertify, root.Chart);
-})(this, function($, Alertify, Chart) {
+    root.DashChart = factory(root.$, root.Alertify, root.Chart, root.flatpicker);
+})(this, function($, Alertify, Chart, flatpicker) {
     'use strict';
 
     // Change global chart settings.
@@ -166,7 +166,7 @@
                         scales.xAxes = [{
                             ticks: {
                                 callback: function(value) {
-                                    return $.fecha.format(new Date(value), dateFormat);
+                                    return flatpicker.formatDate(new Date(value), dateFormat);
                                 }
                             }
                         }];
@@ -178,7 +178,7 @@
                                 } else if (data.labels.length > 0 && tooltipItems[0].index < data.labels.length) {
                                     title = data.labels[tooltipItems[0].index];
                                 }
-                                title = $.fecha.format(new Date(title), dateFormat);
+                                title = flatpicker.formatDate(new Date(title), dateFormat);
                             }
                             return title;
                         };
@@ -211,10 +211,10 @@
                         } else if (x.yType === 'date') {
                             var dateFormat = x.dateFormat;
                             ticks.callback = function(value) {
-                                return $.fecha.format(new Date(value), dateFormat);
+                                return flatpicker.formatDate(new Date(value), dateFormat);
                             };
                             tooltips.callbacks.label = function(item) {
-                                return $.fecha.format(new Date(item.yLabel), dateFormat);
+                                return flatpicker.formatDate(new Date(item.yLabel), dateFormat);
                             };
                         }
 

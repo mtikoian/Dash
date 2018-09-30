@@ -84,7 +84,7 @@ namespace Dash.Models
         [Display(Name = "DateFormat", ResourceType = typeof(Datasets))]
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         [StringLength(50, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
-        public string DateFormat { get; set; } = "YYYY-MM-DD HH:mm:ss";
+        public string DateFormat { get; set; } = "Y-m-d H:i:S";
 
         [Ignore, JilDirective(true)]
         public List<string> DefaultCurrencyFormats
@@ -100,7 +100,7 @@ namespace Dash.Models
         {
             get
             {
-                return new List<string> { "YYYY-MM-DD HH:mm:ss", "YYYY-MM-DD", "MM/DD/YYYY HH:mm:ss", "MM/DD/YYYY" };
+                return new List<string> { "Y-m-d H:i:S", "Y-m-d", "n/j/Y H:i:S", "n/j/y" };
             }
         }
 
