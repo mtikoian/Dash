@@ -35,6 +35,7 @@
         this.toggleExportFn = toggleExportFn;
         this.chart = null;
         this.events = { resize: $.debounce(this.resize.bind(this), 50) };
+        this.initDate = new Date();
         $.on(window, 'resize', this.events.resize);
         this.run();
     };
@@ -113,6 +114,10 @@
                     if (!self.dataFn(data)) {
                         return;
                     }
+                if (data.updatedDate && new Date(data.updatedDate) > this.initDate) {
+                    $.content.forceRefresh();
+                    return;
+                }
                 if ($.isNull(data.ranges) || data.ranges.length === 0) {
                     return;
                 }
