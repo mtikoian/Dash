@@ -113,12 +113,13 @@
                     if (!self.dataFn(data)) {
                         return;
                     }
+                if ($.isNull(data.ranges) || data.ranges.length === 0) {
+                    return;
                 }
 
                 var ranges = $.isArray(data.ranges) ? data.ranges : [data];
                 if (!ranges.some(function(x) { return x.rows && x.rows.length; })) {
                     $.hide($.get('.chart-spinner', self.content));
-                    Alertify.error($.resx('chart.noData'));
                     return;
                 }
 

@@ -235,6 +235,10 @@ namespace Dash.Models
             {
                 response.Error = Charts.ErrorGettingData;
             }
+            else if (!response.Ranges.Any(x => x.Rows.Any()))
+            {
+                response.Error = Charts.ErrorNoData;
+            }
 
             return response;
         }
