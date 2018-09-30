@@ -6,7 +6,6 @@ using Dash.Configuration;
 using Dash.Resources;
 using Dash.Utils;
 using Jil;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Dash.Models
 {
@@ -81,6 +80,9 @@ namespace Dash.Models
         [Ignore]
         public string DatasetName { get; set; }
 
+        [Ignore]
+        public bool IsDashboard { get; set; } = false;
+
         [Ignore, JilDirective(true)]
         public bool IsOwner { get { return RequestUserId == OwnerId; } }
 
@@ -132,8 +134,6 @@ namespace Dash.Models
         private List<DatasetColumn> _DatasetColumns { get; set; }
         private List<DatasetColumn> _DatasetColumnsByDisplay { get; set; }
         private User _Owner { get; set; }
-
-        public bool IsDashboard { get; set; } = false;
 
         public Report Copy(string name = null)
         {
