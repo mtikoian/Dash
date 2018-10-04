@@ -74,12 +74,6 @@ namespace Dash.Controllers
             return View("Index", new WidgetList(DbContext, _ActionContextAccessor, User.UserId()));
         }
 
-        [HttpGet, ParentAction("Index")]
-        public IActionResult IndexOptions()
-        {
-            return Data(new WidgetList(DbContext, _ActionContextAccessor, User.UserId()).Widgets);
-        }
-
         [HttpPost, AjaxRequestOnly]
         public IActionResult SaveDashboard([FromBody] SaveDashboard model)
         {
@@ -93,17 +87,6 @@ namespace Dash.Controllers
             }
             model.Update();
             return Success();
-        }
-
-        [HttpGet, AjaxRequestOnly, ParentAction("Index")]
-        public IActionResult WidgetOptions(int id)
-        {
-            var model = DbContext.Get<WidgetView>(id);
-            if (model == null)
-            {
-                return Error(Core.ErrorInvalidId);
-            }
-            return Data(model);
         }
 
         private IActionResult CreateEditView(Widget model)

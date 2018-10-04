@@ -1,13 +1,14 @@
 ﻿/*!
  * Wraps content processing functionality.
  */
-(function($, Alertify, pjax, doTable, CollapsibleList, Autocomplete, Draggabilly, flatpickr, DashChart, ColorPicker) {
+(function($, Alertify, pjax, doTable, CollapsibleList, Autocomplete, Draggabilly, flatpickr, DashChart, ColorPicker, Widget) {
     'use strict';
 
     var _autocompletes = [];
     var _draggabillies = [];
     var _charts = [];
     var _colorpickers = [];
+    var _dashboardEvents = null;
 
     /**
      * Display context help.
@@ -295,6 +296,27 @@
     };
 
     /**
+     * Initialize widget.
+     * @this {Node} Node the event is being bound to.
+     */
+    var widgetLoad = function() {
+        var node = getNode(this);
+        if (node) {
+            new Widget(node);
+        }
+    };
+
+    /**
+     * Destroy widget.
+     * @this {Node} Node the event is being unbound from.
+     */
+    var widgetUnload = function() {
+        if (this.widget) {
+            this.widget.destroy(true);
+        }
+    };
+
+    /**
      * Initialize datepicker.
      * @this {Node} Node the event is being bound to.
      */
@@ -453,6 +475,62 @@
     };
 
     /**
+     * Initialize the dashboard.
+     * @this {Node} Node the picker is being bound to.
+     */
+    var dashboardLoad = function() {
+        var node = getNode(this);
+        if (node) {
+            _dashboardEvents = {
+                keydown: dashboardCheckKeyPress,
+                resize: $.debounce(dashboardResizeLayout, 200)
+            };
+            $.on(window, 'keydown', _dashboardEvents.keydown);
+            $.on(window, 'resize', _dashboardEvents.resize);
+        }
+    };
+
+    /**
+     * Destory dashboard.
+     */
+    var dashboardUnload = function() {
+        if (_dashboardEvents) {
+            $.off(window, 'keydown', _dashboardEvents.keydown);
+            $.off(window, 'resize', _dashboardEvents.resize);
+        }
+        _dashboardEvents = null;
+    };
+
+    /**
+     * Get the widget objects for the dashboard.
+     * @returns {Widget[]} Array of widgets.
+     */
+    var getWidgets = function() {
+        return $.getAll('.grid-item').map(function(x) { return x.widget; });
+    };
+
+    /**
+     * Update widget tables on window resize.
+     */
+    var dashboardResizeLayout = function() {
+        getWidgets().forEach(function(x) {
+            x.updateLayout();
+            x.setupDraggie();
+        });
+    };
+
+    /**
+     * Toggle full screen on escape key.
+     * @param {Event} evt - Key press event.
+     */
+    var dashboardCheckKeyPress = function(evt) {
+        evt = evt || window.event;
+        if (evt.keyCode === 27) {
+            getWidgets().filter(function(x) { return x.isFullscreen; }).forEach(function(x) { x.toggleFullScreen(); });
+        }
+    };
+
+    /**
      * Selectors and callback function to create events.
      */
     var _toggles = {
@@ -510,6 +588,14 @@
         'colorpicker': {
             onLoad: colorpickerLoad,
             onUnload: colorpickerUnload
+        },
+        'widget': {
+            onLoad: widgetLoad,
+            onUnload: widgetUnload
+        },
+        'dashboard': {
+            onLoad: dashboardLoad,
+            onUnload: dashboardUnload
         }
     };
 
@@ -619,4 +705,4 @@
      */
     $.ready(pjax.init);
 
-})(this.$, this.Alertify, this.pjax, this.doTable, this.CollapsibleList, this.Autocomplete, this.Draggabilly, this.flatpickr, this.DashChart, this.ColorPicker);
+})(this.$, this.Alertify, this.pjax, this.doTable, this.CollapsibleList, this.Autocomplete, this.Draggabilly, this.flatpickr, this.DashChart, this.ColorPicker, this.Widget);

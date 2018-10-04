@@ -15,7 +15,7 @@ namespace Dash.Models
         {
             var myWidgets = DbContext.GetAll<Widget>(new { UserId = _HttpContextAccessor.HttpContext.User.UserId() });
             Widgets.ForEach(x => {
-                myWidgets.Where(w => w.Id == x.Id).FirstOrDefault()?.SavePosition(x.Width, x.Height, x.X, x.Y);
+                myWidgets.Where(w => w.Id == x.SanitizedId()).FirstOrDefault()?.SavePosition(x.Width, x.Height, x.X, x.Y);
             });
         }
 

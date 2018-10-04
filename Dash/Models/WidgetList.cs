@@ -17,8 +17,6 @@ namespace Dash.Models
             RequestUserId = userId;
         }
 
-        public string ToJson { get { return JSON.SerializeDynamic(Widgets, JilOutputFormatter.Options); } }
-
         public IEnumerable<WidgetView> Widgets
         {
             get

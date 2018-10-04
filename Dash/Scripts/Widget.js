@@ -2,9 +2,12 @@
  * Wraps functionality needed to display a dashboard widget.
  */
 (function(root, factory) {
-    root.Widget = factory(root.$, root.Alertify, root.DashChart, root.Draggabilly, root.Rect);
-})(this, function($, Alertify, DashChart, Draggabilly, Rect) {
+    root.Widget = factory(root.$, root.DashChart, root.Draggabilly, root.Rect);
+})(this, function($, DashChart, Draggabilly, Rect) {
     'use strict';
+
+    var _columns = 20;
+    var _rows = 20;
 
     /**
      * Use object properties to make class list for a widget container.
@@ -17,35 +20,53 @@
     };
 
     /**
-     * Declare Widget class.
-     * @param {Object} opts - Widget settings
+     * Sort widgets from top left to bottom right.
+     * @param {Widget} a - First widget to compare.
+     * @param {Widget} b - Second widget to compare.
+     * @returns {number} Negative number if a comes first, positive number if b, zero if equal.
      */
-    var Widget = function(opts) {
-        this.init(opts);
-        // attach this to the container for reference in the dashboard
-        this.getContainer().widget = this;
+    var rectSort = function(a, b) {
+        if (a.rect.y === b.rect.y && a.rect.x === b.rect.x) {
+            return a.rect.updated ? -1 : b.rect.updated ? 1 : 0;
+        }
+        if (a.rect.x === b.rect.x) {
+            return a.rect.y - b.rect.y;
+        }
+        return a.rect.x - b.rect.x;
+    };
+
+    /**
+     * Declare Widget class.
+     * @param {Node} widgetNode - DOM node that contains the widget.
+     */
+    var Widget = function(widgetNode) {
+        this.init(widgetNode);
     };
 
     Widget.prototype = {
         /**
          * Initialize the widget.
-         * @param {Object} opts - Widget settings
+         * @param {Node} widgetNode - DOM node that contains the widget.
          */
-        init: function(opts) {
-            this.opts = opts;
+        init: function(widgetNode) {
+            // attach this to the container for reference in the dashboard
+            widgetNode.widget = this;
+
+            this.opts = {
+                id: widgetNode.id,
+                dashboardId: 'bodyContent'
+            };
             this.chart = null;
             this.interval = null;
             this.isFullscreen = false;
-            this.initDate = new Date();
             this.dragMargin = 0;
 
-            var container = this.getContainer();
-            $.on($.get('.btn-refresh', container), 'click', this.forceRefresh.bind(this));
-            $.on($.get('.btn-fullscreen', container), 'click', this.toggleFullScreen.bind(this));
-            this.rect = new Rect(container);
-            this.setupDraggie(container);
+            $.on($.get('.btn-refresh', widgetNode), 'click', this.forceRefresh.bind(this));
+            $.on($.get('.btn-fullscreen', widgetNode), 'click', this.toggleFullScreen.bind(this));
+            this.rect = new Rect(widgetNode);
+            this.setupDraggie(widgetNode);
 
-            var chartNode = $.get('.widget-chart', container);
+            var chartNode = $.get('.widget-chart', widgetNode);
             if (chartNode) {
                 this.chart = new DashChart(chartNode, false);
             }
@@ -60,7 +81,15 @@
          * @returns {Node} DOM node that contains the widget content.
          */
         getContainer: function() {
-            return $.get('#widget_' + this.opts.id);
+            return $.get('#' + this.opts.id);
+        },
+
+        /**
+         * Get the container element for the dashboard.
+         * @returns {Node} DOM node that contains the widget content.
+         */
+        getDashboardContainer: function() {
+            return $.get('#' + this.opts.dashboardId);
         },
 
         /**
@@ -72,6 +101,77 @@
             return container.hasAttribute('data-refresh') ? container.getAttribute('data-refresh') * 1 : 0;
         },
 
+        makeGrid: function() {
+            var dashboardNode = this.getDashboardContainer();
+            return { columns: _columns, rows: _rows, columnWidth: dashboardNode.parentNode.offsetWidth / _columns, rowHeight: dashboardNode.parentNode.offsetHeight / _rows };
+        },
+
+        /**
+         * Get the widget objects for the dashboard.
+         * @returns {Widget[]} Array of widgets.
+         */
+        getWidgets: function() {
+            return $.getAll('.grid-item').map(function(x) { return x.widget; });
+        },
+
+        /**
+         * Update widget position to avoid collisions after a resize or drag.
+         */
+        updatePosition: function() {
+            var sorted = this.getWidgets();
+            sorted.sort(rectSort);
+
+            var l = sorted.length, aWidget, bWidget;
+            for (var i = 0; i < l; i++) {
+                aWidget = sorted[i];
+                aWidget.rect.updated = false;
+
+                for (var j = 0; j < l; j++) {
+                    if (i === j) {
+                        continue;
+                    }
+
+                    bWidget = sorted[j];
+                    if (bWidget.rect.overlaps(aWidget.rect)) {
+                        if (bWidget.rect.y > aWidget.rect.y) {
+                            // need to move down
+                            bWidget.setLocation(bWidget.rect.x, aWidget.rect.y + aWidget.rect.height);
+                        } else if (aWidget.rect.x + aWidget.rect.width + bWidget.rect.width > _columns) {
+                            // need to move down
+                            bWidget.setLocation(bWidget.rect.x, aWidget.rect.y + aWidget.rect.height);
+                        } else {
+                            // safe to move right
+                            bWidget.setLocation(aWidget.rect.x + aWidget.rect.width, bWidget.rect.y);
+                        }
+                    }
+                }
+            }
+            this.savePosition();
+        },
+
+        /**
+         * Save position settings back to server.
+         */
+        savePosition: function() {
+            var positions = this.getWidgets().map(function(w) {
+                return {
+                    Id: w.opts.id || 0,
+                    Width: w.rect.width || 1,
+                    Height: w.rect.height || 1,
+                    X: w.rect.x || 0,
+                    Y: w.rect.y || 0
+                };
+            });
+
+            var dash = this.getDashboardContainer();
+            $.ajax({
+                method: 'POST',
+                url: dash.getAttribute('data-save-url'),
+                data: { Widgets: positions },
+                block: false
+            }, null);
+        },
+
         /**
          * Add the draggabilly handlers.
          * @param {Node} container - DOM node that contains the widget content.
@@ -79,7 +179,7 @@
          */
         setupDraggie: function(container, grid) {
             container = $.coalesce(container, this.getContainer());
-            var g = this.opts.grid = $.coalesce(grid, this.opts.grid);
+            var g = this.opts.grid = $.coalesce(grid, this.makeGrid());
 
             $.destroy(this.moveDraggie);
             this.moveDraggie = new Draggabilly(container, { handle: '.drag-handle', grid: [g.columnWidth, g.rowHeight], minZero: true }).on('dragEnd', this.stopDrag.bind(this));
@@ -106,7 +206,7 @@
             }
             this.setLocation(x, y);
             this.rect.updated = true;
-            this.opts.layoutCallback();
+            this.updatePosition();
         },
 
         /**
@@ -147,7 +247,7 @@
                 handle.removeAttribute('style');
             }
 
-            this.opts.layoutCallback();
+            this.savePosition();
             this.updateLayout();
             this.rect.updated = true;
         },

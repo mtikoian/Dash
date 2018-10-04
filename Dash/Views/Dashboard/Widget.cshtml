@@ -1,7 +1,7 @@
 ﻿@model Dash.Models.WidgetView
 @using Dash.Resources;
 
-<div id="widget_@Model.Id" class="grid-item grid-item-width-@Model.Width grid-item-height-@Model.Height grid-item-x-@Model.X grid-item-y-@Model.Y" data-refresh="@Model.RefreshSeconds">
+<div id="widget_@Model.Id" class="grid-item grid-item-width-@Model.Width grid-item-height-@Model.Height grid-item-x-@Model.X grid-item-y-@Model.Y" data-toggle="widget" data-refresh="@Model.RefreshSeconds">
     <div class="grid-header columns">
         <span class="grid-title col-8">@Model.Title</span>
         <span class="grid-buttons col-4 text-right">

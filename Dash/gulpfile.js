@@ -104,8 +104,7 @@ gulp.task('js', function() {
         paths.js + 'doTable.js',           // new table component
         paths.js + 'Widget.js',            // widget component using mithril
         // functional areas
-        paths.js + 'content.js',           // content processing functionality
-        paths.js + 'dashboard.js'          // dashboard functionality
+        paths.js + 'content.js'           // content processing functionality
     ])
         .pipe(plumber())
         .pipe(sourcemaps.init())

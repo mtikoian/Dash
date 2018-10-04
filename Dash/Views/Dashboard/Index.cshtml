@@ -3,9 +3,7 @@
     ViewBag.Title = Dash.Resources.Core.Dashboard;
 }
 
-<div id="bodyContent" class="dashboard" data-pjax-title="@Dash.Resources.Core.Dashboard" data-pjax-url="@Url.Action("Index")" data-load-event="dashboardLoad" data-unload-event="dashboardUnload"
-     data-url="@Url.Action("IndexOptions")" data-save-url="@Url.Action("SaveDashboard")" data-json="@Model.ToJson">
-
+<div id="bodyContent" class="dashboard" data-pjax-title="@Dash.Resources.Core.Dashboard" data-pjax-url="@Url.Action("Index")" data-toggle="dashboard" data-save-url="@Url.Action("SaveDashboard")">
     <partial name="_Toast" />
 
     @foreach (var widget in Model.Widgets)
