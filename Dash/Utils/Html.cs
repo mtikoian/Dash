@@ -134,7 +134,7 @@ namespace Dash
             return li;
         }
 
-        public static IDisposable BeginBodyContent(this IHtmlHelper helper, string title = null, string url = null, string loadEvent = null, string unloadEvent = null)
+        public static IDisposable BeginBodyContent(this IHtmlHelper helper, string title = null, string url = null)
         {
             var div = new TagBuilder("div");
             div.Attributes.Add("id", "bodyContent");
@@ -147,21 +147,13 @@ namespace Dash
             {
                 div.Attributes.Add("data-pjax-url", url);
             }
-            if (!loadEvent.IsEmpty())
-            {
-                div.Attributes.Add("data-load-event", loadEvent);
-            }
-            if (!unloadEvent.IsEmpty())
-            {
-                div.Attributes.Add("data-unload-event", unloadEvent);
-            }
 
             var writer = helper.ViewContext.Writer;
             div.RenderStartTag().WriteTo(writer, HtmlEncoder.Default);
             return new BodyContent(writer);
         }
 
-        public static MvcForm BeginCustomForm(this IHtmlHelper helper, string action, string controller, object routeValues = null, string title = null, string dataLoadEvent = null, string dataUrl = null, object htmlAttributes = null, bool ajaxForm = true, HttpVerbs method = HttpVerbs.Post)
+        public static MvcForm BeginCustomForm(this IHtmlHelper helper, string action, string controller, object routeValues = null, string title = null, string dataUrl = null, object htmlAttributes = null, bool ajaxForm = true, HttpVerbs method = HttpVerbs.Post)
         {
             var htmlAttr = HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes);
             if (!htmlAttr.ContainsKey("class"))
@@ -176,10 +168,6 @@ namespace Dash
             if (!htmlAttr.ContainsKey("id"))
             {
                 htmlAttr["id"] = $"{action.ToLower()}{controller.UppercaseFirst()}Form";
-            }
-            if (!htmlAttr.ContainsKey("data-load-event") && !dataLoadEvent.IsEmpty())
-            {
-                htmlAttr["data-load-event"] = dataLoadEvent;
             }
             if (!htmlAttr.ContainsKey("data-url") && !dataUrl.IsEmpty())
             {

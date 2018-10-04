@@ -52,7 +52,6 @@
     pjax.onLoad = function(options) {
         var node = $.get(options.container);
         $.content.load(node);
-        pjax.checkEvents(node, 'data-load-event');
 
         if (!$.isNull(options.title)) {
             // Set page title
@@ -70,7 +69,6 @@
      */
     pjax.onUnload = function(options) {
         var node = $.get(options.container);
-        pjax.checkEvents(node, 'data-unload-event');
         $.content.unload(node);
     };
 
@@ -196,20 +194,6 @@
     };
 
     /**
-     * Search node for event attributes and dispatch them.
-     * @param {Node} node - DOM node to search in.
-     * @param {string} eventName - Name of event attribute to search for.
-     */
-    pjax.checkEvents = function(node, eventName) {
-        $.getAll('[' + eventName + ']', node, node !== document).forEach(function(x) {
-            var ev = x.getAttribute(eventName);
-            if ($.events.hasOwnProperty(ev)) {
-                $.dispatch(x, $.events[ev]);
-            }
-        });
-    };
-
-    /**
      * Configure pjax.
      */
     pjax.init = function() {
@@ -218,7 +202,6 @@
             pjax.errorMessageName = body.getAttribute('data-error-name');
         }
         $.content.load(body);
-        pjax.checkEvents(body, 'data-load-event');
     };
 
     /**
