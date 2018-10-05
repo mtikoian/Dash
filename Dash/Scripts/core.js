@@ -657,39 +657,7 @@
         toggle ? addClass(node, className) : removeClass(node, className);
         return;
     };
-
-    /**
-     * Change the property names of an object or array to pascal case.
-     * @param {Object|Obj[]} obj - Object to change properties of.
-     * @returns {Object} New object with all pascal case property names.
-     */
-    var toPascalKeys = function(obj) {
-        if (isNull(obj)) {
-            return null;
-        }
-        if (isArray(obj)) {
-            return obj.map(function(x) { return _toPascalKeys(x); });
-        }
-        return _toPascalKeys(obj);
-    };
-
-    /**
-     * Change the property names of an object to pascal case.
-     * @param {Object} obj - Object to change properties of.
-     * @returns {Object} New object with all pascal case property names.
-     */
-    var _toPascalKeys = function(obj) {
-        if (isNull(obj)) {
-            return null;
-        }
-        var key, keys = Object.keys(obj), i = keys.length, newObj = {};
-        while (i--) {
-            key = keys[i];
-            newObj[key.substr(0, 1).toUpperCase() + key.substr(1)] = obj[key];
-        }
-        return newObj;
-    };
-
+    
     /**
      * Change the property names of an object to lowercase.
      * @param {Object} obj - Object to change properties of.
@@ -750,7 +718,6 @@
         destroy: destroy,
         disableIf: disableIf,
         dispatch: dispatch,
-        equals: equals,
         extend: extend,
         get: get,
         getAll: getAll,
@@ -761,13 +728,11 @@
         hasValue: hasValue,
         hide: hide,
         isArray: isArray,
-        isDate: isDate,
         isEvent: isEvent,
         isFunction: isFunction,
         isNode: isNode,
         isNull: isNull,
         isNumber: isNumber,
-        isObject: isObject,
         isString: isString,
         isUndefined: isUndefined,
         isVisible: isVisible,
@@ -782,7 +747,6 @@
         setText: setText,
         show: show,
         style: style,
-        toggleClass: toggleClass,
-        toPascalKeys: toPascalKeys
+        toggleClass: toggleClass
     };
 }(this));

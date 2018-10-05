@@ -1,18 +1,4 @@
 ﻿/*!
- * Custom events.
- */
-(function($) {
-    'use strict';
-
-    var events = {
-        dashboardLoad: new CustomEvent('dashboardLoad'),
-        dashboardUnload: new CustomEvent('dashboardUnload')
-    };
-
-    $.events = events;
-}(this.$));
-
-/*!
  * Fetch wrapper and error logging.
  */
 (function($, Alertify) {
@@ -474,7 +460,6 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
 
     $.accounting = {
         formatMoney: formatMoney,
-        formatNumber: formatNumber,
         parseFormat: parseFormat,
         unformat: unformat
     };
