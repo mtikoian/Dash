@@ -136,8 +136,9 @@
     pjax.submit = function(form, callback) {
         $.content.loading();
 
+        var method = form.getAttribute('data-method') || form.getAttribute('method') || 'POST';
         $.ajax({
-            method: form.hasAttribute('data-method') ? form.getAttribute('data-method') : 'POST',
+            method: method,
             url: form.getAttribute('action'),
             headers: { 'X-PJAX': 'true' },
             body: new FormData(form)
