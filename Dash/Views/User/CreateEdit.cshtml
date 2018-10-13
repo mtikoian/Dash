@@ -11,33 +11,29 @@
 
     <partial name="_Toast" />
 
-    @using (Html.BeginCustomForm(Model.FormAction, "User", null, Model.IsCreate ? Users.CreateUser : Users.EditUser, method: Model.FormMethod))
-    {
-        @Html.HiddenFor(model => model.Id)
+    <horizontal-form for="Model">
+        <input asp-for="Id" type="hidden" />
 
-        <div class="columns">
-            <div class="col-6 col-xl-9">
-                @Html.LabelInputFor(model => model.UserName, new { autofocus = true })
-                @Html.LabelInputFor(model => model.FirstName)
-                @Html.LabelInputFor(model => model.LastName)
-                @Html.LabelPasswordFor(model => model.Password, Model.Id == 0 ? new { required = true } : null)
-                @Html.LabelPasswordFor(model => model.ConfirmPassword, Model.Id == 0 ? new { required = true } : null)
-                @Html.LabelInputFor(model => model.Email, inputType: Dash.Html.InputFieldType.Email)
-                @Html.LabelDropDownListFor(model => model.LanguageId, new SelectList(Model.DbContext.GetAll<Language>(), "Id", "Name"))
-                @Html.LabelCheckBoxFor(model => model.AllowSingleFactor)
-                <div class="form-group columns">
-                    @Html.ControlLabel("RoleIds", Users.Roles)
-                    <div class="col-8 checkbox-block">
-                        @foreach (var role in Model.AllRoles)
-                        {
-                            @Html.CustomCheckbox("RoleIds", Html.IsChecked(Model.UserRole, x => x.RoleId == role.Id, ((int[])ViewBag.SelectedRoleIds), role.Id), role.Id.ToString(), role.Name, isMultiple: true)
-                        }
-                        @Html.HelpFor(model => model.UserRole, false)
-                    </div>
-                </div>
+        @Html.LabelInputFor(model => model.UserName, new { autofocus = true })
+        @Html.LabelInputFor(model => model.FirstName)
+        @Html.LabelInputFor(model => model.LastName)
+        <!-- add custom help for password so you can substitute in values from the config file for min length and min special char-->
+        @Html.LabelPasswordFor(model => model.Password, Model.Id == 0 ? new { required = true } : null)
+        @Html.LabelPasswordFor(model => model.ConfirmPassword, Model.Id == 0 ? new { required = true } : null)
+        @Html.LabelInputFor(model => model.Email, inputType: Dash.Html.InputFieldType.Email)
+        @Html.LabelDropDownListFor(model => model.LanguageId, new SelectList(Model.DbContext.GetAll<Language>(), "Id", "Name"))
+        @Html.LabelCheckBoxFor(model => model.AllowSingleFactor)
+        <div class="form-group columns">
+            @Html.ControlLabel("RoleIds", Users.Roles)
+            <div class="col-8 checkbox-block">
+                @foreach (var role in Model.AllRoles)
+                {
+                    @Html.CustomCheckbox("RoleIds", Html.IsChecked(Model.UserRole, x => x.RoleId == role.Id, ((int[])ViewBag.SelectedRoleIds), role.Id), role.Id.ToString(), role.Name, isMultiple: true)
+                }
+                @Html.HelpFor(model => model.UserRole, false)
             </div>
         </div>
 
         @Html.FormButtons()
-    }
+    </horizontal-form>
 </body-content>
