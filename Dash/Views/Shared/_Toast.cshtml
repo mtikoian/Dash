@@ -1,15 +1,30 @@
-﻿<!-- todo Work out a way to align multiple errors correctly around the dismiss button -->
-@if (!((string)ViewBag.Error).IsEmpty())
+﻿@if (!((string)ViewBag.Error).IsEmpty())
 {
     <div class="toast toast-error" id="errorToast">
-        <i class="dash dash-cancel toast-dismiss" data-toggle="hide" data-target="#errorToast"></i>
-        @Html.Raw(ViewBag.Error)
+        <div class="columns pl-2 pr-2">
+            <div class="col-11">
+                @ViewBag.Error
+            </div>
+            <div class="col-1">
+                <div class="text-right">
+                    <i class="dash dash-cancel toast-dismiss" data-toggle="hide" data-target="#errorToast"></i>
+                </div>
+            </div>
+        </div>
     </div>
 }
 @if (!((string)ViewBag.Message).IsEmpty())
 {
     <div class="toast toast-success" id="successToast">
-        <i class="dash dash-cancel toast-dismiss" data-toggle="hide" data-target="#successToast"></i>
-        @ViewBag.Message
+        <div class="columns pl-2 pr-2">
+            <div class="col-11">
+                @ViewBag.Message
+            </div>
+            <div class="col-1">
+                <div class="text-right">
+                    <i class="dash dash-cancel toast-dismiss" data-toggle="hide" data-target="#successToast"></i>
+                </div>
+            </div>
+        </div>
     </div>
 }
