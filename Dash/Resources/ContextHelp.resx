@@ -307,4 +307,7 @@
   <data name="Account_AuthCode" xml:space="preserve">
     <value>You are required to use two factor authentication to login. If you have set up Google Authenticator before, enter the authentication code. If you have not, use the Help button to configure it.</value>
   </data>
+  <data name="User_Password" xml:space="preserve">
+    <value>Password must be at least 6 characters long and contain at least one special character.</value>
+  </data>
 </root>

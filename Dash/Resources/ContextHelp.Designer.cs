@@ -535,6 +535,15 @@ namespace Dash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Password must be at least 6 characters long and contain at least one special character..
+        /// </summary>
+        public static string User_Password {
+            get {
+                return ResourceManager.GetString("User_Password", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The login name for the user..
         /// </summary>
         public static string User_UserName {
