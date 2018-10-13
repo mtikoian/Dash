@@ -12,9 +12,9 @@
 
     @using (Html.BeginCustomForm(Model.FormAction, "ReportFilter", method: Model.FormMethod))
     {
-        @Html.HiddenFor(model => model.Id)
-        @Html.HiddenFor(model => model.ReportId)
-        @Html.HiddenFor(model => model.DisplayOrder)
+        <input asp-for="Id" type="hidden" />
+        <input asp-for="ReportId" type="hidden" />
+        <input asp-for="DisplayOrder" type="hidden" />
 
         <partial name="_Toast" />
 

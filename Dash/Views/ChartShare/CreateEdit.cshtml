@@ -12,8 +12,8 @@
 
     @using (Html.BeginCustomForm(Model.FormAction, "ChartShare", method: Model.FormMethod))
     {
-        @Html.HiddenFor(model => model.Id)
-        @Html.HiddenFor(model => model.ChartId)
+        <input asp-for="Id" type="hidden" />
+        <input asp-for="ChartId" type="hidden" />
 
         <partial name="_Toast" />
 

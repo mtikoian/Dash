@@ -12,8 +12,8 @@
 
     @using (Html.BeginCustomForm(Model.FormAction, "DatasetColumn", method: Model.FormMethod))
     {
-        @Html.HiddenFor(model => model.Id)
-        @Html.HiddenFor(model => model.DatasetId)
+        <input asp-for="Id" type="hidden" />
+        <input asp-for="DatasetId" type="hidden" />
 
         <partial name="_Toast" />
 

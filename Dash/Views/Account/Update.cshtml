@@ -12,8 +12,8 @@
 
     @using (Html.BeginCustomForm("Update", "Account"))
     {
-        @Html.HiddenFor(model => model.Id)
-        @Html.HiddenFor(model => model.UserName)
+        <input asp-for="Id" type="hidden" />
+        <input asp-for="UserName" type="hidden" />
 
         <div class="columns">
             <div class="col-6">

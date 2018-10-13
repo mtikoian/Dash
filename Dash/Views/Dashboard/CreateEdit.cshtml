@@ -9,11 +9,11 @@
 
     @using (Html.BeginCustomForm(Model.FormAction, "Dashboard", method: Model.FormMethod))
     {
-        @Html.HiddenFor(model => model.Id)
-        @Html.HiddenFor(model => model.X)
-        @Html.HiddenFor(model => model.Y)
-        @Html.HiddenFor(model => model.Width)
-        @Html.HiddenFor(model => model.Height)
+        <input asp-for="Id" type="hidden" />
+        <input asp-for="X" type="hidden" />
+        <input asp-for="Y" type="hidden" />
+        <input asp-for="Width" type="hidden" />
+        <input asp-for="Height" type="hidden" />
 
         <partial name="_Toast" />
 

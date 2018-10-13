@@ -14,7 +14,7 @@
     <tab-panel id="overview">
         @using (Html.BeginCustomForm(Model.FormAction, "Dataset", method: Model.FormMethod))
         {
-            @Html.HiddenFor(model => model.Id)
+            <input asp-for="Id" type="hidden" />
 
             <div class="columns">
                 <div class="col-6 col-xl-9">

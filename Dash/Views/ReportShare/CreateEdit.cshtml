@@ -12,8 +12,8 @@
 
     @using (Html.BeginCustomForm(Model.FormAction, "ReportShare", method: Model.FormMethod))
     {
-        @Html.HiddenFor(model => model.Id)
-        @Html.HiddenFor(model => model.ReportId)
+        <input asp-for="Id" type="hidden" />
+        <input asp-for="ReportId" type="hidden" />
 
         <partial name="_Toast" />
 

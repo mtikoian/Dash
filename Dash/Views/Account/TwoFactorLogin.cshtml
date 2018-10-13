@@ -6,8 +6,8 @@
         <div class="col-11 col-ml-auto pt-2">
             @using (Html.BeginCustomForm("TwoFactorLogin", "Account", ajaxForm: false))
             {
-                @Html.HiddenFor(m => m.UserName)
-                @Html.Hidden("LoginHash", Model.LoginHash)
+                <input asp-for="UserName" type="hidden" />
+                <input asp-for="LoginHash" type="hidden" />
 
                 <div class="col-12 pb-2">
                     <h4>@Account.TwoFactor</h4>

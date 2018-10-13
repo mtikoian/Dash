@@ -12,9 +12,9 @@
 
     @using (Html.BeginCustomForm(Model.FormAction, "ChartRange", method: Model.FormMethod))
     {
-        @Html.HiddenFor(model => model.Id)
-        @Html.HiddenFor(model => model.ChartId)
-        @Html.HiddenFor(model => model.DisplayOrder)
+        <input asp-for="Id" type="hidden" />
+        <input asp-for="ChartId" type="hidden" />
+        <input asp-for="DisplayOrder" type="hidden" />
 
         <partial name="_Toast" />
 

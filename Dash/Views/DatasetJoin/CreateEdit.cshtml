@@ -12,9 +12,9 @@
 
     @using (Html.BeginCustomForm(Model.FormAction, "DatasetJoin", method: Model.FormMethod))
     {
-        @Html.HiddenFor(model => model.Id)
-        @Html.HiddenFor(model => model.DatasetId)
-        @Html.HiddenFor(model => model.JoinOrder)
+        <input asp-for="Id" type="hidden" />
+        <input asp-for="DatasetId" type="hidden" />
+        <input asp-for="JoinOrder" type="hidden" />
 
         <partial name="_Toast" />
 

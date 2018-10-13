@@ -13,7 +13,7 @@
     <tab-panel id="changeType">
         @using (Html.BeginCustomForm("ChangeType", "Chart"))
         {
-            @Html.HiddenFor(model => model.Id)
+            <input asp-for="Id" type="hidden" />
 
             <div class="columns">
                 <div class="col-6">
