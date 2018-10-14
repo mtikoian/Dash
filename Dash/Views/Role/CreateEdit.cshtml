@@ -10,37 +10,32 @@
 
     <partial name="_Toast" />
 
-    @using (Html.BeginCustomForm(Model.FormAction, "Role", method: Model.FormMethod))
-    {
+    <horizontal-form for="Model">
         <input asp-for="Id" type="hidden" />
 
-        <div class="columns">
-            <div class="col-6 col-xl-9">
-                @Html.LabelInputFor(model => model.Name, new { autofocus = true })
-                <div class="form-group">
-                    @Html.ControlLabel("PermissionIds", Dash.Resources.Roles.Permissions)
-                    <div class="col-8 c-hand" data-toggle="collapsible-list">
-                        @foreach (var controller in Model.ControllerPermissions.Keys)
-                        {
+        @Html.LabelInputFor(model => model.Name, new { autofocus = true })
+        <div class="form-group">
+            @Html.ControlLabel("PermissionIds", Dash.Resources.Roles.Permissions)
+            <div class="col-8 c-hand" data-toggle="collapsible-list">
+                @foreach (var controller in Model.ControllerPermissions.Keys)
+                {
+                    <ul class="collapsible-list">
+                        <li>
+                            @Html.CustomCheckbox("Controller", false, "", controller, inputId: $"controller_{controller}", isFullWidth: false, isMultiple: true)
                             <ul class="collapsible-list">
-                                <li>
-                                    @Html.CustomCheckbox("Controller", false, "", controller, inputId: $"controller_{controller}", isFullWidth: false, isMultiple: true)
-                                    <ul class="collapsible-list">
-                                        @foreach (var permission in Model.ControllerPermissions[controller])
-                                        {
-                                            <li>
-                                                @Html.CustomCheckbox("PermissionIds", Html.IsChecked(Model.RolePermission, x => x.PermissionId == permission.Id, ((int[])ViewBag.SelectedPermissionIds), permission.Id), permission.Id.ToString(), permission.ActionName, isFullWidth: false, isMultiple: true)
-                                            </li>
-                                        }
-                                    </ul>
-                                </li>
+                                @foreach (var permission in Model.ControllerPermissions[controller])
+                                {
+                                    <li>
+                                        @Html.CustomCheckbox("PermissionIds", Html.IsChecked(Model.RolePermission, x => x.PermissionId == permission.Id, ((int[])ViewBag.SelectedPermissionIds), permission.Id), permission.Id.ToString(), permission.ActionName, isFullWidth: false, isMultiple: true)
+                                    </li>
+                                }
                             </ul>
-                        }
-                    </div>
-                </div>
+                        </li>
+                    </ul>
+                }
             </div>
         </div>
 
-        @Html.FormButtons()
-    }
+        <form-buttons />
+    </horizontal-form>
 </body-content>
