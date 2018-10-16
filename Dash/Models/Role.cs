@@ -58,17 +58,13 @@ namespace Dash.Models
             set { _RolePermission = value; }
         }
 
-        [JilDirective(true), BindNever, ValidateNever]
-        public List<UserRole> UserRole { get; set; }
-
         public Role Copy(string name = null)
         {
             var newRole = this.Clone();
             newRole.Id = 0;
             newRole.Name = name.IsEmpty() ? string.Format(Core.CopyOf, Name) : name;
             newRole.RequestUserId = RequestUserId;
-            newRole.RolePermission = (RolePermission ?? DbContext.GetAll<RolePermission>(new { RoleId = Id }))?.Select(x => new RolePermission { PermissionId = x.PermissionId, RequestUserId = RequestUserId }).ToList();
-            newRole.UserRole = (UserRole ?? DbContext.GetAll<UserRole>(new { RoleId = Id }))?.Select(x => new UserRole { UserId = x.UserId, RequestUserId = RequestUserId }).ToList();
+            newRole.PermissionIds = RolePermission?.Select(x => x.PermissionId).ToList();
             return newRole;
         }
 
