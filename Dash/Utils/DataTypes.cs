@@ -15,6 +15,7 @@ using Jil;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace Dash
 {
@@ -35,6 +36,23 @@ namespace Dash
         public static IEnumerable<T> AddIf<T>(this IEnumerable<T> list, T item, bool add)
         {
             return add ? list.Append(item) : list;
+        }
+
+        /// <summary>
+        /// Add an item to the dictionary if `add` is true.
+        /// </summary>
+        /// <param name="dict">Dictionary to update.</param>
+        /// <param name="key">Key to add to dictionary if true.</param>
+        /// <param name="value">Value to add to dictionary if true.</param>
+        /// <param name="add">Add to dictionary if true.</param>
+        /// <returns>Returns updated dictionary.</returns>
+        public static AttributeDictionary AddIf(this AttributeDictionary dict, string key, string value, bool add)
+        {
+            if (add)
+            {
+                dict.Add(key, value);
+            }
+            return dict;
         }
 
         /// <summary>
@@ -236,6 +254,19 @@ namespace Dash
             var type = obj.GetType();
             var field = type.GetField(name, flags);
             return (T)field.GetValue(obj);
+        }
+
+        /// <summary>
+        /// Check if the user has access to a controller/action combo.
+        /// </summary>
+        /// <param name="claimsPrincipal">Claims principal for user.</param>
+        /// <param name="controller">Requested controller.</param>
+        /// <param name="action">Requested action.</param>
+        /// <returns>True if user has access, else false.</returns>
+        public static bool HasAccess(this ClaimsPrincipal claimsPrincipal, string controller, string action, HttpVerbs method = HttpVerbs.Get)
+        {
+            var permissions = new ControllerAction(controller, action, method).EffectivePermissions();
+            return permissions.Any(x => claimsPrincipal.IsInRole(x));
         }
 
         /// <summary>
@@ -665,19 +696,6 @@ namespace Dash
         public static int UserId(this ClaimsPrincipal claimsPrincipal)
         {
             return claimsPrincipal?.Claims.FirstOrDefault(x => x.Type == ClaimTypes.PrimarySid)?.Value.ToInt() ?? 0;
-        }
-
-        /// <summary>
-        /// Check if the user has access to a controller/action combo.
-        /// </summary>
-        /// <param name="claimsPrincipal">Claims principal for user.</param>
-        /// <param name="controller">Requested controller.</param>
-        /// <param name="action">Requested action.</param>
-        /// <returns>True if user has access, else false.</returns>
-        public static bool HasAccess(this ClaimsPrincipal claimsPrincipal, string controller, string action, HttpVerbs method = HttpVerbs.Get)
-        {
-            var permissions = new ControllerAction(controller, action, method).EffectivePermissions();
-            return permissions.Any(x => claimsPrincipal.IsInRole(x));
         }
 
         /// <summary>
