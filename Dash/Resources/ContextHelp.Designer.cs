@@ -427,24 +427,6 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enter the name of the controller action itself, or the parent action it uses..
-        /// </summary>
-        public static string Permission_ActionName {
-            get {
-                return ResourceManager.GetString("Permission_ActionName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enter the name of the controller. You don&apos;t need to add `Controller` at the end..
-        /// </summary>
-        public static string Permission_ControllerName {
-            get {
-                return ResourceManager.GetString("Permission_ControllerName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Filters limit the data that shows up in the table and chart. Filters for different columns will show data matching both filters. Adding two filters for the same column will show data matching either filter. Click the `Save` button to save filters and update the report..
         /// </summary>
         public static string Report_Filters {
@@ -504,15 +486,6 @@ namespace Dash.Resources {
         public static string Role_Name {
             get {
                 return ResourceManager.GetString("Role_Name", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Add all the permissions that should be included in this role..
-        /// </summary>
-        public static string Role_RolePermission {
-            get {
-                return ResourceManager.GetString("Role_RolePermission", resourceCulture);
             }
         }
         

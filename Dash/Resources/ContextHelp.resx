@@ -253,12 +253,6 @@
   <data name="Dataset_PrimarySource" xml:space="preserve">
     <value>Select the primary table or stored procedure to query for this dataset.</value>
   </data>
-  <data name="Permission_ActionName" xml:space="preserve">
-    <value>Enter the name of the controller action itself, or the parent action it uses.</value>
-  </data>
-  <data name="Permission_ControllerName" xml:space="preserve">
-    <value>Enter the name of the controller. You don't need to add `Controller` at the end.</value>
-  </data>
   <data name="ReportFilter_ColumnId" xml:space="preserve">
     <value>Select the column to use to filter report data.</value>
   </data>
@@ -279,9 +273,6 @@
   </data>
   <data name="Role_Name" xml:space="preserve">
     <value>Give this role a unique name.</value>
-  </data>
-  <data name="Role_RolePermission" xml:space="preserve">
-    <value>Add all the permissions that should be included in this role.</value>
   </data>
   <data name="Role_Users" xml:space="preserve">
     <value>Add users that can access this role. The next time the user logs in, they will have access to the new permissions.</value>
