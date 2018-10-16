@@ -30,12 +30,12 @@ namespace Dash.Models
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int ReportId { get; set; }
 
-        [Ignore, BindNever, ValidateNever]
+        [DbIgnore, BindNever, ValidateNever]
         public string ReportName { get { return Report?.Name; } }
 
         public int? RoleId { get; set; }
 
-        [Ignore]
+        [DbIgnore]
         public string RoleName { get; set; }
 
         [BindNever, ValidateNever]
@@ -49,13 +49,13 @@ namespace Dash.Models
 
         public int? UserId { get; set; }
 
-        [Ignore]
+        [DbIgnore]
         public string UserName { get { return $"{UserLastName?.Trim()}, {UserFirstName?.Trim()}".Trim(new char[] { ' ', ',' }); } }
 
-        [Ignore]
+        [DbIgnore]
         public string UserFirstName { get; set; }
 
-        [Ignore]
+        [DbIgnore]
         public string UserLastName { get; set; }
 
         [BindNever, ValidateNever]

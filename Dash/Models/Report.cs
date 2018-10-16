@@ -29,7 +29,7 @@ namespace Dash.Models
         [JilDirective(true)]
         public int AggregatorId { get; set; }
 
-        [Ignore, JilDirective(true)]
+        [DbIgnore, JilDirective(true)]
         public IEnumerable<object> AggregatorList
         {
             get
@@ -38,7 +38,7 @@ namespace Dash.Models
             }
         }
 
-        [Ignore, JilDirective(true)]
+        [DbIgnore, JilDirective(true)]
         public bool AllowCloseParent { get; set; }
 
         [JilDirective(true)]
@@ -48,7 +48,7 @@ namespace Dash.Models
             set { _Dataset = value; }
         }
 
-        [Ignore, JilDirective(true)]
+        [DbIgnore, JilDirective(true)]
         public List<DatasetColumn> DatasetColumns { get { return _DatasetColumns ?? (_DatasetColumns = Dataset?.DatasetColumn ?? new List<DatasetColumn>()); } }
 
         [JilDirective(true)]
@@ -77,13 +77,13 @@ namespace Dash.Models
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int DatasetId { get; set; }
 
-        [Ignore]
+        [DbIgnore]
         public string DatasetName { get; set; }
 
-        [Ignore]
+        [DbIgnore]
         public bool IsDashboard { get; set; } = false;
 
-        [Ignore, JilDirective(true)]
+        [DbIgnore, JilDirective(true)]
         public bool IsOwner { get { return RequestUserId == OwnerId; } }
 
         [Display(Name = "Name", ResourceType = typeof(Reports))]
@@ -91,7 +91,7 @@ namespace Dash.Models
         [StringLength(100, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string Name { get; set; }
 
-        [Ignore, JilDirective(true)]
+        [DbIgnore, JilDirective(true)]
         public User Owner { get { return _Owner ?? (_Owner = DbContext.Get<User>(OwnerId)); } }
 
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]

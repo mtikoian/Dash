@@ -139,7 +139,7 @@ namespace Dash.Models
 
                 // iterate through all the properties of the object adding to param list
                 accessor.GetMembers()
-                    .Where(x => (SavableTypes.Contains(x.Type) || SavableTypes.Contains(x.Type.GetTypeInfo().BaseType)) && !x.HasAttribute<Ignore>())
+                    .Where(x => (SavableTypes.Contains(x.Type) || SavableTypes.Contains(x.Type.GetTypeInfo().BaseType)) && !x.HasAttribute<DbIgnore>())
                     .ToList().ForEach(x => {
                         var val = accessor[model, x.Name];
                         if (x.Type.GetTypeInfo().BaseType == typeof(Enum))

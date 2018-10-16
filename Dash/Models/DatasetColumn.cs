@@ -29,7 +29,7 @@ namespace Dash.Models
             DatasetId = datasetid;
         }
 
-        [Ignore, JilDirective(true)]
+        [DbIgnore, JilDirective(true)]
         public string Alias { get { return $"column{Id}"; } }
 
         [Display(Name = "ColumnName", ResourceType = typeof(Datasets))]
@@ -51,7 +51,7 @@ namespace Dash.Models
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int DataTypeId { get; set; }
 
-        [Ignore, JilDirective(true), BindNever, ValidateNever]
+        [DbIgnore, JilDirective(true), BindNever, ValidateNever]
         public IEnumerable<SelectListItem> DataTypeList
         {
             get
@@ -60,7 +60,7 @@ namespace Dash.Models
             }
         }
 
-        [Ignore, BindNever, ValidateNever]
+        [DbIgnore, BindNever, ValidateNever]
         public string DataTypeName
         {
             get { return DataType?.Name; }
@@ -70,7 +70,7 @@ namespace Dash.Models
         [StringLength(500, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string Derived { get; set; }
 
-        [Ignore]
+        [DbIgnore]
         public int DisplayOrder { get; set; }
 
         [Display(Name = "ColumnQuery", ResourceType = typeof(Datasets))]
@@ -81,41 +81,41 @@ namespace Dash.Models
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int FilterTypeId { get; set; }
 
-        [Ignore, JilDirective(true), BindNever, ValidateNever]
+        [DbIgnore, JilDirective(true), BindNever, ValidateNever]
         public bool IsBinary { get { return DataType.IsBinary; } }
 
-        [Ignore, JilDirective(true), BindNever, ValidateNever]
+        [DbIgnore, JilDirective(true), BindNever, ValidateNever]
         public bool IsBool { get { return DataType.IsBool; } }
 
-        [Ignore, JilDirective(true), BindNever, ValidateNever]
+        [DbIgnore, JilDirective(true), BindNever, ValidateNever]
         public bool IsCurrency { get { return DataType.IsCurrency; } }
 
-        [Ignore, JilDirective(true), BindNever, ValidateNever]
+        [DbIgnore, JilDirective(true), BindNever, ValidateNever]
         public bool IsDateTime { get { return DataType.IsDateTime; } }
 
-        [Ignore, JilDirective(true), BindNever, ValidateNever]
+        [DbIgnore, JilDirective(true), BindNever, ValidateNever]
         public bool IsDecimal { get { return DataType.IsDecimal; } }
 
-        [Ignore, JilDirective(true), BindNever, ValidateNever]
+        [DbIgnore, JilDirective(true), BindNever, ValidateNever]
         public bool IsInteger { get { return DataType.IsInteger; } }
 
         [Display(Name = "ColumnIsParam", ResourceType = typeof(Datasets))]
         public bool IsParam { get; set; }
 
-        [Ignore, JilDirective(true)]
+        [DbIgnore, JilDirective(true)]
         public bool IsSelect { get { return FilterTypeId == (int)FilterTypes.Select; } }
 
-        [Ignore, JilDirective(true), BindNever, ValidateNever]
+        [DbIgnore, JilDirective(true), BindNever, ValidateNever]
         public bool IsText { get { return DataType.IsText; } }
 
         [Display(Name = "ColumnLink", ResourceType = typeof(Datasets))]
         [StringLength(250, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string Link { get; set; }
 
-        [Ignore, JilDirective(true)]
+        [DbIgnore, JilDirective(true)]
         public int ReportColumnId { get; set; }
 
-        [Ignore, JilDirective(true), BindNever, ValidateNever]
+        [DbIgnore, JilDirective(true), BindNever, ValidateNever]
         public TableDataType TableDataType
         {
             get
@@ -140,7 +140,7 @@ namespace Dash.Models
             }
         }
 
-        [Ignore, JilDirective(true), BindNever, ValidateNever]
+        [DbIgnore, JilDirective(true), BindNever, ValidateNever]
         public string TableName
         {
             get
@@ -155,7 +155,7 @@ namespace Dash.Models
         [StringLength(100, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string Title { get; set; }
 
-        [Ignore, JilDirective(true)]
+        [DbIgnore, JilDirective(true)]
         public int Width { get; set; }
 
         public string BuildSql(bool includeAlias = true, int aggregatorId = 0)

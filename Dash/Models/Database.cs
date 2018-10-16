@@ -48,7 +48,7 @@ namespace Dash.Models
 
         [Display(Name = "ConfirmPassword", ResourceType = typeof(Databases))]
         [StringLength(500, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
-        [Ignore]
+        [DbIgnore]
         public string ConfirmPassword { get; set; }
 
         [Display(Name = "ConnectionString", ResourceType = typeof(Databases))]
@@ -66,10 +66,10 @@ namespace Dash.Models
         public string Host { get; set; }
 
         [Display(Name = "IsEmptyPassword", ResourceType = typeof(Databases))]
-        [Ignore]
+        [DbIgnore]
         public bool IsEmptyPassword { get; set; } = false;
 
-        [Ignore, JilDirective(true)]
+        [DbIgnore, JilDirective(true)]
         public bool IsSqlServer { get { return TypeId == (int)DatabaseTypes.SqlServer; } }
 
         [Display(Name = "Name", ResourceType = typeof(Databases))]

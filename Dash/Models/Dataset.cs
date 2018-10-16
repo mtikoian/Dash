@@ -50,14 +50,14 @@ namespace Dash.Models
             set { _Database = value; }
         }
 
-        [Ignore]
+        [DbIgnore]
         public string DatabaseHost { get; set; }
 
         [Display(Name = "Database", ResourceType = typeof(Datasets))]
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int DatabaseId { get; set; }
 
-        [Ignore]
+        [DbIgnore]
         public string DatabaseName { get; set; }
 
         [JilDirective(true), BindNever, ValidateNever]
@@ -86,7 +86,7 @@ namespace Dash.Models
         [StringLength(50, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string DateFormat { get; set; } = "Y-m-d H:i:S";
 
-        [Ignore, JilDirective(true)]
+        [DbIgnore, JilDirective(true)]
         public List<string> DefaultCurrencyFormats
         {
             get
@@ -95,7 +95,7 @@ namespace Dash.Models
             }
         }
 
-        [Ignore, JilDirective(true)]
+        [DbIgnore, JilDirective(true)]
         public List<string> DefaultDateFormats
         {
             get
@@ -108,7 +108,7 @@ namespace Dash.Models
         [StringLength(500, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string Description { get; set; }
 
-        [Ignore, JilDirective(true)]
+        [DbIgnore, JilDirective(true)]
         public bool IsProc { get { return TypeId == (int)DatasetTypes.Proc; } }
 
         [Display(Name = "Name", ResourceType = typeof(Datasets))]
@@ -121,14 +121,14 @@ namespace Dash.Models
         [StringLength(100, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string PrimarySource { get; set; }
 
-        [Ignore]
+        [DbIgnore]
         public List<int> RoleIds { get; set; }
 
         [Display(Name = "Type", ResourceType = typeof(Datasets))]
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int TypeId { get; set; }
 
-        [Ignore, JilDirective(true)]
+        [DbIgnore, JilDirective(true)]
         public IEnumerable<SelectListItem> TypeList
         {
             get

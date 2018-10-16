@@ -36,10 +36,10 @@ namespace Dash.Models
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int DatasetId { get; set; }
 
-        [Ignore]
+        [DbIgnore]
         public bool IsLast { get; set; }
 
-        [Ignore]
+        [DbIgnore]
         public string JoinName
         {
             get
@@ -55,7 +55,7 @@ namespace Dash.Models
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int JoinTypeId { get; set; }
 
-        [Ignore, JilDirective(true)]
+        [DbIgnore, JilDirective(true)]
         public IEnumerable<SelectListItem> JoinTypeList
         {
             get

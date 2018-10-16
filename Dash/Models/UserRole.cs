@@ -9,7 +9,7 @@ namespace Dash.Models
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int RoleId { get; set; }
 
-        [Ignore]
+        [DbIgnore]
         public string RoleName { get; set; }
 
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]

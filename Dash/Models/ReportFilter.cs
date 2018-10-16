@@ -31,7 +31,7 @@ namespace Dash.Models
             ReportId = reportId;
         }
 
-        [Ignore, BindNever, ValidateNever, JilDirective(true)]
+        [DbIgnore, BindNever, ValidateNever, JilDirective(true)]
         public static IEnumerable<SelectListItem> BooleanSelectListItems
         {
             get
@@ -43,7 +43,7 @@ namespace Dash.Models
             }
         }
 
-        [Ignore, BindNever, ValidateNever, JilDirective(true)]
+        [DbIgnore, BindNever, ValidateNever, JilDirective(true)]
         public static IEnumerable<SelectListItem> DateIntervalSelectListItems
         {
             get
@@ -52,14 +52,14 @@ namespace Dash.Models
             }
         }
 
-        [Ignore, BindNever, ValidateNever, JilDirective(true)]
+        [DbIgnore, BindNever, ValidateNever, JilDirective(true)]
         public DatasetColumn Column { get { return _Column ?? (_Column = DbContext.Get<DatasetColumn>(ColumnId)); } }
 
         [Display(Name = "FilterColumn", ResourceType = typeof(Reports))]
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int ColumnId { get; set; }
 
-        [Ignore, BindNever, ValidateNever]
+        [DbIgnore, BindNever, ValidateNever]
         public string ColumnName
         {
             get
@@ -86,10 +86,10 @@ namespace Dash.Models
         [StringLength(250, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string Criteria2 { get; set; }
 
-        [Ignore]
+        [DbIgnore]
         public string[] CriteriaJson { get; set; }
 
-        [Ignore, BindNever, ValidateNever]
+        [DbIgnore, BindNever, ValidateNever]
         public string CriteriaValue
         {
             get
@@ -131,7 +131,7 @@ namespace Dash.Models
             }
         }
 
-        [Ignore]
+        [DbIgnore]
         public bool IsLast { get; set; }
 
         [Display(Name = "FilterOperator", ResourceType = typeof(Reports))]
@@ -167,7 +167,7 @@ namespace Dash.Models
             }
         }
 
-        [Ignore, BindNever, ValidateNever]
+        [DbIgnore, BindNever, ValidateNever]
         public string OperatorValue
         {
             get
@@ -182,7 +182,7 @@ namespace Dash.Models
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int ReportId { get; set; }
 
-        [Ignore, BindNever, ValidateNever]
+        [DbIgnore, BindNever, ValidateNever]
         public string ReportName { get { return Report?.Name; } }
 
         private Report Report { get { return _Report ?? (_Report = DbContext.Get<Report>(ReportId)); } }

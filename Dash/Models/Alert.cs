@@ -32,7 +32,7 @@ namespace Dash.Models
             OwnerId = userId;
         }
 
-        [Ignore, JilDirective(true)]
+        [DbIgnore, JilDirective(true)]
         public string Cron
         {
             get
@@ -76,7 +76,7 @@ namespace Dash.Models
         [Display(Name = "IsActive", ResourceType = typeof(Alerts))]
         public bool IsActive { get; set; }
 
-        [Ignore, JilDirective(true)]
+        [DbIgnore, JilDirective(true)]
         public bool IsOwner { get { return RequestUserId == OwnerId; } }
 
         [Display(Name = "LastNotificationDate", ResourceType = typeof(Alerts))]
@@ -94,7 +94,7 @@ namespace Dash.Models
         [Required]
         public int NotificationInterval { get; set; }
 
-        [Ignore, JilDirective(true)]
+        [DbIgnore, JilDirective(true)]
         [BindNever, ValidateNever]
         public User Owner { get { return _Owner ?? (_Owner = DbContext.Get<User>(OwnerId)); } }
 
@@ -102,7 +102,7 @@ namespace Dash.Models
         [JilDirective(true)]
         public int OwnerId { get; set; }
 
-        [Ignore, JilDirective(true), BindNever, ValidateNever]
+        [DbIgnore, JilDirective(true), BindNever, ValidateNever]
         public Report Report { get { return _Report ?? (_Report = DbContext.Get<Report>(ReportId)); } }
 
         [Display(Name = "Report", ResourceType = typeof(Alerts))]

@@ -12,7 +12,7 @@ namespace Dash.Models
     {
         [Display(Name = "ConfirmPassword", ResourceType = typeof(Users))]
         [StringLength(250, MinimumLength = 6, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMinMaxLength")]
-        [Ignore]
+        [DbIgnore]
         [DataType(System.ComponentModel.DataAnnotations.DataType.Password)]
         public string ConfirmPassword { get; set; }
 
@@ -29,7 +29,7 @@ namespace Dash.Models
         [Display(Name = "Password", ResourceType = typeof(Users))]
         [StringLength(250, MinimumLength = 6, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMinMaxLength")]
         [DataType(System.ComponentModel.DataAnnotations.DataType.Password)]
-        [Ignore]
+        [DbIgnore]
         public string Password { get; set; }
 
         private UserMembership Membership { get; set; }

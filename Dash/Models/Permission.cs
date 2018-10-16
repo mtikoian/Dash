@@ -5,7 +5,7 @@
         public string ActionName { get; set; }
         public string ControllerName { get; set; }
 
-        [Ignore]
+        [DbIgnore]
         public string FullName { get { return ControllerName?.Trim() + "." + ActionName?.Trim(); } }
     }
 }

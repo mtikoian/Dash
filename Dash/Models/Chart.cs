@@ -62,7 +62,7 @@ namespace Dash.Models
             }
         }
 
-        [Ignore, JilDirective(true)]
+        [DbIgnore, JilDirective(true)]
         public IEnumerable<object> AggregatorList
         {
             get
@@ -88,10 +88,10 @@ namespace Dash.Models
         [JilDirective(true)]
         public int ChartTypeId { get; set; }
 
-        [Ignore, JilDirective(true)]
+        [DbIgnore, JilDirective(true)]
         public IEnumerable<object> ChartTypeList { get { return typeof(ChartTypes).TranslatedList(); } }
 
-        [Ignore, JilDirective(true)]
+        [DbIgnore, JilDirective(true)]
         public IEnumerable<object> DateIntervalList
         {
             get
@@ -100,7 +100,7 @@ namespace Dash.Models
             }
         }
 
-        [Ignore, JilDirective(true)]
+        [DbIgnore, JilDirective(true)]
         public bool IsOwner { get { return RequestUserId == OwnerId; } }
 
         [Display(Name = "Name", ResourceType = typeof(Charts))]
@@ -108,14 +108,14 @@ namespace Dash.Models
         [StringLength(100, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string Name { get; set; }
 
-        [Ignore, JilDirective(true)]
+        [DbIgnore, JilDirective(true)]
         public User Owner { get { return _Owner ?? (_Owner = DbContext.Get<User>(OwnerId)); } }
 
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         [JilDirective(true)]
         public int OwnerId { get; set; }
 
-        [Ignore, JilDirective(true)]
+        [DbIgnore, JilDirective(true)]
         public string ShareOptionsJson
         {
             get

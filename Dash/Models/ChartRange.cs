@@ -35,7 +35,7 @@ namespace Dash.Models
         [Display(Name = "Aggregator", ResourceType = typeof(Charts))]
         public int AggregatorId { get; set; }
 
-        [Ignore, BindNever, ValidateNever, JilDirective(true)]
+        [DbIgnore, BindNever, ValidateNever, JilDirective(true)]
         public IEnumerable<SelectListItem> AggregatorSelectListItems
         {
             get
@@ -44,7 +44,7 @@ namespace Dash.Models
             }
         }
 
-        [Ignore]
+        [DbIgnore]
         public bool IsLast { get; set; }
 
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
@@ -56,7 +56,7 @@ namespace Dash.Models
         [Display(Name = "DateInterval", ResourceType = typeof(Charts))]
         public int? DateIntervalId { get; set; }
 
-        [Ignore, BindNever, ValidateNever, JilDirective(true)]
+        [DbIgnore, BindNever, ValidateNever, JilDirective(true)]
         public IEnumerable<SelectListItem> DateIntervalSelectListItems
         {
             get
@@ -71,19 +71,19 @@ namespace Dash.Models
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int ReportId { get; set; }
 
-        [Ignore, BindNever, ValidateNever]
+        [DbIgnore, BindNever, ValidateNever]
         public string ChartName { get { return Chart?.Name; } }
 
-        [Ignore, BindNever, ValidateNever]
+        [DbIgnore, BindNever, ValidateNever]
         public string ReportName { get { return Report?.Name; } }
 
-        [Ignore, BindNever, ValidateNever]
+        [DbIgnore, BindNever, ValidateNever]
         public string XAxisColumnName { get { return XAxisColumn?.Title; } }
 
-        [Ignore, BindNever, ValidateNever]
+        [DbIgnore, BindNever, ValidateNever]
         public string YAxisColumnName { get { return YAxisColumn?.Title; } }
 
-        [Ignore, BindNever, ValidateNever, JilDirective(true)]
+        [DbIgnore, BindNever, ValidateNever, JilDirective(true)]
         public IEnumerable<SelectListItem> ReportSelectListItems
         {
             get
@@ -92,7 +92,7 @@ namespace Dash.Models
             }
         }
 
-        [Ignore, BindNever, ValidateNever, JilDirective(true)]
+        [DbIgnore, BindNever, ValidateNever, JilDirective(true)]
         public IEnumerable<SelectListItem> ColumnSelectListItems
         {
             get
@@ -113,10 +113,10 @@ namespace Dash.Models
 
         private Report Report { get { return _Report ?? (_Report = DbContext.Get<Report>(ReportId)); } }
 
-        [Ignore, BindNever, ValidateNever, JilDirective(true)]
+        [DbIgnore, BindNever, ValidateNever, JilDirective(true)]
         public DatasetColumn XAxisColumn { get { return _XAxisColumn ?? (_XAxisColumn = DbContext.Get<DatasetColumn>(XAxisColumnId)); } }
 
-        [Ignore, BindNever, ValidateNever, JilDirective(true)]
+        [DbIgnore, BindNever, ValidateNever, JilDirective(true)]
         public DatasetColumn YAxisColumn { get { return _YAxisColumn ?? (_YAxisColumn = DbContext.Get<DatasetColumn>(YAxisColumnId)); } }
 
         public bool MoveDown(out string error)

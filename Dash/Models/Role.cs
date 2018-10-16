@@ -47,7 +47,7 @@ namespace Dash.Models
         [StringLength(100, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string Name { get; set; }
 
-        [Ignore]
+        [DbIgnore]
         public List<int> PermissionIds { get; set; }
 
         [JilDirective(true), BindNever, ValidateNever]

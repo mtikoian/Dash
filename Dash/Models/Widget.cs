@@ -20,7 +20,7 @@ namespace Dash.Models
             DbContext = dbContext;
         }
 
-        [Ignore, JilDirective(true)]
+        [DbIgnore, JilDirective(true)]
         public bool AllowEdit { get { return UserId == RequestUserId; } }
 
         [Display(Name = "Chart", ResourceType = typeof(Widgets))]

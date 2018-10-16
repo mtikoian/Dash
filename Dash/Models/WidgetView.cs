@@ -43,31 +43,31 @@ namespace Dash.Models
         [JilDirective(true)]
         public IActionContextAccessor ActionContextAccessor { get; set; }
 
-        [Ignore, JilDirective(true)]
+        [DbIgnore, JilDirective(true)]
         public bool AllowEdit { get { return UserId == RequestUserId; } }
 
         [Display(Name = "Chart", ResourceType = typeof(Widgets))]
         public int? ChartId { get; set; }
 
-        [Ignore]
+        [DbIgnore]
         public int DatasetId { get; set; }
 
-        [Ignore]
+        [DbIgnore]
         public string DisplayCurrencyFormat { get; set; }
 
-        [Ignore]
+        [DbIgnore]
         public string DisplayDateFormat { get; set; }
 
         public int Height { get; set; } = 4;
 
-        [Ignore]
+        [DbIgnore]
         public bool IsData { get { return ReportId.HasPositiveValue(); } }
 
         [Display(Name = "RefreshRate", ResourceType = typeof(Widgets))]
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int RefreshRate { get; set; }
 
-        [Ignore]
+        [DbIgnore]
         public int RefreshSeconds
         {
             get
@@ -104,10 +104,10 @@ namespace Dash.Models
         [Display(Name = "Report", ResourceType = typeof(Widgets))]
         public int? ReportId { get; set; }
 
-        [Ignore]
+        [DbIgnore]
         public int ReportRowLimit { get; set; }
 
-        [Ignore]
+        [DbIgnore]
         public decimal ReportWidth { get; set; }
 
         public Report Report
@@ -135,7 +135,7 @@ namespace Dash.Models
         [StringLength(100, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string Title { get; set; }
 
-        [Ignore]
+        [DbIgnore]
         [BindNever, ValidateNever]
         public string Url
         {
@@ -151,7 +151,7 @@ namespace Dash.Models
         [JilDirective(true)]
         public int UserId { get; set; }
 
-        [Ignore]
+        [DbIgnore]
         public DateTimeOffset WidgetDateUpdated { get; set; }
 
         public int Width { get; set; } = 4;
