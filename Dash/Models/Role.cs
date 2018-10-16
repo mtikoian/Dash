@@ -47,6 +47,7 @@ namespace Dash.Models
         [StringLength(100, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string Name { get; set; }
 
+        [Display(Name = "Permissions", ResourceType = typeof(Roles))]
         [DbIgnore]
         public List<int> PermissionIds { get; set; }
 

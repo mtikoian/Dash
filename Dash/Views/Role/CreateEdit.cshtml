@@ -13,21 +13,21 @@
     <horizontal-form for="Model">
         <input asp-for="Id" type="hidden" />
 
-        @Html.LabelInputFor(model => model.Name, new { autofocus = true })
+        <form-group for="Name" autofocus="true"/>
         <div class="form-group">
-            @Html.ControlLabel("PermissionIds", Dash.Resources.Roles.Permissions)
+            <form-label for="PermissionIds" />
             <div class="col-8 c-hand" data-toggle="collapsible-list">
                 @foreach (var controller in Model.ControllerPermissions.Keys)
                 {
                     <ul class="collapsible-list">
                         <li>
-                            @Html.CustomCheckbox("Controller", false, "", controller, inputId: $"controller_{controller}", isFullWidth: false, isMultiple: true)
+                            <form-checkbox name="Controller" label="@controller" id="@($"controller_{controller}")" />
                             <ul class="collapsible-list">
                                 @foreach (var permission in Model.ControllerPermissions[controller])
                                 {
-                                    <li>
-                                        @Html.CustomCheckbox("PermissionIds", Html.IsChecked(Model.RolePermission, x => x.PermissionId == permission.Id, ((int[])ViewBag.SelectedPermissionIds), permission.Id), permission.Id.ToString(), permission.ActionName, isFullWidth: false, isMultiple: true)
-                                    </li>
+                                <li>
+                                    <form-checkbox name="PermissionIds" value="@permission.Id" label="@permission.ActionName" is-checked="@Html.IsChecked(Model.RolePermission, x => x.PermissionId == permission.Id, ((int[])ViewBag.SelectedPermissionIds), permission.Id)" />
+                                </li>
                                 }
                             </ul>
                         </li>
