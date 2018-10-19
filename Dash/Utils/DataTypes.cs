@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace Dash
 {
@@ -36,6 +37,23 @@ namespace Dash
         public static IEnumerable<T> AddIf<T>(this IEnumerable<T> list, T item, bool add)
         {
             return add ? list.Append(item) : list;
+        }
+
+        /// <summary>
+        /// Add an item to the dictionary if `add` is true.
+        /// </summary>
+        /// <param name="dict">Dictionary to update.</param>
+        /// <param name="key">Key to add to dictionary if true.</param>
+        /// <param name="value">Value to add to dictionary if true.</param>
+        /// <param name="add">Add to dictionary if true.</param>
+        /// <returns>Returns updated dictionary.</returns>
+        public static TagHelperAttributeList AddIf(this TagHelperAttributeList dict, string key, string value, bool add)
+        {
+            if (add)
+            {
+                dict.Add(key, value);
+            }
+            return dict;
         }
 
         /// <summary>

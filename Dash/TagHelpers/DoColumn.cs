@@ -17,23 +17,13 @@ namespace Dash.TagHelpers
         {
             output.TagMode = TagMode.StartTagAndEndTag;
             output.TagName = "td";
-            if (!Width.IsEmpty())
-            {
-                output.Attributes.Add("data-width", Width);
-            }
+            output.Attributes.AddIf("data-width", Width, !Width.IsEmpty());
             output.Attributes.Add("data-sortable", Sortable.ToString());
             output.Attributes.Add("data-type", Type);
             output.Attributes.Add("data-label", Label);
             output.Attributes.Add("data-field", Field);
-            if (!SortDirection.IsEmpty())
-            {
-                output.Attributes.Add("data-sort-dir", SortDirection);
-            }
-            if (SortOrder.HasValue)
-            {
-                output.Attributes.Add("data-sort-order", SortOrder);
-            }
-
+            output.Attributes.AddIf("data-sort-dir", SortDirection, !SortDirection.IsEmpty());
+            output.Attributes.AddIf("data-sort-order", SortOrder.ToString(), SortOrder.HasValue);
             if (!TextProperty.IsEmpty())
             {
                 output.Content.AppendHtml($"{{{{=x.{TextProperty} || ''}}}}");

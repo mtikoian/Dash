@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace Dash.TagHelpers
@@ -19,9 +18,9 @@ namespace Dash.TagHelpers
 
         public string Action { get; set; }
         public DashClasses Class { get; set; } = DashClasses.BtnPrimary;
-        public object RouteValues { get; set; }
         public string Controller { get; set; }
         public bool? HasAccess { get; set; }
+        public object RouteValues { get; set; }
         public string Target { get; set; }
         public string Title { get; set; }
 
@@ -43,10 +42,7 @@ namespace Dash.TagHelpers
             output.Attributes.Add("href", urlHelper.Action(Action, Controller, RouteValues));
             output.Attributes.Add("data-method", "GET");
             output.Attributes.Add("title", Title);
-            if (!Target.IsEmpty())
-            {
-                output.Attributes.Add("target", Target);
-            }
+            output.Attributes.AddIf("target", Target, !Target.IsEmpty());
             output.Content.Append(Title);
 
             var classList = new List<string>();

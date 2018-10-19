@@ -90,14 +90,8 @@ namespace Dash.TagHelpers
             output.Attributes.Add("title", Title);
             output.Attributes.Add("data-method", Method);
             output.Attributes.Add("class", Class);
-            if (!Confirm.IsEmpty())
-            {
-                output.Attributes.Add("data-confirm", Confirm);
-            }
-            if (!Prompt.IsEmpty())
-            {
-                output.Attributes.Add("data-prompt", Prompt);
-            }
+            output.Attributes.AddIf("data-confirm", Confirm, !Confirm.IsEmpty());
+            output.Attributes.AddIf("data-prompt", Prompt, !Prompt.IsEmpty());
 
             if (InnerContent != null)
             {

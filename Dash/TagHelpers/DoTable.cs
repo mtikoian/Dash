@@ -35,30 +35,12 @@ namespace Dash.TagHelpers
             table.Attributes.Add("data-load-all", LoadAll.ToString());
             table.Attributes.Add("data-request-method", RequestMethod.ToString());
             table.Attributes.Add("data-check-update-date", CheckUpdateDate.ToString());
-            if (!StoreUrl.IsEmpty())
-            {
-                table.Attributes.Add("data-store-url", StoreUrl);
-            }
-            if (!Width.IsEmpty())
-            {
-                table.Attributes.Add("data-width", Width);
-            }
-            if (StoreRequestMethod.HasValue)
-            {
-                table.Attributes.Add("data-store-request-method", StoreRequestMethod.ToString());
-            }
-            if (!DisplayDateFormat.IsEmpty())
-            {
-                table.Attributes.Add("data-display-date-format", DisplayDateFormat);
-            }
-            if (!DisplayCurrencyFormat.IsEmpty())
-            {
-                table.Attributes.Add("data-display-currency-format", DisplayCurrencyFormat);
-            }
-            if (RequestParams != null)
-            {
-                table.Attributes.Add("json-request-params", JSON.SerializeDynamic(RequestParams, JilOutputFormatter.Options));
-            }
+            table.Attributes.AddIf("data-store-url", StoreUrl, !StoreUrl.IsEmpty());
+            table.Attributes.AddIf("data-width", Width, !Width.IsEmpty());
+            table.Attributes.AddIf("data-store-request-method", StoreRequestMethod.ToString(), StoreRequestMethod.HasValue);
+            table.Attributes.AddIf("data-display-date-format", DisplayDateFormat, !DisplayDateFormat.IsEmpty());
+            table.Attributes.AddIf("data-display-currency-format", DisplayCurrencyFormat, !DisplayCurrencyFormat.IsEmpty());
+            table.Attributes.AddIf("json-request-params", JSON.SerializeDynamic(RequestParams, JilOutputFormatter.Options), RequestParams != null);
 
             output.TagMode = TagMode.StartTagAndEndTag;
             output.TagName = "div";
