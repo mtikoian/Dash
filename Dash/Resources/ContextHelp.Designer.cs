@@ -526,7 +526,7 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A user will be able to login, but not do anything if they don&apos;t have any roles assigned..
+        ///   Looks up a localized string similar to Give the user access to use functionality. A user with no roles assigned will be able to login, but not do anything else..
         /// </summary>
         public static string User_UserRole {
             get {

@@ -284,7 +284,7 @@
     <value>The login name for the user.</value>
   </data>
   <data name="User_UserRole" xml:space="preserve">
-    <value>A user will be able to login, but not do anything if they don't have any roles assigned.</value>
+    <value>Give the user access to use functionality. A user with no roles assigned will be able to login, but not do anything else.</value>
   </data>
   <data name="Dataset_TypeId" xml:space="preserve">
     <value>Select if this dataset will query tables or a stored procedure. Using a stored proc instead of tables will disable other features like conditions and joins.</value>
