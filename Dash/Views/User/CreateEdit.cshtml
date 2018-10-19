@@ -2,7 +2,6 @@
 @using Dash.Models
 @model User
 
-
 <body-content>
     <breadcrumb>
         <breadcrumb-item label="@Users.ViewAll" controller="User" action="Index"></breadcrumb-item>
@@ -14,26 +13,25 @@
     <horizontal-form for="Model">
         <input asp-for="Id" type="hidden" />
 
-        @Html.LabelInputFor(model => model.UserName, new { autofocus = true })
-        @Html.LabelInputFor(model => model.FirstName)
-        @Html.LabelInputFor(model => model.LastName)
-        <!-- add custom help for password so you can substitute in values from the config file for min length and min special char-->
-        @Html.LabelPasswordFor(model => model.Password, Model.Id == 0 ? new { required = true } : null)
-        @Html.LabelPasswordFor(model => model.ConfirmPassword, Model.Id == 0 ? new { required = true } : null)
-        @Html.LabelInputFor(model => model.Email, inputType: Dash.Html.InputFieldType.Email)
-        @Html.LabelDropDownListFor(model => model.LanguageId, new SelectList(Model.DbContext.GetAll<Language>(), "Id", "Name"))
-        @Html.LabelCheckBoxFor(model => model.AllowSingleFactor)
+        <form-group-input for="UserName" autofocus="true" />
+        <form-group-input for="FirstName" />
+        <form-group-input for="LastName" />
+        <form-group-input for="Password" is-required="@(Model.Id == 0)" help-text="@Model.HelpText" />
+        <form-group-input for="ConfirmPassword" is-required="@(Model.Id == 0)" />
+        <form-group-input for="Email" />
+        <form-group-select for="LanguageId" options="@(Model.DbContext.GetAll<Language>().ToSelectList(x => x.Name, x=> x.Id.ToString()))" />
+        <form-group-checkbox for="AllowSingleFactor" />
         <div class="form-group columns">
-            @Html.ControlLabel("RoleIds", Users.Roles)
+            <form-label for="RoleIds" />
             <div class="col-8 checkbox-block">
                 @foreach (var role in Model.AllRoles)
                 {
-                    @Html.CustomCheckbox("RoleIds", Html.IsChecked(Model.UserRole, x => x.RoleId == role.Id, ((int[])ViewBag.SelectedRoleIds), role.Id), role.Id.ToString(), role.Name, isMultiple: true)
+                    <form-checkbox name="RoleIds" is-checked="@(Html.IsChecked(Model.UserRole, x => x.RoleId == role.Id, ((int[])ViewBag.SelectedRoleIds), role.Id))" value="@role.Id" label="@role.Name" />
                 }
                 @Html.HelpFor(model => model.UserRole, false)
             </div>
         </div>
 
-        @Html.FormButtons()
+        <form-buttons />
     </horizontal-form>
 </body-content>
