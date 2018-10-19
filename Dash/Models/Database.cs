@@ -6,13 +6,12 @@ using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
 using Dapper;
+using Dash.Configuration;
 using Dash.Resources;
-using Jil;
+using Dash.Utils;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Dash.Configuration;
-using Dash.Utils;
 
 namespace Dash.Models
 {
@@ -69,7 +68,7 @@ namespace Dash.Models
         [DbIgnore]
         public bool IsEmptyPassword { get; set; } = false;
 
-        [DbIgnore, JilDirective(true)]
+        [DbIgnore]
         public bool IsSqlServer { get { return TypeId == (int)DatabaseTypes.SqlServer; } }
 
         [Display(Name = "Name", ResourceType = typeof(Databases))]
@@ -95,7 +94,7 @@ namespace Dash.Models
         public DbConnection GetConnection()
         {
             var crypt = new Crypt(AppConfig);
-            string connectionString = null;
+            var connectionString = "";
             if (!ConnectionString.IsEmpty())
             {
                 connectionString = crypt.Decrypt(ConnectionString);
