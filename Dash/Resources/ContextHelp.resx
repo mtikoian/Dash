@@ -277,9 +277,6 @@
   <data name="Role_Users" xml:space="preserve">
     <value>Add users that can access this role. The next time the user logs in, they will have access to the new permissions.</value>
   </data>
-  <data name="UserMembership_Password" xml:space="preserve">
-    <value>Password must be at least 6 characters long and contain at least one special character.</value>
-  </data>
   <data name="User_LanguageId" xml:space="preserve">
     <value>This will be the default language in which this user will see the site.</value>
   </data>
