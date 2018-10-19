@@ -9,29 +9,21 @@
 
     <partial name="_Toast" />
 
-    @using (Html.BeginCustomForm(Model.FormAction, "Database", method: Model.FormMethod))
-    {
+    <horizontal-form for="Model">
         <input asp-for="Id" type="hidden" />
 
-        <div class="columns">
-            <div class="col-6">
-                @Html.LabelInputFor(model => model.Name, new { autofocus = true })
-                @Html.LabelDropDownListFor(model => model.TypeId, Dash.Models.Database.DatabaseTypeSelectList)
-                @Html.LabelInputFor(model => model.Host)
-                @Html.LabelInputFor(model => model.Port, inputType: Dash.Html.InputFieldType.Number)
-                @Html.LabelInputFor(model => model.DatabaseName)
-                @Html.LabelCheckBoxFor(model => model.AllowPaging)
-            </div>
+        <form-group-input for="Name" autofocus="true" />
+        <form-group-select for="TypeId" options="@Database.DatabaseTypeSelectList" />
+        <form-group-input for="Host" />
+        <form-group-input for="Port" />
+        <form-group-input for="DatabaseName" />
+        <form-group-checkbox for="AllowPaging" />
+        <form-group-input for="User" />
+        <form-group-input for="Password" />
+        <form-group-input for="ConfirmPassword" />
+        <form-group-checkbox for="IsEmptyPassword" />
+        <form-group-textarea for="ConnectionString" />
 
-            <div class="col-6">
-                @Html.LabelInputFor(model => model.User)
-                @Html.LabelPasswordFor(model => model.Password)
-                @Html.LabelPasswordFor(model => model.ConfirmPassword)
-                @Html.LabelCheckBoxFor(model => model.IsEmptyPassword)
-                @Html.LabelTextAreaFor(model => model.ConnectionString, new { rows = 4 })
-            </div>
-        </div>
-
-        @Html.FormButtons()
-    }
+        <form-buttons />
+    </horizontal-form>
 </body-content>
