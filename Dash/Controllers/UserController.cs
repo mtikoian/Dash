@@ -104,7 +104,7 @@ namespace Dash.Controllers
             }
             if (!model.Save())
             {
-                ViewBag.Error = model.Error;
+                ViewBag.Error = Users.ErrorSavingUser;
                 return CreateEditView(model);
             }
             ViewBag.Message = Users.SuccessSavingUser;

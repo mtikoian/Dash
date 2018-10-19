@@ -30,7 +30,6 @@ namespace Dash.Models
         [Display(Name = "AllowSingleFactor", ResourceType = typeof(Users))]
         public bool AllowSingleFactor { get; set; } = false;
 
-        [JilDirective(true)]
         [BindNever, ValidateNever]
         public List<Role> AllRoles { get { return _AllRoles ?? (_AllRoles = DbContext.GetAll<Role>().ToList()); } }
 
@@ -47,16 +46,23 @@ namespace Dash.Models
         [DataType(System.ComponentModel.DataAnnotations.DataType.EmailAddress, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorEmailAddressFormat")]
         public string Email { get; set; }
 
-        [DbIgnore, JilDirective(true)]
-        public string Error { get; set; }
-
         [Display(Name = "FirstName", ResourceType = typeof(Users))]
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         [StringLength(100, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string FirstName { get; set; }
 
-        [DbIgnore, JilDirective(true)]
+        [DbIgnore]
         public string FullName { get { return $"{LastName?.Trim()}, {FirstName?.Trim()}".Trim(new char[] { ' ', ',' }); } }
+
+        [DbIgnore]
+        public string HelpText
+        {
+            get
+            {
+                return Users.PasswordHelp.Replace("{0}", AppConfig.Membership.MinRequiredPasswordLength.ToString())
+                    .Replace("{1}", AppConfig.Membership.MinRequiredNonAlphanumericCharacters.ToString());
+            }
+        }
 
         [DbIgnore, BindNever, ValidateNever]
         public bool IsLocked
@@ -72,7 +78,7 @@ namespace Dash.Models
             set { _IsLocked = value; }
         }
 
-        [DbIgnore, JilDirective(true)]
+        [DbIgnore]
         public string LanguageCode { get; set; }
 
         [Display(Name = "Language", ResourceType = typeof(Users))]
@@ -84,11 +90,8 @@ namespace Dash.Models
         [StringLength(100, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string LastName { get; set; }
 
-        [DbIgnore, JilDirective(true)]
+        [DbIgnore]
         public int LoginAttempts { get; set; }
-
-        [DbIgnore, JilDirective(true)]
-        public string LoginHash { get; set; }
 
         [StringLength(250, MinimumLength = 0, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMinMaxLength")]
         [Display(Name = "Password", ResourceType = typeof(Users))]
@@ -96,6 +99,7 @@ namespace Dash.Models
         [DbIgnore]
         public string Password { get; set; }
 
+        [Display(Name = "Roles", ResourceType = typeof(Users))]
         [DbIgnore]
         public List<int> RoleIds { get; set; }
 
@@ -104,7 +108,6 @@ namespace Dash.Models
         [StringLength(100, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string UserName { get; set; }
 
-        [JilDirective(true)]
         [BindNever, ValidateNever]
         public List<UserRole> UserRole
         {

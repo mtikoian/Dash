@@ -174,4 +174,10 @@
   <data name="Unlock" xml:space="preserve">
     <value>Unlock</value>
   </data>
+  <data name="PasswordHelp" xml:space="preserve">
+    <value>Password must be at least {0} characters long and contain at least {1} special character.</value>
+  </data>
+  <data name="ErrorSavingUser" xml:space="preserve">
+    <value>An error occurred saving the user.</value>
+  </data>
 </root>

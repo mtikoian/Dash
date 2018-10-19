@@ -115,6 +115,15 @@ namespace Dash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An error occurred saving the user..
+        /// </summary>
+        public static string ErrorSavingUser {
+            get {
+                return ResourceManager.GetString("ErrorSavingUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to First Name.
         /// </summary>
         public static string FirstName {
@@ -156,6 +165,15 @@ namespace Dash.Resources {
         public static string Password {
             get {
                 return ResourceManager.GetString("Password", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password must be at least {0} characters long and contain at least {1} special character..
+        /// </summary>
+        public static string PasswordHelp {
+            get {
+                return ResourceManager.GetString("PasswordHelp", resourceCulture);
             }
         }
         
