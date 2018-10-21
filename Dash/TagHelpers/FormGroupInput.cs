@@ -59,15 +59,15 @@ namespace Dash.TagHelpers
 
             var name = For.Name.ToLower();
             var type = "text";
-            if (name.Contains("password"))
+            if (name.EndsWith("password"))
             {
                 type = "password";
             }
-            else if (name.Contains("email"))
+            else if (name.EndsWith("email"))
             {
                 type = "email";
             }
-            else if (name.Contains("date"))
+            else if (name.EndsWith("date"))
             {
                 Toggle = "datepicker";
             }
