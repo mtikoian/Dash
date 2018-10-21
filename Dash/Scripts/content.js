@@ -44,7 +44,7 @@
      */
     var conditionallyDisable = function() {
         var node = $.get(this.getAttribute('data-target'));
-        $.disableIf(node, this.value == this.getAttribute('data-match'));
+        $.disableIf(node, this.value != this.getAttribute('data-match'));
         if (this.value != this.getAttribute('data-match')) {
             node.value = '';
         }
