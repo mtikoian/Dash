@@ -21,7 +21,7 @@
         <form-group-input for="Email" />
         <form-group-select for="LanguageId" options="@(Model.DbContext.GetAll<Language>().ToSelectList(x => x.Name, x=> x.Id.ToString()))" />
         <form-group-checkbox for="AllowSingleFactor" />
-        <div class="form-group columns">
+        <div class="form-group">
             <form-label for="RoleIds" />
             <div class="col-8 checkbox-block">
                 @foreach (var role in Model.AllRoles)
