@@ -28,7 +28,7 @@
                 {
                     <form-checkbox name="RoleIds" is-checked="@(Html.IsChecked(Model.UserRole, x => x.RoleId == role.Id, ((int[])ViewBag.SelectedRoleIds), role.Id))" value="@role.Id" label="@role.Name" />
                 }
-                @Html.HelpFor(model => model.UserRole, false)
+                <form-help for="UserRole" />
             </div>
         </div>
 

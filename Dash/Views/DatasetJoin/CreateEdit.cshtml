@@ -10,22 +10,17 @@
         <breadcrumb-item label="@(Model.IsCreate ? Datasets.CreateJoin : Datasets.EditJoin)" controller="DatasetJoin" action="@Model.FormAction" route-values="@(Model.IsCreate ? null : new { Id = Model.Id })" is-active="true"></breadcrumb-item>
     </breadcrumb>
 
-    @using (Html.BeginCustomForm(Model.FormAction, "DatasetJoin", method: Model.FormMethod))
-    {
+    <partial name="_Toast" />
+
+    <horizontal-form for="Model">
         <input asp-for="Id" type="hidden" />
         <input asp-for="DatasetId" type="hidden" />
         <input asp-for="JoinOrder" type="hidden" />
 
-        <partial name="_Toast" />
+        <form-group-input for="TableName" toggle="autocomplete" preload="true" url="@Url.Action("Sources", "Dataset", new { Id = Model.DatasetId })" />
+        <form-group-select for="JoinTypeId" options="@Model.JoinTypeList" />
+        <form-group-input for="Keys" />
 
-        <div class="columns">
-            <div class="col-6">
-                @Html.LabelInputFor(model => model.TableName, new { data_toggle = "autocomplete", data_preload = true, data_url = Url.Action("Sources", "Dataset", new { Id = Model.DatasetId }) })
-                @Html.LabelDropDownListFor(model => model.JoinTypeId, Model.JoinTypeList)
-                @Html.LabelInputFor(model => model.Keys)
-            </div>
-        </div>
-
-        @Html.FormButtons()
-    }
+        <form-buttons />
+    </horizontal-form>
 </body-content>

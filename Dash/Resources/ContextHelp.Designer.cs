@@ -133,7 +133,7 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Some databases offer paging using OFFSET or LIMIT.  SQL Server 2008 R2 and below does not allow offsets.  If using SQL Server 2008 R2 or lower, uncheck this box..
+        ///   Looks up a localized string similar to Some databases offer paging using OFFSET or LIMIT.  SQL Server 2008 R2 and below does not support this.  Check this unless you are using SQL Server 2008 R2 or lower..
         /// </summary>
         public static string Database_AllowPaging {
             get {
@@ -270,15 +270,6 @@ namespace Dash.Resources {
         public static string Dataset_DateFormat {
             get {
                 return ResourceManager.GetString("Dataset_DateFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enter an optional description to make it easier for users to select a dataset when creating reports..
-        /// </summary>
-        public static string Dataset_Description {
-            get {
-                return ResourceManager.GetString("Dataset_Description", resourceCulture);
             }
         }
         

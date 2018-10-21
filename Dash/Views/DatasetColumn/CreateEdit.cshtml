@@ -10,26 +10,21 @@
         <breadcrumb-item label="@(Model.IsCreate ? Datasets.CreateColumn : Datasets.EditColumn)" controller="DatasetColumn" action="@Model.FormAction" route-values="@(Model.IsCreate ? null : new { Id = Model.Id })" is-active="true"></breadcrumb-item>
     </breadcrumb>
 
-    @using (Html.BeginCustomForm(Model.FormAction, "DatasetColumn", method: Model.FormMethod))
-    {
+    <partial name="_Toast" />
+
+    <horizontal-form for="Model">
         <input asp-for="Id" type="hidden" />
         <input asp-for="DatasetId" type="hidden" />
 
-        <partial name="_Toast" />
+        <form-group-input for="Title" />
+        <form-group-input for="ColumnName" toggle="autocomplete" preload="true" url="@Url.Action("Columns", "Dataset", new { Id = Model.DatasetId })" />
+        <form-group-select for="DataTypeId" options="@Model.DataTypeList" />
+        <form-group-input for="Derived" />
+        <form-group-select for="FilterTypeId" options="@FilterType.FilterTypeList" toggle="disable" target="#FilterQuery" match="@((int)FilterTypes.Select)" />
+        <form-group-input for="FilterQuery" />
+        <form-group-input for="Link" />
+        <form-group-checkbox for="IsParam" />
 
-        <div class="columns">
-            <div class="col-6">
-                @Html.LabelInputFor(model => model.Title)
-                @Html.LabelInputFor(model => model.ColumnName, new { data_toggle = "autocomplete", data_preload = true, data_url = Url.Action("Columns", "Dataset", new { Id = Model.DatasetId }) })
-                @Html.LabelDropDownListFor(model => model.DataTypeId, Model.DataTypeList)
-                @Html.LabelInputFor(model => model.Derived)
-                @Html.LabelDropDownListFor(model => model.FilterTypeId, FilterType.FilterTypeList, new { @data_toggle = "disable", @data_target = "#FilterQuery", @data_match = (int)FilterTypes.Select })
-                @Html.LabelInputFor(model => model.FilterQuery)
-                @Html.LabelInputFor(model => model.Link)
-                @Html.LabelCheckBoxFor(model => model.IsParam)
-            </div>
-        </div>
-
-        @Html.FormButtons()
-    }
+        <form-buttons />
+    </horizontal-form>
 </body-content>

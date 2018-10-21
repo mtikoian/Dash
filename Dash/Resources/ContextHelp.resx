@@ -139,7 +139,7 @@
     <value>Select the column to use for the Y axis. The Y axis column values from the first range will be used as ticks/labels for the Y axis on the left side of the chart. Subsequent Y axis columns will be used as ticks/labels on the right side.</value>
   </data>
   <data name="Database_AllowPaging" xml:space="preserve">
-    <value>Some databases offer paging using OFFSET or LIMIT.  SQL Server 2008 R2 and below does not allow offsets.  If using SQL Server 2008 R2 or lower, uncheck this box.</value>
+    <value>Some databases offer paging using OFFSET or LIMIT.  SQL Server 2008 R2 and below does not support this.  Check this unless you are using SQL Server 2008 R2 or lower.</value>
   </data>
   <data name="Database_ConfirmPass" xml:space="preserve">
     <value>Re-enter the password for confirmation.</value>
@@ -243,9 +243,6 @@
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;More info about formatting on &lt;a href="https://flatpickr.js.org/formatting/" target="_blank"&gt;flatpickr.js.org&lt;/a&gt;&lt;/p&gt;</value>
-  </data>
-  <data name="Dataset_Description" xml:space="preserve">
-    <value>Enter an optional description to make it easier for users to select a dataset when creating reports.</value>
   </data>
   <data name="Dataset_Name" xml:space="preserve">
     <value>Enter a unique name for the dataset.</value>
