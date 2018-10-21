@@ -42,10 +42,7 @@ namespace Dash.Models
         [DbIgnore]
         public string JoinName
         {
-            get
-            {
-                return ((JoinTypes)JoinTypeId).ToString();
-            }
+            get { return ((JoinTypes)JoinTypeId).ToString(); }
         }
 
         [Required]
@@ -53,15 +50,13 @@ namespace Dash.Models
 
         [Display(Name = "JoinType", ResourceType = typeof(Datasets))]
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
+        [JilDirective(true)]
         public int JoinTypeId { get; set; }
 
         [DbIgnore, JilDirective(true)]
         public IEnumerable<SelectListItem> JoinTypeList
         {
-            get
-            {
-                return typeof(JoinTypes).TranslatedSelect(new ResourceDictionary("Datasets"), "LabelJoinType_");
-            }
+            get { return typeof(JoinTypes).TranslatedSelect(new ResourceDictionary("Datasets"), "LabelJoinType_"); }
         }
 
         [Display(Name = "JoinKeys", ResourceType = typeof(Datasets))]

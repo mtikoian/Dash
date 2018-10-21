@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Dash.Configuration;
 using Dash.Models;
 using Dash.Resources;

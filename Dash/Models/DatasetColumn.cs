@@ -49,15 +49,13 @@ namespace Dash.Models
 
         [Display(Name = "ColumnDataType", ResourceType = typeof(Datasets))]
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
+        [JilDirective(true)]
         public int DataTypeId { get; set; }
 
         [DbIgnore, JilDirective(true), BindNever, ValidateNever]
         public IEnumerable<SelectListItem> DataTypeList
         {
-            get
-            {
-                return DbContext.GetAll<DataType>().OrderBy(d => d.Name).ToSelectList(x => x.Name, x => x.Id.ToString());
-            }
+            get { return DbContext.GetAll<DataType>().OrderBy(d => d.Name).ToSelectList(x => x.Name, x => x.Id.ToString()); }
         }
 
         [DbIgnore, BindNever, ValidateNever]
@@ -68,17 +66,20 @@ namespace Dash.Models
 
         [Display(Name = "ColumnTransform", ResourceType = typeof(Datasets))]
         [StringLength(500, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
+        [JilDirective(true)]
         public string Derived { get; set; }
 
-        [DbIgnore]
+        [DbIgnore, JilDirective(true)]
         public int DisplayOrder { get; set; }
 
         [Display(Name = "ColumnQuery", ResourceType = typeof(Datasets))]
         [StringLength(500, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
+        [JilDirective(true)]
         public string FilterQuery { get; set; }
 
         [Display(Name = "ColumnFilterType", ResourceType = typeof(Datasets))]
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
+        [JilDirective(true)]
         public int FilterTypeId { get; set; }
 
         [DbIgnore, JilDirective(true), BindNever, ValidateNever]
@@ -100,6 +101,7 @@ namespace Dash.Models
         public bool IsInteger { get { return DataType.IsInteger; } }
 
         [Display(Name = "ColumnIsParam", ResourceType = typeof(Datasets))]
+        [JilDirective(true)]
         public bool IsParam { get; set; }
 
         [DbIgnore, JilDirective(true)]
@@ -110,6 +112,7 @@ namespace Dash.Models
 
         [Display(Name = "ColumnLink", ResourceType = typeof(Datasets))]
         [StringLength(250, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
+        [JilDirective(true)]
         public string Link { get; set; }
 
         [DbIgnore, JilDirective(true)]

@@ -4,7 +4,6 @@ using System.Data;
 using System.Linq;
 using Dash.Resources;
 using Dash.Utils;
-using Jil;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -60,21 +59,21 @@ namespace Dash.Models
         [DbIgnore]
         public string DatabaseName { get; set; }
 
-        [JilDirective(true), BindNever, ValidateNever]
+        [BindNever, ValidateNever]
         public List<DatasetColumn> DatasetColumn
         {
             get { return _DatasetColumn ?? (_DatasetColumn = DbContext?.GetAll<DatasetColumn>(new { DatasetId = Id }).ToList()); }
             set { _DatasetColumn = value; }
         }
 
-        [JilDirective(true), BindNever, ValidateNever]
+        [BindNever, ValidateNever]
         public List<DatasetJoin> DatasetJoin
         {
             get { return _DatasetJoin ?? (_DatasetJoin = DbContext?.GetAll<DatasetJoin>(new { DatasetId = Id }).ToList()); }
             set { _DatasetJoin = value; }
         }
 
-        [JilDirective(true), BindNever, ValidateNever]
+        [BindNever, ValidateNever]
         public List<DatasetRole> DatasetRole
         {
             get { return _DatasetRole ?? (_DatasetRole = DbContext.GetAll<DatasetRole>(new { DatasetId = Id }).ToList()); }
@@ -86,26 +85,19 @@ namespace Dash.Models
         [StringLength(50, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string DateFormat { get; set; } = "Y-m-d H:i:S";
 
-        [DbIgnore, JilDirective(true)]
+        [DbIgnore]
         public List<string> DefaultCurrencyFormats
         {
-            get
-            {
-                return new List<string> { "{s:$} {[t:,][d:.][p:2]}", "{s:£}{[t:,][d:.][p:2]}", "{[t:.][d:,][p:2]} {s:€}" };
-            }
+            get { return new List<string> { "{s:$} {[t:,][d:.][p:2]}", "{s:£}{[t:,][d:.][p:2]}", "{[t:.][d:,][p:2]} {s:€}" }; }
         }
 
-        [DbIgnore, JilDirective(true)]
+        [DbIgnore]
         public List<string> DefaultDateFormats
         {
-            get
-            {
-                return new List<string> { "Y-m-d H:i:S", "Y-m-d", "n/j/Y H:i:S", "n/j/y" };
-            }
+            get { return new List<string> { "Y-m-d H:i:S", "Y-m-d", "n/j/Y H:i:S", "n/j/y" }; }
         }
 
-
-        [DbIgnore, JilDirective(true)]
+        [DbIgnore]
         public bool IsProc { get { return TypeId == (int)DatasetTypes.Proc; } }
 
         [Display(Name = "Name", ResourceType = typeof(Datasets))]
@@ -118,6 +110,7 @@ namespace Dash.Models
         [StringLength(100, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string PrimarySource { get; set; }
 
+        [Display(Name = "Roles", ResourceType = typeof(Datasets))]
         [DbIgnore]
         public List<int> RoleIds { get; set; }
 
@@ -125,13 +118,10 @@ namespace Dash.Models
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int TypeId { get; set; }
 
-        [DbIgnore, JilDirective(true)]
+        [DbIgnore]
         public IEnumerable<SelectListItem> TypeList
         {
-            get
-            {
-                return typeof(DatasetTypes).TranslatedSelect(new ResourceDictionary("Datasets"), "LabelType_");
-            }
+            get { return typeof(DatasetTypes).TranslatedSelect(new ResourceDictionary("Datasets"), "LabelType_"); }
         }
 
         public List<object> AvailableColumns(string[] tableNames = null)
@@ -142,19 +132,9 @@ namespace Dash.Models
                 return columns;
             }
 
-            // start building a list of columns. first add the primary table as a group
-            var tableList = new List<string>();
-            if (tableNames != null)
-            {
-                tableList = tableNames.Distinct().ToList();
-            }
-            else
-            {
-                tableList = TableList();
-            }
-
             if (Database?.TestConnection(out var error) == true)
             {
+                var tableList = tableNames != null ? tableNames.Distinct().ToList() : TableList();
                 tableList.Each(table => {
                     Database.GetTableSchema(table).Rows.OfType<DataRow>().Each(row => {
                         columns.Add($"{row.ToTableName(Database.IsSqlServer)}.{row.ToColumnName(Database.IsSqlServer, false)}");
