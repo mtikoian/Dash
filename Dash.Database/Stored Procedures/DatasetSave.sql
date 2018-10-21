@@ -6,8 +6,7 @@
 	@TypeId TINYINT,	
 	@DateFormat NVARCHAR(50),	
 	@CurrencyFormat NVARCHAR(50),	
-	@Description NVARCHAR(500) = NULL,	
-	@Conditions NVARCHAR(250) = NULL,	
+	@Conditions NVARCHAR(500) = NULL,
 	@RequestUserId INT = NULL
 AS
 	SET NOCOUNT ON
@@ -15,13 +14,13 @@ AS
 	BEGIN TRY
 		IF ISNULL(@Id, 0) = 0
 			BEGIN
-				INSERT INTO Dataset (DatabaseId, Name, [Description], PrimarySource, TypeId, Conditions, [DateFormat], CurrencyFormat, UserCreated)
-					VALUES (@DatabaseId, @Name, @Description, @PrimarySource, @TypeId, @Conditions, @DateFormat, @CurrencyFormat, @RequestUserId)
+				INSERT INTO Dataset (DatabaseId, Name,  PrimarySource, TypeId, Conditions, [DateFormat], CurrencyFormat, UserCreated)
+					VALUES (@DatabaseId, @Name, @PrimarySource, @TypeId, @Conditions, @DateFormat, @CurrencyFormat, @RequestUserId)
 				SET @Id = SCOPE_IDENTITY()
 			END
 		ELSE
 			BEGIN
-				UPDATE Dataset SET Name = @Name, DatabaseId = @DatabaseId, [Description] = @Description, PrimarySource = @PrimarySource, TypeId = @TypeId,
+				UPDATE Dataset SET Name = @Name, DatabaseId = @DatabaseId, PrimarySource = @PrimarySource, TypeId = @TypeId,
 					Conditions = @Conditions, [DateFormat] = @DateFormat, CurrencyFormat = @CurrencyFormat, 
 					UserUpdated = @RequestUserId, DateUpdated = SYSDATETIMEOFFSET()
 				WHERE Id = @Id

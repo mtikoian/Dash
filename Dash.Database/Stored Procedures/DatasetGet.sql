@@ -17,7 +17,7 @@ AS
 	ELSE
 		INSERT INTO @Ids SELECT Id FROM Dataset
 
-	SELECT ds.Id, ds.Name, ds.[Description], ds.PrimarySource, ds.TypeId, ds.Conditions,
+	SELECT ds.Id, ds.Name, ds.PrimarySource, ds.TypeId, ds.Conditions,
 		ds.DatabaseId, ds.[DateFormat], ds.CurrencyFormat, [Database].Name AS DatabaseName, [Database].Host AS DatabaseHost
 	FROM @Ids i
 	INNER JOIN Dataset ds ON ds.Id = i.Id

@@ -104,9 +104,6 @@ namespace Dash.Models
             }
         }
 
-        [Display(Name = "Description", ResourceType = typeof(Datasets))]
-        [StringLength(500, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
-        public string Description { get; set; }
 
         [DbIgnore, JilDirective(true)]
         public bool IsProc { get { return TypeId == (int)DatasetTypes.Proc; } }
