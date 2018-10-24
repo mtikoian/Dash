@@ -17,6 +17,7 @@ namespace Dash.TagHelpers
 
         public string Action { get; set; }
         public string Controller { get; set; }
+        public bool IsFullWidth { get; set; }
         public bool IsPjax { get; set; } = true;
         public HttpVerbs Method { get; set; } = HttpVerbs.Post;
         public object RouteValues { get; set; }
@@ -49,8 +50,15 @@ namespace Dash.TagHelpers
             output.Attributes.Add("action", urlHelper.Action(Action, Controller, RouteValues));
 
             var col = new TagBuilder("div");
-            col.AddCssClass("col-6");
-            col.AddCssClass("col-xl-9");
+            if (IsFullWidth)
+            {
+                col.AddCssClass("col-12");
+            }
+            else
+            {
+                col.AddCssClass("col-6");
+                col.AddCssClass("col-xl-9");
+            }
             col.InnerHtml.AppendHtml(_HtmlHelper.AntiForgeryToken());
             col.InnerHtml.AppendHtml(output.GetChildContentAsync().Result);
 

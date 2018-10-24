@@ -6,37 +6,37 @@
     {
         @if (Model.Column?.FilterTypeId == (int)FilterTypes.Boolean)
         {
-            @Html.LabelDropDownListFor(x => x.Criteria, ReportFilter.BooleanSelectListItems)
+            <form-group-select for="Criteria" options="ReportFilter.BooleanSelectListItems" />
         }
         else if (Model.Column?.FilterTypeId == (int)FilterTypes.Date)
         {
             if (Model.OperatorId == (int)FilterOperatorsAbstract.DateInterval)
             {
-                @Html.LabelDropDownListFor(x => x.Criteria, ReportFilter.DateIntervalSelectListItems)
+                <form-group-select for="Criteria" options="ReportFilter.DateIntervalSelectListItems" />
             }
             else
             {
-                @Html.LabelInputFor(x => x.Criteria, new { data_toggle = "datepicker" })
+                <form-group-input for="Criteria" toggle="datepicker" />
             }
         }
         else if (Model.Column?.FilterTypeId == (int)FilterTypes.Select)
         {
-            @Html.LabelDropDownListFor(x => x.Criteria, Model.FilterSelectListItems)
+            <form-group-select for="Criteria" options="Model.FilterSelectListItems" />
         }
         else
         {
-            @Html.LabelInputFor(x => x.Criteria)
+            <form-group-input for="Criteria" />
         }
     }
     @if (Model.OperatorId == (int)FilterOperatorsAbstract.Range)
     {
         @if (Model.Column?.FilterTypeId == (int)FilterTypes.Date)
         {
-            @Html.LabelInputFor(x => x.Criteria2, new { data_toggle = "datepicker" })
+            <form-group-input for="Criteria2" toggle="datepicker" is-required="true" />
         }
         else
         {
-            @Html.LabelInputFor(x => x.Criteria2)
+            <form-group-input for="Criteria2" is-required="true" />
         }
     }
 </div>

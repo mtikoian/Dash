@@ -10,22 +10,16 @@
         <breadcrumb-item label="@(Model.IsCreate ? Reports.CreateFilter : Reports.EditFilter)" controller="ReportFilter" action="@Model.FormAction" route-values="@(Model.IsCreate ? null : new { Id = Model.Id })" is-active="true"></breadcrumb-item>
     </breadcrumb>
 
-    @using (Html.BeginCustomForm(Model.FormAction, "ReportFilter", method: Model.FormMethod))
-    {
+    <partial name="_Toast" />
+
+    <horizontal-form for="Model">
         <input asp-for="Id" type="hidden" />
         <input asp-for="ReportId" type="hidden" />
         <input asp-for="DisplayOrder" type="hidden" />
 
-        <partial name="_Toast" />
+        <form-group-select for="ColumnId" options="Model.Columns.ToSelectList(x => x.Title, x => x.Id.ToString())" toggle="content-replace" url="@Url.Action("FilterOperators")" params="#Id,#ColumnId" />
+        <partial name="_FilterOperators" />
 
-        <div class="columns">
-            <div class="col-6">
-                @Html.LabelDropDownListFor(x => x.ColumnId, new SelectList(Model.Columns, "Id", "Title"),
-                    new { @data_toggle = "content-replace", @data_url = Url.Action("FilterOperators"), @data_params = "#Id,#ColumnId" })
-                <partial name="_FilterOperators" />
-            </div>
-        </div>
-
-        @Html.FormButtons()
-    }
+        <form-buttons />
+    </horizontal-form>
 </body-content>

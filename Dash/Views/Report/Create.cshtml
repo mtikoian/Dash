@@ -11,18 +11,13 @@
     <partial name="_Toast" />
 
     <tab-panel id="report">
-        @using (Html.BeginCustomForm(Model.FormAction, "Report", method: Model.FormMethod))
-        {
+        <horizontal-form controller="Report" action="@Model.FormAction" method="@Model.FormMethod">
             <input asp-for="Id" type="hidden" />
 
-            <div class="columns">
-                <div class="col-6">
-                    @Html.LabelDropDownListFor(model => model.DatasetId, Model.GetDatasetsForUser().ToSelectList(d => d.Name, d => d.Id.ToString()))
-                    @Html.LabelInputFor(model => model.Name)
-                </div>
-            </div>
+            <form-group-select for="DatasetId" options="@(Model.GetDatasetsForUser().ToSelectList(d => d.Name, d => d.Id.ToString()))" />
+            <form-group-input for="Name" />
 
-            @Html.FormButtons()
-        }
+            <form-buttons />
+        </horizontal-form>
     </tab-panel>
 </body-content>

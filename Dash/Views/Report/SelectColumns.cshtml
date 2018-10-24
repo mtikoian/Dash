@@ -11,9 +11,7 @@
     <partial name="_ReportTabs" model="new ReportView(Model.Id, Model.IsOwner, ReportViewTab.Columns)" />
 
     <tab-panel id="selectColumns">
-        @using (Html.BeginCustomForm("SelectColumns", "Report", method: HttpVerbs.Put))
-        {
-
+        <horizontal-form controller="Report" action="SelectColumns" method="Put" is-full-width="true">
             <input asp-for="Id" type="hidden" />
 
             <toast id="reportColumnToast" type="Info" message="@Reports.SelectColumnsExplain" />
@@ -25,8 +23,7 @@
                         <div class="col-6"><h4>@Reports.Selected</h4></div>
                     </div>
                     <div class="columns column-list">
-                        @if (Model != null)
-                        {
+                        @{
                             var i = -1;
                             var left = -1;
                             var right = -1;
@@ -55,7 +52,7 @@
                     </div>
                 </div>
             </div>
-            @Html.FormButtons()
-        }
+            <form-buttons />
+        </horizontal-form>
     </tab-panel>
 </body-content>
