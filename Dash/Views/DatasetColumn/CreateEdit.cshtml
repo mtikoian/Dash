@@ -16,7 +16,7 @@
         <input asp-for="Id" type="hidden" />
         <input asp-for="DatasetId" type="hidden" />
 
-        <form-group-input for="Title" />
+        <form-group-input for="Title" autofocus="true" />
         <form-group-input for="ColumnName" toggle="autocomplete" preload="true" url="@Url.Action("Columns", "Dataset", new { Id = Model.DatasetId })" />
         <form-group-select for="DataTypeId" options="@Model.DataTypeList" />
         <form-group-input for="Derived" />

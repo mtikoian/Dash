@@ -17,7 +17,7 @@
         <input asp-for="DatasetId" type="hidden" />
         <input asp-for="JoinOrder" type="hidden" />
 
-        <form-group-input for="TableName" toggle="autocomplete" preload="true" url="@Url.Action("Sources", "Dataset", new { Id = Model.DatasetId })" />
+        <form-group-input for="TableName" autofocus="true" toggle="autocomplete" preload="true" url="@Url.Action("Sources", "Dataset", new { Id = Model.DatasetId })" />
         <form-group-select for="JoinTypeId" options="@Model.JoinTypeList" />
         <form-group-input for="Keys" />
 
