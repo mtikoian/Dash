@@ -13,12 +13,10 @@
     <tab-panel id="selectColumns">
         @using (Html.BeginCustomForm("SelectColumns", "Report", method: HttpVerbs.Put))
         {
-            <div class="toast toast-info" id="reportColumnToast">
-                <i class="dash dash-cancel toast-dismiss" data-toggle="hide" data-target="#reportColumnToast"></i>
-                @Reports.SelectColumnsExplain
-            </div>
 
             <input asp-for="Id" type="hidden" />
+
+            <toast id="reportColumnToast" type="Info" message="@Reports.SelectColumnsExplain" />
 
             <div class="column-list-container" data-toggle="column-selector">
                 <div class="container">

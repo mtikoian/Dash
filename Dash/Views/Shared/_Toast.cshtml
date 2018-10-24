@@ -1,30 +1,8 @@
-﻿@if (!((string)ViewBag.Error).IsEmpty())
+﻿@if (!((string)ViewBag.Message).IsEmpty())
 {
-    <div class="toast toast-error" id="errorToast">
-        <div class="columns pl-2 pr-2">
-            <div class="col-11">
-                @ViewBag.Error
-            </div>
-            <div class="col-1">
-                <div class="text-right">
-                    <i class="dash dash-cancel toast-dismiss" data-toggle="hide" data-target="#errorToast"></i>
-                </div>
-            </div>
-        </div>
-    </div>
+    <toast type="Success" message="@ViewBag.Message" />
 }
-@if (!((string)ViewBag.Message).IsEmpty())
+@if (!((string)ViewBag.Error).IsEmpty())
 {
-    <div class="toast toast-success" id="successToast">
-        <div class="columns pl-2 pr-2">
-            <div class="col-11">
-                @ViewBag.Message
-            </div>
-            <div class="col-1">
-                <div class="text-right">
-                    <i class="dash dash-cancel toast-dismiss" data-toggle="hide" data-target="#successToast"></i>
-                </div>
-            </div>
-        </div>
-    </div>
+    <toast type="Error" message="@ViewBag.Error" />
 }
