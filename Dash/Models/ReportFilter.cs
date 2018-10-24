@@ -46,10 +46,7 @@ namespace Dash.Models
         [DbIgnore, BindNever, ValidateNever, JilDirective(true)]
         public static IEnumerable<SelectListItem> DateIntervalSelectListItems
         {
-            get
-            {
-                return typeof(FilterDateRanges).TranslatedSelect(new ResourceDictionary("Filters"), "LabelDateRange_");
-            }
+            get { return typeof(FilterDateRanges).TranslatedSelect(new ResourceDictionary("Filters"), "LabelDateRange_"); }
         }
 
         [DbIgnore, BindNever, ValidateNever, JilDirective(true)]
@@ -62,19 +59,13 @@ namespace Dash.Models
         [DbIgnore, BindNever, ValidateNever]
         public string ColumnName
         {
-            get
-            {
-                return Column?.Title;
-            }
+            get { return Column?.Title; }
         }
 
         [BindNever, ValidateNever]
         public List<DatasetColumn> Columns
         {
-            get
-            {
-                return Report?.Dataset?.DatasetColumn;
-            }
+            get { return Report?.Dataset?.DatasetColumn; }
         }
 
         [Display(Name = "FilterCriteria", ResourceType = typeof(Reports))]
@@ -85,9 +76,6 @@ namespace Dash.Models
         [Display(Name = "FilterCriteria2", ResourceType = typeof(Reports))]
         [StringLength(250, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string Criteria2 { get; set; }
-
-        [DbIgnore]
-        public string[] CriteriaJson { get; set; }
 
         [DbIgnore, BindNever, ValidateNever]
         public string CriteriaValue
@@ -314,16 +302,6 @@ namespace Dash.Models
             }
 
             return $"({column.BuildSql(false)} {sql})";
-        }
-
-        public bool IsDate()
-        {
-            return OperatorId == (int)FilterOperatorsAbstract.DateInterval;
-        }
-
-        public bool IsRange()
-        {
-            return OperatorId == (int)FilterOperatorsAbstract.Range;
         }
 
         public bool MoveDown(out string error)

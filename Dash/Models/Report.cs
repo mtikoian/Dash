@@ -38,9 +38,6 @@ namespace Dash.Models
             }
         }
 
-        [DbIgnore, JilDirective(true)]
-        public bool AllowCloseParent { get; set; }
-
         [JilDirective(true)]
         public Dataset Dataset
         {

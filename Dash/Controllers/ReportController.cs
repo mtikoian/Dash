@@ -55,14 +55,17 @@ namespace Dash.Controllers
 
             var userId = User.UserId();
             var newReport = new Report {
+                DbContext = DbContext,
                 DatasetId = model.DatasetId,
                 Name = model.Name,
                 Width = 0,
                 OwnerId = userId,
                 RequestUserId = userId
-            }.Save(false);
+            };
+            newReport.Save(false);
             ViewBag.Message = Reports.SuccessSavingReport;
-            return Index();
+            // select columns for new report after creating
+            return SelectColumns(newReport.Id);
         }
 
         [HttpPost, AjaxRequestOnly]
@@ -203,7 +206,7 @@ namespace Dash.Controllers
         }
 
         [HttpGet, ParentAction("Edit")]
-        public IActionResult SelectColumns(int id, bool closeParent = true)
+        public IActionResult SelectColumns(int id)
         {
             var report = DbContext.Get<Report>(id);
             if (report == null)
@@ -222,7 +225,6 @@ namespace Dash.Controllers
                 ViewBag.Error = Reports.ErrorInvalidDatasetId;
                 return Edit(id);
             }
-            report.AllowCloseParent = closeParent;
             return View("SelectColumns", report);
         }
 
