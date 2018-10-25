@@ -4,14 +4,13 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Dash.Resources;
 using Dash.Utils;
-using Jil;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Dash.Models
 {
-    public class ReportFilter : BaseModel
+    public class ReportFilter : BaseModel, IValidatableObject
     {
         private DatasetColumn _Column;
         private Report _Report;
@@ -31,7 +30,7 @@ namespace Dash.Models
             ReportId = reportId;
         }
 
-        [DbIgnore, BindNever, ValidateNever, JilDirective(true)]
+        [DbIgnore, BindNever, ValidateNever]
         public static IEnumerable<SelectListItem> BooleanSelectListItems
         {
             get
@@ -43,13 +42,13 @@ namespace Dash.Models
             }
         }
 
-        [DbIgnore, BindNever, ValidateNever, JilDirective(true)]
+        [DbIgnore, BindNever, ValidateNever]
         public static IEnumerable<SelectListItem> DateIntervalSelectListItems
         {
             get { return typeof(FilterDateRanges).TranslatedSelect(new ResourceDictionary("Filters"), "LabelDateRange_"); }
         }
 
-        [DbIgnore, BindNever, ValidateNever, JilDirective(true)]
+        [DbIgnore, BindNever, ValidateNever]
         public DatasetColumn Column { get { return _Column ?? (_Column = DbContext.Get<DatasetColumn>(ColumnId)); } }
 
         [Display(Name = "FilterColumn", ResourceType = typeof(Reports))]
@@ -104,7 +103,7 @@ namespace Dash.Models
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int DisplayOrder { get; set; }
 
-        [BindNever, ValidateNever, JilDirective(true)]
+        [BindNever, ValidateNever]
         public IEnumerable<SelectListItem> FilterSelectListItems
         {
             get
@@ -342,6 +341,14 @@ namespace Dash.Models
                 DbContext.Save(this);
             });
             return true;
+        }
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if (OperatorId == (int)FilterOperatorsAbstract.Range && Criteria2.IsEmpty())
+            {
+                yield return new ValidationResult(Reports.ErrorRangeCriteria, new[] { "Criteria2" });
+            }
         }
     }
 }

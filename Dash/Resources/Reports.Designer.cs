@@ -340,6 +340,15 @@ namespace Dash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to End Criteria is required when using the Between operator..
+        /// </summary>
+        public static string ErrorRangeCriteria {
+            get {
+                return ResourceManager.GetString("ErrorRangeCriteria", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to There was a problem with the data source. Check with the user who created the data source..
         /// </summary>
         public static string ErrorReportDatasetAccess {

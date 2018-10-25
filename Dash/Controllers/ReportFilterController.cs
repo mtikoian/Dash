@@ -104,7 +104,7 @@ namespace Dash.Controllers
             {
                 filters[filters.Count() - 1].IsLast = true;
             }
-            return Rows(filters);
+            return Rows(filters.Select(x => new { x.Id, x.IsLast, x.ReportId, x.DisplayOrder, x.ColumnName, x.CriteriaValue, x.Criteria2, x.OperatorValue }));
         }
 
         [HttpGet, ParentAction("Edit")]

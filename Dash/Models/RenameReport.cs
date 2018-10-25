@@ -9,7 +9,6 @@ namespace Dash.Models
 {
     public class RenameReport : BaseModel, IValidatableObject
     {
-        private IHttpContextAccessor _HttpContextAccessor;
         private Report _Report;
 
         [Display(Name = "Name", ResourceType = typeof(Reports))]
@@ -33,7 +32,6 @@ namespace Dash.Models
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             DbContext = (IDbContext)validationContext.GetService(typeof(IDbContext));
-            _HttpContextAccessor = (IHttpContextAccessor)validationContext.GetService(typeof(IHttpContextAccessor));
             if (Report == null)
             {
                 yield return new ValidationResult(Core.ErrorInvalidId);

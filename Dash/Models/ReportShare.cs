@@ -33,6 +33,7 @@ namespace Dash.Models
         [DbIgnore, BindNever, ValidateNever]
         public string ReportName { get { return Report?.Name; } }
 
+        [Display(Name = "Role", ResourceType = typeof(Core))]
         public int? RoleId { get; set; }
 
         [DbIgnore]
@@ -47,6 +48,7 @@ namespace Dash.Models
             }
         }
 
+        [Display(Name = "User", ResourceType = typeof(Core))]
         public int? UserId { get; set; }
 
         [DbIgnore]

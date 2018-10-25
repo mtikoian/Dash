@@ -312,4 +312,7 @@
   <data name="ConfirmDeleteShare" xml:space="preserve">
     <value>Are you sure you want to delete this share?</value>
   </data>
+  <data name="ErrorRangeCriteria" xml:space="preserve">
+    <value>End Criteria is required when using the Between operator.</value>
+  </data>
 </root>
