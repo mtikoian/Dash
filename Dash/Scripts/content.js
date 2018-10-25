@@ -328,14 +328,15 @@
                 defaultDate: node.value,
                 enableTime: true,
                 enableSeconds: true,
-                time_24hr: true
+                time_24hr: true,
+                wrap: true
             };
             var lang = $.get('body').getAttribute('data-lang');
             if (lang !== 'en') {
                 // @todo update this to be able to handle languages more gracefully
                 opts.locale = 'Spanish';
             }
-            flatpickr(node, opts);
+            flatpickr(node.parentNode, opts);
         }
     };
 

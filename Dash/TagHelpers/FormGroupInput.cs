@@ -41,6 +41,34 @@ namespace Dash.TagHelpers
             {
                 inputGroup.InnerHtml.AppendHtml(AddOn);
             }
+            if (Toggle == "datepicker")
+            {
+                var icon = new TagBuilder("i");
+                icon.AddCssClass("dash");
+                icon.AddCssClass("dash-calendar text-primary");
+
+                var button = new TagBuilder("button");
+                button.AddCssClass("btn btn-secondary input-group-btn");
+                button.MergeAttribute("type", "button");
+                button.MergeAttribute("role", "button");
+                button.MergeAttribute("data-toggle", "");
+                button.InnerHtml.AppendHtml(icon);
+
+                var clearIcon = new TagBuilder("i");
+                clearIcon.AddCssClass("dash");
+                clearIcon.AddCssClass("dash-cancel text-primary");
+
+                var clearButton = new TagBuilder("button");
+                clearButton.AddCssClass("btn btn-secondary input-group-btn");
+                clearButton.MergeAttribute("type", "button");
+                clearButton.MergeAttribute("role", "button");
+                clearButton.MergeAttribute("data-clear", "");
+                clearButton.InnerHtml.AppendHtml(clearIcon);
+
+                inputGroup.AddCssClass("flatpickr");
+                inputGroup.InnerHtml.AppendHtml(button);
+                inputGroup.InnerHtml.AppendHtml(clearButton);
+            }
             inputGroup.InnerHtml.AppendHtml(BuildHelp());
             div.InnerHtml.AppendHtml(inputGroup);
 
@@ -89,6 +117,7 @@ namespace Dash.TagHelpers
             input.Attributes.AddIf("data-url", Url, !Url.IsEmpty());
             input.Attributes.AddIf("data-params", Params, !Params.IsEmpty());
             input.Attributes.AddIf("data-preload", "true", Preload);
+            input.Attributes.AddIf("data-input", "", Toggle == "datepicker");
 
             return input;
         }

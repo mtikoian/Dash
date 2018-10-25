@@ -20,6 +20,7 @@
 .dash-move:before { content: '\e812'; } /* '' */
 .dash-lamp:before { content: '\e813'; } /* '' */
 .dash-emo-unhappy:before { content: '\e814'; } /* '' */
+.dash-calendar:before { content: '\e815'; } /* '' */
 .dash-database:before { content: '\e816'; } /* '' */
 .dash-list-alt:before { content: '\e817'; } /* '' */
 .dash-user:before { content: '\e818'; } /* '' */

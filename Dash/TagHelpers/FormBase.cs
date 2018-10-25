@@ -78,7 +78,7 @@ namespace Dash.TagHelpers
             icon.AddCssClass("dash-help");
 
             var button = new TagBuilder("button");
-            button.AddCssClass("btn btn-secondary");
+            button.AddCssClass("btn btn-secondary input-group-btn");
             button.MergeAttribute("type", "button");
             button.MergeAttribute("role", "button");
             button.MergeAttribute("data-toggle", "context-help");
