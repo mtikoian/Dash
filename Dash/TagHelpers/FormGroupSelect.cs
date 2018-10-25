@@ -61,7 +61,7 @@ namespace Dash.TagHelpers
             input.Attributes.AddIf("data-url", Url, !Url.IsEmpty());
             input.Attributes.AddIf("data-params", Params, !Params.IsEmpty());
             input.Attributes.AddIf("data-target", Target, !Target.IsEmpty());
-            input.Attributes.AddIf("data-match", Match, !Match.IsEmpty());
+            input.Attributes.AddIf("data-match", Match, Match != null);
 
             var value = For.ModelExplorer.Model?.ToString();
             input.InnerHtml.AppendHtml(new TagBuilder("option"));

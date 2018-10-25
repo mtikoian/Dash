@@ -11,15 +11,9 @@
     <partial name="_ReportTabs" model="new ReportView(Model.Id, Model.IsOwner, ReportViewTab.Rename)" />
 
     <tab-panel id="renameReport">
-        @using (Html.BeginCustomForm("Rename", "Report", method: HttpVerbs.Put))
-        {
-            <div class="columns">
-                <div class="col-6">
-                    @Html.LabelInputFor(model => model.Name)
-                </div>
-            </div>
-
-            @Html.FormButtons()
-        }
+        <horizontal-form controller="Report" action="Rename" method="Put">
+            <form-group-input for="Name" />
+            <form-buttons />
+        </horizontal-form>
     </tab-panel>
 </body-content>

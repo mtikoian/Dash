@@ -10,20 +10,15 @@
         <breadcrumb-item label="@(Model.IsCreate ? Reports.CreateShare : Reports.EditShare)" controller="ReportShare" action="@Model.FormAction" route-values="@(Model.IsCreate ? null : new { Id = Model.Id })" is-active="true"></breadcrumb-item>
     </breadcrumb>
 
-    @using (Html.BeginCustomForm(Model.FormAction, "ReportShare", method: Model.FormMethod))
-    {
+    <partial name="_Toast" />
+
+    <horizontal-form for="Model">
         <input asp-for="Id" type="hidden" />
         <input asp-for="ReportId" type="hidden" />
 
-        <partial name="_Toast" />
+        <form-group-select for="UserId" options="Model.UserSelectListItems" toggle="disable" target="#RoleId" match="" />
+        <form-group-select for="RoleId" options="Model.RoleSelectListItems" toggle="disable" target="#UserId" match="" />
 
-        <div class="columns">
-            <div class="col-6">
-                @Html.LabelDropDownListFor(x => x.UserId, Model.UserSelectListItems, new { data_toggle = "disable", data_target = "#RoleId", data_match = "" })
-                @Html.LabelDropDownListFor(x => x.RoleId, Model.RoleSelectListItems, new { data_toggle = "disable", data_target = "#UserId", data_match = "" })
-            </div>
-        </div>
-
-        @Html.FormButtons()
-    }
+        <form-buttons />
+    </horizontal-form>
 </body-content>
