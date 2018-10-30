@@ -310,10 +310,10 @@
     * @returns {string|undefined} Value if getting, else undefined.
     */
     doTable.prototype.store = function(key, value) {
-        if (!this.opts.editable) {
-            return;
-        }
         var myKey = this.opts.id + '.' + key;
+        if (!this.opts.editable) {
+            return $.coalesce(this.opts[key], null);
+        }
         // getter
         if ($.isUndefined(value)) {
             return $.isNull(this.opts.storeUrl) ? localStorage[myKey] : $.coalesce(this.opts[key], null);
