@@ -12,6 +12,7 @@ namespace Dash.TagHelpers
         public string DisplayDateFormat { get; set; }
         public bool Editable { get; set; } = true;
         public string Id { get; set; }
+        public int ItemsPerPage { get; set; } = 10;
         public bool LoadAll { get; set; } = true;
         public HttpVerbs RequestMethod { get; set; } = HttpVerbs.Post;
         public object RequestParams { get; set; }
@@ -30,6 +31,7 @@ namespace Dash.TagHelpers
             table.Attributes.Add("data-toggle", "dotable");
             table.Attributes.Add("data-template", Template);
             table.Attributes.Add("data-result-url", ResultUrl);
+            table.Attributes.Add("data-items-per-page", ItemsPerPage.ToString());
             table.Attributes.Add("data-editable", Editable.ToString());
             table.Attributes.Add("data-searchable", Searchable.ToString());
             table.Attributes.Add("data-load-all", LoadAll.ToString());
