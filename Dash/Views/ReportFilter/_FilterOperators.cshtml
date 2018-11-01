@@ -4,7 +4,7 @@
 <div id="filterOperatorPartial">
     @if (Model.ColumnId > 0)
     {
-        <form-group-select for="OperatorId" options="Model.OperatorSelectListItems" toggle="content-replace" url="@Url.Action("FilterCriteria")" params="#Id,#ColumnId,#OperatorId" />
+        <form-group-select for="OperatorId" options="Model.OperatorSelectListItems" toggle="content-replace" url="@Url.Action("FilterCriteria")" params="#Id,#ColumnId,#OperatorId,#ReportId" />
         <partial name="_FilterCriteria" />
     }
 </div>

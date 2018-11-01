@@ -69,9 +69,10 @@ namespace Dash.Controllers
         }
 
         [HttpGet, ParentAction("Edit")]
-        public IActionResult FilterCriteria(int id, int? columnId, int? operatorId)
+        public IActionResult FilterCriteria(int id, int reportId, int? columnId, int? operatorId)
         {
             var model = DbContext.Get<ReportFilter>(id) ?? new ReportFilter(DbContext, id);
+            model.ReportId = model.ReportId == 0 ? reportId : model.ReportId;
             model.ColumnId = columnId ?? model.ColumnId;
             model.OperatorId = operatorId ?? model.OperatorId;
             // clear modelState so that reportId isn't treated as the new model Id
