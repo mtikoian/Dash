@@ -11,17 +11,10 @@
     <partial name="_ChartTabs" model="new ChartView(Model.Id, Model.IsOwner, ChartViewTab.ChangeType)" />
 
     <tab-panel id="changeType">
-        @using (Html.BeginCustomForm("ChangeType", "Chart"))
-        {
+        <horizontal-form controller="Chart" action="ChangeType" method="Post">
             <input asp-for="Id" type="hidden" />
-
-            <div class="columns">
-                <div class="col-6">
-                    @Html.LabelDropDownListFor(model => model.ChartTypeId, Dash.Models.Chart.ChartTypeSelectList)
-                </div>
-            </div>
-
-            @Html.FormButtons()
-        }
+            <form-group-select for="ChartTypeId" options="@Dash.Models.Chart.ChartTypeSelectList" autofocus="true" />
+            <form-buttons />
+        </horizontal-form>
     </tab-panel>
 </body-content>

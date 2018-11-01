@@ -24,6 +24,7 @@ namespace Dash.TagHelpers
         public string Toggle { get; set; }
         public string Url { get; set; }
         public IEnumerable<SelectListItem> Options { get; set; }
+        public bool? Disabled { get; set; }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
@@ -62,6 +63,7 @@ namespace Dash.TagHelpers
             input.Attributes.AddIf("data-params", Params, !Params.IsEmpty());
             input.Attributes.AddIf("data-target", Target, !Target.IsEmpty());
             input.Attributes.AddIf("data-match", Match, Match != null);
+            input.Attributes.AddIf("disabled", "true", Disabled == true);
 
             var value = For.ModelExplorer.Model?.ToString();
             input.InnerHtml.AppendHtml(new TagBuilder("option"));

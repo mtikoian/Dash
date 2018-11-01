@@ -4,10 +4,9 @@
 <div id="rangeColumnPartial">
     @if (Model.ReportId > 0)
     {
-        @Html.LabelDropDownListFor(x => x.XAxisColumnId, Model.ColumnSelectListItems,
-            new { @data_toggle = "content-replace", @data_url = Url.Action("DateInterval"), @data_params = "#Id,#XAxisColumnId" })
-        @Html.LabelDropDownListFor(x => x.YAxisColumnId, Model.ColumnSelectListItems)
+        <form-group-select for="XAxisColumnId" options="@Model.ColumnSelectListItems" toggle="content-replace" url="@Url.Action("DateInterval")" params="#Id,#XAxisColumnId" />
+        <form-group-select for="YAxisColumnId" options="@Model.ColumnSelectListItems" />
         <partial name="_DateInterval" />
-        @Html.LabelInputFor(x => x.Color, new { data_toggle = "colorpicker" })
+        <form-group-input for="Color" toggle="colorpicker" />
     }
 </div>

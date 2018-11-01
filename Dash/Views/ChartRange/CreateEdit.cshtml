@@ -10,21 +10,14 @@
         <breadcrumb-item label="@(Model.IsCreate ? Charts.CreateRange : Charts.EditRange)" controller="ChartRange" action="@Model.FormAction" route-values="@(Model.IsCreate ? null : new { Id = Model.Id })" is-active="true"></breadcrumb-item>
     </breadcrumb>
 
-    @using (Html.BeginCustomForm(Model.FormAction, "ChartRange", method: Model.FormMethod))
-    {
+    <partial name="_Toast" />
+
+    <horizontal-form for="Model">
         <input asp-for="Id" type="hidden" />
         <input asp-for="ChartId" type="hidden" />
         <input asp-for="DisplayOrder" type="hidden" />
-
-        <partial name="_Toast" />
-
-        <div class="columns">
-            <div class="col-6">
-                @Html.LabelDropDownListFor(x => x.ReportId, Model.ReportSelectListItems, new { @data_toggle = "content-replace", @data_url = Url.Action("Columns"), @data_params = "#Id,#ReportId" })
-                <partial name="_Columns" />
-            </div>
-        </div>
-
-        @Html.FormButtons()
-    }
+        <form-group-select for="ReportId" options="@Model.ReportSelectListItems" autofocus="true" toggle="content-replace" url="@Url.Action("Columns")" params="#Id,#ReportId" />
+        <partial name="_Columns" />
+        <form-buttons />
+    </horizontal-form>
 </body-content>

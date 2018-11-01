@@ -11,15 +11,10 @@
     <partial name="_ChartTabs" model="new ChartView(Model.Id, Model.IsOwner, ChartViewTab.Rename)" />
 
     <tab-panel id="renameChart">
-        @using (Html.BeginCustomForm("Rename", "Chart", method: HttpVerbs.Put))
-        {
-            <div class="columns">
-                <div class="col-6">
-                    @Html.LabelInputFor(model => model.Name)
-                </div>
-            </div>
-
-            @Html.FormButtons()
-        }
+        <horizontal-form controller="Chart" action="Rename" method="Put">
+            <input asp-for="Id" type="hidden" />
+            <form-group-input for="Name" />
+            <form-buttons />
+        </horizontal-form>
     </tab-panel>
 </body-content>

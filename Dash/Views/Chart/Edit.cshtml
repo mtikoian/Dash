@@ -18,10 +18,9 @@
     <tab-panel id="report">
         @if (Model.ChartRange.Any())
         {
-            @using (Html.BeginToolbar())
-            {
+            <toolbar>
                 <button class="btn btn-primary" data-toggle="chart-export">@Core.Export</button>
-            }
+            </toolbar>
 
             <div class="chart-container container p-2" data-toggle="chart" data-url="@Url.Action("Data", "Chart", new { Id = Model.Id })">
                 <partial name="_Chart" />

@@ -2,5 +2,5 @@
 @model ChartRange
 
 <div id="rangeDateIntervalPartial" class="pb-2">
-    @Html.LabelDropDownListFor(x => x.DateIntervalId, Model.DateIntervalSelectListItems, disabled: Model.XAxisColumn?.FilterTypeId != (int)FilterTypes.Date)
+    <form-group-select for="DateIntervalId" options="@Model.DateIntervalSelectListItems" disabled="@(Model.XAxisColumn?.FilterTypeId != (int)FilterTypes.Date)" />
 </div>

@@ -1,26 +1,19 @@
 ﻿@model Dash.Models.CreateChart
 @using Dash.Resources
 
-@using (Html.BeginBodyContent())
-{
-    @Html.Breadcrumbs(new List<Breadcrumb> {
-        new Breadcrumb(Charts.ViewAll, "Index", "Chart"),
-        new Breadcrumb(Charts.CreateChart, Model.FormAction, "Chart")
-    });
+<body-content>
+    <breadcrumb>
+        <breadcrumb-item label="@Charts.ViewAll" controller="Chart" action="Index"></breadcrumb-item>
+        <breadcrumb-item label="@Charts.CreateChart" controller="Chart" action="@Model.FormAction" is-active="true"></breadcrumb-item>
+    </breadcrumb>
 
-    @using (Html.BeginCustomForm(Model.FormAction, "Chart", method: Model.FormMethod))
-    {
-        <input asp-for="Id" type="hidden" />
+    <partial name="_Toast" />
 
-        <partial name="_Toast" />
-
-        <div class="columns">
-            <div class="col-6">
-                @Html.LabelInputFor(model => model.Name)
-                @Html.LabelDropDownListFor(model => model.ChartTypeId, Dash.Models.Chart.ChartTypeSelectList)
-            </div>
-        </div>
-
-        @Html.FormButtons()
-    }
-}
+    <tab-panel id="chart">
+        <horizontal-form controller="Chart" action="@Model.FormAction" method="@Model.FormMethod">
+            <form-group-input for="Name" autofocus="true" />
+            <form-group-select for="ChartTypeId" options="@Dash.Models.Chart.ChartTypeSelectList" />
+            <form-buttons />
+        </horizontal-form>
+    </tab-panel>
+</body-content>
