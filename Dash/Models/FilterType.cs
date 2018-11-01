@@ -1,9 +1,4 @@
-﻿using System.Collections.Generic;
-using Dash.Resources;
-using Dash.Utils;
-using Microsoft.AspNetCore.Mvc.Rendering;
-
-namespace Dash.Models
+﻿namespace Dash.Models
 {
     /// <summary>
     /// Define the operators available for date ranges.
@@ -112,47 +107,5 @@ namespace Dash.Models
         Numeric = 4,
         Text = 5,
         Binary = 6
-    }
-
-    /// <summary>
-    /// FilterType is a type of filter criteria like bool, date, select, numeric, or text.
-    /// </summary>
-    public class FilterType
-    {
-        public static object DateOperators
-        {
-            get
-            {
-                return typeof(FilterDateRanges).TranslatedList(new ResourceDictionary("Filters"), "LabelDateRange_");
-            }
-        }
-
-        public static Dictionary<int, object> FilterOperators
-        {
-            get
-            {
-                var filterResource = new ResourceDictionary("Filters");
-                return new Dictionary<int, object>() {
-                    { (int)FilterTypes.Boolean, typeof(FilterOperatorsBoolean).TranslatedList(filterResource, "LabelFilter_").Prepend(new { Id = 0, Name = Reports.FilterOperator }) },
-                    { (int)FilterTypes.Date, typeof(FilterOperatorsDate).TranslatedList(filterResource, "LabelFilter_").Prepend(new { Id = 0, Name = Reports.FilterOperator }) },
-                    { (int)FilterTypes.Numeric, typeof(FilterOperatorsNumeric).TranslatedList(filterResource, "LabelFilter_").Prepend(new { Id = 0, Name = Reports.FilterOperator }) },
-                    { (int)FilterTypes.Select, typeof(FilterOperatorsSelect).TranslatedList(filterResource, "LabelFilter_").Prepend(new { Id = 0, Name = Reports.FilterOperator }) },
-                    { (int)FilterTypes.Text, typeof(FilterOperatorsText).TranslatedList(filterResource, "LabelFilter_").Prepend(new { Id = 0, Name = Reports.FilterOperator }) },
-                    { (int)FilterTypes.Binary, typeof(FilterOperatorsText).TranslatedList(filterResource, "LabelFilter_").Prepend(new { Id = 0, Name = Reports.FilterOperator }) }
-                };
-            }
-        }
-
-        /// <summary>
-        /// Build a list of all filter types.
-        /// </summary>
-        /// <returns>List of objects with id and name.</returns>
-        public static IEnumerable<SelectListItem> FilterTypeList
-        {
-            get
-            {
-                return typeof(FilterTypes).TranslatedSelect(new ResourceDictionary("Filters"), "LabelType_");
-            }
-        }
     }
 }
