@@ -103,7 +103,7 @@ namespace Dash.Controllers
             {
                 ranges[ranges.Count() - 1].IsLast = true;
             }
-            return Rows(ranges);
+            return Rows(ranges.Select(x => new { x.Id, x.ChartId, x.ReportName, x.XAxisColumnName, x.YAxisColumnName, x.DisplayOrder, x.IsLast }));
         }
 
         [HttpGet, ParentAction("Edit")]

@@ -5,7 +5,8 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Dash.Resources;
 using Dash.Utils;
-using Jil;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Dash.Models
@@ -48,7 +49,6 @@ namespace Dash.Models
         private Regex _AlphaNumeric = new Regex("[^a-zA-Z0-9-]", RegexOptions.Compiled);
         private List<ChartRange> _ChartRange;
         private List<ChartShare> _ChartShare;
-        private User _Owner;
 
         public Chart()
         {
@@ -56,28 +56,17 @@ namespace Dash.Models
 
         public static IEnumerable<SelectListItem> ChartTypeSelectList
         {
-            get
-            {
-                return typeof(ChartTypes).TranslatedSelect(new ResourceDictionary("Charts"), "LabelType_");
-            }
+            get { return typeof(ChartTypes).TranslatedSelect(new ResourceDictionary("Charts"), "LabelType_"); }
         }
 
-        [DbIgnore, JilDirective(true)]
-        public IEnumerable<object> AggregatorList
-        {
-            get
-            {
-                return typeof(Aggregators).TranslatedList(new ResourceDictionary("Charts"), "LabelAggregator_");
-            }
-        }
-
-        [JilDirective(true)]
+        [BindNever, ValidateNever]
         public List<ChartRange> ChartRange
         {
             get { return _ChartRange ?? (_ChartRange = DbContext.GetAll<ChartRange>(new { ChartId = Id }).ToList()); }
             set { _ChartRange = value; }
         }
 
+        [BindNever, ValidateNever]
         public List<ChartShare> ChartShare
         {
             get { return _ChartShare ?? (_ChartShare = DbContext.GetAll<ChartShare>(new { ChartId = Id }).ToList()); }
@@ -85,22 +74,9 @@ namespace Dash.Models
         }
 
         [Display(Name = "Type", ResourceType = typeof(Charts))]
-        [JilDirective(true)]
         public int ChartTypeId { get; set; }
 
-        [DbIgnore, JilDirective(true)]
-        public IEnumerable<object> ChartTypeList { get { return typeof(ChartTypes).TranslatedList(); } }
-
-        [DbIgnore, JilDirective(true)]
-        public IEnumerable<object> DateIntervalList
-        {
-            get
-            {
-                return typeof(DateIntervals).TranslatedList(new ResourceDictionary("Filters"), "LabelDateInterval_");
-            }
-        }
-
-        [DbIgnore, JilDirective(true)]
+        [DbIgnore]
         public bool IsOwner { get { return RequestUserId == OwnerId; } }
 
         [Display(Name = "Name", ResourceType = typeof(Charts))]
@@ -108,28 +84,8 @@ namespace Dash.Models
         [StringLength(100, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string Name { get; set; }
 
-        [DbIgnore, JilDirective(true)]
-        public User Owner { get { return _Owner ?? (_Owner = DbContext.Get<User>(OwnerId)); } }
-
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
-        [JilDirective(true)]
         public int OwnerId { get; set; }
-
-        [DbIgnore, JilDirective(true)]
-        public string ShareOptionsJson
-        {
-            get
-            {
-                return JSON.SerializeDynamic(new {
-                    reportId = Id,
-                    userList = DbContext.GetAll<User>().OrderBy(x => x.LastName).ThenBy(x => x.FirstName)
-                        .Select(x => new { x.Id, x.FullName }).Prepend(new { Id = 0, FullName = Core.SelectUser }),
-                    roleList = DbContext.GetAll<Role>().OrderBy(x => x.Name).Select(x => new { x.Id, x.Name })
-                        .Prepend(new { Id = 0, Name = Core.SelectRole }),
-                    shares = ChartShare
-                }, JilOutputFormatter.Options);
-            }
-        }
 
         public static Chart Create(CreateChart chart, int userId)
         {

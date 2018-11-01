@@ -1,4 +1,5 @@
-﻿using Dash.Configuration;
+﻿using System.Linq;
+using Dash.Configuration;
 using Dash.Models;
 using Dash.Resources;
 using Microsoft.AspNetCore.Authorization;
@@ -76,7 +77,7 @@ namespace Dash.Controllers
         [HttpPost, AjaxRequestOnly, ParentAction("Index")]
         public IActionResult List(int id)
         {
-            return Rows(DbContext.Get<Chart>(id).ChartShare);
+            return Rows(DbContext.GetAll<ChartShare>(new { ChartId = id }).Select(x => new { x.Id, x.ChartId, x.UserName, x.RoleName }));
         }
 
         private IActionResult CreateEditView(ChartShare model)

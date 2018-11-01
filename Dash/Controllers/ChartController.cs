@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
 using Dash.Configuration;
 using Dash.Models;
 using Dash.Resources;
@@ -82,9 +82,13 @@ namespace Dash.Controllers
                 return View("Create", model);
             }
 
-            DbContext.Save(Chart.Create(model, User.UserId()));
+            var chart = Chart.Create(model, User.UserId());
+            DbContext.Save(chart);
             ViewBag.Message = Charts.SuccessSavingChart;
-            return Index();
+
+            var controller = (ChartRangeController)HttpContext.RequestServices.GetService(typeof(ChartRangeController));
+            controller.ControllerContext = ControllerContext;
+            return controller.Index(chart.Id);
         }
 
         [HttpPost, AjaxRequestOnly]
@@ -168,9 +172,8 @@ namespace Dash.Controllers
         [HttpPost, AjaxRequestOnly, ParentAction("Index")]
         public IActionResult List()
         {
-            return Rows(DbContext.GetAll<Chart>(new { UserId = User.UserId() }));
+            return Rows(DbContext.GetAll<Chart>(new { UserId = User.UserId() }).Select(x => new { x.Id, x.Name }));
         }
-
 
         [HttpGet, ParentAction("Edit")]
         public IActionResult Rename(int id)
