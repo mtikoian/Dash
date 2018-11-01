@@ -2,7 +2,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Dash.Resources;
-using Jil;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
@@ -22,7 +21,7 @@ namespace Dash.Models
             DbContext = dbContext;
         }
 
-        [JilDirective(true), BindNever, ValidateNever]
+        [BindNever, ValidateNever]
         public Dictionary<string, List<Permission>> ControllerPermissions
         {
             get
@@ -51,7 +50,7 @@ namespace Dash.Models
         [DbIgnore]
         public List<int> PermissionIds { get; set; }
 
-        [JilDirective(true), BindNever, ValidateNever]
+        [BindNever, ValidateNever]
         public List<RolePermission> RolePermission
         {
             get { return _RolePermission ?? (_RolePermission = DbContext.GetAll<RolePermission>(new { RoleId = Id }).ToList()); }
