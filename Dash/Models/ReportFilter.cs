@@ -33,13 +33,7 @@ namespace Dash.Models
         [DbIgnore, BindNever, ValidateNever]
         public static IEnumerable<SelectListItem> BooleanSelectListItems
         {
-            get
-            {
-                return new List<SelectListItem> {
-                    new SelectListItem(Reports.True, "1"),
-                    new SelectListItem(Reports.False, "0")
-                };
-            }
+            get { return new List<SelectListItem> { new SelectListItem(Reports.True, "1"), new SelectListItem(Reports.False, "0") }; }
         }
 
         [DbIgnore, BindNever, ValidateNever]
@@ -172,7 +166,8 @@ namespace Dash.Models
         [DbIgnore, BindNever, ValidateNever]
         public string ReportName { get { return Report?.Name; } }
 
-        private Report Report { get { return _Report ?? (_Report = DbContext.Get<Report>(ReportId)); } }
+        [BindNever, ValidateNever]
+        public Report Report { get { return _Report ?? (_Report = DbContext.Get<Report>(ReportId)); } }
 
         public string BuildFilterSql(DatasetColumn column, ReportFilter filter, out Dictionary<string, object> parameters)
         {

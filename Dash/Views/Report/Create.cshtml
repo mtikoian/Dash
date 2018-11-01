@@ -1,7 +1,6 @@
 ﻿@model Dash.Models.CreateReport
 @using Dash.Resources
 
-
 <body-content>
     <breadcrumb>
         <breadcrumb-item label="@Reports.ViewAll" controller="Report" action="Index"></breadcrumb-item>
@@ -12,11 +11,8 @@
 
     <tab-panel id="report">
         <horizontal-form controller="Report" action="@Model.FormAction" method="@Model.FormMethod">
-            <input asp-for="Id" type="hidden" />
-
             <form-group-select for="DatasetId" autofocus="true" options="@(Model.GetDatasetsForUser().ToSelectList(d => d.Name, d => d.Id.ToString()))" />
             <form-group-input for="Name" />
-
             <form-buttons />
         </horizontal-form>
     </tab-panel>

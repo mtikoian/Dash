@@ -4,8 +4,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Dash.Configuration;
 using Dash.Resources;
-using Dash.Utils;
-using Jil;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace Dash.Models
 {
@@ -17,6 +17,8 @@ namespace Dash.Models
     public class Report : BaseModel
     {
         private Dataset _Dataset;
+        private List<DatasetColumn> _DatasetColumns;
+        private List<DatasetColumn> _DatasetColumnsByDisplay;
         private List<ReportColumn> _ReportColumn;
         private List<ReportFilter> _ReportFilter;
         private List<ReportGroup> _ReportGroup;
@@ -26,29 +28,19 @@ namespace Dash.Models
         {
         }
 
-        [JilDirective(true)]
         public int AggregatorId { get; set; }
 
-        [DbIgnore, JilDirective(true)]
-        public IEnumerable<object> AggregatorList
-        {
-            get
-            {
-                return typeof(Aggregators).TranslatedList(new ResourceDictionary("Charts"), "LabelAggregator_");
-            }
-        }
-
-        [JilDirective(true)]
+        [BindNever, ValidateNever]
         public Dataset Dataset
         {
             get { return _Dataset ?? (_Dataset = DbContext.Get<Dataset>(DatasetId)); }
             set { _Dataset = value; }
         }
 
-        [DbIgnore, JilDirective(true)]
+        [DbIgnore, BindNever, ValidateNever]
         public List<DatasetColumn> DatasetColumns { get { return _DatasetColumns ?? (_DatasetColumns = Dataset?.DatasetColumn ?? new List<DatasetColumn>()); } }
 
-        [JilDirective(true)]
+        [BindNever, ValidateNever]
         public List<DatasetColumn> DatasetColumnsByDisplay
         {
             get
@@ -80,7 +72,7 @@ namespace Dash.Models
         [DbIgnore]
         public bool IsDashboard { get; set; } = false;
 
-        [DbIgnore, JilDirective(true)]
+        [DbIgnore]
         public bool IsOwner { get { return RequestUserId == OwnerId; } }
 
         [Display(Name = "Name", ResourceType = typeof(Reports))]
@@ -88,49 +80,39 @@ namespace Dash.Models
         [StringLength(100, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string Name { get; set; }
 
-        [DbIgnore, JilDirective(true)]
-        public User Owner { get { return _Owner ?? (_Owner = DbContext.Get<User>(OwnerId)); } }
-
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
-        [JilDirective(true)]
         public int OwnerId { get; set; }
 
-        [JilDirective(true)]
+        [BindNever, ValidateNever]
         public List<ReportColumn> ReportColumn
         {
             get { return _ReportColumn ?? (_ReportColumn = DbContext.GetAll<ReportColumn>(new { ReportId = Id }).ToList()); }
             set { _ReportColumn = value; }
         }
 
-        [JilDirective(true)]
+        [BindNever, ValidateNever]
         public List<ReportFilter> ReportFilter
         {
             get { return _ReportFilter ?? (_ReportFilter = DbContext.GetAll<ReportFilter>(new { ReportId = Id }).ToList()); }
             set { _ReportFilter = value; }
         }
 
-        [JilDirective(true)]
+        [BindNever, ValidateNever]
         public List<ReportGroup> ReportGroup
         {
             get { return _ReportGroup ?? (_ReportGroup = DbContext.GetAll<ReportGroup>(new { ReportId = Id }).ToList()); }
             set { _ReportGroup = value; }
         }
 
-        [JilDirective(true)]
+        [BindNever, ValidateNever]
         public List<ReportShare> ReportShare
         {
             get { return _ReportShare ?? (_ReportShare = DbContext.GetAll<ReportShare>(new { ReportId = Id }).ToList()); }
             set { _ReportShare = value; }
         }
 
-        [JilDirective(true)]
         public int RowLimit { get; set; } = 10;
-
-        [JilDirective(true)]
         public decimal Width { get; set; } = 100;
-        private List<DatasetColumn> _DatasetColumns { get; set; }
-        private List<DatasetColumn> _DatasetColumnsByDisplay { get; set; }
-        private User _Owner { get; set; }
 
         public Report Copy(string name = null)
         {
@@ -322,11 +304,6 @@ namespace Dash.Models
             }
 
             return response;
-        }
-
-        public object Lookups()
-        {
-            return Dataset?.GetSelectFilters(true).ToDictionary(x => x.Key, x => x.Value.Values);
         }
 
         public List<object> ProcessData(IEnumerable<dynamic> dataRes, Query sqlQuery)

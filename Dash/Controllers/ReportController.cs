@@ -163,7 +163,7 @@ namespace Dash.Controllers
         [HttpPost, AjaxRequestOnly, ParentAction("Index")]
         public IActionResult List()
         {
-            return Rows(DbContext.GetAll<Report>(new { UserId = User.UserId() }));
+            return Rows(DbContext.GetAll<Report>(new { UserId = User.UserId() }).Select(x => new { x.Id, x.Name, x.DatasetName, x.DatasetId }));
         }
 
         [HttpGet, ParentAction("Edit")]

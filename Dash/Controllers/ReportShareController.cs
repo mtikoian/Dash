@@ -1,4 +1,5 @@
-﻿using Dash.Configuration;
+﻿using System.Linq;
+using Dash.Configuration;
 using Dash.Models;
 using Dash.Resources;
 using Microsoft.AspNetCore.Authorization;
@@ -76,7 +77,7 @@ namespace Dash.Controllers
         [HttpPost, AjaxRequestOnly, ParentAction("Index")]
         public IActionResult List(int id)
         {
-            return Rows(DbContext.Get<Report>(id).ReportShare);
+            return Rows(DbContext.GetAll<ReportShare>(new { ReportId = id }).Select(x => new { x.Id, x.ReportId, x.RoleName, x.UserName }));
         }
 
         private IActionResult CreateEditView(ReportShare model)

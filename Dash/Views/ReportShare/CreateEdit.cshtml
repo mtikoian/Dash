@@ -15,10 +15,8 @@
     <horizontal-form for="Model">
         <input asp-for="Id" type="hidden" />
         <input asp-for="ReportId" type="hidden" />
-
         <form-group-select for="UserId" options="Model.UserSelectListItems" toggle="disable" target="#RoleId" match="" />
         <form-group-select for="RoleId" options="Model.RoleSelectListItems" toggle="disable" target="#UserId" match="" />
-
         <form-buttons />
     </horizontal-form>
 </body-content>

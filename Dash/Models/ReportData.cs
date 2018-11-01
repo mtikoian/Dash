@@ -15,10 +15,12 @@ namespace Dash.Models
 
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public new int Id { get; set; }
+
         public int? Items { get; set; }
 
         [BindNever, ValidateNever]
         public Report Report { get { return _Report ?? (_Report = DbContext.Get<Report>(Id)); } }
+
         public bool Save { get; set; }
         public List<TableSorting> Sort { get; set; }
         public int? StartItem { get; set; }

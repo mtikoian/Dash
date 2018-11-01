@@ -12,7 +12,8 @@
 
     <tab-panel id="renameReport">
         <horizontal-form controller="Report" action="Rename" method="Put">
-            <form-group-input for="Name" />
+            <input asp-for="Id" type="hidden" />
+            <form-group-input for="Name" autofocus="true" />
             <form-buttons />
         </horizontal-form>
     </tab-panel>
