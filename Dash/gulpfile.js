@@ -7,6 +7,7 @@ var addsrc = require('gulp-add-src'),
     concat = require('gulp-concat'),
     del = require('del'),
     gulp = require('gulp'),
+    gzip = require('gulp-gzip'),
     plumber = require('gulp-plumber'),
     postcss = require('gulp-postcss'),
     replace = require('gulp-replace-path'),
@@ -80,7 +81,9 @@ gulp.task('sass', function() {
         .pipe(concat('bundle.css'))
         .pipe(cleancss())
         .pipe(sourcemaps.write('.'))
-        .pipe(gulp.dest(paths.dist + 'css/'));
+        .pipe(gulp.dest(paths.dist + 'css/'))
+        .pipe(gzip({ append: true }))
+        .pipe(gulp.dest(paths.dist + 'css/'))
 });
 
 gulp.task('js', function() {
@@ -111,7 +114,9 @@ gulp.task('js', function() {
         .pipe(concat('bundle.js'))
         .pipe(uglify())
         .pipe(sourcemaps.write('.'))
-        .pipe(gulp.dest(paths.dist + 'js/'));
+        .pipe(gulp.dest(paths.dist + 'js/'))
+        .pipe(gzip({ append: true }))
+        .pipe(gulp.dest(paths.dist + 'js/'))
 });
 
 // Fonts

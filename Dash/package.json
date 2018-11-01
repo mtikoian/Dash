@@ -10,6 +10,7 @@
     "gulp-clean-css": "^3.9.0",
     "gulp-concat": "^2.6.1",
     "gulp-css-url-adjuster": "^0.2.3",
+    "gulp-gzip": "^1.4.2",
     "gulp-plumber": "^1.1.0",
     "gulp-postcss": "^7.0.0",
     "gulp-replace-path": "^0.4.0",

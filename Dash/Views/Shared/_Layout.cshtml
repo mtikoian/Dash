@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>@(((string)ViewBag.Title).IsEmpty() ? Dash.Resources.Core.Dashboard : ViewBag.Title)</title>
-    <link rel="stylesheet" href="~/css/bundle.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/bundle.css.gz" asp-append-version="true" />
     <link rel="icon" href="~/favicon.ico">
 </head>
 <body data-base-url="@Url.Content("~")" data-resx="@Url.Action("Index", "Resx", null)" data-lang="@(CultureInfo.DefaultThreadCurrentCulture?.TwoLetterISOLanguageName ?? "en")" data-error-name="@Core.ErrorNameRequired" data-error-refresh="@Core.ErrorRefresh">
@@ -113,6 +113,6 @@
         </tr>
     </script>
 
-    <script type="text/javascript" src="~/js/bundle.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="~/js/bundle.js.gz" asp-append-version="true"></script>
 </body>
 </html>

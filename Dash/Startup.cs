@@ -12,6 +12,7 @@ using Dash.Utils;
 using Hangfire;
 using Hangfire.Dashboard;
 using HardHat;
+using HeyRed.Mime;
 using Jil;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -121,7 +122,15 @@ namespace Dash
             app.UseMiddleware<SerilogMiddleware>();
 
             app.UseSession();
-            app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions {
+                OnPrepareResponse = content => {
+                    if (content.File.Name.EndsWith(".gz"))
+                    {
+                        content.Context.Response.Headers["Content-Type"] = MimeTypesMap.GetMimeType(content.File.Name.Replace(".gz", ""));
+                        content.Context.Response.Headers["Content-Encoding"] = "gzip";
+                    }
+                }
+            });
             app.UseAuthentication();
 
             var cultures = new List<CultureInfo> {
