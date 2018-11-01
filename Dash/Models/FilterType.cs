@@ -79,6 +79,7 @@
     public enum FilterOperatorsSelect
     {
         Equal = 1,
+        NotEqual = 2,
         In = 9,
         NotIn = 10
     }
