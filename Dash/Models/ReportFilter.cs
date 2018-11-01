@@ -114,7 +114,7 @@ namespace Dash.Models
                 }
                 return Report.Dataset.Database.Query<LookupItem>(Column.FilterQuery)
                     .Prepend(new LookupItem { Value = "", Text = Reports.FilterCriteria })
-                    .Select(x => new SelectListItem("Text", "Value"));
+                    .ToSelectList(x => x.Text, x => x.Value);
             }
         }
 
