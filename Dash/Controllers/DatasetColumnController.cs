@@ -1,4 +1,5 @@
-﻿using Dash.Configuration;
+﻿using System.Linq;
+using Dash.Configuration;
 using Dash.Models;
 using Dash.Resources;
 using Microsoft.AspNetCore.Authorization;
@@ -96,7 +97,7 @@ namespace Dash.Controllers
         [HttpPost, AjaxRequestOnly, ParentAction("Index")]
         public IActionResult List(int id)
         {
-            return Rows(DbContext.Get<Dataset>(id).DatasetColumn);
+            return Rows(DbContext?.GetAll<DatasetColumn>(new { DatasetId = id }).Select(x => new { x.Id, x.DatasetId, x.Title, x.ColumnName, x.DataTypeName }));
         }
 
         private IActionResult CreateEditView(DatasetColumn model)

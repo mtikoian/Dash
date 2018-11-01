@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Dash.Resources;
-using Jil;
+using Dash.Utils;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -29,7 +29,7 @@ namespace Dash.Models
             DatasetId = datasetid;
         }
 
-        [DbIgnore, JilDirective(true)]
+        [DbIgnore]
         public string Alias { get { return $"column{Id}"; } }
 
         [Display(Name = "ColumnName", ResourceType = typeof(Datasets))]
@@ -40,7 +40,7 @@ namespace Dash.Models
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int DatasetId { get; set; }
 
-        [JilDirective(true), BindNever, ValidateNever]
+        [BindNever, ValidateNever]
         public DataType DataType
         {
             get { return _DataType ?? (_DataType = DbContext.Get<DataType>(DataTypeId)); }
@@ -49,13 +49,18 @@ namespace Dash.Models
 
         [Display(Name = "ColumnDataType", ResourceType = typeof(Datasets))]
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
-        [JilDirective(true)]
         public int DataTypeId { get; set; }
 
-        [DbIgnore, JilDirective(true), BindNever, ValidateNever]
+        [DbIgnore, BindNever, ValidateNever]
         public IEnumerable<SelectListItem> DataTypeList
         {
             get { return DbContext.GetAll<DataType>().OrderBy(d => d.Name).ToSelectList(x => x.Name, x => x.Id.ToString()); }
+        }
+
+        [DbIgnore, BindNever, ValidateNever]
+        public IEnumerable<SelectListItem> FilterTypeList
+        {
+            get { return typeof(FilterTypes).TranslatedSelect(new ResourceDictionary("Filters"), "LabelType_"); }
         }
 
         [DbIgnore, BindNever, ValidateNever]
@@ -66,59 +71,54 @@ namespace Dash.Models
 
         [Display(Name = "ColumnTransform", ResourceType = typeof(Datasets))]
         [StringLength(500, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
-        [JilDirective(true)]
         public string Derived { get; set; }
 
-        [DbIgnore, JilDirective(true)]
+        [DbIgnore]
         public int DisplayOrder { get; set; }
 
         [Display(Name = "ColumnQuery", ResourceType = typeof(Datasets))]
         [StringLength(500, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
-        [JilDirective(true)]
         public string FilterQuery { get; set; }
 
         [Display(Name = "ColumnFilterType", ResourceType = typeof(Datasets))]
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
-        [JilDirective(true)]
         public int FilterTypeId { get; set; }
 
-        [DbIgnore, JilDirective(true), BindNever, ValidateNever]
+        [DbIgnore, BindNever, ValidateNever]
         public bool IsBinary { get { return DataType.IsBinary; } }
 
-        [DbIgnore, JilDirective(true), BindNever, ValidateNever]
+        [DbIgnore, BindNever, ValidateNever]
         public bool IsBool { get { return DataType.IsBool; } }
 
-        [DbIgnore, JilDirective(true), BindNever, ValidateNever]
+        [DbIgnore, BindNever, ValidateNever]
         public bool IsCurrency { get { return DataType.IsCurrency; } }
 
-        [DbIgnore, JilDirective(true), BindNever, ValidateNever]
+        [DbIgnore, BindNever, ValidateNever]
         public bool IsDateTime { get { return DataType.IsDateTime; } }
 
-        [DbIgnore, JilDirective(true), BindNever, ValidateNever]
+        [DbIgnore, BindNever, ValidateNever]
         public bool IsDecimal { get { return DataType.IsDecimal; } }
 
-        [DbIgnore, JilDirective(true), BindNever, ValidateNever]
+        [DbIgnore, BindNever, ValidateNever]
         public bool IsInteger { get { return DataType.IsInteger; } }
 
         [Display(Name = "ColumnIsParam", ResourceType = typeof(Datasets))]
-        [JilDirective(true)]
         public bool IsParam { get; set; }
 
-        [DbIgnore, JilDirective(true)]
+        [DbIgnore]
         public bool IsSelect { get { return FilterTypeId == (int)FilterTypes.Select; } }
 
-        [DbIgnore, JilDirective(true), BindNever, ValidateNever]
+        [DbIgnore, BindNever, ValidateNever]
         public bool IsText { get { return DataType.IsText; } }
 
         [Display(Name = "ColumnLink", ResourceType = typeof(Datasets))]
         [StringLength(250, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
-        [JilDirective(true)]
         public string Link { get; set; }
 
-        [DbIgnore, JilDirective(true)]
+        [DbIgnore]
         public int ReportColumnId { get; set; }
 
-        [DbIgnore, JilDirective(true), BindNever, ValidateNever]
+        [DbIgnore, BindNever, ValidateNever]
         public TableDataType TableDataType
         {
             get
@@ -143,7 +143,7 @@ namespace Dash.Models
             }
         }
 
-        [DbIgnore, JilDirective(true), BindNever, ValidateNever]
+        [DbIgnore, BindNever, ValidateNever]
         public string TableName
         {
             get
@@ -158,7 +158,7 @@ namespace Dash.Models
         [StringLength(100, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string Title { get; set; }
 
-        [DbIgnore, JilDirective(true)]
+        [DbIgnore]
         public int Width { get; set; }
 
         public string BuildSql(bool includeAlias = true, int aggregatorId = 0)

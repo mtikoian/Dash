@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Dash.Resources;
 using Dash.Utils;
-using Jil;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Dash.Models
@@ -50,10 +49,9 @@ namespace Dash.Models
 
         [Display(Name = "JoinType", ResourceType = typeof(Datasets))]
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
-        [JilDirective(true)]
         public int JoinTypeId { get; set; }
 
-        [DbIgnore, JilDirective(true)]
+        [DbIgnore]
         public IEnumerable<SelectListItem> JoinTypeList
         {
             get { return typeof(JoinTypes).TranslatedSelect(new ResourceDictionary("Datasets"), "LabelJoinType_"); }

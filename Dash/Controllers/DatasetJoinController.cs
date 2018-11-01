@@ -83,7 +83,7 @@ namespace Dash.Controllers
             {
                 joins[joins.Count() - 1].IsLast = true;
             }
-            return Rows(joins);
+            return Rows(joins.Select(x => new { x.Id, x.DatasetId, x.TableName, x.JoinName, x.Keys, x.JoinOrder, x.IsLast }));
         }
 
         [HttpGet, ParentAction("Edit")]
