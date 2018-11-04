@@ -60,7 +60,7 @@ function sortXml(file, encoding, callback) {
         });
         file.contents = new Buffer(String(builder.buildObject(result)));
     });
-    callback(null, file)
+    callback(null, file);
 }
 
 gulp.task('watch', function() {
@@ -83,7 +83,7 @@ gulp.task('sass', function() {
         .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest(paths.dist + 'css/'))
         .pipe(gzip({ append: true }))
-        .pipe(gulp.dest(paths.dist + 'css/'))
+        .pipe(gulp.dest(paths.dist + 'css/'));
 });
 
 gulp.task('js', function() {
@@ -116,7 +116,7 @@ gulp.task('js', function() {
         .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest(paths.dist + 'js/'))
         .pipe(gzip({ append: true }))
-        .pipe(gulp.dest(paths.dist + 'js/'))
+        .pipe(gulp.dest(paths.dist + 'js/'));
 });
 
 // Fonts
