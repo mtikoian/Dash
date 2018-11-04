@@ -124,6 +124,8 @@ gulp.task('fonts', function() {
     return gulp.src([
         paths.css + 'fontello/font/dash.*'
     ])
+        .pipe(gulp.dest(paths.dist + 'font/'))
+        .pipe(gzip({ append: true }))
         .pipe(gulp.dest(paths.dist + 'font/'));
 });
 
