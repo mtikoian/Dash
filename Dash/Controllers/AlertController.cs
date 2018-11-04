@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Dash.Configuration;
 using Dash.Models;
 using Dash.Resources;
@@ -46,7 +45,7 @@ namespace Dash.Controllers
             return Save(model);
         }
 
-        [HttpDelete, AjaxRequestOnly]
+        [HttpDelete]
         public IActionResult Delete(int id)
         {
             var model = DbContext.Get<Alert>(id);
@@ -88,7 +87,7 @@ namespace Dash.Controllers
         [HttpPost, AjaxRequestOnly, ParentAction("Index")]
         public IActionResult List()
         {
-            return Rows(DbContext.GetAll<Alert>(new { UserID = User.UserId() }).Select(x => new { x.Name, x.Subject, x.SendTo, x.Id, IsActive = x.IsActive ? Core.Yes : Core.No, x.LastRunDate }));
+            return Rows(DbContext.GetAll<Alert>(new { UserID = User.UserId() }).Select(x => new { x.Id, x.Name, x.Subject, x.SendTo, IsActive = x.IsActive ? Core.Yes : Core.No, x.LastRunDate }));
         }
 
         private IActionResult CreateEditView(Alert model)

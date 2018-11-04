@@ -13,8 +13,6 @@ namespace Dash.Models
 {
     public class Alert : BaseModel, IValidatableObject
     {
-        private User _Owner;
-
         private Report _Report;
 
         public Alert()
@@ -35,10 +33,7 @@ namespace Dash.Models
         [DbIgnore, JilDirective(true)]
         public string Cron
         {
-            get
-            {
-                return $"{CronMinute} {CronHour} {CronDayOfMonth} {CronMonth} {CronDayOfWeek}";
-            }
+            get { return $"{CronMinute} {CronHour} {CronDayOfMonth} {CronMonth} {CronDayOfWeek}"; }
         }
 
         [Display(Name = "CronDayOfMonth", ResourceType = typeof(Alerts))]
@@ -76,9 +71,6 @@ namespace Dash.Models
         [Display(Name = "IsActive", ResourceType = typeof(Alerts))]
         public bool IsActive { get; set; }
 
-        [DbIgnore, JilDirective(true)]
-        public bool IsOwner { get { return RequestUserId == OwnerId; } }
-
         [Display(Name = "LastNotificationDate", ResourceType = typeof(Alerts))]
         public DateTimeOffset? LastNotificationDate { get; set; }
 
@@ -88,15 +80,12 @@ namespace Dash.Models
         [Display(Name = "Name", ResourceType = typeof(Alerts))]
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         [StringLength(100, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
+        [JilDirective(true)]
         public string Name { get; set; }
 
         [Display(Name = "NotificationInterval", ResourceType = typeof(Alerts))]
         [Required]
         public int NotificationInterval { get; set; }
-
-        [DbIgnore, JilDirective(true)]
-        [BindNever, ValidateNever]
-        public User Owner { get { return _Owner ?? (_Owner = DbContext.Get<User>(OwnerId)); } }
 
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         [JilDirective(true)]
@@ -196,7 +185,7 @@ namespace Dash.Models
 
             // currently the hash will include name so this won't work as expected. need to modify hash creation to only use alert criteria instead
             var duplicateAlert = DbContext.GetAll<Alert>(new { UserId = RequestUserId ?? OwnerId }).FirstOrDefault(x => x.Hash == Hash);
-            if (duplicateAlert != null)
+            if (duplicateAlert != null && duplicateAlert.Id != Id)
             {
                 yield return new ValidationResult(string.Format(Alerts.ErrorHash, duplicateAlert.Name));
             }
