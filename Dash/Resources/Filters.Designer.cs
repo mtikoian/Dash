@@ -115,6 +115,15 @@ namespace Dash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 1 Minute.
+        /// </summary>
+        public static string LabelDateInterval_OneMinute {
+            get {
+                return ResourceManager.GetString("LabelDateInterval_OneMinute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Quarter.
         /// </summary>
         public static string LabelDateInterval_Quarter {

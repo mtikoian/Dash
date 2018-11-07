@@ -617,6 +617,9 @@ namespace Dash
                 case DateIntervals.Month:
                     interval = string.Format("{0:yyyy-MM}", dt);
                     break;
+                case DateIntervals.OneMinute:
+                    interval = string.Format("{0:yyyy-MM-dd HH}:{1:00}", dt, dt.Minute);
+                    break;
                 case DateIntervals.Quarter:
                     interval = string.Format("{0} Q{1}", dt.Year, dt.Quarter());
                     break;

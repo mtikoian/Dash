@@ -32,6 +32,7 @@ namespace Dash.Models
     public enum DateIntervals
     {
         None = 11,
+        OneMinute = 12,
         FiveMinutes = 10,
         TenMinutes = 9,
         FifteenMinutes = 8,

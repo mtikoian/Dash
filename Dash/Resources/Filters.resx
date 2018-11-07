@@ -135,6 +135,9 @@
   <data name="LabelDateInterval_None" xml:space="preserve">
     <value>None</value>
   </data>
+  <data name="LabelDateInterval_OneMinute" xml:space="preserve">
+    <value>1 Minute</value>
+  </data>
   <data name="LabelDateInterval_Quarter" xml:space="preserve">
     <value>Quarter</value>
   </data>
