@@ -41,10 +41,6 @@
             .then(_checkStatus)
             .then(_parse)
             .then(function(data) {
-                if (data.reload) {
-                    location.reload(true);
-                    return;
-                }
                 if (data.error) {
                     if ($.isFunction(onError)) {
                         onError(data);
@@ -64,10 +60,16 @@
                 }
 
                 if (data.response && data.response.status && [400, 401, 402, 403].indexOf(data.response.status) > -1) {
-                    location.reload(true);
-                } else {
-                    Alertify.error((data.response && data.response.error) || 'An unhandled error occurred.');
+                    var locationHeader = data.response.headers && data.response.headers.get('location');
+                    if (locationHeader) {
+                        window.location.href = locationHeader;
+                    } else {
+                        window.location.reload(true);
+                    }
+                    return;
                 }
+
+                Alertify.error((data.response && data.response.error) || 'An unhandled error occurred.');
                 if ($.isFunction(onError)) {
                     onError(data.response);
                 }
