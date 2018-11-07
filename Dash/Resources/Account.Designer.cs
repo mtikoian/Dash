@@ -358,7 +358,7 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If you&apos;ve forgotten your password, a link to create a new one can be sent to the email address for your account. Just enter your username and click the `Send Email` button below. .
+        ///   Looks up a localized string similar to If you&apos;ve forgotten your password, a link to create a new one can be sent to the email address for your account..
         /// </summary>
         public static string ForgotPasswordText {
             get {

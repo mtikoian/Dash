@@ -8,17 +8,12 @@
 
     <partial name="_Toast" />
 
-    @using (Html.BeginCustomForm("Login", "Account", htmlAttributes: new { @class = "pjax-no-follow" }))
-    {
+    <horizontal-form controller="Account" action="Login" is-pjax="false">
         <input asp-for="ReturnUrl" type="hidden" />
-
-        <div class="columns">
-            <div class="col-6">
-                @Html.LabelInputFor(m => m.UserName, new { Autofocus = true })
-                @Html.LabelPasswordFor(m => m.Password, new { })
-            </div>
-        </div>
-
-        @Html.FormButtons(Account.Login, Html.ActionLink(Account.ForgotPassword, "ForgotPassword", "Account", null, new { @class = "btn btn-warning" }))
-    }
+        <form-group-input for="UserName" autofocus="true" />
+        <form-group-input for="Password" />
+        <form-buttons submit-label="@Account.Login">
+            <authorized-button controller="Account" action="ForgotPassword" title="@Account.ForgotPassword" class="BtnWarning" has-access="true" />
+        </form-buttons>
+    </horizontal-form>
 </body-content>
