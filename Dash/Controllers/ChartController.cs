@@ -86,9 +86,7 @@ namespace Dash.Controllers
             DbContext.Save(chart);
             ViewBag.Message = Charts.SuccessSavingChart;
 
-            var controller = (ChartRangeController)HttpContext.RequestServices.GetService(typeof(ChartRangeController));
-            controller.ControllerContext = ControllerContext;
-            return controller.Index(chart.Id);
+            return RedirectToAction("Index", "ChartRange", new { chart.Id });
         }
 
         [HttpPost, AjaxRequestOnly]
