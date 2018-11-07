@@ -216,6 +216,7 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
 
 /*!
  * Color functions.
+ * https://gist.github.com/mjackson/5311256
  */
 (function($) {
     'use strict';
