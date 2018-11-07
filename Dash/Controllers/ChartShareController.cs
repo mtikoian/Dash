@@ -3,7 +3,6 @@ using Dash.Configuration;
 using Dash.Models;
 using Dash.Resources;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dash.Controllers
@@ -21,8 +20,8 @@ namespace Dash.Controllers
             var model = DbContext.Get<Chart>(id);
             if (model == null)
             {
-                ViewBag.Error = Core.ErrorInvalidId;
-                return ChartRedirect();
+                TempData["Error"] = Core.ErrorInvalidId;
+                return RedirectToAction("Index", "Chart");
             }
             // clear modelState so that chartId isn't treated as the new model Id
             ModelState.Clear();
@@ -41,8 +40,8 @@ namespace Dash.Controllers
             var model = DbContext.Get<ChartShare>(id);
             if (model == null)
             {
-                ViewBag.Error = Core.ErrorInvalidId;
-                return ChartRedirect();
+                TempData["Error"] = Core.ErrorInvalidId;
+                return RedirectToAction("Index", "Chart");
             }
             DbContext.Delete(model);
             ViewBag.Message = Charts.SuccessDeletingShare;
@@ -55,8 +54,8 @@ namespace Dash.Controllers
             var model = DbContext.Get<ChartShare>(id);
             if (model == null)
             {
-                ViewBag.Error = Core.ErrorInvalidId;
-                return ChartRedirect();
+                TempData["Error"] = Core.ErrorInvalidId;
+                return RedirectToAction("Index", "Chart");
             }
             return CreateEditView(model);
         }
@@ -83,13 +82,6 @@ namespace Dash.Controllers
         private IActionResult CreateEditView(ChartShare model)
         {
             return View("CreateEdit", model);
-        }
-
-        private IActionResult ChartRedirect()
-        {
-            var controller = (DatasetController)HttpContext.RequestServices.GetService(typeof(ChartController));
-            controller.ControllerContext = ControllerContext;
-            return controller.Index();
         }
 
         private IActionResult Save(ChartShare model)

@@ -3,7 +3,6 @@ using Dash.Configuration;
 using Dash.Models;
 using Dash.Resources;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dash.Controllers
@@ -21,8 +20,8 @@ namespace Dash.Controllers
             var model = DbContext.Get<Report>(id);
             if (model == null)
             {
-                ViewBag.Error = Core.ErrorInvalidId;
-                return ReportRedirect();
+                TempData["Error"] = Core.ErrorInvalidId;
+                return RedirectToAction("Index", "Report");
             }
             // clear modelState so that reportId isn't treated as the new model Id
             ModelState.Clear();
@@ -41,8 +40,8 @@ namespace Dash.Controllers
             var model = DbContext.Get<ReportFilter>(id);
             if (model == null)
             {
-                ViewBag.Error = Core.ErrorInvalidId;
-                return ReportRedirect();
+                TempData["Error"] = Core.ErrorInvalidId;
+                return RedirectToAction("Index", "Report");
             }
             // db will delete filter and re-order remaining ones
             DbContext.Delete(model);
@@ -56,8 +55,8 @@ namespace Dash.Controllers
             var model = DbContext.Get<ReportFilter>(id);
             if (model == null)
             {
-                ViewBag.Error = Core.ErrorInvalidId;
-                return ReportRedirect();
+                TempData["Error"] = Core.ErrorInvalidId;
+                return RedirectToAction("Index", "Report");
             }
             return CreateEditView(model);
         }
@@ -114,8 +113,8 @@ namespace Dash.Controllers
             var model = DbContext.Get<ReportFilter>(id);
             if (model == null)
             {
-                ViewBag.Error = Core.ErrorInvalidId;
-                return ReportRedirect();
+                TempData["Error"] = Core.ErrorInvalidId;
+                return RedirectToAction("Index", "Report");
             }
             if (!model.MoveDown(out var error))
             {
@@ -132,8 +131,8 @@ namespace Dash.Controllers
             var model = DbContext.Get<ReportFilter>(id);
             if (model == null)
             {
-                ViewBag.Error = Core.ErrorInvalidId;
-                return ReportRedirect();
+                TempData["Error"] = Core.ErrorInvalidId;
+                return RedirectToAction("Index", "Report");
             }
             if (!model.MoveUp(out var error))
             {
@@ -147,13 +146,6 @@ namespace Dash.Controllers
         private IActionResult CreateEditView(ReportFilter model)
         {
             return View("CreateEdit", model);
-        }
-
-        private IActionResult ReportRedirect()
-        {
-            var controller = (DatasetController)HttpContext.RequestServices.GetService(typeof(ReportController));
-            controller.ControllerContext = ControllerContext;
-            return controller.Index();
         }
 
         private IActionResult Save(ReportFilter model)

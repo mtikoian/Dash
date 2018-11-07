@@ -3,7 +3,6 @@ using Dash.Configuration;
 using Dash.Models;
 using Dash.Resources;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dash.Controllers
@@ -21,8 +20,8 @@ namespace Dash.Controllers
             var model = DbContext.Get<Chart>(id);
             if (model == null)
             {
-                ViewBag.Error = Core.ErrorInvalidId;
-                return ChartRedirect();
+                TempData["Error"] = Core.ErrorInvalidId;
+                return RedirectToAction("Index", "Chart");
             }
             // clear modelState so that chartId isn't treated as the new model Id
             ModelState.Clear();
@@ -41,8 +40,8 @@ namespace Dash.Controllers
             var model = DbContext.Get<ChartRange>(id);
             if (model == null)
             {
-                ViewBag.Error = Core.ErrorInvalidId;
-                return ChartRedirect();
+                TempData["Error"] = Core.ErrorInvalidId;
+                return RedirectToAction("Index", "Chart");
             }
             // db will delete filter and re-order remaining ones
             DbContext.Delete(model);
@@ -56,8 +55,8 @@ namespace Dash.Controllers
             var model = DbContext.Get<ChartRange>(id);
             if (model == null)
             {
-                ViewBag.Error = Core.ErrorInvalidId;
-                return ChartRedirect();
+                TempData["Error"] = Core.ErrorInvalidId;
+                return RedirectToAction("Index", "Chart");
             }
             return CreateEditView(model);
         }
@@ -112,8 +111,8 @@ namespace Dash.Controllers
             var model = DbContext.Get<ChartRange>(id);
             if (model == null)
             {
-                ViewBag.Error = Core.ErrorInvalidId;
-                return ChartRedirect();
+                TempData["Error"] = Core.ErrorInvalidId;
+                return RedirectToAction("Index", "Chart");
             }
             if (!model.MoveDown(out var error))
             {
@@ -130,8 +129,8 @@ namespace Dash.Controllers
             var model = DbContext.Get<ChartRange>(id);
             if (model == null)
             {
-                ViewBag.Error = Core.ErrorInvalidId;
-                return ChartRedirect();
+                TempData["Error"] = Core.ErrorInvalidId;
+                return RedirectToAction("Index", "Chart");
             }
             if (!model.MoveUp(out var error))
             {
@@ -145,13 +144,6 @@ namespace Dash.Controllers
         private IActionResult CreateEditView(ChartRange model)
         {
             return View("CreateEdit", model);
-        }
-
-        private IActionResult ChartRedirect()
-        {
-            var controller = (DatasetController)HttpContext.RequestServices.GetService(typeof(ChartController));
-            controller.ControllerContext = ControllerContext;
-            return controller.Index();
         }
 
         private IActionResult Save(ChartRange model)

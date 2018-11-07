@@ -3,7 +3,6 @@ using Dash.Configuration;
 using Dash.Models;
 using Dash.Resources;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dash.Controllers
@@ -21,8 +20,8 @@ namespace Dash.Controllers
             var model = DbContext.Get<Dataset>(id);
             if (model == null)
             {
-                ViewBag.Error = Core.ErrorInvalidId;
-                return DatasetRedirect();
+                TempData["Error"] = Core.ErrorInvalidId;
+                return RedirectToAction("Index", "Dataset");
             }
             // clear modelState so that datasetId isn't treated as the new model Id
             ModelState.Clear();
@@ -41,8 +40,8 @@ namespace Dash.Controllers
             var model = DbContext.Get<DatasetColumn>(id);
             if (model == null)
             {
-                ViewBag.Error = Core.ErrorInvalidId;
-                return DatasetRedirect();
+                TempData["Error"] = Core.ErrorInvalidId;
+                return RedirectToAction("Index", "Dataset");
             }
             DbContext.Delete(model);
             ViewBag.Message = Datasets.SuccessDeletingColumn;
@@ -55,8 +54,8 @@ namespace Dash.Controllers
             var model = DbContext.Get<DatasetColumn>(id);
             if (model == null)
             {
-                ViewBag.Error = Core.ErrorInvalidId;
-                return DatasetRedirect();
+                TempData["Error"] = Core.ErrorInvalidId;
+                return RedirectToAction("Index", "Dataset");
             }
             return CreateEditView(model);
         }
@@ -73,8 +72,8 @@ namespace Dash.Controllers
             var model = DbContext.Get<Dataset>(id);
             if (model == null)
             {
-                ViewBag.Error = Core.ErrorInvalidId;
-                return DatasetRedirect();
+                TempData["Error"] = Core.ErrorInvalidId;
+                return RedirectToAction("Index", "Dataset");
             }
             if (model.ImportSchema(User.UserId(), out var error))
             {
@@ -103,13 +102,6 @@ namespace Dash.Controllers
         private IActionResult CreateEditView(DatasetColumn model)
         {
             return View("CreateEdit", model);
-        }
-
-        private IActionResult DatasetRedirect()
-        {
-            var controller = (DatasetController)HttpContext.RequestServices.GetService(typeof(DatasetController));
-            controller.ControllerContext = ControllerContext;
-            return controller.Index();
         }
 
         private IActionResult Save(DatasetColumn model)

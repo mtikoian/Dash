@@ -3,7 +3,6 @@ using Dash.Configuration;
 using Dash.Models;
 using Dash.Resources;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dash.Controllers
@@ -21,8 +20,8 @@ namespace Dash.Controllers
             var model = DbContext.Get<Report>(id);
             if (model == null)
             {
-                ViewBag.Error = Core.ErrorInvalidId;
-                return ReportRedirect();
+                TempData["Error"] = Core.ErrorInvalidId;
+                return RedirectToAction("Index", "Report");
             }
             // clear modelState so that reportId isn't treated as the new model Id
             ModelState.Clear();
@@ -41,8 +40,8 @@ namespace Dash.Controllers
             var model = DbContext.Get<ReportShare>(id);
             if (model == null)
             {
-                ViewBag.Error = Core.ErrorInvalidId;
-                return ReportRedirect();
+                TempData["Error"] = Core.ErrorInvalidId;
+                return RedirectToAction("Index", "Report");
             }
             DbContext.Delete(model);
             ViewBag.Message = Reports.SuccessDeletingShare;
@@ -55,8 +54,8 @@ namespace Dash.Controllers
             var model = DbContext.Get<ReportShare>(id);
             if (model == null)
             {
-                ViewBag.Error = Core.ErrorInvalidId;
-                return ReportRedirect();
+                TempData["Error"] = Core.ErrorInvalidId;
+                return RedirectToAction("Index", "Report");
             }
             return CreateEditView(model);
         }
@@ -83,13 +82,6 @@ namespace Dash.Controllers
         private IActionResult CreateEditView(ReportShare model)
         {
             return View("CreateEdit", model);
-        }
-
-        private IActionResult ReportRedirect()
-        {
-            var controller = (DatasetController)HttpContext.RequestServices.GetService(typeof(ReportController));
-            controller.ControllerContext = ControllerContext;
-            return controller.Index();
         }
 
         private IActionResult Save(ReportShare model)
