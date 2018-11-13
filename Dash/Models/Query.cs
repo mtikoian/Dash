@@ -524,7 +524,8 @@ namespace Dash.Models
             {
                 return sql + " " + Parameters.ToList().Select(x => $"@{x.Key} = '{x.Value.ToString().Replace("'", "''")}'").Join(", ");
             }
-            Parameters.ToList().ForEach(x => sql = sql.Replace(x.Key, $"'{x.Value.ToString().Replace("'", "''")}'"));
+            // order by key len desc to avoid errors replacing keys - ie `abc` replacing `abcdef`
+            Parameters.OrderByDescending(x => x.Key.Length).ToList().ForEach(x => sql = sql.Replace(x.Key, $"'{x.Value.ToString().Replace("'", "''")}'"));
             return sql;
         }
 
