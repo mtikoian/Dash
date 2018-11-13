@@ -165,17 +165,11 @@
   <data name="NewPassword" xml:space="preserve">
     <value>New Password</value>
   </data>
-  <data name="ChangePassword" xml:space="preserve">
-    <value>Change Password</value>
-  </data>
   <data name="Login" xml:space="preserve">
     <value>Login</value>
   </data>
   <data name="Logout" xml:space="preserve">
     <value>Logout</value>
-  </data>
-  <data name="ChangePasswordText" xml:space="preserve">
-    <value>Use the form below to change your password. New passwords are required to be a minimum of {0} characters in length.</value>
   </data>
   <data name="PasswordChangedText" xml:space="preserve">
     <value>Your password has been changed successfully.</value>
@@ -211,7 +205,7 @@
     <value>Reset Password</value>
   </data>
   <data name="ResetPasswordText" xml:space="preserve">
-    <value>Use the form below to reset your password. Passwords must be at least 6 characters long, with at least one non-alphanumeric character.</value>
+    <value>Use the form below to reset your password. Passwords must be at least {0} characters long and contain at least {1} special character.</value>
   </data>
   <data name="ErrorSendingEmail" xml:space="preserve">
     <value>An error occurred sending the email.</value>

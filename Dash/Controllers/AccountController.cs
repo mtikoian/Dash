@@ -131,7 +131,7 @@ namespace Dash.Controllers
             {
                 if (model.Reset(out var error))
                 {
-                    ViewBag.Error = ModelState.ToErrorString();
+                    ViewBag.Message = Account.PasswordChangedText;
                     return View("Login", new LogOn());
                 }
                 ViewBag.Error = error;

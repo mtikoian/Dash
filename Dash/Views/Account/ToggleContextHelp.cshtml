@@ -1,15 +1,12 @@
 ﻿@using Dash.Resources;
 @model Dash.Models.Help
 
-@using (Html.BeginBodyContent())
-{
-    @Html.Breadcrumbs(new List<Breadcrumb> {
-        new Breadcrumb(Core.ToggleHelp, "ToggleContextHelp", "Account")
-    });
+<body-content>
+    <breadcrumb>
+        <breadcrumb-item label="@Core.ToggleHelp" controller="Account" action="ToggleContextHelp" is-active="true" />
+    </breadcrumb>
 
-    <div class="columns">
-        <div class="col-12">
-            @Html.ToCard(Model.IsEnabled ? Core.HelpEnabled : Core.HelpDisabled, CardTypes.Primary)
-        </div>
-    </div>
-}
+    <partial name="_Toast" />
+
+    <toast id="contextHelp" message="@(Model.IsEnabled ? Core.HelpEnabled : Core.HelpDisabled)" type="Info" allow-close="false" />
+</body-content>

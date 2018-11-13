@@ -79,24 +79,6 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Change Password.
-        /// </summary>
-        public static string ChangePassword {
-            get {
-                return ResourceManager.GetString("ChangePassword", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Use the form below to change your password. New passwords are required to be a minimum of {0} characters in length..
-        /// </summary>
-        public static string ChangePasswordText {
-            get {
-                return ResourceManager.GetString("ChangePasswordText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Confirm Password.
         /// </summary>
         public static string ConfirmPassword {
@@ -421,7 +403,7 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use the form below to reset your password. Passwords must be at least 6 characters long, with at least one non-alphanumeric character..
+        ///   Looks up a localized string similar to Use the form below to reset your password. Passwords must be at least {0} characters long and contain at least {1} special character..
         /// </summary>
         public static string ResetPasswordText {
             get {

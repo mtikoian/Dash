@@ -5,11 +5,15 @@ using System.Linq;
 using Dash.Configuration;
 using Dash.Resources;
 using Dash.Utils;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace Dash.Models
 {
     public class ResetPassword : BaseModel, IValidatableObject
     {
+        private UserMembership Membership;
+
         [Display(Name = "ConfirmPassword", ResourceType = typeof(Users))]
         [StringLength(250, MinimumLength = 6, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMinMaxLength")]
         [DbIgnore]
@@ -24,6 +28,16 @@ namespace Dash.Models
         [MaxLength(500, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string Hash { get; set; }
 
+        [DbIgnore, BindNever, ValidateNever]
+        public string HelpText
+        {
+            get
+            {
+                return Account.ResetPasswordText.Replace("{0}", AppConfig.Membership.MinRequiredPasswordLength.ToString())
+                    .Replace("{1}", AppConfig.Membership.MinRequiredNonAlphanumericCharacters.ToString());
+            }
+        }
+
         public bool IsReset { get; set; }
 
         [Display(Name = "Password", ResourceType = typeof(Users))]
@@ -32,13 +46,6 @@ namespace Dash.Models
         [DbIgnore]
         public string Password { get; set; }
 
-        private UserMembership Membership { get; set; }
-
-        /// <summary>
-        /// Reset a user's password.
-        /// </summary>
-        /// <param name="error">Error message if any.</param>
-        /// <returns>True on success, else false.</returns>
         public bool Reset(out string error)
         {
             error = "";
@@ -57,11 +64,6 @@ namespace Dash.Models
             return false;
         }
 
-        /// <summary>
-        /// Validate object.
-        /// </summary>
-        /// <param name="validationContext"></param>
-        /// <returns></returns>
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             DbContext = (IDbContext)validationContext.GetService(typeof(IDbContext));
