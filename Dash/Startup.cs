@@ -101,7 +101,7 @@ namespace Dash
                         catch { }
                     }
 
-                    if (context.Request.ContentType.ToLower().Contains("json"))
+                    if (context.Request.ContentType?.ToLower()?.Contains("json") == true)
                     {
                         context.Response.StatusCode = (int)System.Net.HttpStatusCode.InternalServerError;
                         context.Response.ContentType = "application/json";
