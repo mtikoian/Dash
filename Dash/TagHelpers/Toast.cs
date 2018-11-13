@@ -17,6 +17,7 @@ namespace Dash.TagHelpers
         public ToastType Type { get; set; }
         public string Id { get; set; }
         public string Message { get; set; }
+        public bool AllowClose { get; set; } = true;
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
@@ -38,13 +39,16 @@ namespace Dash.TagHelpers
             colRightDiv.AddCssClass("col-1");
             var textDiv = new TagBuilder("div");
             textDiv.AddCssClass("text-right");
-            var iDiv = new TagBuilder("i");
-            iDiv.AddCssClass("dash");
-            iDiv.AddCssClass("dash-cancel");
-            iDiv.AddCssClass("toast-dismiss");
-            iDiv.Attributes.Add("data-toggle", "hide");
-            iDiv.Attributes.Add("data-target", $"#{Id}");
-            textDiv.InnerHtml.AppendHtml(iDiv);
+            if (AllowClose)
+            {
+                var iDiv = new TagBuilder("i");
+                iDiv.AddCssClass("dash");
+                iDiv.AddCssClass("dash-cancel");
+                iDiv.AddCssClass("toast-dismiss");
+                iDiv.Attributes.Add("data-toggle", "hide");
+                iDiv.Attributes.Add("data-target", $"#{Id}");
+                textDiv.InnerHtml.AppendHtml(iDiv);
+            }
             colRightDiv.InnerHtml.AppendHtml(textDiv);
 
             colDiv.InnerHtml.AppendHtml(colLeftDiv);
