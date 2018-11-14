@@ -1,4 +1,5 @@
-﻿@{
+﻿@using Dash.Resources;
+@{
     Layout = null;
     ViewBag.Title = Dash.Resources.Core.Error;
 }
@@ -18,11 +19,11 @@
             <p class="lead">
                 @if (!((string)ViewBag.Error).IsEmpty())
                 {
-                    @Html.ToCard((string)ViewBag.Error, CardTypes.Error)
+                    <toast id="errorPage" message="@ViewBag.Error" type="Error" allow-close="false" />
                 }
                 else
                 {
-                    @Html.ToCard("An error occurred trying to find what you're looking for.", CardTypes.Error)
+                    <toast id="errorPage" message="@Core.ErrorGeneric" type="Error" allow-close="false" />
                 }
             </p>
         </div>

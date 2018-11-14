@@ -33,13 +33,12 @@ namespace Dash
     public enum DashClasses
     {
         Btn,
-        BtnSm,
         BtnSuccess,
         BtnWarning,
         BtnInfo,
         BtnError,
         BtnPrimary,
-        BtnSecondary,
+        BtnLink,
         DashAjax,
         DashConfirm,
         DashPrompt

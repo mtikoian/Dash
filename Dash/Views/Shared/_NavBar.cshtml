@@ -1,5 +1,4 @@
 ﻿@using Dash.Resources
-@using Microsoft.AspNetCore.Http
 
 <div id="sidebarWrapper">
     <ul class="nav-side">
@@ -9,35 +8,36 @@
 
         @if (User.Identity.IsAuthenticated)
         {
-            @Html.AuthorizedMenu(Core.Dashboard, "Index", "Dashboard", "gauge", User.IsInRole("dashboard.index"))
-            @Html.AuthorizedMenu(Widgets.LinkAdd, "Create", "Dashboard", "plus", User.IsInRole("dashboard.create"))
+            <authorized-menu-item controller="Dashboard" action="Index" title="@Core.Dashboard" icon="gauge" />
+            <authorized-menu-item controller="Dashboard" action="Create" title="@Widgets.LinkAdd" icon="plus" />
             <li class="divider"></li>
-            @Html.AuthorizedMenu(Databases.MenuItem, "Index", "Database", "database", User.IsInRole("database.index"))
-            @Html.AuthorizedMenu(Datasets.MenuItem, "Index", "Dataset", "th", User.IsInRole("dataset.index"))
-            @Html.AuthorizedMenu(Reports.MenuItem, "Index", "Report", "list-alt", User.IsInRole("report.index"))
-            @Html.AuthorizedMenu(Charts.MenuItem, "Index", "Chart", "chart-bar", User.IsInRole("chart.index"))
-            @Html.AuthorizedMenu(Alerts.MenuItem, "Index", "Alert", "bell-alt", User.IsInRole("alert.index"))
-            @Html.AuthorizedMenu(Users.MenuItem, "Index", "User", "user", User.IsInRole("user.index"))
-            @Html.AuthorizedMenu(Roles.MenuItem, "Index", "Role", "key", User.IsInRole("role.index"))
+            <authorized-menu-item controller="Database" action="Index" title="@Databases.MenuItem" icon="database" />
+            <authorized-menu-item controller="Dataset" action="Index" title="@Datasets.MenuItem" icon="th" />
+            <authorized-menu-item controller="Report" action="Index" title="@Reports.MenuItem" icon="list-alt" />
+            <authorized-menu-item controller="Chart" action="Index" title="@Charts.MenuItem" icon="chart-bar" />
+            <authorized-menu-item controller="Alert" action="Index" title="@Alerts.MenuItem" icon="bell-alt" />
+            <authorized-menu-item controller="User" action="Index" title="@Users.MenuItem" icon="user" />
+            <authorized-menu-item controller="Role" action="Index" title="@Roles.MenuItem" icon="key" />
             if (User.IsInRole("hangfire.dashboard"))
             {
                 <li class="divider"></li>
                 <li>
                     <a href="~/hangfire" title="@Core.Hangfire" class="pjax-no-follow">
-                        <i class="dash dash-fire dash-lg"></i> <span>@Html.Raw(Core.Hangfire)</span>
+                        <i class="dash dash-fire dash-lg"></i> <span>@Core.Hangfire</span>
                     </a>
                 </li>
                 <li class="divider"></li>
             }
-            @Html.AuthorizedMenu(Core.ToggleHelp, "ToggleContextHelp", "Account", "help", User.IsInRole("account.togglecontexthelp"), new { data_reload = true })
+            <authorized-menu-item controller="Account" action="ToggleContextHelp" title="@Core.ToggleHelp" icon="help" force-reload="true" />
             <li class="divider"></li>
-            @Html.AuthorizedMenu(Account.UpdateAccount, "Update", "Account", "asterisk", User.IsInRole("account.update"))
-            @Html.AuthorizedMenu(Account.Logout, "LogOff", "Account", "logout", true, new { @class = "pjax-no-follow" })
+            <authorized-menu-item controller="Account" action="Update" title="@Account.UpdateAccount" icon="asterisk" />
+            <authorized-menu-item controller="Account" action="LogOff" title="@Account.Logout" icon="logout" has-access="true" is-pjax="false" />
         }
         else
         {
-            @Html.AuthorizedMenu(Account.Login, "Login", "Account", "login", true)
-            @Html.AuthorizedMenu(Account.ForgotPassword, "ForgotPassword", "Account", "lamp", true)
+            <authorized-menu-item controller="Account" action="Login" title="@Account.Login" icon="login" has-access="true" />
+            <authorized-menu-item controller="Account" action="ForgotPassword" title="@Account.ForgotPassword" icon="lamp" has-access="true" />
+            <authorized-menu-item controller="Role" action="Index" title="@Roles.MenuItem" icon="key" />
         }
     </ul>
 </div>

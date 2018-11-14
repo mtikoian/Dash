@@ -13,7 +13,7 @@
 
     <tab-panel id="ranges">
         <toolbar>
-            @Html.AuthorizedButton(Core.Add, "Create", "ChartRange", new { Id = Model.Id }, DashClasses.BtnPrimary, hasAccess: User.IsInRole("chartrange.create"))
+            <authorized-button controller="ChartRange" action="Create" route-values="@(new { Id = Model.Id })" title="@Core.Add" />
         </toolbar>
 
         <do-table result-url="@Url.Action("List", new { Id = Model.Id })" id="tableChartRanges_@Model.Id" template="#chartRangeTemplate" />

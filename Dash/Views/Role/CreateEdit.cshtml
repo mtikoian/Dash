@@ -13,7 +13,7 @@
     <horizontal-form for="Model">
         <input asp-for="Id" type="hidden" />
 
-        <form-group-input for="Name" autofocus="true"/>
+        <form-group-input for="Name" autofocus="true" />
         <div class="form-group">
             <form-label for="PermissionIds" />
             <div class="col-8 c-hand" data-toggle="collapsible-list">
@@ -25,9 +25,9 @@
                             <ul class="collapsible-list">
                                 @foreach (var permission in Model.ControllerPermissions[controller])
                                 {
-                                <li>
-                                    <form-checkbox name="PermissionIds" value="@permission.Id" label="@permission.ActionName" is-checked="@Html.IsChecked(Model.RolePermission, x => x.PermissionId == permission.Id, ((int[])ViewBag.SelectedPermissionIds), permission.Id)" />
-                                </li>
+                                    <li>
+                                        <form-checkbox name="PermissionIds" value="@permission.Id" label="@permission.ActionName" is-checked="@Extensions.IsChecked(Model.RolePermission, x => x.PermissionId == permission.Id, ((int[])ViewBag.SelectedPermissionIds), permission.Id)" />
+                                    </li>
                                 }
                             </ul>
                         </li>

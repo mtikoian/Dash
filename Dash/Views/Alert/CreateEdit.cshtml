@@ -20,7 +20,7 @@
         <form-group-input for="NotificationInterval" />
         <form-group-checkbox for="IsActive" />
 
-        @Html.ControlLabel("Schedule", Alerts.Schedule)
+        <form-label name="Schedule" title="@Alerts.Schedule" is-required="true" />
         <div class="col-12">
             <form-group-input for="CronMinute" />
             <form-group-input for="CronHour" />

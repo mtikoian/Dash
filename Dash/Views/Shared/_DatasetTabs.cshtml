@@ -10,7 +10,7 @@
         }
         else
         {
-            @Html.AuthorizedActionLink(Datasets.Overview, "Edit", "Dataset", new { Id = Model.Id }, new { @class = "btn btn-link", role = "tab" })
+            <authorized-button controller="Dataset" action="Edit" title="@Datasets.Overview" route-values="@(new { Id = Model.Id })" class="BtnLink" role="tab" />
         }
     </tab-item>
     <tab-item no-render="@(Model.IsCreate || !User.IsInRole("datasetjoin.index"))">
@@ -20,7 +20,7 @@
         }
         else
         {
-            @Html.AuthorizedActionLink(Datasets.Joins, "Index", "DatasetJoin", new { Model.Id }, new { @class = "btn btn-link", role = "tab" })
+            <authorized-button controller="DatasetJoin" action="Index" title="@Datasets.Joins" route-values="@(new { Id = Model.Id })" class="BtnLink" role="tab" />
         }
     </tab-item>
     <tab-item no-render="@(Model.IsCreate || !User.IsInRole("datasetcolumn.index"))">
@@ -30,7 +30,7 @@
         }
         else
         {
-            @Html.AuthorizedActionLink(Datasets.Columns, "Index", "DatasetColumn", new { Model.Id }, new { @class = "btn btn-link", role = "tab" })
+            <authorized-button controller="DatasetColumn" action="Index" title="@Datasets.Columns" route-values="@(new { Id = Model.Id })" class="BtnLink" role="tab" />
         }
     </tab-item>
 </tab-list>

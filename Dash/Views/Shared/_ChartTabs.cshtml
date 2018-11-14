@@ -10,7 +10,7 @@
         }
         else
         {
-            @Html.AuthorizedActionLink(Charts.ViewChart, "Edit", "Chart", new { Id = Model.Id }, new { @class = "btn btn-link", role = "tab" })
+            <authorized-button controller="Chart" action="Edit" title="@Charts.ViewChart" route-values="@(new { Id = Model.Id })" class="BtnLink" role="tab" />
         }
     </tab-item>
     <tab-item no-render="@(!User.IsInRole("chartrange.index"))">
@@ -20,7 +20,7 @@
         }
         else
         {
-            @Html.AuthorizedActionLink(Charts.Ranges, "Index", "ChartRange", new { Model.Id }, new { @class = "btn btn-link", role = "tab" })
+            <authorized-button controller="ChartRange" action="Index" title="@Charts.Ranges" route-values="@(new { Id = Model.Id })" class="BtnLink" role="tab" />
         }
     </tab-item>
     <tab-item no-render="@(!Model.IsOwner)">
@@ -30,7 +30,7 @@
         }
         else
         {
-            @Html.AuthorizedActionLink(Core.Rename, "Rename", "Chart", new { Model.Id }, new { @class = "btn btn-link", role = "tab" })
+            <authorized-button controller="Chart" action="Rename" title="@Core.Rename" route-values="@(new { Id = Model.Id })" class="BtnLink" role="tab" />
         }
     </tab-item>
     <tab-item no-render="@(!Model.IsOwner)">
@@ -40,7 +40,7 @@
         }
         else
         {
-            @Html.AuthorizedActionLink(Charts.ChangeType, "ChangeType", "Chart", new { Model.Id }, new { @class = "btn btn-link", role = "tab" })
+            <authorized-button controller="Chart" action="ChangeType" title="@Charts.ChangeType" route-values="@(new { Id = Model.Id })" class="BtnLink" role="tab" />
         }
     </tab-item>
     <tab-item no-render="@(!User.IsInRole("chartshare.index"))">
@@ -50,7 +50,7 @@
         }
         else
         {
-            @Html.AuthorizedActionLink(Charts.ShareChart, "Index", "ChartShare", new { Model.Id }, new { @class = "btn btn-link", role = "tab" })
+            <authorized-button controller="ChartShare" action="Index" title="@Charts.ShareChart" route-values="@(new { Id = Model.Id })" class="BtnLink" role="tab" />
         }
     </tab-item>
     <tab-item no-render="@(!User.IsInRole("chart.sql"))">
@@ -60,7 +60,7 @@
         }
         else
         {
-            @Html.AuthorizedActionLink(Core.ViewSql, "Sql", "Chart", new { Model.Id }, new { @class = "btn btn-link", role = "tab" })
+            <authorized-button controller="Chart" action="Sql" title="@Core.ViewSql" route-values="@(new { Id = Model.Id })" class="BtnLink" role="tab" />
         }
     </tab-item>
 </tab-list>

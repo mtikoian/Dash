@@ -29,7 +29,7 @@
                 <div class="col-8 checkbox-block">
                     @foreach (var role in Model.GetAllRoles())
                     {
-                        <form-checkbox name="RoleIds" is-checked="@(Html.IsChecked(Model.DatasetRole, x => x.RoleId == role.Id, ((int[])ViewBag.SelectedRoleIds), role.Id))" value="@role.Id" label="@role.Name" />
+                        <form-checkbox name="RoleIds" is-checked="@Extensions.IsChecked(Model.DatasetRole, x => x.RoleId == role.Id, ((int[])ViewBag.SelectedRoleIds), role.Id)" value="@role.Id" label="@role.Name" />
                     }
                     <form-help for="DatasetRole" />
                 </div>
