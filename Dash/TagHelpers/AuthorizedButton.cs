@@ -19,7 +19,9 @@ namespace Dash.TagHelpers
         public string Action { get; set; }
         public DashClasses Class { get; set; } = DashClasses.BtnPrimary;
         public string Controller { get; set; }
+        public bool ForceReload { get; set; } = false;
         public bool? HasAccess { get; set; }
+        public string Role { get; set; }
         public object RouteValues { get; set; }
         public string Target { get; set; }
         public string Title { get; set; }
@@ -43,6 +45,8 @@ namespace Dash.TagHelpers
             output.Attributes.Add("data-method", "GET");
             output.Attributes.Add("title", Title);
             output.Attributes.AddIf("target", Target, !Target.IsEmpty());
+            output.Attributes.AddIf("role", Role, !Role.IsEmpty());
+            output.Attributes.AddIf("data-reload", "true", ForceReload);
             output.Content.Append(Title);
 
             var classList = new List<string>();

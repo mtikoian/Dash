@@ -6,10 +6,10 @@
         {
         }
 
-        public SetupCode(string account, string manualentrykey, string qrCode)
+        public SetupCode(string account, string manualEntryKey, string qrCode)
         {
             Account = account;
-            ManualEntryKey = manualentrykey;
+            ManualEntryKey = manualEntryKey;
             QrCode = qrCode;
         }
 

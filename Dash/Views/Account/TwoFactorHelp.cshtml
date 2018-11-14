@@ -1,31 +1,17 @@
 ﻿@using Dash.Resources;
 @model Dash.Utils.SetupCode
 
-<div class="container">
-    <div class="columns">
-        <div class="col-11 col-ml-auto pt-2">
-            @using (Html.BeginCustomForm("TwoFactorLogin", "Account", ajaxForm: false))
-            {
-                <div class="col-12 pb-2">
-                    <h4>@Account.TwoFactor</h4>
-                </div>
+<body-content>
+    <breadcrumb>
+        <breadcrumb-item label="@Account.TwoFactor" controller="Account" action="TwoFactorLogin" is-active="true" />
+    </breadcrumb>
 
-                @Html.ToCard(Account.FactorText, CardTypes.Primary)
+    <partial name="_Toast" />
+    <toast id="twoFactorLoginHelp" message="@Account.FactorText" type="Info" allow-close="false" />
 
-                <div>
-                    <img src="@Model.QrCode" />
-                </div>
-
-                <div class="col-12 pt-2">
-                    <div class="col-6">
-                        <div class="columns">
-                            <span class="form-buttons col-8 col-ml-auto">
-                                @Html.ActionLink(Account.Done, "Login", "Account", null, new { @class = "btn btn-info" })
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            }
-        </div>
+    <div>
+        <img class="qr-code" src="@Model.QrCode" />
     </div>
-</div>
+
+    <authorized-button controller="Account" action="Login" title="@Account.Done" class="BtnInfo" force-reload="true" has-access="true" />
+</body-content>

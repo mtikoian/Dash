@@ -32,7 +32,7 @@ namespace Dash.Controllers
         }
 
         [HttpPost, ValidateAntiForgeryToken]
-        public IActionResult ForgotPassword([FromForm] ForgotPassword model)
+        public IActionResult ForgotPassword(ForgotPassword model)
         {
             if (User.Identity.IsAuthenticated)
             {
@@ -106,7 +106,7 @@ namespace Dash.Controllers
         }
 
         [HttpGet]
-        public IActionResult ResetPassword([FromQuery] ResetPassword model)
+        public IActionResult ResetPassword(ResetPassword model)
         {
             if (User.Identity.IsAuthenticated)
             {
@@ -121,8 +121,9 @@ namespace Dash.Controllers
         }
 
         [HttpPost, ValidateAntiForgeryToken]
-        public IActionResult ResetPassword([FromForm] ResetPassword model, bool resetting = false)
+        public IActionResult ResetPassword(ResetPassword model, bool resetting = true)
         {
+            // resetting param is only there to disambiguate the two ResetPassword routes
             if (User.Identity.IsAuthenticated)
             {
                 return Error(Core.ErrorAlreadyLoggedIn);

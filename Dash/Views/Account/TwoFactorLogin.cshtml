@@ -1,38 +1,22 @@
 ﻿@using Dash.Resources
 @model Dash.Models.UserMembership
 
-<div class="container">
-    <div class="columns">
-        <div class="col-11 col-ml-auto pt-2">
-            @using (Html.BeginCustomForm("TwoFactorLogin", "Account", ajaxForm: false))
-            {
-                <input asp-for="UserName" type="hidden" />
-                <input asp-for="LoginHash" type="hidden" />
+<body-content>
+    <breadcrumb>
+        <breadcrumb-item label="@Account.TwoFactor" controller="Account" action="TwoFactorLogin" is-active="true" />
+    </breadcrumb>
 
-                <div class="col-12 pb-2">
-                    <h4>@Account.TwoFactor</h4>
-                </div>
+    <partial name="_Toast" />
 
-                <partial name="_Toast" />
+    <horizontal-form controller="Account" action="TwoFactorLogin" is-pjax="false">
+        <input asp-for="UserName" type="hidden" />
+        <input asp-for="LoginHash" type="hidden" />
 
-                <div class="col-12 pt-2">
-                    <div class="col-6">
-                        @Html.LabelInputFor(m => m.AuthCode, new { required = true })
-                    </div>
-                </div>
+        <form-group-input for="AuthCode" autofocus="true" is-required="true" />
 
-                <div class="col-12 pt-2">
-                    <div class="col-6">
-                        <div class="columns">
-                            <span class="form-buttons col-8 col-ml-auto">
-                                <input type="submit" value="@Account.Login" class="btn btn-primary" />
-                                @Html.ActionLink(Core.Cancel, "Login", "Account", null, new { @class = "btn btn-warning" })
-                                @Html.ActionLink(Account.Help, "TwoFactorHelp", "Account", new { Username = Model.UserName }, new { @class = "btn btn-info" })
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            }
-        </div>
-    </div>
-</div>
+        <form-buttons submit-label="@Account.Login">
+            <authorized-button controller="Account" action="Login" class="BtnWarning" title="@Core.Cancel" has-access="true" force-reload="true" />
+            <authorized-button controller="Account" action="TwoFactorHelp" class="BtnInfo" route-values="@(new { Username = Model.UserName })" title="@Account.Help" has-access="true" />
+        </form-buttons>
+    </horizontal-form>
+</body-content>

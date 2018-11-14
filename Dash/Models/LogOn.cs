@@ -10,7 +10,7 @@ namespace Dash.Models
 {
     public class LogOn : BaseModel
     {
-        public UserMembership Membership;
+        public UserMembership Membership { get; private set; }
 
         [Display(Name = "Password", ResourceType = typeof(Users))]
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
