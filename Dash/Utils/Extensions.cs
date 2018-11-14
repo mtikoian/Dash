@@ -20,7 +20,7 @@ using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace Dash
 {
-    public static class DataTypes
+    public static class Extensions
     {
         private const string RequestedWithHeader = "X-Requested-With";
         private const string XmlHttpRequest = "XMLHttpRequest";
@@ -319,6 +319,11 @@ namespace Dash
                 return request.Headers[RequestedWithHeader] == XmlHttpRequest;
             }
             return false;
+        }
+
+        public static bool IsChecked<T>(IEnumerable<T> list, Func<T, bool> expression, int[] viewList, int value)
+        {
+            return (list != null && list.Any(expression)) || (viewList != null && viewList.Contains(value));
         }
 
         /// <summary>
