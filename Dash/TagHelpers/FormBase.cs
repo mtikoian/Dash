@@ -14,9 +14,13 @@ namespace Dash.TagHelpers
         {
         }
 
+        public string FieldName { get { return For == null ? Name : For.Name; } }
+        public string FieldTitle { get { return For == null ? Title : For.Metadata.DisplayName; } }
         public ModelExpression For { get; set; }
         public string HelpText { get; set; }
         public bool? IsRequired { get; set; }
+        public string Name { get; set; }
+        public string Title { get; set; }
 
         public static int GetMaxLength(IReadOnlyList<object> validatorMetadata)
         {
@@ -59,7 +63,7 @@ namespace Dash.TagHelpers
                 return HtmlString.Empty;
             }
 
-            if (HelpText.IsEmpty())
+            if (HelpText.IsEmpty() && For != null)
             {
                 var key = $"{For.Metadata.ContainerType.Name}_{For.Metadata.PropertyName}";
                 var resourceLib = new ResourceDictionary("ContextHelp");
@@ -98,12 +102,12 @@ namespace Dash.TagHelpers
             var label = new TagBuilder("label");
             label.AddCssClass("form-label");
             label.AddCssClass("col-4");
-            if ((IsRequired.HasValue && IsRequired.Value) || (!IsRequired.HasValue && For.Metadata.IsRequired))
+            if ((IsRequired.HasValue && IsRequired.Value) || (!IsRequired.HasValue && For?.Metadata.IsRequired == true))
             {
                 label.AddCssClass("required");
             }
-            label.Attributes.Add("for", For.Name);
-            label.InnerHtml.Append(For.Metadata.DisplayName);
+            label.Attributes.Add("for", FieldName);
+            label.InnerHtml.Append(FieldTitle);
             return label;
         }
 

@@ -54,9 +54,9 @@ namespace Dash.TagHelpers
             var input = new TagBuilder("select");
             input.AddCssClass("form-input");
             input.AddCssClass("form-select");
-            input.Attributes.Add("id", For.Name);
-            input.Attributes.Add("name", For.Name);
-            input.Attributes.AddIf("required", "true", (IsRequired.HasValue && IsRequired.Value) || (!IsRequired.HasValue && For.Metadata.IsRequired));
+            input.Attributes.Add("id", FieldName);
+            input.Attributes.Add("name", FieldName);
+            input.Attributes.AddIf("required", "true", IsRequired == true || (!IsRequired.HasValue && For?.Metadata.IsRequired == true));
             input.Attributes.AddIf("autofocus", "true", Autofocus);
             input.Attributes.AddIf("data-toggle", Toggle, !Toggle.IsEmpty());
             input.Attributes.AddIf("data-url", Url, !Url.IsEmpty());
@@ -65,7 +65,7 @@ namespace Dash.TagHelpers
             input.Attributes.AddIf("data-match", Match, Match != null);
             input.Attributes.AddIf("disabled", "true", Disabled == true);
 
-            var value = For.ModelExplorer.Model?.ToString();
+            var value = For?.ModelExplorer.Model?.ToString();
             input.InnerHtml.AppendHtml(new TagBuilder("option"));
             Options.ToList().ForEach(x => {
                 var opt = new TagBuilder("option");

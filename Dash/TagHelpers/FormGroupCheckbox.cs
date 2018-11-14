@@ -40,22 +40,22 @@ namespace Dash.TagHelpers
         {
             var label = new TagBuilder("label");
             label.AddCssClass("form-checkbox");
-            label.Attributes.Add("for", For.Name);
+            label.Attributes.Add("for", FieldName);
 
             var input = new TagBuilder("input");
             input.AddCssClass("form-input");
-            input.Attributes.Add("id", For.Name);
-            input.Attributes.Add("name", For.Name);
+            input.Attributes.Add("id", FieldName);
+            input.Attributes.Add("name", FieldName);
             input.Attributes.Add("type", "checkbox");
             input.Attributes.Add("value", "true");
-            input.Attributes.AddIf("checked", "true", For.ModelExplorer.Model?.ToString().ToBool() == true);
+            input.Attributes.AddIf("checked", "true", For?.ModelExplorer.Model?.ToString().ToBool() == true);
 
             var icon = new TagBuilder("i");
             icon.AddCssClass("form-icon");
 
             label.InnerHtml.AppendHtml(input);
             label.InnerHtml.AppendHtml(icon);
-            label.InnerHtml.Append(For.Metadata.DisplayName);
+            label.InnerHtml.Append(FieldTitle);
 
             return label;
         }

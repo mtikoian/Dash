@@ -82,10 +82,10 @@ namespace Dash.TagHelpers
         {
             var input = new TagBuilder("input");
             input.AddCssClass("form-input");
-            input.Attributes.Add("id", For.Name);
-            input.Attributes.Add("name", For.Name);
+            input.Attributes.Add("id", FieldName);
+            input.Attributes.Add("name", FieldName);
 
-            var name = For.Name.ToLower();
+            var name = FieldName.ToLower();
             var type = "text";
             if (name.EndsWith("password"))
             {
@@ -99,20 +99,23 @@ namespace Dash.TagHelpers
             {
                 Toggle = "datepicker";
             }
-            else if (NumberTypes.Contains(For.ModelExplorer.ModelType))
+            else if (For != null && NumberTypes.Contains(For.ModelExplorer.ModelType))
             {
                 type = "number";
             }
             input.Attributes.Add("type", type);
-            input.Attributes.Add("value", type == "password" ? "" : For.ModelExplorer.Model?.ToString());
+            input.Attributes.Add("value", type == "password" ? "" : For?.ModelExplorer.Model?.ToString());
 
-            input.Attributes.AddIf("required", "true", (IsRequired.HasValue && IsRequired.Value) || (!IsRequired.HasValue && For.Metadata.IsRequired));
+            input.Attributes.AddIf("required", "true", (IsRequired.HasValue && IsRequired.Value) || (!IsRequired.HasValue && For?.Metadata.IsRequired == true));
             input.Attributes.AddIf("autofocus", "true", Autofocus);
 
-            var maxLength = GetMaxLength(For.ModelExplorer.Metadata.ValidatorMetadata);
-            input.Attributes.AddIf("maxlength", maxLength.ToString(), maxLength > 0);
-            var minLength = GetMinLength(For.ModelExplorer.Metadata.ValidatorMetadata);
-            input.Attributes.AddIf("minLength", minLength.ToString(), minLength > 0);
+            if (For != null)
+            {
+                var maxLength = GetMaxLength(For.ModelExplorer.Metadata.ValidatorMetadata);
+                input.Attributes.AddIf("maxlength", maxLength.ToString(), maxLength > 0);
+                var minLength = GetMinLength(For.ModelExplorer.Metadata.ValidatorMetadata);
+                input.Attributes.AddIf("minLength", minLength.ToString(), minLength > 0);
+            }
             input.Attributes.AddIf("data-toggle", Toggle, !Toggle.IsEmpty());
             input.Attributes.AddIf("data-url", Url, !Url.IsEmpty());
             input.Attributes.AddIf("data-params", Params, !Params.IsEmpty());
