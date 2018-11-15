@@ -10,7 +10,7 @@ namespace Dash.Controllers
     [Authorize(Policy = "HasPermission"), Pjax]
     public class RoleController : BaseController
     {
-        public RoleController(IDbContext dbContext, AppConfiguration appConfig) : base(dbContext, appConfig)
+        public RoleController(IDbContext dbContext, IAppConfiguration appConfig) : base(dbContext, appConfig)
         {
         }
 

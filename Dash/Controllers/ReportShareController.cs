@@ -10,7 +10,7 @@ namespace Dash.Controllers
     [Authorize(Policy = "HasPermission"), Pjax]
     public class ReportShareController : BaseController
     {
-        public ReportShareController(IDbContext dbContext, AppConfiguration appConfig) : base(dbContext, appConfig)
+        public ReportShareController(IDbContext dbContext, IAppConfiguration appConfig) : base(dbContext, appConfig)
         {
         }
 

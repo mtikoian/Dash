@@ -168,7 +168,7 @@ namespace Dash
         {
             var appConfig = new AppConfiguration();
             Configuration.Bind("App", appConfig);
-            services.AddSingleton(appConfig);
+            services.AddSingleton((IAppConfiguration)appConfig);
 
             services.AddAuthentication(x => {
                 x.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;

@@ -10,7 +10,7 @@ namespace Dash.Controllers
     [Authorize(Policy = "HasPermission"), Pjax]
     public class ChartShareController : BaseController
     {
-        public ChartShareController(IDbContext dbContext, AppConfiguration appConfig) : base(dbContext, appConfig)
+        public ChartShareController(IDbContext dbContext, IAppConfiguration appConfig) : base(dbContext, appConfig)
         {
         }
 

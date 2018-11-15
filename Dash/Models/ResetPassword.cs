@@ -56,7 +56,7 @@ namespace Dash.Models
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             DbContext = (IDbContext)validationContext.GetService(typeof(IDbContext));
-            AppConfig = (AppConfiguration)validationContext.GetService(typeof(AppConfiguration));
+            AppConfig = (IAppConfiguration)validationContext.GetService(typeof(IAppConfiguration));
             Membership = DbContext.GetAll<UserMembership>(new { Email }).FirstOrDefault();
             if (Membership == null || Membership.ResetHash != Hash || Membership.DateReset == null || Membership.DateReset.Value < DateTimeOffset.Now.AddMinutes(-15))
             {

@@ -12,7 +12,7 @@ namespace Dash.Controllers
     {
         private IActionContextAccessor _ActionContextAccessor;
 
-        public DashboardController(IDbContext dbContext, AppConfiguration appConfig, IActionContextAccessor actionContextAccessor) : base(dbContext, appConfig)
+        public DashboardController(IDbContext dbContext, IAppConfiguration appConfig, IActionContextAccessor actionContextAccessor) : base(dbContext, appConfig)
         {
             _ActionContextAccessor = actionContextAccessor;
         }

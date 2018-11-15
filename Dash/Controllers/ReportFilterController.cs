@@ -10,7 +10,7 @@ namespace Dash.Controllers
     [Authorize(Policy = "HasPermission"), Pjax]
     public class ReportFilterController : BaseController
     {
-        public ReportFilterController(IDbContext dbContext, AppConfiguration appConfig) : base(dbContext, appConfig)
+        public ReportFilterController(IDbContext dbContext, IAppConfiguration appConfig) : base(dbContext, appConfig)
         {
         }
 

@@ -27,7 +27,7 @@ namespace Dash.Models
         {
         }
 
-        public Database(IDbContext dbContext, AppConfiguration appConfig)
+        public Database(IDbContext dbContext, IAppConfiguration appConfig)
         {
             DbContext = dbContext;
             AppConfig = appConfig;

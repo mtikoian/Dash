@@ -17,7 +17,7 @@ namespace Dash.Controllers
     [Pjax]
     public class AccountController : BaseController
     {
-        public AccountController(IDbContext dbContext, AppConfiguration appConfig) : base(dbContext, appConfig)
+        public AccountController(IDbContext dbContext, IAppConfiguration appConfig) : base(dbContext, appConfig)
         {
         }
 

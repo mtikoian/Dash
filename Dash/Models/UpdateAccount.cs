@@ -13,7 +13,7 @@ namespace Dash.Models
         {
         }
 
-        public UpdateAccount(IDbContext dbContext, AppConfiguration appConfig)
+        public UpdateAccount(IDbContext dbContext, IAppConfiguration appConfig)
         {
             DbContext = dbContext;
             AppConfig = appConfig;

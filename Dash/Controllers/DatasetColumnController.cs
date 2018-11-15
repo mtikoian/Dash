@@ -10,7 +10,7 @@ namespace Dash.Controllers
     [Authorize(Policy = "HasPermission"), Pjax]
     public class DatasetColumnController : BaseController
     {
-        public DatasetColumnController(IDbContext dbContext, AppConfiguration appConfig) : base(dbContext, appConfig)
+        public DatasetColumnController(IDbContext dbContext, IAppConfiguration appConfig) : base(dbContext, appConfig)
         {
         }
 

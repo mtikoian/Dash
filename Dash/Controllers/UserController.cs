@@ -10,14 +10,14 @@ namespace Dash.Controllers
     [Authorize(Policy = "HasPermission"), Pjax]
     public class UserController : BaseController
     {
-        public UserController(IDbContext dbContext, AppConfiguration appConfig) : base(dbContext, appConfig)
+        public UserController(IDbContext dbContext, IAppConfiguration appConfig) : base(dbContext, appConfig)
         {
         }
 
         [HttpGet]
         public IActionResult Create()
         {
-            return CreateEditView(new User(DbContext, (AppConfiguration)AppConfig));
+            return CreateEditView(new User(DbContext, AppConfig));
         }
 
         [HttpPost, ValidateAntiForgeryToken]

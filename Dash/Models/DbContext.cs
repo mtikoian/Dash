@@ -21,11 +21,11 @@ namespace Dash.Models
         private static readonly Type[] SavableTypes = { typeof(string), typeof(bool), typeof(int), typeof(long), typeof(DateTime), typeof(DateTimeOffset),
             typeof(decimal), typeof(int?), typeof(long?), typeof(byte[]), typeof(Enum), typeof(double), typeof(DateTimeOffset?) };
 
-        private AppConfiguration _AppConfig;
+        private IAppConfiguration _AppConfig;
         private IMemoryCache _Cache;
         private IHttpContextAccessor _HttpContextAccessor;
 
-        public DbContext(AppConfiguration config, IMemoryCache cache = null, IHttpContextAccessor httpContextAccessor = null)
+        public DbContext(IAppConfiguration config, IMemoryCache cache = null, IHttpContextAccessor httpContextAccessor = null)
         {
             _AppConfig = config;
             _Cache = cache;

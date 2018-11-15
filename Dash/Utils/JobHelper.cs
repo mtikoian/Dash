@@ -28,10 +28,10 @@ namespace Dash
 
     public class JobHelper
     {
-        private AppConfiguration _AppConfig;
+        private IAppConfiguration _AppConfig;
         private IDbContext _DbContext;
 
-        public JobHelper(IDbContext dbContext, AppConfiguration appConfig)
+        public JobHelper(IDbContext dbContext, IAppConfiguration appConfig)
         {
             _DbContext = dbContext;
             _AppConfig = appConfig;

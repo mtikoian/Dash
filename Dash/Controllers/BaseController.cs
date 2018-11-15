@@ -8,7 +8,7 @@ namespace Dash.Controllers
 {
     public abstract class BaseController : Controller
     {
-        public BaseController(IDbContext dbContext, AppConfiguration appConfig)
+        public BaseController(IDbContext dbContext, IAppConfiguration appConfig)
         {
             DbContext = dbContext;
             AppConfig = appConfig;

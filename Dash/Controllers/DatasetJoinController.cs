@@ -10,7 +10,7 @@ namespace Dash.Controllers
     [Authorize(Policy = "HasPermission"), Pjax]
     public class DatasetJoinController : BaseController
     {
-        public DatasetJoinController(IDbContext dbContext, AppConfiguration appConfig) : base(dbContext, appConfig)
+        public DatasetJoinController(IDbContext dbContext, IAppConfiguration appConfig) : base(dbContext, appConfig)
         {
         }
 

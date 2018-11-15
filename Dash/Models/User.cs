@@ -22,7 +22,7 @@ namespace Dash.Models
         {
         }
 
-        public User(IDbContext dbContext, AppConfiguration appConfig)
+        public User(IDbContext dbContext, IAppConfiguration appConfig)
         {
             DbContext = dbContext;
             AppConfig = appConfig;
