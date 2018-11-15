@@ -1,5 +1,4 @@
 
-.dash-frown:before { content: '\e800'; } /* '' */
 .dash-help:before { content: '\e801'; } /* '' */
 .dash-unlock:before { content: '\e802'; } /* '' */
 .dash-fire:before { content: '\e803'; } /* '' */
@@ -24,6 +23,8 @@
 .dash-database:before { content: '\e816'; } /* '' */
 .dash-list-alt:before { content: '\e817'; } /* '' */
 .dash-user:before { content: '\e818'; } /* '' */
+.dash-users:before { content: '\e819'; } /* '' */
+.dash-home:before { content: '\e81a'; } /* '' */
 .dash-sort:before { content: '\e81b'; } /* '' */
 .dash-edit:before { content: '\e81c'; } /* '' */
 .dash-clone:before { content: '\e81d'; } /* '' */
@@ -34,7 +35,6 @@
 .dash-th:before { content: '\e823'; } /* '' */
 .dash-min:before { content: '\e824'; } /* '' */
 .dash-max:before { content: '\e825'; } /* '' */
-.dash-asterisk:before { content: '\e827'; } /* '' */
 .dash-corner:before { content: '\e82a'; } /* '' */
 .dash-logout:before { content: '\e82b'; } /* '' */
 .dash-chart-bar:before { content: '\e82c'; } /* '' */
@@ -42,5 +42,4 @@
 .dash-menu:before { content: '\f0c9'; } /* '' */
 .dash-list-bullet:before { content: '\f0ca'; } /* '' */
 .dash-list-numbered:before { content: '\f0cb'; } /* '' */
-.dash-gauge:before { content: '\f0e4'; } /* '' */
 .dash-bell-alt:before { content: '\f0f3'; } /* '' */

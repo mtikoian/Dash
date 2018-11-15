@@ -8,7 +8,7 @@
 
         @if (User.Identity.IsAuthenticated)
         {
-            <authorized-menu-item controller="Dashboard" action="Index" title="@Core.Dashboard" icon="gauge" />
+            <authorized-menu-item controller="Dashboard" action="Index" title="@Core.Dashboard" icon="home" />
             <authorized-menu-item controller="Dashboard" action="Create" title="@Widgets.LinkAdd" icon="plus" />
             <li class="divider"></li>
             <authorized-menu-item controller="Database" action="Index" title="@Databases.MenuItem" icon="database" />
@@ -16,7 +16,7 @@
             <authorized-menu-item controller="Report" action="Index" title="@Reports.MenuItem" icon="list-alt" />
             <authorized-menu-item controller="Chart" action="Index" title="@Charts.MenuItem" icon="chart-bar" />
             <authorized-menu-item controller="Alert" action="Index" title="@Alerts.MenuItem" icon="bell-alt" />
-            <authorized-menu-item controller="User" action="Index" title="@Users.MenuItem" icon="user" />
+            <authorized-menu-item controller="User" action="Index" title="@Users.MenuItem" icon="users" />
             <authorized-menu-item controller="Role" action="Index" title="@Roles.MenuItem" icon="key" />
             if (User.IsInRole("hangfire.dashboard"))
             {
@@ -30,7 +30,7 @@
             }
             <authorized-menu-item controller="Account" action="ToggleContextHelp" title="@Core.ToggleHelp" icon="help" force-reload="true" />
             <li class="divider"></li>
-            <authorized-menu-item controller="Account" action="UpdateAccount" title="@Account.UpdateAccount" icon="asterisk" />
+            <authorized-menu-item controller="Account" action="UpdateAccount" title="@Account.UpdateAccount" icon="user" />
             <authorized-menu-item controller="Account" action="LogOff" title="@Account.Logout" icon="logout" has-access="true" is-pjax="false" />
         }
         else
