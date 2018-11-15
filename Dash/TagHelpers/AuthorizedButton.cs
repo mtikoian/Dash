@@ -49,14 +49,12 @@ namespace Dash.TagHelpers
             output.Attributes.AddIf("data-reload", "true", ForceReload);
             output.Content.Append(Title);
 
-            var classList = new List<string>();
-            classList.Merge("btn");
-            classList.Merge("mr-1");
+            var classList = new List<string> { "btn", "mr-1" };
             if (!Target.IsEmpty())
             {
-                classList.Merge("pjax-no-follow");
+                classList.Add("pjax-no-follow");
             }
-            classList.Merge(Class.ToCssClass());
+            classList.Add(Class.ToCssClass());
             output.Attributes.Add("class", classList.Join(" "));
 
             base.Process(context, output);

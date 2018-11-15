@@ -644,6 +644,11 @@ namespace Dash
             return interval;
         }
 
+        public static List<SelectListItem> ToSelectList<T>(this IEnumerable<T> enumerable, Func<T, string> text, Func<T, string> value)
+        {
+            return enumerable.Select(f => new SelectListItem { Text = text(f), Value = value(f) }).ToList();
+        }
+
         /// <summary>
         /// Format a datetime into a string SQL will always understand - to avoid culture issues.
         /// </summary>
