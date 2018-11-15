@@ -16,7 +16,7 @@
      * Updates DOM with new content.
      * @param {string} html - DOM fragment of loaded container.
      * @param {Object} options - Configuration options.
-     * return {Object} Updated options.
+     * @returns {Object} Updated options.
      */
     pjax.updateContent = function(html, options) {
         var newNode = $.createNode(html);
@@ -130,8 +130,8 @@
 
     /**
      * Performs AJAX form submission request to page and returns the result.
-     * @param form. Form to submit.
-     * @param callback. Method to call when a page is loaded.
+     * @param {Node} form - Form to submit.
+     * @param {Function} callback - Method to call when a page is loaded.
      */
     pjax.submit = function(form, callback) {
         $.content.loading();
@@ -154,6 +154,7 @@
     /**
      * Validate and correct options object.
      * @param {Object} options - Configuration options.
+     * @param {Object} target - Node to read options from.
      * @return {Object|bool} Valid options object or false.
      */
     pjax.parseOptions = function(options, target) {
