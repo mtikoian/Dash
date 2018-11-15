@@ -261,7 +261,7 @@
                     });
                 }
 
-                $.on(el, 'keydown', function(ev) {
+                $.on(window, 'keydown', function(ev) {
                     if (ev.which === 27) {
                         if (btnCancel) {
                             btnCancel.click();
