@@ -28,7 +28,7 @@ namespace Dash.Controllers
             {
                 return Error(Core.ErrorAlreadyLoggedIn);
             }
-            return View(new ForgotPassword());
+            return View("ForgotPassword", new ForgotPassword());
         }
 
         [HttpPost, ValidateAntiForgeryToken]
@@ -41,12 +41,12 @@ namespace Dash.Controllers
             if (!ModelState.IsValid)
             {
                 ViewBag.Error = ModelState.ToErrorString();
-                return View(model);
+                return View("ForgotPassword", model);
             }
             if (!model.Send(out var error, DbContext, HttpContext, AppConfig, new UrlHelper(ControllerContext)))
             {
                 ViewBag.Error = error;
-                return View(model);
+                return View("ForgotPassword", model);
             }
             ViewBag.Error = Account.ForgotPasswordEmailSentText;
             return View("Login", new LogOn());
@@ -59,8 +59,7 @@ namespace Dash.Controllers
             {
                 return RedirectToAction("Index", "Dashboard");
             }
-            ViewBag.Title = Account.Login;
-            return View(new LogOn { ReturnUrl = returnUrl });
+            return View("Login", new LogOn { ReturnUrl = returnUrl });
         }
 
         [HttpPost, ValidateAntiForgeryToken]
@@ -117,7 +116,7 @@ namespace Dash.Controllers
                 ViewBag.Error = ModelState.ToErrorString();
                 return View("Login", new LogOn());
             }
-            return View(model);
+            return View("ResetPassword", model);
         }
 
         [HttpPost, ValidateAntiForgeryToken]
@@ -142,7 +141,7 @@ namespace Dash.Controllers
                 ViewBag.Error = ModelState.ToErrorString();
             }
 
-            return View(model);
+            return View("ResetPassword", model);
         }
 
         [HttpGet, Authorize]
@@ -164,7 +163,7 @@ namespace Dash.Controllers
             {
                 return Error(Core.ErrorGeneric);
             }
-            return View(new TwoFactorAuthenticator().GenerateSetupCode(AppConfig.Membership.AuthenticatorAppName, membership.Email, AppConfig.Membership.AuthenticatorKey, true, 2));
+            return View("TwoFactorHelp", new TwoFactorAuthenticator().GenerateSetupCode(AppConfig.Membership.AuthenticatorAppName, membership.Email, AppConfig.Membership.AuthenticatorKey, true, 2));
         }
 
         [HttpPost, ValidateAntiForgeryToken]
@@ -177,13 +176,13 @@ namespace Dash.Controllers
             if (!ModelState.IsValid)
             {
                 ViewBag.Error = ModelState.ToErrorString();
-                return View(model);
+                return View("TwoFactorLogin", model);
             }
 
             if (!model.Validate(out var error, DbContext, AppConfig))
             {
                 ViewBag.Error = error;
-                return View(model.Membership);
+                return View("TwoFactorLogin", model.Membership);
             }
 
             model.Membership.DoLogOn(DbContext, HttpContext);
