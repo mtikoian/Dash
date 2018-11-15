@@ -33,7 +33,7 @@ namespace Dash.TagHelpers
 
             var colLeftDiv = new TagBuilder("div");
             colLeftDiv.AddCssClass("col-11");
-            colLeftDiv.InnerHtml.Append(Message);
+            colLeftDiv.InnerHtml.AppendHtml(Message);
 
             var colRightDiv = new TagBuilder("div");
             colRightDiv.AddCssClass("col-1");
