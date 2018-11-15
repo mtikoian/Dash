@@ -428,5 +428,14 @@ namespace Dash.Resources {
                 return ResourceManager.GetString("UpdateAccount", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update Password.
+        /// </summary>
+        public static string UpdatePassword {
+            get {
+                return ResourceManager.GetString("UpdatePassword", resourceCulture);
+            }
+        }
     }
 }

@@ -1,0 +1,26 @@
+﻿@using Dash.Resources
+@using Dash.Models
+@model AccountView
+
+<tab-list>
+    <tab-item>
+        @if (Model.ActiveTab == AccountViewTab.Account)
+        {
+            <tab-active id="updateAccount">@Account.UpdateAccount</tab-active>
+        }
+        else
+        {
+            <authorized-button controller="Account" action="UpdateAccount" title="@Account.UpdateAccount" class="BtnLink" role="tab" />
+        }
+    </tab-item>
+    <tab-item>
+        @if (Model.ActiveTab == AccountViewTab.Password)
+        {
+            <tab-active id="updatePassword">@Account.UpdatePassword</tab-active>
+        }
+        else
+        {
+            <authorized-button controller="Account" action="UpdatePassword" title="@Account.UpdatePassword" class="BtnLink" role="tab" />
+        }
+    </tab-item>
+</tab-list>

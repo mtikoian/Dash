@@ -240,4 +240,7 @@
   <data name="Done" xml:space="preserve">
     <value>Done</value>
   </data>
+  <data name="UpdatePassword" xml:space="preserve">
+    <value>Update Password</value>
+  </data>
 </root>

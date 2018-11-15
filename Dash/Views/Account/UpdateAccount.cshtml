@@ -1,0 +1,21 @@
+﻿@using Dash.Models
+@using Dash.Resources
+@model UpdateAccount
+
+<body-content>
+    <breadcrumb>
+        <breadcrumb-item label="@Account.UpdateAccount" controller="Account" action="UpdateAccount"></breadcrumb-item>
+    </breadcrumb>
+
+    <partial name="_Toast" />
+    <partial name="_AccountTabs" model="new AccountView(AccountViewTab.Account)" />
+
+    <horizontal-form controller="Account" action="UpdateAccount">
+        <form-group-input for="FirstName" autofocus="true" />
+        <form-group-input for="LastName" />
+        <form-group-input for="Email" />
+        <form-group-select for="LanguageId" options="@Model.GetLanguageList()" />
+
+        <form-buttons />
+    </horizontal-form>
+</body-content>

@@ -190,31 +190,55 @@ namespace Dash.Controllers
         }
 
         [HttpGet, Authorize]
-        public IActionResult Update()
+        public IActionResult UpdateAccount()
         {
-            ViewBag.Title = Account.UpdateAccount;
-            return PartialView(DbContext.GetAll<User>(new { UserName = User.Identity.Name }).First());
+            return View("UpdateAccount", new UpdateAccount(DbContext, AppConfig, User.Identity.Name));
         }
 
+        // @todo is Authorize alone enough here or do i need a policy also?
         [HttpPost, Authorize, ValidateAntiForgeryToken]
-        public IActionResult Update(User model)
+        public IActionResult UpdateAccount(UpdateAccount model)
         {
             if (!ModelState.IsValid)
             {
                 ViewBag.Error = ModelState.ToErrorString();
-                return View("Update", model);
+                return View("UpdateAccount", model);
             }
-            if (!model.UpdateProfile(out var errorMsg))
+            if (!model.Save(User.Identity.Name, out var errorMsg))
             {
                 ViewBag.Error = errorMsg;
-                return View("Update", model);
+                return View("UpdateAccount", model);
             }
 
             // add localization cookie after logon
             Response.Cookies.Append(Startup.CultureCookieName, CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(new CultureInfo(model.LanguageCode))));
 
             ViewBag.Message = Account.AccountUpdated;
-            return View("Update", model);
+            return View("UpdateAccount", model);
+        }
+
+        [HttpGet, Authorize]
+        public IActionResult UpdatePassword()
+        {
+            return View("UpdatePassword", DbContext.GetAll<User>(new { UserName = User.Identity.Name }).First());
+        }
+
+        [HttpPost, Authorize, ValidateAntiForgeryToken]
+        public IActionResult UpdatePassword(User model)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Error = ModelState.ToErrorString();
+                return View("UpdatePassword", model);
+            }
+            if (!model.UpdateProfile(out var errorMsg))
+            {
+                ViewBag.Error = errorMsg;
+                return View("UpdatePassword", model);
+            }
+
+            ViewBag.Message = Account.PasswordChangedText;
+            return View("UpdatePassword", model);
         }
     }
 }
