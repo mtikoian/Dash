@@ -7,100 +7,102 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="Tag\**"/>
-    <Content Remove="Tag\**"/>
-    <EmbeddedResource Remove="Tag\**"/>
-    <None Remove="Tag\**"/>
+    <Compile Remove="Tag\**" />
+    <Content Remove="Tag\**" />
+    <EmbeddedResource Remove="Tag\**" />
+    <None Remove="Tag\**" />
   </ItemGroup>
   <ItemGroup>
-    <Content Remove="Views\Shared\Error.cshtml"/>
+    <Content Remove="Views\Shared\Error.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Dapper" Version="1.50.5"/>
-    <PackageReference Include="EPPlus" Version="4.5.2.1"/>
-    <PackageReference Include="FastMember.NetCore" Version="1.1.0"/>
-    <PackageReference Include="HangFire" Version="1.6.21"/>
-    <PackageReference Include="HangFire.SqlServer" Version="1.6.21"/>
-    <PackageReference Include="HardHat" Version="2.0.0"/>
-    <PackageReference Include="Jil" Version="2.16.0"/>
-    <PackageReference Include="MailKit" Version="2.0.7"/>
-    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.1.5"/>
-    <PackageReference Include="MimeTypesMap" Version="1.0.3"/>
-    <PackageReference Include="MySql.Data" Version="8.0.13"/>
-    <PackageReference Include="QRCoder" Version="1.3.3"/>
-    <PackageReference Include="Serilog" Version="2.7.1"/>
-    <PackageReference Include="Serilog.AspNetCore" Version="2.1.1"/>
-    <PackageReference Include="Serilog.Extensions.Logging" Version="2.0.2"/>
-    <PackageReference Include="Serilog.Settings.Configuration" Version="3.0.1"/>
-    <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1"/>
-    <PackageReference Include="Serilog.Sinks.MSSqlServer" Version="5.1.2"/>
-    <PackageReference Include="System.Drawing.Common" Version="4.5.1"/>
-    <PackageReference Include="System.Security.Cryptography.Algorithms" Version="4.3.1"/>
-    <PackageReference Include="ncrontab" Version="3.3.0"/>
+    <PackageReference Include="Dapper" Version="1.50.5" />
+    <PackageReference Include="EPPlus" Version="4.5.2.1" />
+    <PackageReference Include="FastMember.NetCore" Version="1.1.0" />
+    <PackageReference Include="HangFire" Version="1.6.21" />
+    <PackageReference Include="HangFire.SqlServer" Version="1.6.21" />
+    <PackageReference Include="HardHat" Version="1.1.0" />
+    <PackageReference Include="Jil" Version="2.16.0" />
+    <PackageReference Include="MailKit" Version="2.0.7" />
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.1.5" />
+    <PackageReference Include="MimeTypesMap" Version="1.0.3" />
+    <PackageReference Include="MySql.Data" Version="8.0.13" />
+    <PackageReference Include="QRCoder" Version="1.3.3" />
+    <PackageReference Include="Serilog" Version="2.7.1" />
+    <PackageReference Include="Serilog.AspNetCore" Version="2.1.1" />
+    <PackageReference Include="Serilog.Extensions.Logging" Version="2.0.2" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="3.0.1" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
+    <PackageReference Include="Serilog.Sinks.MSSqlServer" Version="5.1.2" />
+    <PackageReference Include="System.Drawing.Common" Version="4.5.1" />
+    <PackageReference Include="System.Security.Cryptography.Algorithms" Version="4.3.1" />
+    <PackageReference Include="ncrontab" Version="3.3.0" />
   </ItemGroup>
   <ItemGroup>
-    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.2"/>
+    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.2" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Views\Account\ForgotPassword.cshtml"/>
-    <None Include="Views\Account\Login.cshtml"/>
-    <None Include="Views\Account\ResetPassword.cshtml"/>
-    <None Include="Views\Account\ToggleContextHelp.cshtml"/>
-    <None Include="Views\Account\Update.cshtml"/>
-    <None Include="Views\Alert\CreateEdit.cshtml"/>
-    <None Include="Views\Alert\Index.cshtml"/>
-    <None Include="Views\ChartRange\CreateEdit.cshtml"/>
-    <None Include="Views\ChartRange\Index.cshtml"/>
-    <None Include="Views\ChartRange\_Columns.cshtml"/>
-    <None Include="Views\ChartRange\_DateInterval.cshtml"/>
-    <None Include="Views\ChartShare\CreateEdit.cshtml"/>
-    <None Include="Views\ChartShare\Index.cshtml"/>
-    <None Include="Views\Chart\ChangeType.cshtml"/>
-    <None Include="Views\Chart\Create.cshtml"/>
-    <None Include="Views\Chart\Edit.cshtml"/>
-    <None Include="Views\Chart\Index.cshtml"/>
-    <None Include="Views\Chart\Rename.cshtml"/>
-    <None Include="Views\Chart\Sql.cshtml"/>
-    <None Include="Views\Dashboard\CreateEdit.cshtml"/>
-    <None Include="Views\Dashboard\Index.cshtml"/>
-    <None Include="Views\Dashboard\Widget.cshtml"/>
-    <None Include="Views\Database\CreateEdit.cshtml"/>
-    <None Include="Views\Database\Index.cshtml"/>
-    <None Include="Views\DatasetColumn\CreateEdit.cshtml"/>
-    <None Include="Views\DatasetColumn\Index.cshtml"/>
-    <None Include="Views\DatasetJoin\CreateEdit.cshtml"/>
-    <None Include="Views\DatasetJoin\Index.cshtml"/>
-    <None Include="Views\Dataset\CreateEdit.cshtml"/>
-    <None Include="Views\Dataset\Index.cshtml"/>
-    <None Include="Views\ReportFilter\CreateEdit.cshtml"/>
-    <None Include="Views\ReportFilter\Index.cshtml"/>
-    <None Include="Views\ReportFilter\_FilterCriteria.cshtml"/>
-    <None Include="Views\ReportFilter\_FilterOperators.cshtml"/>
-    <None Include="Views\ReportShare\CreateEdit.cshtml"/>
-    <None Include="Views\ReportShare\Index.cshtml"/>
-    <None Include="Views\Report\Create.cshtml"/>
-    <None Include="Views\Report\Edit.cshtml"/>
-    <None Include="Views\Report\Index.cshtml"/>
-    <None Include="Views\Report\Rename.cshtml"/>
-    <None Include="Views\Report\SelectColumns.cshtml"/>
-    <None Include="Views\Report\Sql.cshtml"/>
-    <None Include="Views\Role\CreateEdit.cshtml"/>
-    <None Include="Views\Role\Index.cshtml"/>
-    <None Include="Views\Shared\Error.cshtml"/>
-    <None Include="Views\Shared\_Chart.cshtml"/>
-    <None Include="Views\Shared\_ChartBreadcrumbs.cshtml"/>
-    <None Include="Views\Shared\_ChartTabs.cshtml"/>
-    <None Include="Views\Shared\_DatasetBreadcrumbs.cshtml"/>
-    <None Include="Views\Shared\_DatasetTabs.cshtml"/>
-    <None Include="Views\Shared\_Report.cshtml"/>
-    <None Include="Views\Shared\_ReportBreadcrumbs.cshtml"/>
-    <None Include="Views\Shared\_ReportTabs.cshtml"/>
-    <None Include="Views\User\CreateEdit.cshtml"/>
-    <None Include="Views\User\Index.cshtml"/>
+    <None Include="Views\Account\_AccountTabs.cshtml" />
+    <None Include="Views\Account\ForgotPassword.cshtml" />
+    <None Include="Views\Account\Login.cshtml" />
+    <None Include="Views\Account\ResetPassword.cshtml" />
+    <None Include="Views\Account\ToggleContextHelp.cshtml" />
+    <None Include="Views\Account\UpdateAccount.cshtml" />
+    <None Include="Views\Account\UpdatePassword.cshtml" />
+    <None Include="Views\Alert\CreateEdit.cshtml" />
+    <None Include="Views\Alert\Index.cshtml" />
+    <None Include="Views\ChartRange\CreateEdit.cshtml" />
+    <None Include="Views\ChartRange\Index.cshtml" />
+    <None Include="Views\ChartRange\_Columns.cshtml" />
+    <None Include="Views\ChartRange\_DateInterval.cshtml" />
+    <None Include="Views\ChartShare\CreateEdit.cshtml" />
+    <None Include="Views\ChartShare\Index.cshtml" />
+    <None Include="Views\Chart\ChangeType.cshtml" />
+    <None Include="Views\Chart\Create.cshtml" />
+    <None Include="Views\Chart\Edit.cshtml" />
+    <None Include="Views\Chart\Index.cshtml" />
+    <None Include="Views\Chart\Rename.cshtml" />
+    <None Include="Views\Chart\Sql.cshtml" />
+    <None Include="Views\Dashboard\CreateEdit.cshtml" />
+    <None Include="Views\Dashboard\Index.cshtml" />
+    <None Include="Views\Dashboard\Widget.cshtml" />
+    <None Include="Views\Database\CreateEdit.cshtml" />
+    <None Include="Views\Database\Index.cshtml" />
+    <None Include="Views\DatasetColumn\CreateEdit.cshtml" />
+    <None Include="Views\DatasetColumn\Index.cshtml" />
+    <None Include="Views\DatasetJoin\CreateEdit.cshtml" />
+    <None Include="Views\DatasetJoin\Index.cshtml" />
+    <None Include="Views\Dataset\CreateEdit.cshtml" />
+    <None Include="Views\Dataset\Index.cshtml" />
+    <None Include="Views\ReportFilter\CreateEdit.cshtml" />
+    <None Include="Views\ReportFilter\Index.cshtml" />
+    <None Include="Views\ReportFilter\_FilterCriteria.cshtml" />
+    <None Include="Views\ReportFilter\_FilterOperators.cshtml" />
+    <None Include="Views\ReportShare\CreateEdit.cshtml" />
+    <None Include="Views\ReportShare\Index.cshtml" />
+    <None Include="Views\Report\Create.cshtml" />
+    <None Include="Views\Report\Edit.cshtml" />
+    <None Include="Views\Report\Index.cshtml" />
+    <None Include="Views\Report\Rename.cshtml" />
+    <None Include="Views\Report\SelectColumns.cshtml" />
+    <None Include="Views\Report\Sql.cshtml" />
+    <None Include="Views\Role\CreateEdit.cshtml" />
+    <None Include="Views\Role\Index.cshtml" />
+    <None Include="Views\Shared\Error.cshtml" />
+    <None Include="Views\Shared\_Chart.cshtml" />
+    <None Include="Views\Shared\_ChartBreadcrumbs.cshtml" />
+    <None Include="Views\Shared\_ChartTabs.cshtml" />
+    <None Include="Views\Shared\_DatasetBreadcrumbs.cshtml" />
+    <None Include="Views\Shared\_DatasetTabs.cshtml" />
+    <None Include="Views\Shared\_Report.cshtml" />
+    <None Include="Views\Shared\_ReportBreadcrumbs.cshtml" />
+    <None Include="Views\Shared\_ReportTabs.cshtml" />
+    <None Include="Views\User\CreateEdit.cshtml" />
+    <None Include="Views\User\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="wwwroot\css\"/>
-    <Folder Include="wwwroot\js\"/>
+    <Folder Include="wwwroot\css\" />
+    <Folder Include="wwwroot\js\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Resources\Account.Designer.cs">
@@ -166,7 +168,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Resources\Account.es.resx">
-      <Generator/>
+      <Generator />
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Account.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
