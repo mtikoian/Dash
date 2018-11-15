@@ -16,7 +16,7 @@
         <form-group-input for="UserName" autofocus="true" />
         <form-group-input for="FirstName" />
         <form-group-input for="LastName" />
-        <form-group-input for="Password" is-required="@(Model.Id == 0)" help-text="@Model.HelpText" />
+        <form-group-input for="Password" is-required="@(Model.Id == 0)" help-text="@Model.PasswordHelpText" />
         <form-group-input for="ConfirmPassword" is-required="@(Model.Id == 0)" />
         <form-group-input for="Email" />
         <form-group-select for="LanguageId" options="@(Model.DbContext.GetAll<Language>().ToSelectList(x => x.Name, x=> x.Id.ToString()))" />

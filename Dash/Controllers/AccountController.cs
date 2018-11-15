@@ -195,7 +195,6 @@ namespace Dash.Controllers
             return View("UpdateAccount", new UpdateAccount(DbContext, AppConfig, User.Identity.Name));
         }
 
-        // @todo is Authorize alone enough here or do i need a policy also?
         [HttpPost, Authorize, ValidateAntiForgeryToken]
         public IActionResult UpdateAccount(UpdateAccount model)
         {
@@ -220,18 +219,18 @@ namespace Dash.Controllers
         [HttpGet, Authorize]
         public IActionResult UpdatePassword()
         {
-            return View("UpdatePassword", DbContext.GetAll<User>(new { UserName = User.Identity.Name }).First());
+            return View("UpdatePassword", new UpdatePassword(DbContext, AppConfig));
         }
 
         [HttpPost, Authorize, ValidateAntiForgeryToken]
-        public IActionResult UpdatePassword(User model)
+        public IActionResult UpdatePassword(UpdatePassword model)
         {
             if (!ModelState.IsValid)
             {
                 ViewBag.Error = ModelState.ToErrorString();
                 return View("UpdatePassword", model);
             }
-            if (!model.UpdateProfile(out var errorMsg))
+            if (!model.Save(out var errorMsg))
             {
                 ViewBag.Error = errorMsg;
                 return View("UpdatePassword", model);

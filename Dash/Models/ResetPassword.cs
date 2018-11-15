@@ -5,19 +5,18 @@ using System.Linq;
 using Dash.Configuration;
 using Dash.Resources;
 using Dash.Utils;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace Dash.Models
 {
+    [ModelMetadataType(typeof(PasswordMetadata))]
     public class ResetPassword : BaseModel, IValidatableObject
     {
         private UserMembership Membership;
 
-        [Display(Name = "ConfirmPassword", ResourceType = typeof(Users))]
-        [StringLength(250, MinimumLength = 6, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMinMaxLength")]
         [DbIgnore]
-        [DataType(System.ComponentModel.DataAnnotations.DataType.Password)]
         public string ConfirmPassword { get; set; }
 
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
@@ -29,20 +28,10 @@ namespace Dash.Models
         public string Hash { get; set; }
 
         [DbIgnore, BindNever, ValidateNever]
-        public string HelpText
-        {
-            get
-            {
-                return Account.ResetPasswordText.Replace("{0}", AppConfig.Membership.MinRequiredPasswordLength.ToString())
-                    .Replace("{1}", AppConfig.Membership.MinRequiredNonAlphanumericCharacters.ToString());
-            }
-        }
+        public string HelpText { get { return PasswordHelper.HelpText(AppConfig); } }
 
         public bool IsReset { get; set; }
 
-        [Display(Name = "Password", ResourceType = typeof(Users))]
-        [StringLength(250, MinimumLength = 6, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMinMaxLength")]
-        [DataType(System.ComponentModel.DataAnnotations.DataType.Password)]
         [DbIgnore]
         public string Password { get; set; }
 
@@ -77,14 +66,7 @@ namespace Dash.Models
 
             if (IsReset)
             {
-                if (Password != ConfirmPassword)
-                {
-                    yield return new ValidationResult(Account.ErrorPasswordMatch, new[] { "ConfirmPassword" });
-                }
-                else if ((Password.Length < AppConfig.Membership.MinRequiredPasswordLength) || Password.ToCharArray().Count(c => !Char.IsLetterOrDigit(c)) < AppConfig.Membership.MinRequiredNonAlphanumericCharacters)
-                {
-                    yield return new ValidationResult(Account.ErrorInvalidPassword, new[] { "Password" });
-                }
+                yield return PasswordHelper.Validate(AppConfig, Password, ConfirmPassword);
             }
         }
     }

@@ -5,12 +5,13 @@ using System.Linq;
 using Dash.Configuration;
 using Dash.Resources;
 using Dash.Utils;
-using Jil;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace Dash.Models
 {
+    [ModelMetadataType(typeof(PasswordMetadata))]
     public class User : BaseModel, IValidatableObject
     {
         private List<Role> _AllRoles;
@@ -33,9 +34,6 @@ namespace Dash.Models
         [BindNever, ValidateNever]
         public List<Role> AllRoles { get { return _AllRoles ?? (_AllRoles = DbContext.GetAll<Role>().ToList()); } }
 
-        [StringLength(250, MinimumLength = 0, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMinMaxLength")]
-        [Display(Name = "ConfirmPassword", ResourceType = typeof(Users))]
-        [DataType(System.ComponentModel.DataAnnotations.DataType.Password)]
         [DbIgnore]
         public string ConfirmPassword { get; set; }
 
@@ -54,15 +52,8 @@ namespace Dash.Models
         [DbIgnore]
         public string FullName { get { return $"{LastName?.Trim()}, {FirstName?.Trim()}".Trim(new char[] { ' ', ',' }); } }
 
-        [DbIgnore]
-        public string HelpText
-        {
-            get
-            {
-                return Users.PasswordHelp.Replace("{0}", AppConfig.Membership.MinRequiredPasswordLength.ToString())
-                    .Replace("{1}", AppConfig.Membership.MinRequiredNonAlphanumericCharacters.ToString());
-            }
-        }
+        [DbIgnore, BindNever, ValidateNever]
+        public string PasswordHelpText { get { return PasswordHelper.HelpText(AppConfig); } }
 
         [DbIgnore, BindNever, ValidateNever]
         public bool IsLocked
@@ -93,9 +84,6 @@ namespace Dash.Models
         [DbIgnore]
         public int LoginAttempts { get; set; }
 
-        [StringLength(250, MinimumLength = 0, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMinMaxLength")]
-        [Display(Name = "Password", ResourceType = typeof(Users))]
-        [DataType(System.ComponentModel.DataAnnotations.DataType.Password)]
         [DbIgnore]
         public string Password { get; set; }
 
@@ -216,25 +204,14 @@ namespace Dash.Models
                 {
                     yield return new ValidationResult(Account.ErrorInvalidPassword, new[] { "Password" });
                 }
-                else if (Password != ConfirmPassword)
+                else
                 {
-                    yield return new ValidationResult(Account.ErrorPasswordMatch, new[] { "ConfirmPassword" });
-                }
-                else if ((Password.Length < AppConfig.Membership.MinRequiredPasswordLength) || Password.ToCharArray().Count(c => !char.IsLetterOrDigit(c)) < AppConfig.Membership.MinRequiredNonAlphanumericCharacters)
-                {
-                    yield return new ValidationResult(Account.ErrorInvalidPassword, new[] { "Password" });
+                    yield return PasswordHelper.Validate(AppConfig, Password, ConfirmPassword);
                 }
             }
             else if (!Password.IsEmpty())
             {
-                if (Password != ConfirmPassword)
-                {
-                    yield return new ValidationResult(Account.ErrorPasswordMatch, new[] { "ConfirmPassword" });
-                }
-                else if ((Password.Length < AppConfig.Membership.MinRequiredPasswordLength) || Password.ToCharArray().Count(c => !char.IsLetterOrDigit(c)) < AppConfig.Membership.MinRequiredNonAlphanumericCharacters)
-                {
-                    yield return new ValidationResult(Account.ErrorInvalidPassword, new[] { "Password" });
-                }
+                yield return PasswordHelper.Validate(AppConfig, Password, ConfirmPassword);
             }
         }
     }
