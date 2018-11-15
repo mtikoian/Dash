@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Linq;
 using Dash.Configuration;
 using Dash.Models;
-using Dash.Resources;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
@@ -35,6 +33,11 @@ namespace Dash.Controllers
     {
         public JavaScriptException(string message) : base(message)
         {
+        }
+
+        protected JavaScriptException(System.Runtime.Serialization.SerializationInfo serializationInfo, System.Runtime.Serialization.StreamingContext streamingContext)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -176,6 +176,7 @@ namespace Dash.Models
             }
             catch (Exception ex)
             {
+                Serilog.Log.Error(ex, "Cron Exception");
                 parseError = new ValidationResult(Alerts.ErrorCronParse);
             }
             if (parseError != null)
