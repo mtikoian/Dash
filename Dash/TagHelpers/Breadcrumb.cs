@@ -18,7 +18,7 @@ namespace Dash.TagHelpers
             ul.AddCssClass("breadcrumb");
             var li = new TagBuilder("li");
             li.AddCssClass("breadcrumb-item");
-            li.InnerHtml.AppendHtml(Html.AuthorizedActionLink(_HtmlHelper, Core.Dashboard, "Index", "Dashboard"));
+            li.InnerHtml.AppendHtml(_HtmlHelper.ActionLink(Core.Dashboard, "Index", "Dashboard"));
             ul.InnerHtml.AppendHtml(li);
             ul.InnerHtml.AppendHtml(output.GetChildContentAsync().Result);
 

@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.TagHelpers;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace Dash.TagHelpers
@@ -33,8 +32,12 @@ namespace Dash.TagHelpers
                 var urlHelper = new UrlHelper(_HtmlHelper.ViewContext);
                 output.Attributes.Add("data-pjax-url", urlHelper.Action(Action, Controller, RouteValues));
                 output.Attributes.Add("data-pjax-method", "GET");
+                output.Content.Append(Label);
             }
-            output.Content.AppendHtml(Html.AuthorizedActionLink(_HtmlHelper, Label, Action, Controller, RouteValues, returnEmpty: false, hasAccess: !IsActive));
+            else
+            {
+                output.Content.AppendHtml(_HtmlHelper.ActionLink(Label, Action, Controller, RouteValues));
+            }
             base.Process(context, output);
         }
     }
