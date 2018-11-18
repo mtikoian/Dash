@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Linq;
 using Dash.Resources;
+using Dash.TagHelpers;
 using Dash.Utils;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
@@ -86,15 +87,30 @@ namespace Dash.Models
         public string DateFormat { get; set; } = "Y-m-d H:i:S";
 
         [DbIgnore]
-        public List<string> DefaultCurrencyFormats
+        public List<DropdownListItem> DefaultCurrencyFormats
         {
-            get { return new List<string> { "{s:$} {[t:,][d:.][p:2]}", "{s:£}{[t:,][d:.][p:2]}", "{[t:.][d:,][p:2]} {s:€}" }; }
+            get
+            {
+                return new List<DropdownListItem> {
+                    new DropdownListItem { Label = "{s:$} {[t:,][d:.][p:2]}" },
+                    new DropdownListItem { Label = "{s:£}{[t:,][d:.][p:2]}" },
+                    new DropdownListItem { Label = "{[t:.][d:,][p:2]} {s:€}" }
+                };
+            }
         }
 
         [DbIgnore]
-        public List<string> DefaultDateFormats
+        public List<DropdownListItem> DefaultDateFormats
         {
-            get { return new List<string> { "Y-m-d H:i:S", "Y-m-d", "n/j/Y H:i:S", "n/j/y" }; }
+            get
+            {
+                return new List<DropdownListItem> {
+                    new DropdownListItem { Label = "Y-m-d H:i:S" },
+                    new DropdownListItem { Label = "Y-m-d" },
+                    new DropdownListItem { Label = "n/j/Y H:i:S" },
+                    new DropdownListItem { Label = "n/j/y" }
+                };
+            }
         }
 
         [DbIgnore]

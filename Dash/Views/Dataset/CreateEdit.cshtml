@@ -20,8 +20,21 @@
             <form-group-select for="TypeId" options="@Model.TypeList" />
             <form-group-input for="PrimarySource" autofocus="true" toggle="autocomplete" url="@Url.Action("Sources", "Dataset")" params="#DatabaseId,#TypeId" />
             <form-group-textarea for="Conditions" />
-            <form-group-input for="DateFormat" add-on="@(Html.InputGroupButton("DateFormat", Html.Icon("list-numbered", false, true), Model.DefaultDateFormats))" />
-            <form-group-input for="CurrencyFormat" add-on="@(Html.InputGroupButton("CurrencyFormat", Html.Icon("list-numbered", false, true), Model.DefaultCurrencyFormats))" />
+            <form-group-input for="DateFormat">
+                <form-group-addon>
+                    <form-group-dropdown target-id="DateFormat" items="@Model.DefaultDateFormats">
+                        @* TODO make tagHelper for this *@
+                        <i class="dash dash-list-numbered text-primary"></i>
+                    </form-group-dropdown>
+                </form-group-addon>
+            </form-group-input>
+            <form-group-input for="CurrencyFormat">
+                <form-group-addon>
+                    <form-group-dropdown target-id="CurrencyFormat" items="@Model.DefaultCurrencyFormats">
+                        <i class="dash dash-list-numbered text-primary"></i>
+                    </form-group-dropdown>
+                </form-group-addon>
+            </form-group-input>
 
             @* TODO probably needs to be replaced with a sharing mechanism like reports/charts have *@
             <div class="form-group">

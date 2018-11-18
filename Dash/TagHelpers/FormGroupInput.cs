@@ -16,7 +16,6 @@ namespace Dash.TagHelpers
         {
         }
 
-        public IHtmlContent AddOn { get; set; }
         public bool Autofocus { get; set; }
         public string Params { get; set; }
         public bool Preload { get; set; }
@@ -37,10 +36,6 @@ namespace Dash.TagHelpers
             var inputGroup = new TagBuilder("div");
             inputGroup.AddCssClass("input-group");
             inputGroup.InnerHtml.AppendHtml(BuildInput());
-            if (AddOn != null)
-            {
-                inputGroup.InnerHtml.AppendHtml(AddOn);
-            }
             if (Toggle == "datepicker")
             {
                 var icon = new TagBuilder("i");
@@ -70,6 +65,7 @@ namespace Dash.TagHelpers
                 inputGroup.InnerHtml.AppendHtml(clearButton);
             }
             inputGroup.InnerHtml.AppendHtml(BuildHelp());
+            inputGroup.InnerHtml.AppendHtml(output.GetChildContentAsync().Result);
             div.InnerHtml.AppendHtml(inputGroup);
 
             output.Content.AppendHtml(BuildLabel());
