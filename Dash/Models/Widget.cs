@@ -5,6 +5,8 @@ using System.Linq;
 using Dash.Resources;
 using Dash.Utils;
 using Jil;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Dash.Models
@@ -50,19 +52,31 @@ namespace Dash.Models
 
         public int Y { get; set; } = -1;
 
-        public IEnumerable<SelectListItem> GetChartSelectList()
+        [DbIgnore, BindNever, ValidateNever]
+        public IEnumerable<SelectListItem> ChartSelectListItems
         {
-            return DbContext.GetAll<Chart>(new { UserId = RequestUserId }).ToSelectList(r => r.Name, r => r.Id.ToString());
+            get
+            {
+                return DbContext.GetAll<Chart>(new { UserId = RequestUserId }).ToSelectList(r => r.Name, r => r.Id.ToString());
+            }
         }
 
-        public IEnumerable<SelectListItem> GetReportSelectList()
+        [DbIgnore, BindNever, ValidateNever]
+        public IEnumerable<SelectListItem> ReportSelectListItems
         {
-            return DbContext.GetAll<Report>(new { UserId = RequestUserId }).ToSelectList(r => r.Name, r => r.Id.ToString());
+            get
+            {
+                return DbContext.GetAll<Report>(new { UserId = RequestUserId }).ToSelectList(r => r.Name, r => r.Id.ToString());
+            }
         }
 
-        public IEnumerable<SelectListItem> GetWidgetRefreshRateSelectList()
+        [DbIgnore, BindNever, ValidateNever]
+        public IEnumerable<SelectListItem> WidgetRefreshRateSelectListItems
         {
-            return typeof(WidgetRefreshRates).TranslatedSelect(new ResourceDictionary("Widgets"), "LabelRefreshRate_");
+            get
+            {
+                return typeof(WidgetRefreshRates).TranslatedSelect(new ResourceDictionary("Widgets"), "LabelRefreshRate_");
+            }
         }
 
         public void Save()
