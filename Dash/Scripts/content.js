@@ -437,7 +437,7 @@
             elems = $.getAll('input:not([type="hidden"]):not([disabled]):not([readonly]), select:not([disabled]):not([readonly])', node).filter($.isVisible);
         }
         if (!elems.length) {
-            elems = $.getAll('button:not([disabled]), a:not([disabled]), [tabindex]:not([disabled]):not([tabindex="-1"])', node).filter($.isVisible);
+            elems = $.getAll('button:not([disabled]):not([data-toggle]), a:not([disabled]), [tabindex]:not([disabled]):not([tabindex="-1"])', node).filter($.isVisible);
         }
         if (!elems.length) {
             var dlg = $.closest('.rd-dialog', node);
