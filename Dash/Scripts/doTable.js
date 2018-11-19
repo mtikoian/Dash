@@ -382,6 +382,7 @@
     doTable.prototype.loadData = function() {
         this.loading = true;
         this.loadingError = false;
+        this.update();
 
         var self = this;
         $.ajax({
