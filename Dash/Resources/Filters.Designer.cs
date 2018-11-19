@@ -369,45 +369,45 @@ namespace Dash.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Average.
         /// </summary>
-        public static string LabelGroup_AVG {
+        public static string LabelGroup_Avg {
             get {
-                return ResourceManager.GetString("LabelGroup_AVG", resourceCulture);
+                return ResourceManager.GetString("LabelGroup_Avg", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Count.
         /// </summary>
-        public static string LabelGroup_COUNT {
+        public static string LabelGroup_Count {
             get {
-                return ResourceManager.GetString("LabelGroup_COUNT", resourceCulture);
+                return ResourceManager.GetString("LabelGroup_Count", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Maximum.
         /// </summary>
-        public static string LabelGroup_MAX {
+        public static string LabelGroup_Max {
             get {
-                return ResourceManager.GetString("LabelGroup_MAX", resourceCulture);
+                return ResourceManager.GetString("LabelGroup_Max", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Minimum.
         /// </summary>
-        public static string LabelGroup_MIN {
+        public static string LabelGroup_Min {
             get {
-                return ResourceManager.GetString("LabelGroup_MIN", resourceCulture);
+                return ResourceManager.GetString("LabelGroup_Min", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Sum.
         /// </summary>
-        public static string LabelGroup_SUM {
+        public static string LabelGroup_Sum {
             get {
-                return ResourceManager.GetString("LabelGroup_SUM", resourceCulture);
+                return ResourceManager.GetString("LabelGroup_Sum", resourceCulture);
             }
         }
         

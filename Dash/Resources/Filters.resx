@@ -219,19 +219,19 @@
   <data name="LabelFilter_Range" xml:space="preserve">
     <value>Between</value>
   </data>
-  <data name="LabelGroup_AVG" xml:space="preserve">
+  <data name="LabelGroup_Avg" xml:space="preserve">
     <value>Average</value>
   </data>
-  <data name="LabelGroup_COUNT" xml:space="preserve">
+  <data name="LabelGroup_Count" xml:space="preserve">
     <value>Count</value>
   </data>
-  <data name="LabelGroup_MAX" xml:space="preserve">
+  <data name="LabelGroup_Max" xml:space="preserve">
     <value>Maximum</value>
   </data>
-  <data name="LabelGroup_MIN" xml:space="preserve">
+  <data name="LabelGroup_Min" xml:space="preserve">
     <value>Minimum</value>
   </data>
-  <data name="LabelGroup_SUM" xml:space="preserve">
+  <data name="LabelGroup_Sum" xml:space="preserve">
     <value>Sum</value>
   </data>
   <data name="LabelType_Binary" xml:space="preserve">
