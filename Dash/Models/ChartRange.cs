@@ -34,6 +34,12 @@ namespace Dash.Models
         [Display(Name = "Aggregator", ResourceType = typeof(Charts))]
         public int AggregatorId { get; set; }
 
+        [DbIgnore, BindNever, ValidateNever]
+        public IEnumerable<SelectListItem> AggregatorListItems
+        {
+            get { return typeof(Aggregators).TranslatedSelect(new ResourceDictionary("Filters"), "LabelGroup_"); }
+        }
+
         public Chart Chart { get { return _Chart ?? (_Chart = DbContext.Get<Chart>(ChartId)); } }
 
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
