@@ -434,9 +434,6 @@
         }
         var elems = $.getAll('input[autofocus]', node).filter($.isVisible);
         if (!elems.length) {
-            elems = $.getAll('.form-control-error:not([type="hidden"]):not([disabled]):not([readonly]), .mform-control-error:not([type="hidden"]):not([disabled]):not([readonly])', node).filter($.isVisible);
-        }
-        if (!elems.length) {
             elems = $.getAll('input:not([type="hidden"]):not([disabled]):not([readonly]), select:not([disabled]):not([readonly])', node).filter($.isVisible);
         }
         if (!elems.length) {
