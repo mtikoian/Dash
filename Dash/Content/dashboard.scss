@@ -66,12 +66,17 @@
                 padding-right: 0;
 
                 a.btn {
-                    font-size: .8rem;
+                    font-size: .7rem;
                 }
             }
 
-            .btn {
-                padding: .1rem;
+            .dropdown-toggle {
+                border-bottom: 1px solid hsla(0, 0%, 0%, 0.5);
+            }
+
+            .menu-item {
+                padding-top: 0;
+                padding-bottom: 0;
             }
         }
 

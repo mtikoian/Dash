@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Dash.Resources;
+using Dash.TagHelpers;
 using Jil;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Routing;
 
 namespace Dash.Models
 {
@@ -59,6 +59,24 @@ namespace Dash.Models
         public string DisplayDateFormat { get; set; }
 
         public int Height { get; set; } = 4;
+
+        [DbIgnore, BindNever, ValidateNever]
+        public IEnumerable<DropdownListItem> DropDownItems
+        {
+            get
+            {
+                return new List<DropdownListItem> {
+                    new DropdownListItem { Label = Widgets.Refresh, ExtraClasses = "btn btn-link btn-refresh", Icon = "arrows-cw" },
+                    new DropdownListItem { Label = Widgets.ToggleFullScreen, ExtraClasses = "btn btn-link btn-fullscreen", Icon = "max" },
+                    (ChartId.HasPositiveValue() ? new DropdownListItem { Label = Widgets.ViewChart, Controller = "Chart", Action = "Edit", RouteValues = new { Id = ChartId }, ExtraClasses = "btn btn-link fs-disabled", Icon = "info" } :
+                        new DropdownListItem { Label = Widgets.ViewReport, Controller = "Report", Action = "Edit", RouteValues = new { Id = ReportId }, ExtraClasses = "btn btn-link fs-disabled", Icon = "info" }),
+                    new DropdownListItem { Label = Widgets.EditWidget, Controller = "Dashboard", Action = "Edit", RouteValues = new { Id = Id }, ExtraClasses = "btn btn-link fs-disabled", Icon = "pencil" },
+                    new DropdownListItem { Label = Widgets.DeleteWidget, Controller = "Dashboard", Action = "Delete", RouteValues = new { Id = Id },
+                        ExtraClasses = "btn btn-link fs-disabled", Icon = "trash", IconExtraClasses = "text-error", Confirm = Core.AreYouSure
+                    }
+                };
+            }
+        }
 
         [DbIgnore]
         public bool IsData { get { return ReportId.HasPositiveValue(); } }
