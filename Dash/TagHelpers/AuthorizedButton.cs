@@ -17,7 +17,7 @@ namespace Dash.TagHelpers
         }
 
         public string Action { get; set; }
-        public DashClasses Class { get; set; } = DashClasses.BtnPrimary;
+        public DashButtons Class { get; set; } = DashButtons.BtnPrimary;
         public string Controller { get; set; }
         public bool ForceReload { get; set; } = false;
         public bool? HasAccess { get; set; }

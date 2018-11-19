@@ -22,17 +22,16 @@
             <form-group-textarea for="Conditions" />
             <form-group-input for="DateFormat">
                 <form-group-addon>
-                    <form-group-dropdown target-id="DateFormat" items="@Model.DefaultDateFormats">
-                        @* TODO make tagHelper for this *@
-                        <i class="dash dash-list-numbered text-primary"></i>
-                    </form-group-dropdown>
+                    <dropdown target-id="DateFormat" items="@Model.DefaultDateFormats" toggle="input-replace">
+                        <icon name="@DashIcons.ListNumbered" />
+                    </dropdown>
                 </form-group-addon>
             </form-group-input>
             <form-group-input for="CurrencyFormat">
                 <form-group-addon>
-                    <form-group-dropdown target-id="CurrencyFormat" items="@Model.DefaultCurrencyFormats">
-                        <i class="dash dash-list-numbered text-primary"></i>
-                    </form-group-dropdown>
+                    <dropdown target-id="CurrencyFormat" items="@Model.DefaultCurrencyFormats" toggle="input-replace">
+                        <icon name="@DashIcons.ListNumbered" />
+                    </dropdown>
                 </form-group-addon>
             </form-group-input>
 

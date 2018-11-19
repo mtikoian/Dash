@@ -1,17 +1,11 @@
 ﻿namespace Dash
 {
-    public enum DashClasses
+    public enum DashButtons
     {
-        Btn,
-        BtnSuccess,
         BtnWarning,
         BtnInfo,
-        BtnError,
         BtnPrimary,
-        BtnLink,
-        DashAjax,
-        DashConfirm,
-        DashPrompt
+        BtnLink
     }
 
     public enum HttpVerbs
@@ -20,5 +14,12 @@
         Put,
         Post,
         Delete
+    }
+
+    // @todo add entries for all icons and implement it wherever using string icon names currently. some icons names have dashes, so have to account for that
+    public enum DashIcons
+    {
+        ListNumbered,
+        Menu
     }
 }

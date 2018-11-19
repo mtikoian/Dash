@@ -491,11 +491,21 @@ namespace Dash
         }
 
         /// <summary>
-        /// Convert an enum to a css class name.
+        /// Convert a button enum to a css class name.
         /// </summary>
         /// <param name="val">String value to convert.</param>
         /// <returns>Css class name string.</returns>
-        public static string ToCssClass(this DashClasses val)
+        public static string ToCssClass(this DashButtons val)
+        {
+            return CssRegex.Replace(val.ToString(), "-$1").Trim('-').ToLower();
+        }
+
+        /// <summary>
+        /// Convert an icon enum to a css class name.
+        /// </summary>
+        /// <param name="val">String value to convert.</param>
+        /// <returns>Css class name string.</returns>
+        public static string ToCssClass(this DashIcons val)
         {
             return CssRegex.Replace(val.ToString(), "-$1").Trim('-').ToLower();
         }
@@ -505,7 +515,7 @@ namespace Dash
         /// </summary>
         /// <param name="val">String value to convert.</param>
         /// <returns>Css class name string.</returns>
-        public static string ToCssClassList(this IEnumerable<DashClasses> classes)
+        public static string ToCssClassList(this IEnumerable<DashButtons> classes)
         {
             return string.Join(" ", classes.Select(x => x.ToCssClass()));
         }
