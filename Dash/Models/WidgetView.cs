@@ -40,10 +40,9 @@ namespace Dash.Models
             UserId = ActionContextAccessor.ActionContext.HttpContext.User.UserId();
         }
 
-        [JilDirective(true)]
         public IActionContextAccessor ActionContextAccessor { get; set; }
 
-        [DbIgnore, JilDirective(true)]
+        [DbIgnore]
         public bool AllowEdit { get { return UserId == RequestUserId; } }
 
         [Display(Name = "Chart", ResourceType = typeof(Widgets))]
@@ -153,24 +152,10 @@ namespace Dash.Models
         [StringLength(100, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string Title { get; set; }
 
-        [DbIgnore]
-        [BindNever, ValidateNever]
-        public string Url
-        {
-            get
-            {
-                return new UrlHelper(ActionContextAccessor.ActionContext)
-                    .Action("Data", IsData ? "Report" : "Chart", new RouteValueDictionary(new { @id = IsData ? ReportId : ChartId }));
-            }
-        }
-
         [Display(Name = "User", ResourceType = typeof(Widgets))]
         [Required]
-        [JilDirective(true)]
         public int UserId { get; set; }
 
-        [DbIgnore]
-        public DateTimeOffset WidgetDateUpdated { get; set; }
 
         public int Width { get; set; } = 4;
 
