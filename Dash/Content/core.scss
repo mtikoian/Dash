@@ -32,7 +32,6 @@ body {
 
         #menuBtn {
             a {
-                color: $info-color;
                 padding-left: .8rem;
             }
         }
@@ -45,19 +44,17 @@ body {
                 text-decoration: none;
                 color: $primary-color;
                 padding-left: .6rem;
+                border-color: transparent;
 
                 span {
                     display: none;
                     padding-left: .5rem;
                 }
 
-                &:hover {
-                    color: $primary-color-light;
-                    border-left: $info-color 2px solid;
-                }
-
-                &:active, &:focus {
-                    text-decoration: none;
+                &:hover, &:active, &:focus {
+                    color: $primary-color-dark;
+                    background: $secondary-color;
+                    border-color: $primary-color-dark;
                 }
             }
         }

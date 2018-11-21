@@ -1,4 +1,6 @@
-﻿.dashboard {
+﻿@import "spectre/variables";
+
+.dashboard {
     position: relative;
     height: 100%;
 
@@ -53,13 +55,13 @@
             padding: .2rem .4rem 0 .4rem;
             border-bottom: 1px solid hsla(0, 0%, 0%, 0.5);
             height: 1.8rem;
-            font-weight: 700;
             margin-left: 0;
             margin-right: 0;
             font-size: .8rem;
 
             .grid-title {
                 padding: 0 0 .1rem 0;
+                font-weight: 700;
             }
 
             .grid-buttons {
@@ -67,6 +69,7 @@
 
                 a.btn {
                     font-size: .7rem;
+                    color: $primary-color;
                 }
             }
 
