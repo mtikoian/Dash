@@ -116,26 +116,6 @@ li {
     color: #fff;
 }
 
-.rd-content .nav-link {
-    color: #000;
-}
-
-.tab-nav-content {
-    border-bottom: 1px solid #ddd;
-}
-
-.dropdown-menu {
-    .dropdown-item {
-        color: #000;
-    }
-
-    .dropdown-item {
-        &:hover, &.active {
-            background-color: $gray-color-light;
-        }
-    }
-}
-
 /*
 * Context help buttons
 */
@@ -143,80 +123,6 @@ li {
     .dash-help {
         color: $teal;
     }
-}
-
-.input-group {
-    .input-group-btn {
-        .dropdown-toggle {
-            border: 2px solid #ced4da;
-            border-radius: 0;
-        }
-
-        .dropdown-menu-right {
-            right: 0;
-            left: auto; // Reset the default from `.dropdown-menu`
-        }
-
-        .dropdown-item:hover {
-            background-color: $gray-color-light;
-        }
-    }
-}
-
-.card {
-    .card-body {
-        padding: .75rem;
-    }
-}
-
-.btn-toolbar {
-    .btn {
-        margin-right: .1rem;
-    }
-}
-
-label {
-    &.form-checkbox {
-        cursor: pointer;
-    }
-}
-
-.tab-item {
-    .menu {
-        text-align: left;
-        width: 100% !important;
-
-        li {
-            margin-top: 0;
-
-            .dropdown-item {
-                padding: .2rem;
-
-                &:hover {
-                    background-color: $gray-color-light;
-                }
-            }
-        }
-    }
-}
-
-.tab-content {
-    .tab-pane {
-        display: none;
-
-        &.active {
-            display: inherit;
-        }
-
-        .columns {
-            margin-left: 0;
-            margin-right: 0;
-        }
-    }
-}
-
-.form-buttons .btn {
-    margin-right: 1rem;
 }
 
 .collapsible-list {
