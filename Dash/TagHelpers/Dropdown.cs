@@ -57,14 +57,14 @@ namespace Dash.TagHelpers
                     {
                         a.AddCssClass($" {x.ExtraClasses}");
                     }
-                    if (x.Icon.IsEmpty())
+                    if (x.Icon.ToString().IsEmpty())
                     {
                         a.InnerHtml.Append(x.Label);
                     }
                     else
                     {
                         var i = new TagBuilder("i");
-                        i.AddCssClass($"dash dash-{x.Icon}");
+                        i.AddCssClass($"dash dash-{x.Icon.ToCssClass()}");
                         if (!x.IconExtraClasses.IsEmpty())
                         {
                             i.AddCssClass($" {x.IconExtraClasses}");
@@ -95,7 +95,7 @@ namespace Dash.TagHelpers
         public string ExtraClasses { get; set; }
         public string Confirm { get; set; }
         public string Controller { get; set; }
-        public string Icon { get; set; }
+        public DashIcons Icon { get; set; }
         public string IconExtraClasses { get; set; }
         public string Label { get; set; }
         public HttpVerbs Method { get; set; } = HttpVerbs.Get;

@@ -19,7 +19,7 @@ namespace Dash.TagHelpers
         public string Controller { get; set; }
         public bool ForceReload { get; set; } = false;
         public bool? HasAccess { get; set; }
-        public string Icon { get; set; }
+        public DashIcons Icon { get; set; }
         public bool IsPjax { get; set; } = true;
         public string Title { get; set; }
 
@@ -52,7 +52,7 @@ namespace Dash.TagHelpers
             var i = new TagBuilder("i");
             i.AddCssClass("dash");
             i.AddCssClass("dash-lg");
-            i.AddCssClass($"dash-{Icon}");
+            i.AddCssClass($"dash-{Icon.ToCssClass()}");
             a.InnerHtml.AppendHtml(i);
 
             var span = new TagBuilder("span");
