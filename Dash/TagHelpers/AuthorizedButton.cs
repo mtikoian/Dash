@@ -49,7 +49,7 @@ namespace Dash.TagHelpers
             output.Attributes.AddIf("data-reload", "true", ForceReload);
             output.Content.Append(Title);
 
-            var classList = new List<string> { "btn", "mr-1" };
+            var classList = new List<string> { "btn", "mr-2" };
             if (!Target.IsEmpty())
             {
                 classList.Add("pjax-no-follow");
