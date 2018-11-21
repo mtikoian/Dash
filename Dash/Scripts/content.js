@@ -469,7 +469,14 @@
         if (this.hasAttribute('data-target') && this.hasAttribute('data-value')) {
             var target = $.get(this.getAttribute('data-target'));
             if (target && !$.isNull(target.value)) {
-                target.value = this.getAttribute('data-value');
+                if (target.value !== this.getAttribute('data-value')) {
+                    target.value = this.getAttribute('data-value');
+                    // update form has-changes for pjax confirmation handling
+                    var form = $.closest('FORM', target);
+                    if (form) {
+                        $.addClass(form, 'has-changes');
+                    }
+                }
             }
         }
     };
