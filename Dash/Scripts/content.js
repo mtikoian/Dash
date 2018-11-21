@@ -12,7 +12,7 @@
 
     /**
      * Display context help.
-     * @this {Node} Node the event is being bound to.
+     * @this Node
      */
     var contextHelp = function() {
         $.on(this, 'click', Alertify.alert.bind(null, this.getAttribute('data-message').replace(/&quot;/g, '"'), focusOnClose, focusOnClose));
@@ -29,7 +29,7 @@
 
     /**
      * Hide content.
-     * @this {Node} Node the event is being bound to.
+     * @this {Node}
      */
     var hide = function() {
         var node = $.get(this.getAttribute('data-target'));
@@ -40,19 +40,20 @@
 
     /**
      * Conditionally disable inputs.
-     * @this {Node} Input the event is being bound to.
+     * @this {Node}
      */
     var conditionallyDisable = function() {
         var node = $.get(this.getAttribute('data-target'));
-        $.disableIf(node, this.value != this.getAttribute('data-match'));
-        if (this.value != this.getAttribute('data-match')) {
+        var noMatch = this.value !== this.getAttribute('data-match');
+        $.disableIf(node, noMatch);
+        if (noMatch) {
             node.value = '';
         }
     };
 
     /**
      * Conditionally disable content.
-     * @this {Node} Node the event is being bound to.
+     * @this {Node}
      */
     var disable = function() {
         $.onChange(this, conditionallyDisable, true);
@@ -72,7 +73,7 @@
 
     /**
      * Initialize autocomplete.
-     * @this {Node} Node the event is being bound to.
+     * @this {Node}
      */
     var autocompleteLoad = function() {
         // @todo maybe add a way to include source list in original html response instead of requiring another request
@@ -123,7 +124,7 @@
 
     /**
      * Destroy autocompletes on this page.
-     * @this {Node} Node the event is being bound to.
+     * @this Node
      */
     var autocompleteUnload = function() {
         _autocompletes.forEach(function(x) {
@@ -144,7 +145,7 @@
 
     /**
      * Initialize a doTable instance
-     * @this {Node} Node the event is being bound to.
+     * @this Node
      */
     var doTableLoad = function() {
         var node = getNode(this);
@@ -155,7 +156,7 @@
 
     /**
      * Destroy a doTable instance
-     * @this {Node} Node for the table to destroy.
+     * @this Node
      */
     var doTableUnload = function() {
         var node = getNode(this);
@@ -166,7 +167,7 @@
 
     /**
      * Initialize a chart instance
-     * @this {Node} Node the event is being bound to.
+     * @this Node
      */
     var chartLoad = function() {
         var node = getNode(this);
@@ -177,7 +178,7 @@
 
     /**
      * Destroy a chart instance
-     * @this {Node} Node for the chart to destroy.
+     * @this Node
      */
     var chartUnload = function() {
         _charts.forEach(function(x) {
@@ -309,7 +310,7 @@
 
     /**
      * Initialize widget.
-     * @this {Node} Node the event is being bound to.
+     * @this Node
      */
     var widgetLoad = function() {
         var node = getNode(this);
@@ -320,7 +321,7 @@
 
     /**
      * Destroy widget.
-     * @this {Node} Node the event is being unbound from.
+     * @this Node
      */
     var widgetUnload = function() {
         if (this.widget) {
@@ -330,7 +331,7 @@
 
     /**
      * Initialize datepicker.
-     * @this {Node} Node the event is being bound to.
+     * @this Node
      */
     var datepickerLoad = function() {
         var node = getNode(this);
@@ -354,7 +355,7 @@
 
     /**
      * Destroy datepickers on this page.
-     * @this {Node} Node the event is being unbound from.
+     * @this Node
      */
     var datepickerUnload = function() {
         if (this._flatpickr) {
@@ -364,7 +365,7 @@
 
     /**
      * Initialize colorpicker.
-     * @this {Node} Node the picker is being bound to.
+     * @this Node
      */
     var colorpickerLoad = function() {
         var node = getNode(this);
@@ -374,10 +375,8 @@
             node.parentNode.insertBefore(newNode, node.nextSibling);
             var picker = new ColorPicker(newNode, function(hex) {
                 node.value = hex;
-                //$.style('#selectedColorSwatch', { 'background-color': hex });
             });
             picker.setHex(node.value);
-            //$.style('#selectedColorSwatch', { 'background-color': node.value });
 
             $.on(node, 'change', function() {
                 picker.setHex(this.value);
@@ -389,7 +388,7 @@
 
     /**
      * Destroy colorpickers on this page.
-     * @this {Node} Node the event is being unbound from.
+     * @this Node
      */
     var colorpickerUnload = function() {
         $.forEach(_colorpickers, function(x) {
@@ -400,7 +399,7 @@
 
     /**
      * Initialize content replacer.
-     * @this {Node} Node the event is being bound to.
+     * @this Node
      */
     var contentReplaceLoad = function() {
         $.onChange(this, function() {
@@ -442,7 +441,7 @@
      */
     var autofocus = function(node) {
         if (!node) {
-            return null;
+            return;
         }
         var elems = $.getAll('input[autofocus]', node).filter($.isVisible);
         if (!elems.length) {
@@ -493,7 +492,7 @@
 
     /**
      * Initialize the dashboard.
-     * @this {Node} Node the picker is being bound to.
+     * @this Node
      */
     var dashboardLoad = function() {
         var node = getNode(this);
