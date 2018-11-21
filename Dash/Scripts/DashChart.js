@@ -106,7 +106,7 @@
                 url: self.url,
                 block: false
             }, function(data) {
-                if (data.updatedDate && new Date(data.updatedDate) > this.initDate) {
+                if (data.updatedDate && new Date(data.updatedDate) > self.initDate) {
                     $.content.forceRefresh();
                     return;
                 }
