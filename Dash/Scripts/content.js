@@ -59,6 +59,18 @@
     };
 
     /**
+     * Display an alertify message.
+     * @this {Node}
+     */
+    var alert = function() {
+        if (this.hasAttribute('data-success')) {
+            Alertify.success(this.getAttribute('data-success'));
+        } else {
+            Alertify.error(this.getAttribute('data-error'));
+        }
+    };
+
+    /**
      * Initialize autocomplete.
      * @this {Node} Node the event is being bound to.
      */
@@ -558,6 +570,10 @@
         },
         'disable': {
             onLoad: disable,
+            onUnload: null
+        },
+        'alertify': {
+            onLoad: alert,
             onUnload: null
         },
         'autocomplete': {
