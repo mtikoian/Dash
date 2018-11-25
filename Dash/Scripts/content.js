@@ -486,7 +486,15 @@
     var menuLoad = function() {
         $.on(this, 'click', function() {
             $.toggleClass('body', 'toggled', null);
-            $.dispatch(window, new Event('resize'));
+
+            var event;
+            if (typeof (Event) === 'function') {
+                event = new Event('resize');
+            } else {
+                event = document.createEvent('Event');
+                event.initEvent('resize', true, true);
+            }
+            $.dispatch(window, event);
         });
     };
 
