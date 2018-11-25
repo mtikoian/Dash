@@ -24,7 +24,7 @@ body {
     vertical-align: top;
     height: 100%;
     overflow: auto;
-    width: 3rem;
+    width: 3.1rem;
     font-size: $font-size;
 
     .nav-side {
@@ -65,7 +65,7 @@ body {
     display: inline-block;
     vertical-align: top;
     height: 100%;
-    width: calc(100% - 3rem);
+    width: calc(100% - 3.1rem);
     overflow: auto;
     border-left: 1px solid $primary-color;
     font-size: $font-size;
