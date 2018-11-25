@@ -10,9 +10,6 @@
 }(this, (function() {
     'use strict';
 
-    /**
-     * @this {Promise}
-     */
     function finallyConstructor(callback) {
         var constructor = this.constructor;
         return this.then(
@@ -44,7 +41,7 @@
 
     /**
      * @constructor
-     * @param {Function} fn
+     * @param {Function} fn - Function to execute.
      */
     function Promise(fn) {
         if (!(this instanceof Promise))
@@ -137,9 +134,6 @@
         self._deferreds = null;
     }
 
-    /**
-     * @constructor
-     */
     function Handler(onFulfilled, onRejected, promise) {
         this.onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : null;
         this.onRejected = typeof onRejected === 'function' ? onRejected : null;
@@ -147,10 +141,9 @@
     }
 
     /**
-     * Take a potentially misbehaving resolver function and make sure
-     * onFulfilled and onRejected are only called once.
-     *
-     * Makes no guarantees about asynchrony.
+     * Take a potentially misbehaving resolver function and make sure onFulfilled and onRejected are only called once. Makes no guarantees about asynchrony.
+     * @param {Function} fn - Function to resolve.
+     * @param {Object} self - This context.
      */
     function doResolve(fn, self) {
         var done = false;
@@ -308,7 +301,7 @@
                 request.setRequestHeader(i, options.headers[i]);
             }
 
-            request.withCredentials = options.credentials == 'include';
+            request.withCredentials = options.credentials === 'include';
 
             request.onload = function() {
                 resolve(response());
@@ -332,7 +325,7 @@
                 });
 
                 return {
-                    ok: (request.status / 100 | 0) == 2, // 200-299
+                    ok: (request.status / 100 | 0) === 2, // 200-299
                     status: request.status,
                     statusText: request.statusText,
                     url: request.responseURL,

@@ -41,8 +41,7 @@
     };
 
     /**
-     * Multi-sorting function for the data.
-     * @this Object[] - Array that defines current sort columns.
+     * Multi-sorting function for the data. this is an array that defines current sort columns.
      * @param {Object} a - First object to compare.
      * @param {Object} b - Object to compare to.
      * @returns {number} 1 if a comes first, -1 if b comes first, else 0.
@@ -99,7 +98,7 @@
      * @param {string} displayDateFormat - Format to use for dates.
      * @param {string} value - Value to format.
      * @param {string} dataType - Datatype of column.
-     * @returns
+     * @returns {string} Returns a formatted string.
      */
     var getDisplayValue = function(displayCurrencyFormat, displayDateFormat, value, dataType) {
         if (!dataType || $.isNull(value)) {
@@ -408,6 +407,7 @@
 
     /**
      * Build an array containing the sorting info.
+     * @returns {Object[]} Array of sorting objects.
      */
     doTable.prototype.buildSortList = function() {
         var sorting = [];
@@ -545,6 +545,7 @@
 
     /**
      * Reset table sorting.
+     * @param {Object} column - Resets sort for this table column.
      */
     doTable.prototype.resetSort = function(column) {
         $.forEach(this.opts.columns, function(x) {

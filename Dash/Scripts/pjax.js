@@ -1,5 +1,6 @@
 ﻿/*!
  * PJAX library.
+ * Based on https://github.com/thybag/PJAX-Standalone
  */
 (function(root, $, Alertify) {
     'use strict';

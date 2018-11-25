@@ -1,12 +1,28 @@
 # Dash
 
-Dash is a high performance dynamic reporting engine. 
+Dash is a high performance dynamic reporting engine. It allows users to configure database connections, import database schema, and easily generate reports and charts without having any SQL knowledge.  It's a labor of love - created to experiment. There are options like ELK that do more; but Dash may work for you if you want something simple. 
 
-* Designed to use a SQL Server backend, and query SQL Server, MySql/MariaDB, and Postgres databases. 
-* Every component in the project has been chosen for performance, with many created custom for this project. 
-* Uses Spectre styles, Alertify, Fontello, ChartJS, and a lot of native javascript.
+* AspNetCore MVC 2.1 backend using Dapper for DB connections.
+* Uses pJax to simulate a SPA experience without the overhead.
+* Designed to use a SQL Server db, and query SQL Server, MySql/MariaDB, and Postgres (coming soon) databases.
+* Every frontend component in the project has been chosen for performance, with many created custom or extensively modified for this project. Including but not limited to:
+	* [Alertify](https://github.com/alertifyjs/alertify.js)
+	* [Autocomplete](https://github.com/Pixabay/JavaScript-autoComplete)
+	* [ChartJS](https://github.com/chartjs/Chart.js)
+	* [CollapsibleList](http://code.stephenmorley.org/)
+	* [doT](https://github.com/olado/doT)
+	* [Draggabilly](http://draggabilly.desandro.com)
+	* [Fetch polyfill](https://github.com/developit/unfetch)
+	* [FlexiColorPicker](https://github.com/DavidDurman/FlexiColorPicker)
+	* [flatpickr](https://github.com/flatpickr/flatpickr)
+	* [Fontello](http://fontello.com/)
+	* [pJax](https://github.com/thybag/PJAX-Standalone)
+	* [Promise polyfill](https://github.com/taylorhakes/promise-polyfill)
+	* [Spectre styles](https://github.com/picturepan2/spectre)
+	* ... and a lot of native javascript.
 * Designed to work on desktop and mobile devices.
 * Supports IE 10+, Edge, Android 4+, Safari for iOS 5+, Firefox 16+, and Chrome 12+.
+	* Usage will be challenging/limited on devices smaller than 1024x768.
 * Users can create custom reports from any SQL data source.
   * Use those reports to create charts and alerts.
   * Reports can be exported to Excel, and charts can be exported to PNG.
@@ -14,7 +30,7 @@ Dash is a high performance dynamic reporting engine.
   * Dashboard widgets can be resized and arranged easily, and can refresh automatically.
 * Context sensitive help teaches you how it works.
 
-## The Cranky Developer's Manifesto
+## [The Cranky Developer's Manifesto](https://dev.to/codemouse92/the-cranky-developer-manifesto--24km)
 
 I am developing this project for the sole purpose of my own enjoyment. I make no promises about release date, features, usability, stability, practicality, or compliance with any normal standards of software development.
 

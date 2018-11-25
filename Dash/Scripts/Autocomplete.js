@@ -4,15 +4,12 @@
  * GitHub: https://github.com/Pixabay/JavaScript-autoComplete
  * License: http://www.opensource.org/licenses/mit-license.php
  */
-
 (function(root, factory) {
     root.Autocomplete = factory(root.$);
 })(this, function($) {
     'use strict';
 
     function Autocomplete(options) {
-        // helpers
-
         function live(elClass, event, cb, context) {
             $.on(context || document, event, function(e) {
                 var found, el = e.target || e.srcElement;
@@ -46,7 +43,7 @@
         for (var k in options) { if (options.hasOwnProperty(k)) o[k] = options[k]; }
 
         // init
-        var elems = typeof o.selector == 'object' ? [o.selector] : document.querySelectorAll(o.selector);
+        var elems = typeof o.selector === 'object' ? [o.selector] : document.querySelectorAll(o.selector);
         for (var i = 0; i < elems.length; i++) {
             var that = elems[i];
 
@@ -174,7 +171,7 @@
                     that.sc.style.display = 'none';
                 } else if (key === 13 || key === 9) {
                     // enter or tab
-                    if (sel && that.sc.style.display != 'none') {
+                    if (sel && that.sc.style.display !== 'none') {
                         if (key === 13) {
                             e.preventDefault();
                         }
@@ -194,10 +191,10 @@
 
             that.keyupHandler = function(e) {
                 var key = window.event ? e.keyCode : e.which;
-                if (!key || (key < 35 || key > 40) && key != 13 && key != 27) {
+                if (!key || (key < 35 || key > 40) && key !== 13 && key !== 27) {
                     var val = that.value;
                     if (val.length >= o.minChars) {
-                        if (val != that.last_val) {
+                        if (val !== that.last_val) {
                             that.last_val = val;
                             clearTimeout(that.timer);
                             if (o.cache) {
