@@ -86,7 +86,7 @@
             scaleBeginAtZero: false,
 
             // String - Scale label font declaration for the scale label
-            scaleFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+            scaleFontFamily: '"Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
 
             // Number - Scale label font size in pixels
             scaleFontSize: 12,
@@ -98,10 +98,10 @@
             scaleFontColor: "#666",
 
             // Boolean - whether or not the chart should be responsive and resize when the browser does.
-            responsive: false,
+            responsive: true,
 
             // Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
-            maintainAspectRatio: true,
+            maintainAspectRatio: false,
 
             // Boolean - Determines whether to draw tooltips on the canvas or not - attaches events to touchmove & mousemove
             showTooltips: true,
@@ -116,10 +116,10 @@
             tooltipFillColor: "rgba(0,0,0,0.8)",
 
             // String - Tooltip label font declaration for the scale label
-            tooltipFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+            tooltipFontFamily: '"Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
 
             // Number - Tooltip label font size in pixels
-            tooltipFontSize: 14,
+            tooltipFontSize: 12,
 
             // String - Tooltip font weight style
             tooltipFontStyle: "normal",
@@ -128,7 +128,7 @@
             tooltipFontColor: "#fff",
 
             // String - Tooltip title font declaration for the scale label
-            tooltipTitleFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+            tooltipTitleFontFamily: '"Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
 
             // Number - Tooltip title font size in pixels
             tooltipTitleFontSize: 14,
