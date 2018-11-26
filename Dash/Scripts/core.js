@@ -28,7 +28,7 @@
 
         var cpy;
         if (isArray(src)) {
-            return src.map(function(x) { return clone(x); });
+            return map(src, function(x) { return clone(x); });
         }
         if (isDate(src)) {
             return new Date(src.getTime());
@@ -187,51 +187,6 @@
         if (node) {
             node.dispatchEvent(event);
         }
-    };
-
-    /**
-     * Deep equality comparer for objects.
-     * @param {Object} x - First object to compare.
-     * @param {Object} y - Object to compare to x.
-     * @returns {bool} True if objects are equal.
-     */
-    var equals = function(x, y) {
-        var p;
-        for (p in y) {
-            if (isUndefined(x[p])) {
-                return false;
-            }
-        }
-
-        for (p in y) {
-            if (y[p]) {
-                switch (typeof y[p]) {
-                    case 'object':
-                        if (!equals(y[p], x[p])) {
-                            return false;
-                        } break;
-                    case 'function':
-                        if (isUndefined(x[p]) || (p !== 'equals' && y[p].toString() !== x[p].toString())) {
-                            return false;
-                        }
-                        break;
-                    default:
-                        if (y[p] !== x[p]) {
-                            return false;
-                        }
-                }
-            } else if (x[p]) {
-                return false;
-            }
-        }
-
-        for (p in x) {
-            if (isUndefined(y[p])) {
-                return false;
-            }
-        }
-
-        return true;
     };
 
     /**
@@ -657,7 +612,7 @@
         toggle ? addClass(node, className) : removeClass(node, className);
         return;
     };
-    
+
     /**
      * Change the property names of an object to lowercase.
      * @param {Object} obj - Object to change properties of.

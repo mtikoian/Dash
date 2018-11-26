@@ -1,4 +1,21 @@
-﻿﻿.color-picker-swatch {
+﻿.chart-legend {
+    list-style: none;
+
+    li {
+        float: left;
+
+        .chart-legend-icon {
+            position: relative;
+            padding: .2rem .8rem;
+            border-radius: 13px;
+            color: white;
+            z-index: 2;
+            margin: .5rem;
+        }
+    }
+}
+
+﻿.color-picker-swatch {
     cursor: pointer;
     border: 1px solid black;
     min-height: 2.2rem;

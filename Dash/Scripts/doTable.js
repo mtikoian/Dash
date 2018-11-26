@@ -905,6 +905,13 @@
         $.on($.get('.dotable-btn-last', container), 'click', this.moveToPage.bind(this, 1, true));
         $.on($.get('.dotable-area', container), 'scroll', this.onScroll.bind(this));
 
+        this.events = {
+            resize: $.debounce(this.onResize.bind(this), 50),
+            move: this.onMouseMove.bind(this),
+            up: this.onMouseUp.bind(this)
+        };
+        $.on(window, 'resize', this.events.resize);
+
         if (this.opts.editable) {
             // bind column sort and column resize events
             var thead = $.get('.dotable-head', container);
@@ -924,13 +931,6 @@
                     $.on(x, 'click', this.changeSort.bind(this, x.getAttribute('data-field'), x.getAttribute('data-type').toLowerCase()));
                 }, this);
             }
-
-            this.events = {
-                resize: $.debounce(this.onResize.bind(this), 50),
-                move: this.onMouseMove.bind(this),
-                up: this.onMouseUp.bind(this)
-            };
-            $.on(window, 'resize', this.events.resize);
             $.on(window, 'mousemove', this.events.move);
             $.on(window, 'mouseup', this.events.up);
         }

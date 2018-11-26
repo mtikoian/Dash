@@ -538,7 +538,6 @@
      */
     var dashboardResizeLayout = function() {
         getWidgets().forEach(function(x) {
-            x.updateLayout();
             x.setupDraggie();
         });
     };

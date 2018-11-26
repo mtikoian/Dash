@@ -98,11 +98,9 @@ gulp.task('js', function() {
         paths.js + 'flatpickr.js',         // datetime picker
         // re-used components
         paths.js + 'Autocomplete.js',      // autocomplete component
-        //paths.js + 'Chart.js',             // charting
-        //paths.js + 'DashChart.js',         // chart wrapper
-        paths.js + 'Chart-v1.js',             // charting
-        paths.js + 'DashChart-v1.js',         // chart wrapper
+        paths.js + 'Chart.js',             // charting
         paths.js + 'CollapsibleList.js',   // lightweight library for treeviews
+        paths.js + 'DashChart.js',         // chart wrapper
         paths.js + 'Draggabilly.js',       // drag-n-drop functionality
         paths.js + 'ColorPicker.js',       // custom color picker
         paths.js + 'Rect.js',              // library for rectangle geometry

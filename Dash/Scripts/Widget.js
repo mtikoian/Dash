@@ -264,12 +264,15 @@
         },
 
         updateLayout: function() {
-            var table = $.get('[data-toggle="dotable"]', this.getContainer());
-            if (table && table.doTable) {
-                table.doTable.updateLayout();
+            // @todo de-duplicate this code
+            var event;
+            if (typeof (Event) === 'function') {
+                event = new Event('resize');
             } else {
-                this.chart.resize();
+                event = document.createEvent('Event');
+                event.initEvent('resize', true, true);
             }
+            $.dispatch(window, event);
         },
 
         forceRefresh: function() {
