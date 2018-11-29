@@ -369,6 +369,8 @@
             return this;
         },
         updateResources: function(okay, cancel) {
+            okay = $.hasValue(okay) ? okay : _alertify.defaultOkLabel;
+            cancel = $.hasValue(cancel) ? cancel : _alertify.defaultCancelLabel;
             _alertify.defaultOkLabel = okay;
             _alertify.okLabel = okay;
             _alertify.defaultCancelLabel = cancel;
