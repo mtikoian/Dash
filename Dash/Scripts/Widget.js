@@ -264,15 +264,7 @@
         },
 
         updateLayout: function() {
-            // @todo de-duplicate this code
-            var event;
-            if (typeof (Event) === 'function') {
-                event = new Event('resize');
-            } else {
-                event = document.createEvent('Event');
-                event.initEvent('resize', true, true);
-            }
-            $.dispatch(window, event);
+            $.trigger(null, 'resize');
         },
 
         forceRefresh: function() {

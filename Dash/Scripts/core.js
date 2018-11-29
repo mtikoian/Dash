@@ -293,7 +293,7 @@
             list = (container || document).querySelectorAll(selector);
         }
         var res = Array.prototype.slice.call(list);
-        if (includeContainer && container && matches(container, selector)) {
+        if (includeContainer && container && _matches(container, selector)) {
             res.unshift(container);
         }
         return res;
@@ -463,20 +463,6 @@
     };
 
     /**
-     * Verify if an element would be matched by a selector.
-     * @param {Node} element - Node to compare the selector to.
-     * @param {string} selector - Valid CSS selector.
-     * @returns {bool} True if the element matches the selector.
-     */
-    var matches = function(element, selector) {
-        var p = Element.prototype;
-        var f = p.matches || p.webkitMatchesSelector || p.mozMatchesSelector || p.msMatchesSelector || function(s) {
-            return [].indexOf.call(getAll(s), this) !== -1;
-        };
-        return f.call(element, selector);
-    };
-
-    /**
      * Do nothing.
      */
     var noop = function() { };
@@ -614,6 +600,39 @@
     };
 
     /**
+    * Set a function to run onChange, and run it immediately if needed.
+    * @param {Node} element - Element to attach the event to.
+    * @param {string} eventName - Name of event to trigger.
+    */
+    var trigger = function(element, eventName) {
+        var node = element ? get(element) : window;
+        if (node) {
+            var event;
+            if (typeof (Event) === 'function') {
+                event = new Event(eventName);
+            } else {
+                event = document.createEvent('Event');
+                event.initEvent(eventName, true, true);
+            }
+            dispatch(node, event);
+        }
+    };
+
+    /**
+     * Verify if an element would be matched by a selector.
+     * @param {Node} element - Node to compare the selector to.
+     * @param {string} selector - Valid CSS selector.
+     * @returns {bool} True if the element matches the selector.
+     */
+    var _matches = function(element, selector) {
+        var p = Element.prototype;
+        var f = p.matches || p.webkitMatchesSelector || p.mozMatchesSelector || p.msMatchesSelector || function(s) {
+            return [].indexOf.call(getAll(s), this) !== -1;
+        };
+        return f.call(element, selector);
+    };
+
+    /**
      * Change the property names of an object to lowercase.
      * @param {Object} obj - Object to change properties of.
      * @returns {Object} New object with all lowercase property names.
@@ -692,7 +711,6 @@
         isUndefined: isUndefined,
         isVisible: isVisible,
         map: map,
-        matches: matches,
         noop: noop,
         off: off,
         on: on,
@@ -702,6 +720,7 @@
         setText: setText,
         show: show,
         style: style,
-        toggleClass: toggleClass
+        toggleClass: toggleClass,
+        trigger: trigger
     };
 }(this));

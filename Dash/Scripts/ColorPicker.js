@@ -180,12 +180,21 @@
         },
 
         /**
+         * Convert hex string to RGB.
+         * @param {string} hex - Hex string.
+         * @returns {Object} Object with RGB properties.
+         */
+        hex2rgb: function(hex) {
+            return { r: parseInt(hex.substr(1, 2), 16), g: parseInt(hex.substr(3, 2), 16), b: parseInt(hex.substr(5, 2), 16) };
+        },
+
+        /**
          * Convert hex string to hsv values.
          * @param {string} hex - Hex string.
          * @returns {Object} Object with HSV values.
          */
         hex2hsv: function(hex) {
-            return this.rgb2hsv($.colors.hex2rgb(hex));
+            return this.rgb2hsv(this.hex2rgb(hex));
         },
 
         /**
@@ -255,12 +264,11 @@
         },
 
         /**
-         * Sets color of the picker in hsv/rgb/hex format.
+         * Sets color of the picker in hsv/hex format.
          * @param {Object} hsv - Object of the form: { h: <hue>, s: <saturation>, v: <value> }.
-         * @param {Object} rgb - Object of the form: { r: <red>, g: <green>, b: <blue> }.
          * @param {string} hex - String of the form: #RRGGBB.
          */
-        setColor: function(hsv, rgb, hex) {
+        setColor: function(hsv, hex) {
             this.h = hsv.h % 360;
             this.s = hsv.s;
             this.v = hsv.v;
@@ -278,7 +286,7 @@
          * @param {string} hex - Hex color format #RRGGBB.
          */
         setHex: function(hex) {
-            this.setColor(this.hex2hsv(hex), undefined, hex);
+            this.setColor(this.hex2hsv(hex), hex);
         },
 
         /**

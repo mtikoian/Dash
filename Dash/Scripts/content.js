@@ -88,7 +88,6 @@
                 if (data && data.length) {
                     _autocompletes.push(new Autocomplete({ selector: self, sourceData: data }));
                 } else {
-                    // error - @todo what do i do here?
                     _autocompletes.push(new Autocomplete({ selector: self, sourceData: null }));
                 }
             });
@@ -113,8 +112,6 @@
                     }, function(data) {
                         if (data && data.length) {
                             response(data);
-                        } else {
-                            // error - @todo what do i do here?
                         }
                     });
                 }
@@ -486,15 +483,7 @@
     var menuLoad = function() {
         $.on(this, 'click', function() {
             $.toggleClass('body', 'toggled', null);
-
-            var event;
-            if (typeof (Event) === 'function') {
-                event = new Event('resize');
-            } else {
-                event = document.createEvent('Event');
-                event.initEvent('resize', true, true);
-            }
-            $.dispatch(window, event);
+            $.trigger(null, 'resize');
         });
     };
 
@@ -632,9 +621,8 @@
      * @param {bool} isUnload - True if unloading, false if loading
      */
     var processToggles = function(node, isUnload) {
-        // process all the toggles
         var elems = $.getAll('[data-toggle]', node);
-        if ($.matches(node, '[data-toggle]')) {
+        if (node.hasAttribute('data-toggle')) {
             elems.push(node);
         }
         $.forEach(elems, function(x) {
@@ -720,7 +708,6 @@
 
     $.content = {
         done: done,
-        focusOnClose: focusOnClose,
         forceRefresh: forceRefresh,
         load: load,
         loading: loading,

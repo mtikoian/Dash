@@ -2,6 +2,7 @@
  * flatpickr v4.5.1, @license MIT
  * https://github.com/flatpickr/flatpickr
  */
+/* eslint-disable */
 var flatpickr = (function() {
     'use strict';
 
