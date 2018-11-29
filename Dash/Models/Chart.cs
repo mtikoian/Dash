@@ -80,6 +80,9 @@ namespace Dash.Models
         [DbIgnore]
         public bool IsOwner { get { return RequestUserId == OwnerId; } }
 
+        [DbIgnore, BindNever, ValidateNever]
+        public bool IsRadial { get { return ChartTypeId == (int)ChartTypes.Pie || ChartTypeId == (int)ChartTypes.Doughnut || ChartTypeId == (int)ChartTypes.PolarArea; } }
+
         [Display(Name = "Name", ResourceType = typeof(Charts))]
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         [StringLength(100, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]

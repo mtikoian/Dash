@@ -8,6 +8,6 @@
         <form-group-select for="YAxisColumnId" options="@Model.ColumnSelectListItems" />
         <form-group-select for="AggregatorId" options="@Model.AggregatorListItems" />
         <partial name="_DateInterval" />
-        <form-group-input for="Color" toggle="colorpicker" />
+        <form-group-input for="Color" toggle="colorpicker" no-render="@Model.Chart.IsRadial" />
     }
 </div>
