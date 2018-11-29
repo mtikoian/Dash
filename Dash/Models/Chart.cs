@@ -26,7 +26,9 @@ namespace Dash.Models
         Bar = 2,
         Pie = 3,
         Doughnut = 4,
-        HorizontalBar = 5
+        HorizontalBar = 5,
+        PolarArea = 6,
+        Radar = 7
     }
 
     public enum DateIntervals

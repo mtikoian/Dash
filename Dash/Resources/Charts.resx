@@ -291,4 +291,10 @@
   <data name="ErrorNoRanges" xml:space="preserve">
     <value>There are no ranges created for this chart. Use `Ranges` from the menu to create ranges.</value>
   </data>
+  <data name="LabelType_PolarArea" xml:space="preserve">
+    <value>Polar Area</value>
+  </data>
+  <data name="LabelType_Radar" xml:space="preserve">
+    <value>Radar</value>
+  </data>
 </root>

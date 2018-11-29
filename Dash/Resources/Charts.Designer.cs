@@ -385,6 +385,24 @@ namespace Dash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Polar Area.
+        /// </summary>
+        public static string LabelType_PolarArea {
+            get {
+                return ResourceManager.GetString("LabelType_PolarArea", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Radar.
+        /// </summary>
+        public static string LabelType_Radar {
+            get {
+                return ResourceManager.GetString("LabelType_Radar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Charts.
         /// </summary>
         public static string MenuItem {
