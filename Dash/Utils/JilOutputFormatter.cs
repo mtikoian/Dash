@@ -9,7 +9,8 @@ namespace Dash
 {
     public class JilOutputFormatter : TextOutputFormatter
     {
-        public static Options Options = new Options(false, true, false, DateTimeFormat.ISO8601, true, UnspecifiedDateTimeKindBehavior.IsLocal, SerializationNameFormat.CamelCase);
+        // don't exclude nulls - it would reduce bandwidth, but objects in arrays that appear to be different will cause slower js performance.
+        public static Options Options = new Options(false, false, false, DateTimeFormat.ISO8601, true, UnspecifiedDateTimeKindBehavior.IsLocal, SerializationNameFormat.CamelCase);
 
         public JilOutputFormatter()
         {
