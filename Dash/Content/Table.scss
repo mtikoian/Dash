@@ -1,12 +1,12 @@
 ﻿.dash-table {
-    .table-scrollable, .dotable-scrollable {
+    .dotable-scrollable {
         display: block;
         position: relative;
         box-sizing: border-box;
         overflow: hidden;
         word-wrap: break-word;
 
-        .table-area, .dotable-area {
+        .dotable-area {
             height: 100%;
             overflow: auto;
 
@@ -19,14 +19,14 @@
                     background-color: #eeeeee;
                 }
 
-                &.table-data, &.dotable-data {
+                &.dotable-data {
                     tr {
                         th {
                             padding: .3rem .3rem;
                             border-top: none;
                             border-right: 1px gray dotted;
 
-                            .data-table-arrow, .dotable-arrow {
+                            .dotable-arrow {
                                 font-size: 1rem;
                                 cursor: pointer;
 
