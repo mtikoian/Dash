@@ -204,6 +204,9 @@
         if (body.hasAttribute('data-error-name')) {
             pjax.errorMessageName = body.getAttribute('data-error-name');
         }
+        if (body.hasAttribute('data-okay')) {
+            Alertify.updateResources(body.getAttribute('data-okay'), body.getAttribute('data-cancel'));
+        }
         $.content.load(body);
     };
 

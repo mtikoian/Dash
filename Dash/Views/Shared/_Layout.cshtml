@@ -11,7 +11,11 @@
     <link rel="stylesheet" href="~/css/bundle.css.gz" asp-append-version="true" />
     <link rel="icon" href="~/favicon.ico">
 </head>
-<body data-base-url="@Url.Content("~")" data-resx="@Url.Action("Index", "Resx", null)" data-lang="@(CultureInfo.DefaultThreadCurrentCulture?.TwoLetterISOLanguageName ?? "en")" data-error-name="@Core.ErrorNameRequired" data-error-refresh="@Core.ErrorRefresh">
+<body data-base-url="@Url.Content("~")" data-resx="@Url.Action("Index", "Resx", null)"
+      data-lang="@(CultureInfo.DefaultThreadCurrentCulture?.TwoLetterISOLanguageName ?? "en")"
+      data-okay="@Core.Okay" data-cancel="@Core.Cancel"
+      data-error-name="@Core.ErrorNameRequired" data-error-refresh="@Core.ErrorRefresh">
+
     <div id="fullPageBody">
         <partial name="_NavBar" />
         <div id="contentWrapper">
