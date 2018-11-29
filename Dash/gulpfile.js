@@ -93,7 +93,8 @@ gulp.task('js', function() {
         paths.js + 'core.js',              // common js functions for the site
         paths.js + 'Alertify.js',          // alerts/modals
         paths.js + 'pjax.js',              // pjax library
-        paths.js + 'helpers.js',           // commonly used helper libraries
+        paths.js + 'ajax.js',              // ajax helper library
+        paths.js + 'accounting.js',        // currency helper library
         paths.js + 'doT.js',               // template engine
         paths.js + 'flatpickr.js',         // datetime picker
         // re-used components
