@@ -49,7 +49,7 @@ namespace Dash.Controllers
             return CreateEditView(new Dataset(DbContext));
         }
 
-        [HttpPost, IgnoreModelErrors("Database.*"), ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken]
         public IActionResult Create(Dataset model)
         {
             return Save(model);
@@ -81,7 +81,7 @@ namespace Dash.Controllers
             return CreateEditView(model);
         }
 
-        [HttpPut, IgnoreModelErrors("Database.*"), ValidateAntiForgeryToken]
+        [HttpPut, ValidateAntiForgeryToken]
         public IActionResult Edit(Dataset model)
         {
             return Save(model);
