@@ -28,18 +28,6 @@ namespace Dash
         private static Regex CsvRegex = new Regex(@"(?:^|(,\s?))(""(?:[^""]+|"""")*""|[^(,\s?)]*)", RegexOptions.Compiled);
 
         /// <summary>
-        /// Add an item to the list if `add` is true.
-        /// </summary>
-        /// <typeparam name="T">Type of item in the list.</typeparam>
-        /// <param name="list">List to update.</param>
-        /// <param name="add">Add to list if true.</param>
-        /// <returns>Returns updated list.</returns>
-        public static IEnumerable<T> AddIf<T>(this IEnumerable<T> list, T item, bool add)
-        {
-            return add ? list.Append(item) : list;
-        }
-
-        /// <summary>
         /// Add an item to the dictionary if `add` is true.
         /// </summary>
         /// <param name="dict">Dictionary to update.</param>
@@ -101,37 +89,6 @@ namespace Dash
                     target.Add(x);
                 }
             });
-        }
-
-        /// <summary>
-        /// Add/update a value in a dictionary.
-        /// </summary>
-        /// <param name="dict">Dictionary to update</param>
-        /// <param name="key">Key for the new value</param>
-        /// <param name="value">Value to append.</param>
-        public static Dictionary<string, string> Append(this Dictionary<string, string> dictionary, string key, string value, string separator = " ")
-        {
-            if (dictionary.ContainsKey(key))
-            {
-                dictionary[key] += separator + value;
-            }
-            else
-            {
-                dictionary[key] = value;
-            }
-            return dictionary;
-        }
-
-        /// <summary>
-        /// Add/replace a value in a dictionary.
-        /// </summary>
-        /// <param name="dict">Dictionary to update</param>
-        /// <param name="key">Key for the new value</param>
-        /// <param name="value">Value to append.</param>
-        public static Dictionary<string, object> Append(this Dictionary<string, object> dictionary, string key, object value)
-        {
-            dictionary[key] = dictionary.ContainsKey(key) ? dictionary[key] + " " + value : value;
-            return dictionary;
         }
 
         /// <summary>
@@ -348,21 +305,6 @@ namespace Dash
         }
 
         /// <summary>
-        /// Add a value to a dictionary, overwriting if it exists. This method lets me add to dictionary in a chainable way.
-        /// </summary>
-        /// <typeparam name="TKey">Type of the key for the item.</typeparam>
-        /// <typeparam name="TValue">Type of the new value.</typeparam>
-        /// <param name="dictionary">Dictionary to update.</param>
-        /// <param name="key">Key name.</param>
-        /// <param name="value">New value.</param>
-        /// <returns>Returns an updated dictionary.</returns>
-        public static Dictionary<TKey, TValue> Merge<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key, TValue value)
-        {
-            dictionary[key] = value;
-            return dictionary;
-        }
-
-        /// <summary>
         /// Prepend an item to the beginning of a list.
         /// </summary>
         /// <typeparam name="T">Type of the item.</typeparam>
@@ -508,16 +450,6 @@ namespace Dash
         public static string ToCssClass(this DashIcons val)
         {
             return CssRegex.Replace(val.ToString(), "-$1").Trim('-').ToLower();
-        }
-
-        /// <summary>
-        /// Convert an enum to a css class name.
-        /// </summary>
-        /// <param name="val">String value to convert.</param>
-        /// <returns>Css class name string.</returns>
-        public static string ToCssClassList(this IEnumerable<DashButtons> classes)
-        {
-            return string.Join(" ", classes.Select(x => x.ToCssClass()));
         }
 
         /// <summary>
@@ -678,26 +610,6 @@ namespace Dash
         public static string ToTableName(this DataRow row, bool isSqlServer = true)
         {
             return isSqlServer ? $"[{row["TABLE_SCHEMA"]}].[{row["TABLE_NAME"]}]" : $"`{row["TABLE_NAME"]}`";
-        }
-
-        /// <summary>
-        /// Converts Enumeration type into an object of ids and names.
-        /// </summary>
-        /// <param name="t">Enum type</param>
-        public static IEnumerable<object> TranslatedList(this Type t, ResourceDictionary resource = null, string prefix = "")
-        {
-            if (t == null || !t.IsEnum)
-            {
-                return null;
-            }
-
-            var names = Enum.GetNames(t);
-            var values = Enum.GetValues(t);
-            if (resource != null)
-            {
-                return (from i in Enumerable.Range(0, names.Length) select new { Name = resource[prefix + names[i]], Id = (int)values.GetValue(i) }).OrderBy(x => x.Name).ThenBy(x => x.Id);
-            }
-            return (from i in Enumerable.Range(0, names.Length) select new { Name = names[i], Id = (int)values.GetValue(i) }).OrderBy(x => x.Name).ThenBy(x => x.Id);
         }
 
         /// <summary>
