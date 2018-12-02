@@ -70,7 +70,8 @@
                     } else if (type === 'date') {
                         var dateFormat = range.dateFormat;
                         range.labels = $.map(range.labels, function(x) {
-                            return flatpickr.formatDate(new Date(x), dateFormat);
+                            // replace space with `T` to make date match iso8601 as closely as possible, after that browsers should be able to parse to a Date object safely
+                            return flatpickr.formatDate(new Date(x.replace(' ', 'T')), dateFormat);
                         });
                     }
 
