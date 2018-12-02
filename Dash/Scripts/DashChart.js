@@ -37,7 +37,9 @@
                 url: self.url,
                 block: false
             }, function(data) {
+                // destroy existing chart if any
                 self.destroy();
+
                 $.hide($.get('.chart-spinner', self.content));
                 $.hide($.get('.chart-error', self.content));
                 $.show(self.canvas.parentNode);
@@ -140,6 +142,9 @@
             });
         },
 
+        /**
+         * Destroy the chart object.
+         */
         destroy: function() {
             $.destroy(this.chart);
         }

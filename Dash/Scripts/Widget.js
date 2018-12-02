@@ -101,6 +101,10 @@
             return container.hasAttribute('data-refresh') ? container.getAttribute('data-refresh') * 1 : 0;
         },
 
+        /**
+         * Convert the grid settings into an object.
+         * @returns {Object} Grid settings.
+         */
         makeGrid: function() {
             var dashboardNode = this.getDashboardContainer();
             return { columns: _columns, rows: _rows, columnWidth: dashboardNode.parentNode.offsetWidth / _columns, rowHeight: dashboardNode.parentNode.offsetHeight / _rows };
@@ -248,10 +252,14 @@
             }
 
             this.savePosition();
-            this.updateLayout();
             this.rect.updated = true;
+            // trigger window resize event to force widget content to resize itself
+            $.trigger(null, 'resize');
         },
 
+        /**
+         * Handle refreshing data for a widget.
+         */
         refresh: function() {
             var container = this.getContainer();
             var table = $.get('[data-toggle="dotable"]', container);
@@ -263,10 +271,10 @@
             $.setText($.get('.grid-updated-time', container), new Date().toLocaleTimeString());
         },
 
-        updateLayout: function() {
-            $.trigger(null, 'resize');
-        },
 
+        /**
+         * Manually trigger refresh of data for a widget.
+         */
         forceRefresh: function() {
             var refreshSeconds = this.getRefreshRate();
             if (refreshSeconds > 0) {
@@ -334,6 +342,9 @@
             }
         },
 
+        /**
+         * Switch widget between normal size and full screen.
+         */
         toggleFullScreen: function() {
             var container = this.getContainer();
             var fullScreenIcon = $.get('.btn-fullscreen i', container);
@@ -343,7 +354,8 @@
             var isFullscreen = this.isFullscreen;
             $.getAll('.fs-disabled', container).forEach(function(x) { $.toggleClass(x, 'disabled', !isFullscreen); });
             this.isFullscreen = !this.isFullscreen;
-            this.updateLayout();
+            // trigger window resize event to force widget content to resize itself
+            $.trigger(null, 'resize');
         }
     };
 

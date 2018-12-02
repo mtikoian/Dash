@@ -69,6 +69,10 @@
                 a.btn {
                     font-size: .7rem;
                     color: $primary-color;
+                    margin: 0px;
+                    width: 100%;
+                    height: 100%;
+                    text-align: left;
                 }
             }
 
@@ -77,8 +81,7 @@
             }
 
             .menu-item {
-                padding-top: 0;
-                padding-bottom: 0;
+                padding: 0;
             }
         }
 
