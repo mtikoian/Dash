@@ -65,7 +65,7 @@ namespace Dash.Models
                     (ChartId.HasPositiveValue() ? new DropdownListItem { Label = Widgets.ViewChart, Controller = "Chart", Action = "Edit", RouteValues = new { Id = ChartId }, ExtraClasses = "btn btn-link fs-disabled", Icon = DashIcons.Info } :
                         new DropdownListItem { Label = Widgets.ViewReport, Controller = "Report", Action = "Edit", RouteValues = new { Id = ReportId }, ExtraClasses = "btn btn-link fs-disabled", Icon = DashIcons.Info }),
                     new DropdownListItem { Label = Widgets.EditWidget, Controller = "Dashboard", Action = "Edit", RouteValues = new { Id = Id }, ExtraClasses = "btn btn-link fs-disabled", Icon = DashIcons.Pencil },
-                    new DropdownListItem { Label = Widgets.DeleteWidget, Controller = "Dashboard", Action = "Delete", RouteValues = new { Id = Id },
+                    new DropdownListItem { Label = Widgets.DeleteWidget, Controller = "Dashboard", Action = "Delete", RouteValues = new { Id = Id }, Method = HttpVerbs.Delete,
                         ExtraClasses = "btn btn-link fs-disabled", Icon = DashIcons.Trash, IconExtraClasses = "text-error", Confirm = Core.AreYouSure
                     }
                 };
