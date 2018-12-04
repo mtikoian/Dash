@@ -251,8 +251,8 @@
                 handle.removeAttribute('style');
             }
 
-            this.savePosition();
             this.rect.updated = true;
+            this.updatePosition();
             // trigger window resize event to force widget content to resize itself
             $.trigger(null, 'resize');
         },
