@@ -72,7 +72,7 @@
             showXLabels: true,
 
             // Interpolated JS string - can access value
-            scaleLabel: '"<%=value%>',
+            scaleLabel: '<%=value%>',
 
             // Boolean - Whether the scale should stick to integers, and not show any floats even if drawing space is there
             scaleIntegersOnly: true,
@@ -288,10 +288,11 @@
             };
         })(),
 
-        //-- Math methods
+        // Math methods
         isNumber = helpers.isNumber = function(n) {
             return !isNaN(parseFloat(n)) && isFinite(n);
         },
+
         max = helpers.max = function(array) {
             return Math.max.apply(Math, array);
         },
@@ -325,16 +326,15 @@
         toRadians = helpers.radians = function(degrees) {
             return degrees * (Math.PI / 180);
         },
+
         // Gets the angle from vertical upright to the point about a centre.
         getAngleFromPoint = helpers.getAngleFromPoint = function(centrePoint, anglePoint) {
             var distanceFromXCenter = anglePoint.x - centrePoint.x,
                 distanceFromYCenter = anglePoint.y - centrePoint.y,
                 radialDistanceFromCenter = Math.sqrt(distanceFromXCenter * distanceFromXCenter + distanceFromYCenter * distanceFromYCenter);
-
-
             var angle = Math.PI * 2 + Math.atan2(distanceFromYCenter, distanceFromXCenter);
 
-            //If the segment is in the top left quadrant, we need to add another rotation to the angle
+            // If the segment is in the top left quadrant, we need to add another rotation to the angle
             if (distanceFromXCenter < 0 && distanceFromYCenter < 0) {
                 angle += Math.PI * 2;
             }
@@ -344,12 +344,14 @@
                 distance: radialDistanceFromCenter
             };
         },
+
         aliasPixel = helpers.aliasPixel = function(pixelWidth) {
             return (pixelWidth % 2 === 0) ? 0 : 0.5;
         },
+
         splineCurve = helpers.splineCurve = function(FirstPoint, MiddlePoint, AfterPoint, t) {
-            //Props to Rob Spencer at scaled innovation for his post on splining between points
-            //http://scaledinnovation.com/analytics/splines/aboutSplines.html
+            // Props to Rob Spencer at scaled innovation for his post on splining between points
+            // http://scaledinnovation.com/analytics/splines/aboutSplines.html
             var d01 = Math.sqrt(Math.pow(MiddlePoint.x - FirstPoint.x, 2) + Math.pow(MiddlePoint.y - FirstPoint.y, 2)),
                 d12 = Math.sqrt(Math.pow(AfterPoint.x - MiddlePoint.x, 2) + Math.pow(AfterPoint.y - MiddlePoint.y, 2)),
                 fa = t * d01 / (d01 + d12),// scaling factor for triangle Ta
@@ -365,12 +367,9 @@
                 }
             };
         },
-        calculateOrderOfMagnitude = helpers.calculateOrderOfMagnitude = function(val) {
-            return Math.floor(Math.log(val) / Math.LN10);
-        },
-        calculateScaleRange = helpers.calculateScaleRange = function(valuesArray, drawingSize, textSize, startFromZero, integersOnly) {
 
-            //Set a minimum step of two - a point at the top of the graph, and a point at the base
+        calculateScaleRange = helpers.calculateScaleRange = function(valuesArray, drawingSize, textSize, startFromZero, integersOnly) {
+            // Set a minimum step of two - a point at the top of the graph, and a point at the base
             var minSteps = 2,
                 maxSteps = Math.floor(drawingSize / (textSize * 1.5)),
                 skipFitting = (minSteps >= maxSteps);
@@ -390,22 +389,21 @@
                 // So we don't end up with a graph with a negative start value if we've said always start from zero
                 if (minValue >= 0.5 && !startFromZero) {
                     minValue -= 0.5;
-                }
-                else {
+                } else {
                     // Make up a whole number above the values
                     maxValue += 0.5;
                 }
             }
 
             var valueRange = Math.abs(maxValue - minValue),
-                rangeOrderOfMagnitude = calculateOrderOfMagnitude(valueRange),
+                rangeOrderOfMagnitude = Math.floor(Math.log(valueRange) / Math.LN10),
                 graphMax = Math.ceil(maxValue / (1 * Math.pow(10, rangeOrderOfMagnitude))) * Math.pow(10, rangeOrderOfMagnitude),
                 graphMin = (startFromZero) ? 0 : Math.floor(minValue / (1 * Math.pow(10, rangeOrderOfMagnitude))) * Math.pow(10, rangeOrderOfMagnitude),
                 graphRange = graphMax - graphMin,
                 stepValue = Math.pow(10, rangeOrderOfMagnitude),
                 numberOfSteps = Math.round(graphRange / stepValue);
 
-            //If we have more space on the graph we'll use it to give more definition to the data
+            // If we have more space on the graph we'll use it to give more definition to the data
             while ((numberOfSteps > maxSteps || (numberOfSteps * 2) < maxSteps) && !skipFitting) {
                 if (numberOfSteps > maxSteps) {
                     stepValue *= 2;
@@ -414,23 +412,20 @@
                     if (numberOfSteps % 1 !== 0) {
                         skipFitting = true;
                     }
-                }
-                //We can fit in double the amount of scale points on the scale
-                else {
-                    //If user has declared ints only, and the step value isn't a decimal
+                } else {
+                    // We can fit in double the amount of scale points on the scale
+                    // If user has declared ints only, and the step value isn't a decimal
                     if (integersOnly && rangeOrderOfMagnitude >= 0) {
                         //If the user has said integers only, we need to check that making the scale more granular wouldn't make it a float
                         if (stepValue / 2 % 1 === 0) {
                             stepValue /= 2;
                             numberOfSteps = Math.round(graphRange / stepValue);
-                        }
-                        //If it would make it a float break out of the loop
-                        else {
+                        } else {
+                            // If it would make it a float break out of the loop
                             break;
                         }
-                    }
-                    //If the scale doesn't have to be an int, make the scale more granular anyway.
-                    else {
+                    } else {
+                        // If the scale doesn't have to be an int, make the scale more granular anyway.
                         stepValue /= 2;
                         numberOfSteps = Math.round(graphRange / stepValue);
                     }
@@ -451,14 +446,13 @@
             };
 
         },
-        /* jshint ignore:start */
-        // Blows up jshint errors based on the new Function constructor
-        //Templating methods
-        //Javascript micro templating by John Resig - source at http://ejohn.org/blog/javascript-micro-templating/
+
+        /* eslint-disable */
+        // Blows up lint errors based on the new Function constructor
+        // Templating methods
+        // Javascript micro templating by John Resig - source at http://ejohn.org/blog/javascript-micro-templating/
         template = helpers.template = function(templateString, valuesObject) {
-
             // If templateString is function rather than string-template - call the function for valuesObject
-
             if (templateString instanceof Function) {
                 return templateString(valuesObject);
             }
@@ -495,17 +489,9 @@
             }
             return tmpl(templateString, valuesObject);
         },
-        /* jshint ignore:end */
-        generateLabels = helpers.generateLabels = function(templateString, numberOfSteps, graphMin, stepValue) {
-            var labelsArray = new Array(numberOfSteps);
-            if (templateString) {
-                each(labelsArray, function(val, index) {
-                    labelsArray[index] = template(templateString, { value: (graphMin + (stepValue * (index + 1))) });
-                });
-            }
-            return labelsArray;
-        },
-        //-- DOM methods
+        /* eslint-enable */
+
+        // DOM methods
         getRelativePosition = helpers.getRelativePosition = function(evt) {
             var mouseX, mouseY;
             var e = evt.originalEvent || evt,
@@ -516,8 +502,7 @@
                 mouseX = e.touches[0].clientX - boundingRect.left;
                 mouseY = e.touches[0].clientY - boundingRect.top;
 
-            }
-            else {
+            } else {
                 mouseX = e.clientX - boundingRect.left;
                 mouseY = e.clientY - boundingRect.top;
             }
@@ -526,8 +511,8 @@
                 x: mouseX,
                 y: mouseY
             };
-
         },
+
         addEvent = helpers.addEvent = function(node, eventType, method) {
             if (node.addEventListener) {
                 node.addEventListener(eventType, method);
