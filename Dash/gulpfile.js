@@ -1,5 +1,4 @@
 ﻿/// <binding ProjectOpened='watch' />
-/* eslint-disable */
 
 var addsrc = require('gulp-add-src'),
     autoprefixer = require('autoprefixer'),
@@ -28,7 +27,7 @@ var childSort = function(a, b) {
         return a.$.Include > b.$.Include ? 1 : a.$.Include < b.$.Include ? -1 : 0;
     }
     return a.$.Update > b.$.Update ? 1 : a.$.Update < b.$.Update ? -1 : 0;
-}
+};
 
 function sortXml(file, encoding, callback) {
     var parser = new xml2js.Parser({
@@ -63,15 +62,7 @@ function sortXml(file, encoding, callback) {
     callback(null, file);
 }
 
-gulp.task('watch', function() {
-    gulp.watch(paths.css + '**/*.scss', ['sass']);
-    gulp.watch(paths.css + 'fontello/font/dash.*', ['fonts']);
-    gulp.watch(paths.js + '**/*.js', ['js']);
-    gulp.watch('*.csproj', ['webFixer']);
-    gulp.watch('../Dash.Database/*.sqlproj', ['dbFixer']);
-});
-
-gulp.task('sass', function() {
+function sassFiles() {
     return gulp.src([paths.css + 'spectre/spectre.scss', paths.css + '*.scss'])
         .pipe(plumber())
         .pipe(sourcemaps.init())
@@ -84,9 +75,9 @@ gulp.task('sass', function() {
         .pipe(gulp.dest(paths.dist + 'css/'))
         .pipe(gzip({ append: true }))
         .pipe(gulp.dest(paths.dist + 'css/'));
-});
+}
 
-gulp.task('js', function() {
+function jsFiles() {
     return gulp.src([
         // core libraries and helpers
         paths.js + 'polyfills.js',         // Polyfills for promise/fetch
@@ -118,32 +109,49 @@ gulp.task('js', function() {
         .pipe(gulp.dest(paths.dist + 'js/'))
         .pipe(gzip({ append: true }))
         .pipe(gulp.dest(paths.dist + 'js/'));
-});
+}
 
 // Fonts
-gulp.task('fonts', function() {
+function fonts() {
     return gulp.src([
         paths.css + 'fontello/font/dash.*'
     ])
         .pipe(gulp.dest(paths.dist + 'font/'))
         .pipe(gzip({ append: true }))
         .pipe(gulp.dest(paths.dist + 'font/'));
-});
+}
 
-gulp.task('build', ['clean', 'js', 'sass', 'fonts', 'favicon']);
+function clean(done) {
+    del.sync(paths.dist + 'css', paths.dist + 'js', paths.dist + 'font');
+    done();
+}
 
-gulp.task('clean', function() {
-    return del.sync(paths.dist + 'css', paths.dist + 'js', paths.dist + 'font');
-});
-
-gulp.task('favicon', function() {
+function favicon() {
     return gulp.src(['*.ico']).pipe(gulp.dest(paths.dist));
-});
+}
 
-gulp.task('webFixer', function() {
+function webFixer() {
     return gulp.src(['*.csproj']).pipe(through.obj(sortXml)).pipe(replace('&#xD;', '')).pipe(gulp.dest('.'));
-});
+}
 
-gulp.task('dbFixer', function() {
+function dbFixer() {
     return gulp.src(['../Dash.Database/*.sqlproj']).pipe(through.obj(sortXml)).pipe(replace('&#xD;', '')).pipe(gulp.dest('../Dash.Database/'));
-});
+}
+
+function watchFiles() {
+    gulp.watch(paths.css + '**/*.scss', sassFiles);
+    gulp.watch(paths.css + 'fontello/font/dash.*', fonts);
+    gulp.watch(paths.js + '**/*.js', jsFiles);
+    gulp.watch('*.csproj', webFixer);
+    gulp.watch('../Dash.Database/*.sqlproj', dbFixer);
+}
+
+gulp.task('sass', sassFiles);
+gulp.task('js', jsFiles);
+gulp.task('fonts', fonts);
+gulp.task('clean', clean);
+gulp.task('favicon', favicon);
+gulp.task('webFixer', webFixer);
+gulp.task('dbFixer', dbFixer);
+gulp.task('build', gulp.series('clean', gulp.parallel(jsFiles, sassFiles, fonts, favicon)));
+gulp.task('watch', watchFiles);

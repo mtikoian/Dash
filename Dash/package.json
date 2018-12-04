@@ -3,27 +3,21 @@
   "name": "dash",
   "private": true,
   "devDependencies": {
-    "autoprefixer": "^9.3.1",
+    "autoprefixer": "^9.4.0",
     "del": "^3.0.0",
-    "gulp": "^3.9.1",
+    "eslint": "^5.9.0",
+    "gulp": "^4.0.0",
     "gulp-add-src": "^1.0.0",
     "gulp-clean-css": "^4.0.0",
     "gulp-concat": "^2.6.1",
-    "gulp-css-url-adjuster": "^0.2.3",
     "gulp-gzip": "^1.4.2",
-    "gulp-plumber": "^1.2.0",
+    "gulp-plumber": "^1.2.1",
     "gulp-postcss": "^8.0.0",
     "gulp-replace-path": "^0.4.0",
     "gulp-sass": "^4.0.2",
     "gulp-sourcemaps": "^2.6.4",
     "gulp-uglify": "^3.0.1",
-    "gulp-util": "^3.0.7",
-    "plumber": "^0.4.8",
-    "run-sequence": "^2.2.1",
     "through2": "^3.0.0",
     "xml2js": "^0.4.19"
-  },
-  "dependencies": {
-    "eslint": "^5.9.0"
   }
 }
