@@ -657,7 +657,11 @@
      * Update the table and column widths based on a window resize.
      */
     doTable.prototype.onResize = function() {
-        var cWidth = this.getContainer().clientWidth;
+        var container = this.getContainer();
+        if (!container) {
+            return;
+        }
+        var cWidth = container.clientWidth;
         if (cWidth === 0) {
             return;
         }
