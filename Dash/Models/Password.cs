@@ -16,7 +16,11 @@ namespace Dash.Models
 
         public static ValidationResult Validate(IAppConfiguration appConfig, string password, string confirmPassword)
         {
-            if (password != confirmPassword)
+            if (password.IsEmpty() || confirmPassword.IsEmpty())
+            {
+                return new ValidationResult(Account.ErrorInvalidPassword, new[] { "Password" });
+            }
+            else if (password != confirmPassword)
             {
                 return new ValidationResult(Account.ErrorPasswordMatch, new[] { "ConfirmPassword" });
             }
