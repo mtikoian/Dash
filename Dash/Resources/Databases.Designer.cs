@@ -178,7 +178,7 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sql Server.
+        ///   Looks up a localized string similar to MS SQL Server.
         /// </summary>
         public static string LabelType_SqlServer {
             get {

@@ -120,9 +120,6 @@
   <data name="ErrorReportOrChartRequired" xml:space="preserve">
     <value>You must select a report or a chart for this widget to display.</value>
   </data>
-  <data name="ErrorSavingDashboard" xml:space="preserve">
-    <value>There was a problem saving your dashboard. Try reloading the page.</value>
-  </data>
   <data name="Chart" xml:space="preserve">
     <value>Chart</value>
   </data>
@@ -177,14 +174,8 @@
   <data name="ToggleFullScreen" xml:space="preserve">
     <value>Toggle Full Screen</value>
   </data>
-  <data name="WidgetReloaded" xml:space="preserve">
-    <value>`{0}` was reloaded because it, or the underlying report, was modified.</value>
-  </data>
   <data name="LinkAdd" xml:space="preserve">
     <value>Add Widget</value>
-  </data>
-  <data name="SuccessDeletingWidget" xml:space="preserve">
-    <value>Widget deleted successfully.</value>
   </data>
   <data name="SuccessSavingWidget" xml:space="preserve">
     <value>Widget saved successfully.</value>

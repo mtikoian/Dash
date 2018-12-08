@@ -72,63 +72,54 @@ namespace Dash.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Select how you want the data for this range to be aggregated together when calculating the Y value..
         /// </summary>
-        public static string Chart_RangeAggregator {
+        public static string ChartRange_AggregatorId {
             get {
-                return ResourceManager.GetString("Chart_RangeAggregator", resourceCulture);
+                return ResourceManager.GetString("ChartRange_AggregatorId", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Select to color to use to display this range on the chart. This color will be used to show the data for this range, and a lighter version of this color will be used for the Y axis for this range..
         /// </summary>
-        public static string Chart_RangeColor {
+        public static string ChartRange_Color {
             get {
-                return ResourceManager.GetString("Chart_RangeColor", resourceCulture);
+                return ResourceManager.GetString("ChartRange_Color", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Select the size of the periods that you want to group time series data into.  If the X axis column is a date/time, X axis ticks/labels will be calculated using this period..
         /// </summary>
-        public static string Chart_RangeInterval {
+        public static string ChartRange_DateIntervalId {
             get {
-                return ResourceManager.GetString("Chart_RangeInterval", resourceCulture);
+                return ResourceManager.GetString("ChartRange_DateIntervalId", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Select the report that you want to supply data for this range. After selecting a report, you&apos;ll be able to select columns from that report for the X and Y axis..
         /// </summary>
-        public static string Chart_RangeReport {
+        public static string ChartRange_ReportId {
             get {
-                return ResourceManager.GetString("Chart_RangeReport", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Each chart range adds a new set of data to the chart.  Any report you have access to can be used as a range.  Use the up and down arrows to control the ordering of ranges, which determine which X and Y axis labels are used where..
-        /// </summary>
-        public static string Chart_Ranges {
-            get {
-                return ResourceManager.GetString("Chart_Ranges", resourceCulture);
+                return ResourceManager.GetString("ChartRange_ReportId", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Select the column to use for the X axis. The X axis column values from the first range will be used as ticks/labels for the X axis. Use the up and down arrows to the right to re-order ranges and change which one is used for the X axis labels..
         /// </summary>
-        public static string Chart_RangeXAxis {
+        public static string ChartRange_XAxisId {
             get {
-                return ResourceManager.GetString("Chart_RangeXAxis", resourceCulture);
+                return ResourceManager.GetString("ChartRange_XAxisId", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Select the column to use for the Y axis. The Y axis column values from the first range will be used as ticks/labels for the Y axis on the left side of the chart. Subsequent Y axis columns will be used as ticks/labels on the right side..
         /// </summary>
-        public static string Chart_RangeYAxis {
+        public static string ChartRange_YAxisId {
             get {
-                return ResourceManager.GetString("Chart_RangeYAxis", resourceCulture);
+                return ResourceManager.GetString("ChartRange_YAxisId", resourceCulture);
             }
         }
         
@@ -144,9 +135,9 @@ namespace Dash.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Re-enter the password for confirmation..
         /// </summary>
-        public static string Database_ConfirmPass {
+        public static string Database_ConfirmPassword {
             get {
-                return ResourceManager.GetString("Database_ConfirmPass", resourceCulture);
+                return ResourceManager.GetString("Database_ConfirmPassword", resourceCulture);
             }
         }
         
@@ -198,9 +189,9 @@ namespace Dash.Resources {
         /// <summary>
         ///   Looks up a localized string similar to When adding a new database, the password and matching confirm password must be entered. If editing, you can leave the password blank and it will use the existing value. Passwords are securely encrypted before being saved..
         /// </summary>
-        public static string Database_Pass {
+        public static string Database_Password {
             get {
-                return ResourceManager.GetString("Database_Pass", resourceCulture);
+                return ResourceManager.GetString("Database_Password", resourceCulture);
             }
         }
         
@@ -303,9 +294,9 @@ namespace Dash.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Select the table and column that should be used for this column in reports..
         /// </summary>
-        public static string DatasetColumn_ColumnId {
+        public static string DatasetColumn_ColumnName {
             get {
-                return ResourceManager.GetString("DatasetColumn_ColumnId", resourceCulture);
+                return ResourceManager.GetString("DatasetColumn_ColumnName", resourceCulture);
             }
         }
         
@@ -324,15 +315,6 @@ namespace Dash.Resources {
         public static string DatasetColumn_Derived {
             get {
                 return ResourceManager.GetString("DatasetColumn_Derived", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Columns specify all the table columns that users will be able to access in a report. Columns can be created by hand or automatically imported from the database with the `Import Columns` button..
-        /// </summary>
-        public static string DatasetColumn_Details {
-            get {
-                return ResourceManager.GetString("DatasetColumn_Details", resourceCulture);
             }
         }
         
@@ -382,29 +364,20 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Joins specify tables that can be queried in addition to the primary table. Table name, join type, and keys are required for each join. Joins need to be ordered as they would be used in a SQL query. Use the up and down arrows to change join order..
+        ///   Looks up a localized string similar to Specify the type of SQL JOIN to use with this table..
         /// </summary>
-        public static string DatasetJoin_Details {
+        public static string DatasetJoin_JoinTypeId {
             get {
-                return ResourceManager.GetString("DatasetJoin_Details", resourceCulture);
+                return ResourceManager.GetString("DatasetJoin_JoinTypeId", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Specify the columns and their relationship(s) that will be used when joining the tables. Use fully qualified names like [TableName].[ColumnName] for SQL Server, or `TableName`.`ColumnName` for MySQL..
         /// </summary>
-        public static string DatasetJoin_JoinKeys {
+        public static string DatasetJoin_Keys {
             get {
-                return ResourceManager.GetString("DatasetJoin_JoinKeys", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Specify the type of SQL JOIN to use with this table..
-        /// </summary>
-        public static string DatasetJoin_JoinType {
-            get {
-                return ResourceManager.GetString("DatasetJoin_JoinType", resourceCulture);
+                return ResourceManager.GetString("DatasetJoin_Keys", resourceCulture);
             }
         }
         
@@ -414,33 +387,6 @@ namespace Dash.Resources {
         public static string DatasetJoin_TableName {
             get {
                 return ResourceManager.GetString("DatasetJoin_TableName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Filters limit the data that shows up in the table and chart. Filters for different columns will show data matching both filters. Adding two filters for the same column will show data matching either filter. Click the `Save` button to save filters and update the report..
-        /// </summary>
-        public static string Report_Filters {
-            get {
-                return ResourceManager.GetString("Report_Filters", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Use this textbox to add SQL to modify the grouping column. Reference the grouping column with {0}..
-        /// </summary>
-        public static string Report_GroupDerived {
-            get {
-                return ResourceManager.GetString("Report_GroupDerived", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Groups control how the data is grouped together before being displayed. Use the Aggregator to choose a aggregation method. For each group, select a column to group by. Optionally, use the text field to enter SQL to modify the grouping function. Use the up and down arrows to change the grouping order..
-        /// </summary>
-        public static string Report_Groups {
-            get {
-                return ResourceManager.GetString("Report_Groups", resourceCulture);
             }
         }
         
@@ -481,15 +427,6 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add users that can access this role. The next time the user logs in, they will have access to the new permissions..
-        /// </summary>
-        public static string Role_Users {
-            get {
-                return ResourceManager.GetString("Role_Users", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to This will be the default language in which this user will see the site..
         /// </summary>
         public static string User_LanguageId {
@@ -513,15 +450,6 @@ namespace Dash.Resources {
         public static string User_UserName {
             get {
                 return ResourceManager.GetString("User_UserName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Give the user access to use functionality. A user with no roles assigned will be able to login, but not do anything else..
-        /// </summary>
-        public static string User_UserRole {
-            get {
-                return ResourceManager.GetString("User_UserRole", resourceCulture);
             }
         }
     }

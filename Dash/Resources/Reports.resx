@@ -117,9 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ErrorDatabase" xml:space="preserve">
-    <value>Error connecting to database.</value>
-  </data>
   <data name="ErrorGeneric" xml:space="preserve">
     <value>An error occurred. Try reloading the page.</value>
   </data>
@@ -138,14 +135,8 @@
   <data name="ErrorSelectColumn" xml:space="preserve">
     <value>You must select at least one column.</value>
   </data>
-  <data name="ErrorTooManyRecords" xml:space="preserve">
-    <value>The query returned too many records to display. Try using filters or groups to reduce the number of records.</value>
-  </data>
   <data name="Name" xml:space="preserve">
     <value>Name</value>
-  </data>
-  <data name="Aggregator" xml:space="preserve">
-    <value>Aggregator</value>
   </data>
   <data name="Available" xml:space="preserve">
     <value>Available</value>
@@ -158,9 +149,6 @@
   </data>
   <data name="DataQuery" xml:space="preserve">
     <value>Data Query</value>
-  </data>
-  <data name="Database" xml:space="preserve">
-    <value>Database</value>
   </data>
   <data name="False" xml:space="preserve">
     <value>False</value>
@@ -192,20 +180,8 @@
   <data name="ViewAll" xml:space="preserve">
     <value>View All Reports</value>
   </data>
-  <data name="CreateReportExplain" xml:space="preserve">
-    <value>Select the dataset from which you want to create a report, and enter a name for the new report.</value>
-  </data>
-  <data name="ShareReportExplain" xml:space="preserve">
-    <value>Add users or roles to share this report with. These users can view the report, but only the report owner can make changes.</value>
-  </data>
   <data name="ShareReport" xml:space="preserve">
     <value>Share</value>
-  </data>
-  <data name="NameSaved" xml:space="preserve">
-    <value>The report name was updated.</value>
-  </data>
-  <data name="RenameReport" xml:space="preserve">
-    <value>Rename Report</value>
   </data>
   <data name="SuccessCopyingReport" xml:space="preserve">
     <value>Report copied successfully.</value>
@@ -225,12 +201,6 @@
   <data name="FilterCriteria2" xml:space="preserve">
     <value>End Criteria</value>
   </data>
-  <data name="GroupColumn" xml:space="preserve">
-    <value>Select Column</value>
-  </data>
-  <data name="SelectDate" xml:space="preserve">
-    <value>Select Date</value>
-  </data>
   <data name="SelectColumns" xml:space="preserve">
     <value>Select Columns</value>
   </data>
@@ -243,20 +213,8 @@
   <data name="ErrorNameRequired" xml:space="preserve">
     <value>A name is required to create the report.</value>
   </data>
-  <data name="CopyReport" xml:space="preserve">
-    <value>Copy Report</value>
-  </data>
   <data name="NewName" xml:space="preserve">
     <value>Enter the name for the report.</value>
-  </data>
-  <data name="And" xml:space="preserve">
-    <value>And</value>
-  </data>
-  <data name="Now" xml:space="preserve">
-    <value>Now</value>
-  </data>
-  <data name="ErrorReportModified" xml:space="preserve">
-    <value>The report was modified by the owner. You should close the report and re-open it to see the latest version.</value>
   </data>
   <data name="ErrorOwnerOnly" xml:space="preserve">
     <value>Only the owner of the report is allowed to do this.</value>
@@ -267,14 +225,8 @@
   <data name="ConfirmDelete" xml:space="preserve">
     <value>Are you sure you want to delete this report? This will also delete any chart ranges or widgets using this report.</value>
   </data>
-  <data name="ErrorProcNoGroups" xml:space="preserve">
-    <value>This dataset doesn't allow grouping.</value>
-  </data>
   <data name="ErrorNoColumnsSelectedChange" xml:space="preserve">
     <value>There are no columns selected for this report. Use `Select Columns` from the menu to select columns.</value>
-  </data>
-  <data name="EditReport" xml:space="preserve">
-    <value>Edit Report</value>
   </data>
   <data name="ErrorAlreadyFirstFilter" xml:space="preserve">
     <value>This filter is already first.</value>

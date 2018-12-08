@@ -61,24 +61,6 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Aggregator.
-        /// </summary>
-        public static string Aggregator {
-            get {
-                return ResourceManager.GetString("Aggregator", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to And.
-        /// </summary>
-        public static string And {
-            get {
-                return ResourceManager.GetString("And", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Available.
         /// </summary>
         public static string Available {
@@ -115,15 +97,6 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Copy Report.
-        /// </summary>
-        public static string CopyReport {
-            get {
-                return ResourceManager.GetString("CopyReport", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Count Query.
         /// </summary>
         public static string CountQuery {
@@ -151,29 +124,11 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select the dataset from which you want to create a report, and enter a name for the new report..
-        /// </summary>
-        public static string CreateReportExplain {
-            get {
-                return ResourceManager.GetString("CreateReportExplain", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Create Share.
         /// </summary>
         public static string CreateShare {
             get {
                 return ResourceManager.GetString("CreateShare", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Database.
-        /// </summary>
-        public static string Database {
-            get {
-                return ResourceManager.GetString("Database", resourceCulture);
             }
         }
         
@@ -205,15 +160,6 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Edit Report.
-        /// </summary>
-        public static string EditReport {
-            get {
-                return ResourceManager.GetString("EditReport", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Edit Share.
         /// </summary>
         public static string EditShare {
@@ -237,15 +183,6 @@ namespace Dash.Resources {
         public static string ErrorAlreadyLastFilter {
             get {
                 return ResourceManager.GetString("ErrorAlreadyLastFilter", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Error connecting to database..
-        /// </summary>
-        public static string ErrorDatabase {
-            get {
-                return ResourceManager.GetString("ErrorDatabase", resourceCulture);
             }
         }
         
@@ -331,15 +268,6 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This dataset doesn&apos;t allow grouping..
-        /// </summary>
-        public static string ErrorProcNoGroups {
-            get {
-                return ResourceManager.GetString("ErrorProcNoGroups", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to End Criteria is required when using the Between operator..
         /// </summary>
         public static string ErrorRangeCriteria {
@@ -358,29 +286,11 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The report was modified by the owner. You should close the report and re-open it to see the latest version..
-        /// </summary>
-        public static string ErrorReportModified {
-            get {
-                return ResourceManager.GetString("ErrorReportModified", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to You must select at least one column..
         /// </summary>
         public static string ErrorSelectColumn {
             get {
                 return ResourceManager.GetString("ErrorSelectColumn", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The query returned too many records to display. Try using filters or groups to reduce the number of records..
-        /// </summary>
-        public static string ErrorTooManyRecords {
-            get {
-                return ResourceManager.GetString("ErrorTooManyRecords", resourceCulture);
             }
         }
         
@@ -439,15 +349,6 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select Column.
-        /// </summary>
-        public static string GroupColumn {
-            get {
-                return ResourceManager.GetString("GroupColumn", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Groups.
         /// </summary>
         public static string Groups {
@@ -475,38 +376,11 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The report name was updated..
-        /// </summary>
-        public static string NameSaved {
-            get {
-                return ResourceManager.GetString("NameSaved", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Enter the name for the report..
         /// </summary>
         public static string NewName {
             get {
                 return ResourceManager.GetString("NewName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Now.
-        /// </summary>
-        public static string Now {
-            get {
-                return ResourceManager.GetString("Now", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Rename Report.
-        /// </summary>
-        public static string RenameReport {
-            get {
-                return ResourceManager.GetString("RenameReport", resourceCulture);
             }
         }
         
@@ -529,15 +403,6 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select Date.
-        /// </summary>
-        public static string SelectDate {
-            get {
-                return ResourceManager.GetString("SelectDate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Selected.
         /// </summary>
         public static string Selected {
@@ -552,15 +417,6 @@ namespace Dash.Resources {
         public static string ShareReport {
             get {
                 return ResourceManager.GetString("ShareReport", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Add users or roles to share this report with. These users can view the report, but only the report owner can make changes..
-        /// </summary>
-        public static string ShareReportExplain {
-            get {
-                return ResourceManager.GetString("ShareReportExplain", resourceCulture);
             }
         }
         

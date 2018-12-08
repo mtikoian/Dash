@@ -138,9 +138,6 @@
   <data name="ShareChart" xml:space="preserve">
     <value>Share Chart</value>
   </data>
-  <data name="Rename" xml:space="preserve">
-    <value>Rename Chart</value>
-  </data>
   <data name="SuccessCopyingChart" xml:space="preserve">
     <value>Chart copied successfully.</value>
   </data>
@@ -201,17 +198,11 @@
   <data name="Report" xml:space="preserve">
     <value>Report</value>
   </data>
-  <data name="CopyChart" xml:space="preserve">
-    <value>Copy Chart</value>
-  </data>
   <data name="NewName" xml:space="preserve">
     <value>Enter the name for the chart.</value>
   </data>
   <data name="Ranges" xml:space="preserve">
     <value>Ranges</value>
-  </data>
-  <data name="ShareExplain" xml:space="preserve">
-    <value>Add users or roles to share this chart with. These users can view the chart, but only the chart owner can make changes. If you share a chart with a user, they will also be able to see the reports the chart uses.</value>
   </data>
   <data name="ErrorNameRequired" xml:space="preserve">
     <value>Name is required.</value>
@@ -234,14 +225,8 @@
   <data name="Color" xml:space="preserve">
     <value>Color</value>
   </data>
-  <data name="ErrorChartModified" xml:space="preserve">
-    <value>The chart was modified by the owner. You should close the chart and re-open it to see the latest version.</value>
-  </data>
   <data name="ErrorGettingData" xml:space="preserve">
     <value>An error occurred querying the database. Check your reports. Or, try reloading the page.</value>
-  </data>
-  <data name="SelectColor" xml:space="preserve">
-    <value>Select Color</value>
   </data>
   <data name="LabelType_HorizontalBar" xml:space="preserve">
     <value>Horizontal Bar</value>

@@ -286,15 +286,6 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Database is required..
-        /// </summary>
-        public static string ErrorDatabaseRequired {
-            get {
-                return ResourceManager.GetString("ErrorDatabaseRequired", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to A dataset with this name already exists..
         /// </summary>
         public static string ErrorDuplicateName {
@@ -309,33 +300,6 @@ namespace Dash.Resources {
         public static string ErrorNameRequired {
             get {
                 return ResourceManager.GetString("ErrorNameRequired", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to When using a stored proc as the primary source, joins cannot be used..
-        /// </summary>
-        public static string ErrorProcNoJoins {
-            get {
-                return ResourceManager.GetString("ErrorProcNoJoins", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to You must provide a primary table or a stored proc..
-        /// </summary>
-        public static string ErrorTableOrProcRequired {
-            get {
-                return ResourceManager.GetString("ErrorTableOrProcRequired", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Host.
-        /// </summary>
-        public static string Host {
-            get {
-                return ResourceManager.GetString("Host", resourceCulture);
             }
         }
         
@@ -615,15 +579,6 @@ namespace Dash.Resources {
         public static string ViewAll {
             get {
                 return ResourceManager.GetString("ViewAll", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to View Dataset.
-        /// </summary>
-        public static string ViewDataset {
-            get {
-                return ResourceManager.GetString("ViewDataset", resourceCulture);
             }
         }
     }

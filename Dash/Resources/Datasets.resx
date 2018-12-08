@@ -123,9 +123,6 @@
   <data name="NewName" xml:space="preserve">
     <value>Enter the name for the dataset.</value>
   </data>
-  <data name="ErrorDatabaseRequired" xml:space="preserve">
-    <value>Database is required.</value>
-  </data>
   <data name="ErrorDuplicateName" xml:space="preserve">
     <value>A dataset with this name already exists.</value>
   </data>
@@ -167,9 +164,6 @@
   </data>
   <data name="DateFormat" xml:space="preserve">
     <value>Date Format</value>
-  </data>
-  <data name="Host" xml:space="preserve">
-    <value>Host</value>
   </data>
   <data name="JoinKeys" xml:space="preserve">
     <value>Keys</value>
@@ -237,26 +231,17 @@
   <data name="ViewAll" xml:space="preserve">
     <value>View All Datasets</value>
   </data>
-  <data name="ViewDataset" xml:space="preserve">
-    <value>View Dataset</value>
-  </data>
   <data name="Type" xml:space="preserve">
     <value>Type</value>
   </data>
   <data name="ColumnIsParam" xml:space="preserve">
     <value>Input Param</value>
   </data>
-  <data name="ErrorTableOrProcRequired" xml:space="preserve">
-    <value>You must provide a primary table or a stored proc.</value>
-  </data>
   <data name="LabelType_Proc" xml:space="preserve">
     <value>Stored Proc</value>
   </data>
   <data name="LabelType_Table" xml:space="preserve">
     <value>Tables</value>
-  </data>
-  <data name="ErrorProcNoJoins" xml:space="preserve">
-    <value>When using a stored proc as the primary source, joins cannot be used.</value>
   </data>
   <data name="ImportErrorNoProcs" xml:space="preserve">
     <value>Schema can't be imported for stored procedures.</value>

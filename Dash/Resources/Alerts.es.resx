@@ -117,79 +117,100 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ErrorDuplicateName" xml:space="preserve">
-    <value>Una base de datos con este nombre ya existe.!</value>
+  <data name="AlertLower" xml:space="preserve">
+    <value>alerta</value>
   </data>
-  <data name="ErrorPasswordMatching" xml:space="preserve">
-    <value>¡Las contraseñas no coinciden!</value>
+  <data name="CopyBody" xml:space="preserve">
+    <value>Ingrese el nombre para la nueva alerta.</value>
   </data>
-  <data name="ErrorUsernameRequired" xml:space="preserve">
-    <value>Debe introducir un nombre de usuario para conectarse a la base de datos, o una cadena de conexión.!</value>
+  <data name="CreateAlert" xml:space="preserve">
+    <value>Crear alerta</value>
   </data>
-  <data name="AllowPaging" xml:space="preserve">
-    <value>¡Permite paginación!</value>
+  <data name="CronDayOfMonth" xml:space="preserve">
+    <value>Dia del mes</value>
   </data>
-  <data name="ConfirmPassword" xml:space="preserve">
-    <value>Confirmar Contraseña</value>
+  <data name="CronDayOfWeek" xml:space="preserve">
+    <value>Día de la semana</value>
   </data>
-  <data name="ConnectionString" xml:space="preserve">
-    <value>String de Conexión</value>
+  <data name="CronHour" xml:space="preserve">
+    <value>Hora</value>
   </data>
-  <data name="DatabaseName" xml:space="preserve">
-    <value>Nombre de Base de Datos</value>
+  <data name="CronMinute" xml:space="preserve">
+    <value>Minuto</value>
   </data>
-  <data name="Host" xml:space="preserve">
-    <value>Host</value>
+  <data name="CronMonth" xml:space="preserve">
+    <value>Mes</value>
   </data>
-  <data name="IsEmptyPassword" xml:space="preserve">
-    <value>Sin password</value>
+  <data name="EditAlert" xml:space="preserve">
+    <value>Editar alerta</value>
+  </data>
+  <data name="ErrorCronDayOfMonth" xml:space="preserve">
+    <value>El día del mes de Cron debe ser `*` o un número entre 1 y 31.</value>
+  </data>
+  <data name="ErrorCronDayOfWeek" xml:space="preserve">
+    <value>El día de la semana de Cron debe ser `*` o un número entre 0 y 6.</value>
+  </data>
+  <data name="ErrorCronHour" xml:space="preserve">
+    <value>Cron hour debe ser `*` o un número entre 0 y 23.</value>
+  </data>
+  <data name="ErrorCronMinute" xml:space="preserve">
+    <value>El minuto de Cron debe ser `*` o un número entre 0 y 59.</value>
+  </data>
+  <data name="ErrorCronMonth" xml:space="preserve">
+    <value>El mes de Cron debe ser `*` o un número entre 1 y 12.</value>
+  </data>
+  <data name="ErrorCronParse" xml:space="preserve">
+    <value>La expresión cron no es válida.</value>
+  </data>
+  <data name="ErrorHash" xml:space="preserve">
+    <value>Una alerta llamada `{0}` tiene los mismos criterios. Los criterios no pueden ser duplicados.</value>
+  </data>
+  <data name="ErrorNameRequired" xml:space="preserve">
+    <value>Se requiere un nombre para crear una alerta.</value>
+  </data>
+  <data name="IsActive" xml:space="preserve">
+    <value>Activo</value>
+  </data>
+  <data name="LastNotificationDate" xml:space="preserve">
+    <value>Fecha de la última notificación</value>
+  </data>
+  <data name="LastRunDate" xml:space="preserve">
+    <value>Fecha de la última ejecución</value>
+  </data>
+  <data name="MenuItem" xml:space="preserve">
+    <value>Las alertas</value>
   </data>
   <data name="Name" xml:space="preserve">
     <value>Nombre</value>
   </data>
-  <data name="Password" xml:space="preserve">
-    <value>Contraseña</value>
+  <data name="NotificationInterval" xml:space="preserve">
+    <value>Intervalo de notificación</value>
   </data>
-  <data name="Port" xml:space="preserve">
-    <value>Puerto</value>
+  <data name="Report" xml:space="preserve">
+    <value>Informe</value>
   </data>
-  <data name="User" xml:space="preserve">
-    <value>Nombre de Usuario</value>
+  <data name="ResultCount" xml:space="preserve">
+    <value>Recuento de resultados</value>
   </data>
-  <data name="DatabaseLower" xml:space="preserve">
-    <value>Base de datos</value>
+  <data name="Schedule" xml:space="preserve">
+    <value>Programar</value>
   </data>
-  <data name="TestConnection" xml:space="preserve">
-    <value>Probar la conexion</value>
+  <data name="SendTo" xml:space="preserve">
+    <value>Enviar a</value>
   </data>
-  <data name="MenuItem" xml:space="preserve">
-    <value>Bases de datos</value>
+  <data name="Subject" xml:space="preserve">
+    <value>Tema</value>
   </data>
-  <data name="SuccessDeletingDatabase" xml:space="preserve">
-    <value>Base de datos eliminado con éxito.!</value>
+  <data name="SuccessCopyingAlert" xml:space="preserve">
+    <value>La alerta se copió con éxito.</value>
   </data>
-  <data name="SuccessSavingDatabase" xml:space="preserve">
-    <value>Base de datos de guardado con éxito.!</value>
+  <data name="SuccessDeletingAlert" xml:space="preserve">
+    <value>Alerta eliminada con éxito.</value>
   </data>
-  <data name="SuccessTestingConnection" xml:space="preserve">
-    <value>Prueba de conexión tuvo éxito.!</value>
-  </data>
-  <data name="CreateDatabase" xml:space="preserve">
-    <value>Crear base de datos</value>
-  </data>
-  <data name="EditDatabase" xml:space="preserve">
-    <value>Editar Database</value>
+  <data name="SuccessSavingAlert" xml:space="preserve">
+    <value>Alerta guardada con éxito.</value>
   </data>
   <data name="ViewAll" xml:space="preserve">
-    <value>¡Ver las bases de datos!</value>
-  </data>
-  <data name="Type" xml:space="preserve">
-    <value>Tipo</value>
-  </data>
-  <data name="LabelType_MySql" xml:space="preserve">
-    <value>MySQL</value>
-  </data>
-  <data name="LabelType_SqlServer" xml:space="preserve">
-    <value>MS SQL Server:</value>
+    <value>Ver todas las alertas</value>
   </data>
 </root>

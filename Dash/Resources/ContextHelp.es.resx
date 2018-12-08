@@ -117,4 +117,158 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ChartRange_DateIntervalId" xml:space="preserve">
+    <value>Seleccione el tamaño de los períodos que desea que los datos de la serie de tiempo del grupo en.  Si la columna del eje de X es una fecha, garrapatas/etiquetas del eje X se calculará utilizando este período.!</value>
+  </data>
+  <data name="ChartRange_ReportId" xml:space="preserve">
+    <value>Seleccione el informe que desea suministrar datos para esta gama. Después de seleccionar un informe, usted podrá seleccionar columnas de ese informe para el eje X y Y.!</value>
+  </data>
+  <data name="ChartRange_XAxisId" xml:space="preserve">
+    <value>Seleccione la columna a utilizar para el eje X. Los valores de columna del eje X desde el primer rango se utilizará como garrapatas y etiquetas del eje X. Utilice el arriba y abajo flechas hacia la derecha para volver a ordenar rangos y cambio que se utiliza para las etiquetas de eje X.!</value>
+  </data>
+  <data name="ChartRange_YAxisId" xml:space="preserve">
+    <value>Seleccione la columna a utilizar para el eje Y. Los valores de columna Y eje de la primera serie se utilizará como garrapatas y etiquetas para el eje Y en el lado izquierdo de la tabla. Columnas de eje Y posteriormente se utilizará como garrapatas/etiquetas en el lado derecho.!</value>
+  </data>
+  <data name="Database_AllowPaging" xml:space="preserve">
+    <value>Algunas bases de datos ofrecen paginación usando compensación o límite.  SQL Server 2008 R2 y abajo no permite esto.  Comprobarlo a menos que usted está utilizando SQL Server 2008 R2 o baje.!</value>
+  </data>
+  <data name="Database_ConfirmPassword" xml:space="preserve">
+    <value>Escriba la confirmación de su contraseña</value>
+  </data>
+  <data name="Database_ConnectionString" xml:space="preserve">
+    <value>Siempre que una cadena de conexión, que se utilizará en lugar de construir uno de los otros campos.!</value>
+  </data>
+  <data name="Database_DatabaseName" xml:space="preserve">
+    <value>Nombre de la base de datos es el nombre de la base de datos en el servidor. !</value>
+  </data>
+  <data name="Database_Host" xml:space="preserve">
+    <value>Host es el nombre DNS o IP del servidor de base de datos.!</value>
+  </data>
+  <data name="Database_IsEmptyPassword" xml:space="preserve">
+    <value>Comprobarlo para confirmar que ninguna contraseña es necesaria.!</value>
+  </data>
+  <data name="Database_Name" xml:space="preserve">
+    <value>Nombre debe ser un nombre único para esta base de datos. No debe ser el mismo que el nombre de la base de datos.!</value>
+  </data>
+  <data name="Database_Password" xml:space="preserve">
+    <value>Cuando agregar una nueva base de datos, la contraseña y que confirman deberá introducir contraseña. Si editando, puede dejar la contraseña en blanco y utilizará el valor existente. Las contraseñas son encriptadas firmemente antes de ser salvos.!</value>
+  </data>
+  <data name="Database_Port" xml:space="preserve">
+    <value>El puerto es el número de puerto para conectarse al servidor de base de datos en. Por defecto el valor predeterminado para el tipo de base de datos si se deja vacío.!</value>
+  </data>
+  <data name="Database_User" xml:space="preserve">
+    <value>Usuario es el nombre de usuario debe utilizar para conectarse a la base de datos.!</value>
+  </data>
+  <data name="DatasetColumn_ColumnName" xml:space="preserve">
+    <value>Seleccione la tabla y columna que debe utilizarse para esta columna en informes.!</value>
+  </data>
+  <data name="DatasetColumn_DataTypeId" xml:space="preserve">
+    <value>El tipo de datos de columna se utiliza para crear el SQL de la columna. Seleccione el tipo más cercano de la lista.!</value>
+  </data>
+  <data name="DatasetColumn_Derived" xml:space="preserve">
+    <value>Utilice esto para escribir SQL para modificar el valor devuelto como esta columna. Campos de referencia usando [TableName]. [ColumnName] de SQL Server, o 'TableName'. 'ColumnName' para MySQL.!</value>
+  </data>
+  <data name="DatasetColumn_FilterQuery" xml:space="preserve">
+    <value>Utilice la consulta de filtro a los datos de búsqueda para sustituir el valor de esta columna, como reemplazar un StatusID con un nombre. El valor de la opción debe ser con alias como 'Valor' y coincide con el valor de esta columna. El texto a mostrar debe ser con alias como 'Texto'.!</value>
+  </data>
+  <data name="DatasetColumn_FilterTypeId" xml:space="preserve">
+    <value>El tipo de filtro determina los operadores, que el usuario tendrá al crear filtros de informe con esta columna.  El tipo de filtro 'Select' permite consultar otra tabla para valores de búsqueda.!</value>
+  </data>
+  <data name="DatasetColumn_Link" xml:space="preserve">
+    <value>Proporcionar un enlace que haga clic en el valor de la columna se abrirá en una ventana nueva. Sustituir valores de columnas en la fila en el enlace usando el completamente qualifed nombre de columna [SchemaName]. [TableName]. [ColumnName] de SQL Server, o 'TableName'.' ColumnName' para MySQL.!</value>
+  </data>
+  <data name="DatasetColumn_Title" xml:space="preserve">
+    <value>El título de la columna es un nombre de columna amable que verá el usuario al crear los informes.!</value>
+  </data>
+  <data name="DatasetJoin_Keys" xml:space="preserve">
+    <value>Especificar las columnas y sus relaciones que se utilizará cuando se unen las tablas. Utiliza nombres completos como [TableName]. [ColumnName] de SQL Server, o 'TableName'. 'ColumnName' para MySQL.!</value>
+  </data>
+  <data name="DatasetJoin_JoinTypeId" xml:space="preserve">
+    <value>Especificar el tipo de SQL JOIN con esta tabla.!</value>
+  </data>
+  <data name="Dataset_CurrencyFormat" xml:space="preserve">
+    <value>&lt;p&gt;Currency formats are comprised of two tokens: one representing the currency denomination and it's location in the string, and another representing the symbol for thousands, the decimal place, and the precision.&lt;/p&gt;&lt;p&gt;&lt;b&gt;{s:$}&lt;/b&gt; represents the currency denomination. The dollar sign in this example with be used for the currency denomination and can be replaced by any character.&lt;/p&gt;&lt;p&gt;&lt;b&gt;{[t:,][d:.][p:2]}&lt;/b&gt; represents the currency value. It is composed of three tokens: &lt;i&gt;[t:,]&lt;/i&gt; indicates the symbol to use to separate thousands (in this case a comma),&lt;i&gt;[d:.]&lt;/i&gt; indicates the symbol to use to separate decimals (in this case a decimal point), and &lt;i&gt;[p:2]&lt;/i&gt; indicates the number of decimal places (in this case two).&lt;/p&gt;&lt;table id="format-currency" class="pt-1 table table-striped table-bordered table-sm table-hover"&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Number&lt;/th&gt;&lt;th&gt;Format&lt;/th&gt;&lt;th&gt;String&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;1000.234&lt;/td&gt;&lt;td&gt;{s:$} {[t:,][d:.][p:2]}&lt;/td&gt;&lt;td&gt;$ 1,000.23&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;1000.234&lt;/td&gt;&lt;td&gt;{s:$}{[t:][d:.][p:1]}&lt;/td&gt;&lt;td&gt;$1000.2&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;1000.234&lt;/td&gt;&lt;td&gt;{s:£}{[t:,][d:.][p:3]}&lt;/td&gt;&lt;td&gt;£1,000.234&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;1000.234&lt;/td&gt;&lt;td&gt;{[t:.][d:,][p:2]} {s:€}&lt;/td&gt;&lt;td&gt;1.000,23 €&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;</value>
+  </data>
+  <data name="DatasetJoin_TableName" xml:space="preserve">
+    <value>Ingrese el nombre completo de la tabla de la tabla que desea unir a la tabla principal para este conjunto de datos.</value>
+  </data>
+  <data name="Dataset_Conditions" xml:space="preserve">
+    <value>Ingrese una instrucción WHERE de SQL (sin la palabra clave WHERE) para limitar los datos a los que el usuario puede acceder.</value>
+  </data>
+  <data name="Dataset_DatabaseId" xml:space="preserve">
+    <value>Seleccione la base de datos que este conjunto de datos consultará. Si necesita cambiar la base de datos después de crear el conjunto de datos, use el enlace `Cambiar base de datos`.</value>
+  </data>
+  <data name="Dataset_DatasetRole" xml:space="preserve">
+    <value>Agregue los roles que pueden acceder a este conjunto de datos. Los administradores podrán ver / modificar cualquier conjunto de datos.</value>
+  </data>
+  <data name="Dataset_Name" xml:space="preserve">
+    <value>Introduzca un nombre único para el conjunto de datos.</value>
+  </data>
+  <data name="Dataset_PrimarySource" xml:space="preserve">
+    <value>Seleccione la tabla principal o el procedimiento almacenado para consultar este conjunto de datos.</value>
+  </data>
+  <data name="ReportFilter_ColumnId" xml:space="preserve">
+    <value>Seleccione la columna a usar para filtrar los datos del informe.</value>
+  </data>
+  <data name="ReportFilter_Criteria" xml:space="preserve">
+    <value>Introduzca un valor de texto que desee comparar con la columna de filtro.</value>
+  </data>
+  <data name="ReportFilter_OperatorId" xml:space="preserve">
+    <value>Seleccione el operador a utilizar cuando compare criterios.</value>
+  </data>
+  <data name="Role_Name" xml:space="preserve">
+    <value>Dale a este rol un nombre único.</value>
+  </data>
+  <data name="User_LanguageId" xml:space="preserve">
+    <value>Este será el idioma predeterminado en el que este usuario verá el sitio.</value>
+  </data>
+  <data name="User_UserName" xml:space="preserve">
+    <value>El nombre de inicio de sesión para el usuario.</value>
+  </data>
+  <data name="Dataset_TypeId" xml:space="preserve">
+    <value>Seleccione si este conjunto de datos consultará tablas o un procedimiento almacenado. El uso de un procedimiento almacenado en lugar de tablas deshabilitará otras características como condiciones y uniones.</value>
+  </data>
+  <data name="DatasetColumn_IsParam" xml:space="preserve">
+    <value>Marque esto si este es un parámetro de entrada para el procedimiento. Las columnas de parámetros serán visibles para su uso al filtrar un informe, pero no se podrán ver como una columna en el informe.</value>
+  </data>
+  <data name="Account_AuthCode" xml:space="preserve">
+    <value>Debes utilizar la autenticación de dos factores para iniciar sesión. Si ha configurado Google Authenticator anteriormente, ingrese el código de autenticación. Si no lo ha hecho, use el botón Ayuda para configurarlo.</value>
+  </data>
+  <data name="User_Password" xml:space="preserve">
+    <value>La contraseña debe tener al menos 6 caracteres y debe contener al menos un carácter especial.</value>
+  </data>
+  <data name="ChartRange_AggregatorId" xml:space="preserve">
+    <value>Seleccione cómo desea que los datos para este rango se agreguen al calcular el valor de Y.</value>
+  </data>
+  <data name="ChartRange_Color" xml:space="preserve">
+    <value>Seleccione color para usar para mostrar este rango en el gráfico. Este color se usará para mostrar los datos para este rango, y una versión más clara de este color se usará para el eje Y para este rango.</value>
+  </data>
+  <data name="Dataset_DateFormat" xml:space="preserve">
+    <value>&lt;table class="table table-hover table-bordered table-sm table-striped"&gt;
+&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Character&lt;/th&gt;&lt;th&gt;Description&lt;/th&gt;&lt;th&gt;Example&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;&lt;td&gt;d&lt;/td&gt;&lt;td&gt;Day of the month, 2 digits with leading zeros&lt;/td&gt;&lt;td&gt;01 to 31&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;D&lt;/td&gt;&lt;td&gt;A textual representation of a day&lt;/td&gt;&lt;td&gt;Mon through Sun&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;l&lt;/td&gt;&lt;td&gt;A full textual representation of the day of the week&lt;/td&gt;&lt;td&gt;Sunday through Saturday&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;j&lt;/td&gt;&lt;td&gt;Day of the month without leading zeros&lt;/td&gt;&lt;td&gt;1 to 31&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;J&lt;/td&gt;&lt;td&gt;Day of the month without leading zeros and ordinal suffix&lt;/td&gt;&lt;td&gt;1st, 2nd, to 31st&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;w&lt;/td&gt;&lt;td&gt;Numeric representation of the day of the week&lt;/td&gt;&lt;td&gt;0 (for Sunday) through 6 (for Saturday)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;F&lt;/td&gt;&lt;td&gt;A full textual representation of a month&lt;/td&gt;&lt;td&gt;January through December&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;m&lt;/td&gt;&lt;td&gt;Numeric representation of a month, with leading zero&lt;/td&gt;&lt;td&gt;01 through 12&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;n&lt;/td&gt;&lt;td&gt;Numeric representation of a month, without leading zeros&lt;/td&gt;&lt;td&gt;1 through 12&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;M&lt;/td&gt;&lt;td&gt;A short textual representation of a month&lt;/td&gt;&lt;td&gt;Jan through Dec&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;U&lt;/td&gt;&lt;td&gt;The number of seconds since the Unix Epoch&lt;/td&gt;&lt;td&gt;1413704993&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;y&lt;/td&gt;&lt;td&gt;A two digit representation of a year&lt;/td&gt;&lt;td&gt;99 or 03&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Y&lt;/td&gt;&lt;td&gt;A full numeric representation of a year, 4 digits&lt;/td&gt;&lt;td&gt;1999 or 2003&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Z&lt;/td&gt;&lt;td&gt;ISO Date format&lt;/td&gt;&lt;td&gt;2017-03-04T01:23:43.000Z&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;H&lt;/td&gt;&lt;td&gt;Hours (24 hours)&lt;/td&gt;&lt;td&gt;00 to 23&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;h&lt;/td&gt;&lt;td&gt;Hours&lt;/td&gt;&lt;td&gt;1 to 12&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;i&lt;/td&gt;&lt;td&gt;Minutes&lt;/td&gt;&lt;td&gt;00 to 59&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;S&lt;/td&gt;&lt;td&gt;Seconds, 2 digits&lt;/td&gt;&lt;td&gt;00 to 59&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;s&lt;/td&gt;&lt;td&gt;Seconds&lt;/td&gt;&lt;td&gt;0, 1 to 59&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;K&lt;/td&gt;&lt;td&gt;AM/PM&lt;/td&gt;&lt;td&gt;AM or PM&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;More info about formatting on &lt;a href="https://flatpickr.js.org/formatting/" target="_blank"&gt;flatpickr.js.org&lt;/a&gt;&lt;/p&gt;</value>
+  </data>
 </root>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -216,21 +216,6 @@
   <data name="LabelFilter_Range" xml:space="preserve">
     <value>Entre</value>
   </data>
-  <data name="LabelGroup_AVG" xml:space="preserve">
-    <value>Promedio</value>
-  </data>
-  <data name="LabelGroup_COUNT" xml:space="preserve">
-    <value>Cuenta</value>
-  </data>
-  <data name="LabelGroup_MAX" xml:space="preserve">
-    <value>Máximo</value>
-  </data>
-  <data name="LabelGroup_MIN" xml:space="preserve">
-    <value>Mínimo</value>
-  </data>
-  <data name="LabelGroup_SUM" xml:space="preserve">
-    <value>Suma</value>
-  </data>
   <data name="LabelType_Boolean" xml:space="preserve">
     <value>Boolean</value>
   </data>
@@ -245,5 +230,26 @@
   </data>
   <data name="LabelType_Text" xml:space="preserve">
     <value>Texto</value>
+  </data>
+  <data name="LabelGroup_Avg" xml:space="preserve">
+    <value>Promedio</value>
+  </data>
+  <data name="LabelGroup_Count" xml:space="preserve">
+    <value>Cuenta</value>
+  </data>
+  <data name="LabelGroup_Max" xml:space="preserve">
+    <value>Máximo</value>
+  </data>
+  <data name="LabelGroup_Min" xml:space="preserve">
+    <value>Mínimo</value>
+  </data>
+  <data name="LabelGroup_Sum" xml:space="preserve">
+    <value>Suma</value>
+  </data>
+  <data name="LabelType_Binary" xml:space="preserve">
+    <value>Binary</value>
+  </data>
+  <data name="LabelDateInterval_OneMinute" xml:space="preserve">
+    <value>1 minutos</value>
   </data>
 </root>

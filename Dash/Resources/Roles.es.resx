@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -146,9 +146,6 @@
   </data>
   <data name="SuccessCopyingRole" xml:space="preserve">
     <value>Papel copiado con éxito.!</value>
-  </data>
-  <data name="Users" xml:space="preserve">
-    <value>Usuarios</value>
   </data>
   <data name="MenuItem" xml:space="preserve">
     <value>Roles</value>

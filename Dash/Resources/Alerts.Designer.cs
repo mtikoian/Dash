@@ -142,7 +142,7 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cron day of month must be a `*` or a number between 1 and 31..
+        ///   Looks up a localized string similar to Cron day of month must be `*` or a number between 1 and 31..
         /// </summary>
         public static string ErrorCronDayOfMonth {
             get {
@@ -151,7 +151,7 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cron day of week must be a `*` or a number between 0 and 6..
+        ///   Looks up a localized string similar to Cron day of week must be `*` or a number between 0 and 6..
         /// </summary>
         public static string ErrorCronDayOfWeek {
             get {
@@ -160,7 +160,7 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cron hour must be a `*` or a number between 0 and 23..
+        ///   Looks up a localized string similar to Cron hour must be `*` or a number between 0 and 23..
         /// </summary>
         public static string ErrorCronHour {
             get {
@@ -169,7 +169,7 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cron minute must be a `*` or a number between 0 and 59..
+        ///   Looks up a localized string similar to Cron minute must be `*` or a number between 0 and 59..
         /// </summary>
         public static string ErrorCronMinute {
             get {
@@ -178,7 +178,7 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cron month must be a `*` or a number between 1 and 12..
+        ///   Looks up a localized string similar to Cron month must be `*` or a number between 1 and 12..
         /// </summary>
         public static string ErrorCronMonth {
             get {

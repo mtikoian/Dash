@@ -88,15 +88,6 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Current Password.
-        /// </summary>
-        public static string CurrentPassword {
-            get {
-                return ResourceManager.GetString("CurrentPassword", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Done.
         /// </summary>
         public static string Done {
@@ -133,38 +124,11 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The user information you entered is valid but you don&apos;t have access to this site..
-        /// </summary>
-        public static string ErrorCannotMatchMembership {
-            get {
-                return ResourceManager.GetString("ErrorCannotMatchMembership", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to There was a problem with the username/password you entered..
         /// </summary>
         public static string ErrorCannotValidate {
             get {
                 return ResourceManager.GetString("ErrorCannotValidate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A user name for that email address already exists. Please enter a different email address..
-        /// </summary>
-        public static string ErrorDuplicateEmail {
-            get {
-                return ResourceManager.GetString("ErrorDuplicateEmail", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to User name already exists. Please enter a different user name..
-        /// </summary>
-        public static string ErrorDuplicateUserName {
-            get {
-                return ResourceManager.GetString("ErrorDuplicateUserName", resourceCulture);
             }
         }
         
@@ -187,47 +151,11 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An unknown error occurred. Please verify your entry and try again. If the problem persists, please contact your system administrator..
-        /// </summary>
-        public static string ErrorGeneric {
-            get {
-                return ResourceManager.GetString("ErrorGeneric", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The password retrieval answer provided is invalid. Please check the value and try again..
-        /// </summary>
-        public static string ErrorInvalidAnswer {
-            get {
-                return ResourceManager.GetString("ErrorInvalidAnswer", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The email address provided is invalid. Please check the value and try again..
-        /// </summary>
-        public static string ErrorInvalidEmail {
-            get {
-                return ResourceManager.GetString("ErrorInvalidEmail", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The password provided is invalid. Passwords must be at least 6 characters long, with at least one non-alphanumeric character..
         /// </summary>
         public static string ErrorInvalidPassword {
             get {
                 return ResourceManager.GetString("ErrorInvalidPassword", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The password retrieval question provided is invalid. Please check the value and try again..
-        /// </summary>
-        public static string ErrorInvalidQuestion {
-            get {
-                return ResourceManager.GetString("ErrorInvalidQuestion", resourceCulture);
             }
         }
         
@@ -241,38 +169,11 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The user name provided is invalid. Please check the value and try again..
-        /// </summary>
-        public static string ErrorInvalidUserName {
-            get {
-                return ResourceManager.GetString("ErrorInvalidUserName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The current password you entered is not correct..
-        /// </summary>
-        public static string ErrorOldPassword {
-            get {
-                return ResourceManager.GetString("ErrorOldPassword", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The new password and confirmation password do not match..
         /// </summary>
         public static string ErrorPasswordMatch {
             get {
                 return ResourceManager.GetString("ErrorPasswordMatch", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The authentication provider returned an error. Please verify your entry and try again. If the problem persists, please contact your system administrator..
-        /// </summary>
-        public static string ErrorProviderError {
-            get {
-                return ResourceManager.GetString("ErrorProviderError", resourceCulture);
             }
         }
         
@@ -300,15 +201,6 @@ namespace Dash.Resources {
         public static string ErrorSendingEmail {
             get {
                 return ResourceManager.GetString("ErrorSendingEmail", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The user creation request has been canceled. Please verify your entry and try again. If the problem persists, please contact your system administrator..
-        /// </summary>
-        public static string ErrorUserRejected {
-            get {
-                return ResourceManager.GetString("ErrorUserRejected", resourceCulture);
             }
         }
         
@@ -376,15 +268,6 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to New Password.
-        /// </summary>
-        public static string NewPassword {
-            get {
-                return ResourceManager.GetString("NewPassword", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Your password has been changed successfully..
         /// </summary>
         public static string PasswordChangedText {
@@ -399,15 +282,6 @@ namespace Dash.Resources {
         public static string ResetPassword {
             get {
                 return ResourceManager.GetString("ResetPassword", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Use the form below to reset your password. Passwords must be at least {0} characters long and contain at least {1} special character..
-        /// </summary>
-        public static string ResetPasswordText {
-            get {
-                return ResourceManager.GetString("ResetPasswordText", resourceCulture);
             }
         }
         

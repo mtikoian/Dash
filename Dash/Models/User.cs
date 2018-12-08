@@ -187,7 +187,7 @@ namespace Dash.Models
                 }
                 return true;
             }
-            errorMsg = Account.ErrorGeneric;
+            errorMsg = Core.ErrorGeneric;
             return false;
         }
 

@@ -65,13 +65,13 @@ namespace Dash.Models
             // load user object and copy settings the user is allowed to change
             if (!RequestUserId.HasPositiveValue())
             {
-                errorMsg = Account.ErrorGeneric;
+                errorMsg = Core.ErrorGeneric;
                 return false;
             }
             var user = DbContext.Get<User>(RequestUserId.Value);
             if (user == null)
             {
-                errorMsg = Account.ErrorGeneric;
+                errorMsg = Core.ErrorGeneric;
                 return false;
             }
             user.FirstName = FirstName;
@@ -88,7 +88,7 @@ namespace Dash.Models
                 }
                 return true;
             }
-            errorMsg = Account.ErrorGeneric;
+            errorMsg = Core.ErrorGeneric;
             return false;
         }
     }

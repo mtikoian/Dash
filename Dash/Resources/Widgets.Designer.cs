@@ -106,15 +106,6 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There was a problem saving your dashboard. Try reloading the page..
-        /// </summary>
-        public static string ErrorSavingDashboard {
-            get {
-                return ResourceManager.GetString("ErrorSavingDashboard", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to 15 Minutes.
         /// </summary>
         public static string LabelRefreshRate_FifteenMinutes {
@@ -223,15 +214,6 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Widget deleted successfully..
-        /// </summary>
-        public static string SuccessDeletingWidget {
-            get {
-                return ResourceManager.GetString("SuccessDeletingWidget", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Widget saved successfully..
         /// </summary>
         public static string SuccessSavingWidget {
@@ -282,15 +264,6 @@ namespace Dash.Resources {
         public static string ViewReport {
             get {
                 return ResourceManager.GetString("ViewReport", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to `{0}` was reloaded because it, or the underlying report, was modified..
-        /// </summary>
-        public static string WidgetReloaded {
-            get {
-                return ResourceManager.GetString("WidgetReloaded", resourceCulture);
             }
         }
     }

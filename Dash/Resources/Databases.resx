@@ -166,7 +166,7 @@
     <value>MySql</value>
   </data>
   <data name="LabelType_SqlServer" xml:space="preserve">
-    <value>Sql Server</value>
+    <value>MS SQL Server</value>
   </data>
   <data name="TestConnection" xml:space="preserve">
     <value>Test Connection</value>

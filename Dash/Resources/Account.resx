@@ -117,53 +117,17 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ErrorCannotMatchMembership" xml:space="preserve">
-    <value>The user information you entered is valid but you don't have access to this site.</value>
-  </data>
   <data name="ErrorCannotValidate" xml:space="preserve">
     <value>There was a problem with the username/password you entered.</value>
-  </data>
-  <data name="ErrorDuplicateEmail" xml:space="preserve">
-    <value>A user name for that email address already exists. Please enter a different email address.</value>
-  </data>
-  <data name="ErrorDuplicateUserName" xml:space="preserve">
-    <value>User name already exists. Please enter a different user name.</value>
-  </data>
-  <data name="ErrorGeneric" xml:space="preserve">
-    <value>An unknown error occurred. Please verify your entry and try again. If the problem persists, please contact your system administrator.</value>
-  </data>
-  <data name="ErrorInvalidAnswer" xml:space="preserve">
-    <value>The password retrieval answer provided is invalid. Please check the value and try again.</value>
-  </data>
-  <data name="ErrorInvalidEmail" xml:space="preserve">
-    <value>The email address provided is invalid. Please check the value and try again.</value>
   </data>
   <data name="ErrorInvalidPassword" xml:space="preserve">
     <value>The password provided is invalid. Passwords must be at least 6 characters long, with at least one non-alphanumeric character.</value>
   </data>
-  <data name="ErrorInvalidQuestion" xml:space="preserve">
-    <value>The password retrieval question provided is invalid. Please check the value and try again.</value>
-  </data>
-  <data name="ErrorInvalidUserName" xml:space="preserve">
-    <value>The user name provided is invalid. Please check the value and try again.</value>
-  </data>
   <data name="ErrorPasswordMatch" xml:space="preserve">
     <value>The new password and confirmation password do not match.</value>
   </data>
-  <data name="ErrorProviderError" xml:space="preserve">
-    <value>The authentication provider returned an error. Please verify your entry and try again. If the problem persists, please contact your system administrator.</value>
-  </data>
-  <data name="ErrorUserRejected" xml:space="preserve">
-    <value>The user creation request has been canceled. Please verify your entry and try again. If the problem persists, please contact your system administrator.</value>
-  </data>
   <data name="ConfirmPassword" xml:space="preserve">
     <value>Confirm Password</value>
-  </data>
-  <data name="CurrentPassword" xml:space="preserve">
-    <value>Current Password</value>
-  </data>
-  <data name="NewPassword" xml:space="preserve">
-    <value>New Password</value>
   </data>
   <data name="Login" xml:space="preserve">
     <value>Login</value>
@@ -176,9 +140,6 @@
   </data>
   <data name="ErrorSavingPassword" xml:space="preserve">
     <value>An error occurred saving the password.</value>
-  </data>
-  <data name="ErrorOldPassword" xml:space="preserve">
-    <value>The current password you entered is not correct.</value>
   </data>
   <data name="ForgotPasswordText" xml:space="preserve">
     <value>If you've forgotten your password, a link to create a new one can be sent to the email address for your account.</value>
@@ -203,9 +164,6 @@
   </data>
   <data name="ResetPassword" xml:space="preserve">
     <value>Reset Password</value>
-  </data>
-  <data name="ResetPasswordText" xml:space="preserve">
-    <value>Use the form below to reset your password. Passwords must be at least {0} characters long and contain at least {1} special character.</value>
   </data>
   <data name="ErrorSendingEmail" xml:space="preserve">
     <value>An error occurred sending the email.</value>

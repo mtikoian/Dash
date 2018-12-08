@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -120,9 +120,6 @@
   <data name="NewName" xml:space="preserve">
     <value>Escriba el nombre para el nuevo conjunto de datos.!</value>
   </data>
-  <data name="ErrorDatabaseRequired" xml:space="preserve">
-    <value>Databa host is required.</value>
-  </data>
   <data name="ErrorDuplicateName" xml:space="preserve">
     <value>Un conjunto de datos con este nombre ya existe.!</value>
   </data>
@@ -131,9 +128,6 @@
   </data>
   <data name="ImportErrorNoColumnsRead" xml:space="preserve">
     <value>No había ninguna columna para este conjunto de datos.  Revise los nombres de mesa de las tablas primarias y se unieron. Además, compruebe que el usuario tiene permiso para leer el esquema de información.!</value>
-  </data>
-  <data name="ImportErrorNoNewColumns" xml:space="preserve">
-    <value>No había ninguna nuevas columnas para este conjunto de datos.!</value>
   </data>
   <data name="ColumnDataType" xml:space="preserve">
     <value>Tipo de dato</value>
@@ -168,9 +162,6 @@
   <data name="DateFormat" xml:space="preserve">
     <value>13 mayo 2014</value>
   </data>
-  <data name="Host" xml:space="preserve">
-    <value>Host</value>
-  </data>
   <data name="JoinKeys" xml:space="preserve">
     <value>Claves</value>
   </data>
@@ -183,9 +174,6 @@
   <data name="Name" xml:space="preserve">
     <value>Nombre</value>
   </data>
-  <data name="PrimaryTable" xml:space="preserve">
-    <value>tabla principal</value>
-  </data>
   <data name="ConfirmImportColumns" xml:space="preserve">
     <value>Esto importará las columnas para la tabla primaria y se unió a las tablas que ya no se han creado.!</value>
   </data>
@@ -194,9 +182,6 @@
   </data>
   <data name="Roles" xml:space="preserve">
     <value>Roles</value>
-  </data>
-  <data name="ChangeDatabase" xml:space="preserve">
-    <value>¡Cambiar base de datos!</value>
   </data>
   <data name="Import" xml:space="preserve">
     <value>¡Importación!</value>
@@ -233,5 +218,77 @@
   </data>
   <data name="ViewAll" xml:space="preserve">
     <value>¡Ver todos los datos!</value>
+  </data>
+  <data name="ConfirmDelete" xml:space="preserve">
+    <value>¿Está seguro que desea eliminar este conjunto de datos? Esto también eliminará cualquier informes mediante este conjunto de datos.!</value>
+  </data>
+  <data name="PrimarySource" xml:space="preserve">
+    <value>Fuente primaria</value>
+  </data>
+  <data name="ImportErrorDatabaseRequired" xml:space="preserve">
+    <value>Debe seleccionar una base de datos antes de importar columnas.!</value>
+  </data>
+  <data name="ImportErrorPrimarySourceRequired" xml:space="preserve">
+    <value>Debe especificar una tabla o un proc almacenado para la fuente primaria antes de importar columnas.!</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Tipo</value>
+  </data>
+  <data name="ColumnIsParam" xml:space="preserve">
+    <value>De entrada Param.</value>
+  </data>
+  <data name="LabelType_Proc" xml:space="preserve">
+    <value>¡Proc almacenado!</value>
+  </data>
+  <data name="LabelType_Table" xml:space="preserve">
+    <value>Tablas</value>
+  </data>
+  <data name="ImportErrorNoProcs" xml:space="preserve">
+    <value>Esquema no puede ser importado para procedimientos almacenados.!</value>
+  </data>
+  <data name="LabelJoinType_Inner" xml:space="preserve">
+    <value>Interior</value>
+  </data>
+  <data name="LabelJoinType_Left" xml:space="preserve">
+    <value>¡Izquierda!</value>
+  </data>
+  <data name="LabelJoinType_Right" xml:space="preserve">
+    <value>¡Claro!</value>
+  </data>
+  <data name="SuccessSavingJoin" xml:space="preserve">
+    <value>El {{0}} fue guardado correctamente.</value>
+  </data>
+  <data name="CreateJoin" xml:space="preserve">
+    <value>¡Crea!</value>
+  </data>
+  <data name="EditJoin" xml:space="preserve">
+    <value>Editar</value>
+  </data>
+  <data name="ConfirmDeleteJoin" xml:space="preserve">
+    <value>¡Estás seguro! Desea Usted eliminar esto</value>
+  </data>
+  <data name="SuccessDeletingJoin" xml:space="preserve">
+    <value>La Unión se ha eliminado con éxito. Usted tendrá que quitar las columnas que dependían de esta combinación.!</value>
+  </data>
+  <data name="ConfirmDeleteColumn" xml:space="preserve">
+    <value>¿Está seguro que quiere borrar esta columna?</value>
+  </data>
+  <data name="CreateColumn" xml:space="preserve">
+    <value>Crear columna</value>
+  </data>
+  <data name="EditColumn" xml:space="preserve">
+    <value>Editar columna</value>
+  </data>
+  <data name="SuccessDeletingColumn" xml:space="preserve">
+    <value>La columna fue borrada con éxito.!</value>
+  </data>
+  <data name="SuccessSavingColumn" xml:space="preserve">
+    <value>La columna fue guardada correctamente.!</value>
+  </data>
+  <data name="ErrorAlreadyFirstJoin" xml:space="preserve">
+    <value>Este ya es primera.!</value>
+  </data>
+  <data name="ErrorAlreadyLastJoin" xml:space="preserve">
+    <value>Este ya es pasado.!</value>
   </data>
 </root>

@@ -115,15 +115,6 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Copy Chart.
-        /// </summary>
-        public static string CopyChart {
-            get {
-                return ResourceManager.GetString("CopyChart", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Create New Chart.
         /// </summary>
         public static string CreateChart {
@@ -192,15 +183,6 @@ namespace Dash.Resources {
         public static string ErrorAlreadyLastRange {
             get {
                 return ResourceManager.GetString("ErrorAlreadyLastRange", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The chart was modified by the owner. You should close the chart and re-open it to see the latest version..
-        /// </summary>
-        public static string ErrorChartModified {
-            get {
-                return ResourceManager.GetString("ErrorChartModified", resourceCulture);
             }
         }
         
@@ -448,15 +430,6 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rename Chart.
-        /// </summary>
-        public static string Rename {
-            get {
-                return ResourceManager.GetString("Rename", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Report.
         /// </summary>
         public static string Report {
@@ -466,29 +439,11 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select Color.
-        /// </summary>
-        public static string SelectColor {
-            get {
-                return ResourceManager.GetString("SelectColor", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Share Chart.
         /// </summary>
         public static string ShareChart {
             get {
                 return ResourceManager.GetString("ShareChart", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Add users or roles to share this chart with. These users can view the chart, but only the chart owner can make changes. If you share a chart with a user, they will also be able to see the reports the chart uses..
-        /// </summary>
-        public static string ShareExplain {
-            get {
-                return ResourceManager.GetString("ShareExplain", resourceCulture);
             }
         }
         

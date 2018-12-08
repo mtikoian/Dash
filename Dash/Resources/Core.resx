@@ -117,47 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ErrorAuthorization" xml:space="preserve">
-    <value>You do not have permission to access the requested resource.</value>
-  </data>
-  <data name="CreateDataset" xml:space="preserve">
-    <value>Create A Dataset</value>
-  </data>
-  <data name="CreateDatabase" xml:space="preserve">
-    <value>Create A Database</value>
-  </data>
-  <data name="CreateReport" xml:space="preserve">
-    <value>Create A Report</value>
-  </data>
-  <data name="CreateUser" xml:space="preserve">
-    <value>Create A User</value>
-  </data>
   <data name="Cancel" xml:space="preserve">
     <value>Cancel</value>
-  </data>
-  <data name="Help" xml:space="preserve">
-    <value>Help - </value>
   </data>
   <data name="Save" xml:space="preserve">
     <value>Save</value>
   </data>
-  <data name="GetStarted" xml:space="preserve">
-    <value>Get Started</value>
-  </data>
   <data name="ToggleHelp" xml:space="preserve">
     <value>Toggle Context Help</value>
-  </data>
-  <data name="TextDataset" xml:space="preserve">
-    <value>A dataset connects to a database and defines the tables and columns that should be included in that dataset.</value>
-  </data>
-  <data name="TextDatabase" xml:space="preserve">
-    <value>Any SQL Server or MySql database can be used. Create a database by providing the host, database name, user, and password.</value>
-  </data>
-  <data name="TextReport" xml:space="preserve">
-    <value>Create a report from a dataset. Select from the available columns for the dataset, reorder the columns, sort, and filter.  Preview data as the report is built.</value>
-  </data>
-  <data name="TextUser" xml:space="preserve">
-    <value>Create users by providing their login information and setting the role(s) for the user.</value>
   </data>
   <data name="Dashboard" xml:space="preserve">
     <value>Dashboard</value>
@@ -204,44 +171,20 @@
   <data name="NoData" xml:space="preserve">
     <value>There are no results.</value>
   </data>
-  <data name="Page" xml:space="preserve">
-    <value>Page</value>
-  </data>
   <data name="PerPage" xml:space="preserve">
     <value>Per Page</value>
   </data>
   <data name="PreviousPage" xml:space="preserve">
     <value>Previous Page</value>
   </data>
-  <data name="Showing" xml:space="preserve">
-    <value>Showing {0} - {1} of {2}</value>
-  </data>
   <data name="ConfirmDeleteBody" xml:space="preserve">
     <value>Are you sure you want to delete this {0}?</value>
-  </data>
-  <data name="ConfirmDelete" xml:space="preserve">
-    <value>Confirm Delete</value>
-  </data>
-  <data name="ErrorConnectingToDataSource" xml:space="preserve">
-    <value>There was a problem connecting to the data source.</value>
   </data>
   <data name="ErrorMinMaxLength" xml:space="preserve">
     <value>{0} must be at least {1} characters, and no more than {1} characters.</value>
   </data>
-  <data name="ErrorFixIt" xml:space="preserve">
-    <value>There are errors in the form.  Fix the fields highlighted in red and try again.</value>
-  </data>
   <data name="ErrorAlreadyLoggedIn" xml:space="preserve">
     <value>You can't do that when you are already logged in.</value>
-  </data>
-  <data name="ErrorNotLoggedIn" xml:space="preserve">
-    <value>You have to login to access the requested page.</value>
-  </data>
-  <data name="ErrorMembershipProvider" xml:space="preserve">
-    <value>Contact your network admin for help with account issues.</value>
-  </data>
-  <data name="Close" xml:space="preserve">
-    <value>Close</value>
   </data>
   <data name="HelpEnabled" xml:space="preserve">
     <value>Context help is now enabled. You'll see a question mark icon indicating where help is available.</value>
@@ -258,41 +201,17 @@
   <data name="ErrorChartLoad" xml:space="preserve">
     <value>There was a problem loading this chart.</value>
   </data>
-  <data name="ErrorMatch" xml:space="preserve">
-    <value>{0} does not match {1}.</value>
-  </data>
-  <data name="ErrorMinLength" xml:space="preserve">
-    <value>This field is not long enough.</value>
-  </data>
   <data name="MoveDown" xml:space="preserve">
     <value>Move Down</value>
   </data>
   <data name="MoveUp" xml:space="preserve">
     <value>Move Up</value>
   </data>
-  <data name="NoMatchesFound" xml:space="preserve">
-    <value>No matches found.</value>
-  </data>
-  <data name="CreateChart" xml:space="preserve">
-    <value>Create A Chart</value>
-  </data>
-  <data name="TextChart" xml:space="preserve">
-    <value>Create a chart using one or many reports. Select the report(s) you want to use, and the X and Y axis columns from each. Preview the chart as you build it.</value>
-  </data>
   <data name="ViewSql" xml:space="preserve">
     <value>View Sql</value>
   </data>
-  <data name="DeleteAll" xml:space="preserve">
-    <value>Delete All</value>
-  </data>
   <data name="Role" xml:space="preserve">
     <value>Role</value>
-  </data>
-  <data name="SelectRole" xml:space="preserve">
-    <value>Select Role</value>
-  </data>
-  <data name="SelectUser" xml:space="preserve">
-    <value>Select User</value>
   </data>
   <data name="Add" xml:space="preserve">
     <value>Add</value>
@@ -300,29 +219,14 @@
   <data name="User" xml:space="preserve">
     <value>User</value>
   </data>
-  <data name="ConfirmDeleteAll" xml:space="preserve">
-    <value>Confirm Delete All</value>
-  </data>
   <data name="Export" xml:space="preserve">
     <value>Export</value>
   </data>
   <data name="Rename" xml:space="preserve">
     <value>Rename</value>
   </data>
-  <data name="ID" xml:space="preserve">
-    <value>ID</value>
-  </data>
-  <data name="Owner" xml:space="preserve">
-    <value>Owner</value>
-  </data>
-  <data name="LastModified" xml:space="preserve">
-    <value>Updated</value>
-  </data>
   <data name="CopyOf" xml:space="preserve">
     <value>Copy Of {0}</value>
-  </data>
-  <data name="Confirm" xml:space="preserve">
-    <value>Confirm</value>
   </data>
   <data name="DiscardChanges" xml:space="preserve">
     <value>You have unsaved changes. Are you sure you want to leave without saving?</value>
@@ -332,9 +236,6 @@
   </data>
   <data name="ErrorNameRequired" xml:space="preserve">
     <value>Name is required.</value>
-  </data>
-  <data name="Select" xml:space="preserve">
-    <value>Select</value>
   </data>
   <data name="ErrorGeneric" xml:space="preserve">
     <value>An unhandled error occurred.</value>

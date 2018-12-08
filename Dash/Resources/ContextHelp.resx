@@ -117,31 +117,28 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Chart_RangeAggregator" xml:space="preserve">
+  <data name="ChartRange_AggregatorId" xml:space="preserve">
     <value>Select how you want the data for this range to be aggregated together when calculating the Y value.</value>
   </data>
-  <data name="Chart_RangeColor" xml:space="preserve">
+  <data name="ChartRange_Color" xml:space="preserve">
     <value>Select to color to use to display this range on the chart. This color will be used to show the data for this range, and a lighter version of this color will be used for the Y axis for this range.</value>
   </data>
-  <data name="Chart_RangeInterval" xml:space="preserve">
+  <data name="ChartRange_DateIntervalId" xml:space="preserve">
     <value>Select the size of the periods that you want to group time series data into.  If the X axis column is a date/time, X axis ticks/labels will be calculated using this period.</value>
   </data>
-  <data name="Chart_RangeReport" xml:space="preserve">
+  <data name="ChartRange_ReportId" xml:space="preserve">
     <value>Select the report that you want to supply data for this range. After selecting a report, you'll be able to select columns from that report for the X and Y axis.</value>
   </data>
-  <data name="Chart_Ranges" xml:space="preserve">
-    <value>Each chart range adds a new set of data to the chart.  Any report you have access to can be used as a range.  Use the up and down arrows to control the ordering of ranges, which determine which X and Y axis labels are used where.</value>
-  </data>
-  <data name="Chart_RangeXAxis" xml:space="preserve">
+  <data name="ChartRange_XAxisId" xml:space="preserve">
     <value>Select the column to use for the X axis. The X axis column values from the first range will be used as ticks/labels for the X axis. Use the up and down arrows to the right to re-order ranges and change which one is used for the X axis labels.</value>
   </data>
-  <data name="Chart_RangeYAxis" xml:space="preserve">
+  <data name="ChartRange_YAxisId" xml:space="preserve">
     <value>Select the column to use for the Y axis. The Y axis column values from the first range will be used as ticks/labels for the Y axis on the left side of the chart. Subsequent Y axis columns will be used as ticks/labels on the right side.</value>
   </data>
   <data name="Database_AllowPaging" xml:space="preserve">
     <value>Some databases offer paging using OFFSET or LIMIT.  SQL Server 2008 R2 and below does not support this.  Check this unless you are using SQL Server 2008 R2 or lower.</value>
   </data>
-  <data name="Database_ConfirmPass" xml:space="preserve">
+  <data name="Database_ConfirmPassword" xml:space="preserve">
     <value>Re-enter the password for confirmation.</value>
   </data>
   <data name="Database_ConnectionString" xml:space="preserve">
@@ -159,7 +156,7 @@
   <data name="Database_Name" xml:space="preserve">
     <value>Name must be a unique name for this database. It does not have to be the same as the database name.</value>
   </data>
-  <data name="Database_Pass" xml:space="preserve">
+  <data name="Database_Password" xml:space="preserve">
     <value>When adding a new database, the password and matching confirm password must be entered. If editing, you can leave the password blank and it will use the existing value. Passwords are securely encrypted before being saved.</value>
   </data>
   <data name="Database_Port" xml:space="preserve">
@@ -168,7 +165,7 @@
   <data name="Database_User" xml:space="preserve">
     <value>User is the username to use when connecting to the database.</value>
   </data>
-  <data name="DatasetColumn_ColumnId" xml:space="preserve">
+  <data name="DatasetColumn_ColumnName" xml:space="preserve">
     <value>Select the table and column that should be used for this column in reports.</value>
   </data>
   <data name="DatasetColumn_DataTypeId" xml:space="preserve">
@@ -176,9 +173,6 @@
   </data>
   <data name="DatasetColumn_Derived" xml:space="preserve">
     <value>Use this to enter SQL to modify the value returned as this column. Reference fields using [TableName].[ColumnName] for SQL Server, or `TableName`.`ColumnName` for MySQL.</value>
-  </data>
-  <data name="DatasetColumn_Details" xml:space="preserve">
-    <value>Columns specify all the table columns that users will be able to access in a report. Columns can be created by hand or automatically imported from the database with the `Import Columns` button.</value>
   </data>
   <data name="DatasetColumn_FilterQuery" xml:space="preserve">
     <value>Use the filter query to lookup data to substitute for the value of this column, like replacing a StatusID with a name. The value for the option must be aliased as `Value` and match the value of this column. The text to display must be aliased as `Text`.</value>
@@ -192,13 +186,10 @@
   <data name="DatasetColumn_Title" xml:space="preserve">
     <value>The column title is a friendly column name that the user will see when creating reports.</value>
   </data>
-  <data name="DatasetJoin_Details" xml:space="preserve">
-    <value>Joins specify tables that can be queried in addition to the primary table. Table name, join type, and keys are required for each join. Joins need to be ordered as they would be used in a SQL query. Use the up and down arrows to change join order.</value>
-  </data>
-  <data name="DatasetJoin_JoinKeys" xml:space="preserve">
+  <data name="DatasetJoin_Keys" xml:space="preserve">
     <value>Specify the columns and their relationship(s) that will be used when joining the tables. Use fully qualified names like [TableName].[ColumnName] for SQL Server, or `TableName`.`ColumnName` for MySQL.</value>
   </data>
-  <data name="DatasetJoin_JoinType" xml:space="preserve">
+  <data name="DatasetJoin_JoinTypeId" xml:space="preserve">
     <value>Specify the type of SQL JOIN to use with this table.</value>
   </data>
   <data name="DatasetJoin_TableName" xml:space="preserve">
@@ -259,29 +250,14 @@
   <data name="ReportFilter_OperatorId" xml:space="preserve">
     <value>Select the operator to use when comparing criteria.</value>
   </data>
-  <data name="Report_Filters" xml:space="preserve">
-    <value>Filters limit the data that shows up in the table and chart. Filters for different columns will show data matching both filters. Adding two filters for the same column will show data matching either filter. Click the `Save` button to save filters and update the report.</value>
-  </data>
-  <data name="Report_GroupDerived" xml:space="preserve">
-    <value>Use this textbox to add SQL to modify the grouping column. Reference the grouping column with {0}.</value>
-  </data>
-  <data name="Report_Groups" xml:space="preserve">
-    <value>Groups control how the data is grouped together before being displayed. Use the Aggregator to choose a aggregation method. For each group, select a column to group by. Optionally, use the text field to enter SQL to modify the grouping function. Use the up and down arrows to change the grouping order.</value>
-  </data>
   <data name="Role_Name" xml:space="preserve">
     <value>Give this role a unique name.</value>
-  </data>
-  <data name="Role_Users" xml:space="preserve">
-    <value>Add users that can access this role. The next time the user logs in, they will have access to the new permissions.</value>
   </data>
   <data name="User_LanguageId" xml:space="preserve">
     <value>This will be the default language in which this user will see the site.</value>
   </data>
   <data name="User_UserName" xml:space="preserve">
     <value>The login name for the user.</value>
-  </data>
-  <data name="User_UserRole" xml:space="preserve">
-    <value>Give the user access to use functionality. A user with no roles assigned will be able to login, but not do anything else.</value>
   </data>
   <data name="Dataset_TypeId" xml:space="preserve">
     <value>Select if this dataset will query tables or a stored procedure. Using a stored proc instead of tables will disable other features like conditions and joins.</value>

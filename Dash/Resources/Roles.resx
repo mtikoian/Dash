@@ -147,9 +147,6 @@
   <data name="SuccessCopyingRole" xml:space="preserve">
     <value>Role copied successfully.</value>
   </data>
-  <data name="Users" xml:space="preserve">
-    <value>Users</value>
-  </data>
   <data name="MenuItem" xml:space="preserve">
     <value>Roles</value>
   </data>

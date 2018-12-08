@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -117,47 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ErrorAuthorization" xml:space="preserve">
-    <value>No tienes permiso para acceder al recurso solicitado.!</value>
-  </data>
-  <data name="CreateDataset" xml:space="preserve">
-    <value>Crear un conjunto de datos.</value>
-  </data>
-  <data name="CreateDatabase" xml:space="preserve">
-    <value>¡Crear una base de datos!</value>
-  </data>
-  <data name="CreateReport" xml:space="preserve">
-    <value>Crear un informe.</value>
-  </data>
-  <data name="CreateUser" xml:space="preserve">
-    <value>¡Crear un usuario!</value>
-  </data>
   <data name="Cancel" xml:space="preserve">
     <value>¡Cancelar!</value>
-  </data>
-  <data name="Help" xml:space="preserve">
-    <value>¡Help! - </value>
   </data>
   <data name="Save" xml:space="preserve">
     <value>Ahorra!</value>
   </data>
-  <data name="GetStarted" xml:space="preserve">
-    <value>¡Comencemos!</value>
-  </data>
   <data name="ToggleHelp" xml:space="preserve">
     <value>¡Cambiar contexto ayuda!</value>
-  </data>
-  <data name="TextDataset" xml:space="preserve">
-    <value>Un conjunto de datos se conecta a una base de datos y define las tablas y columnas que deben incluirse en ese conjunto de datos.!</value>
-  </data>
-  <data name="TextDatabase" xml:space="preserve">
-    <value>Puede utilizar cualquier base de datos de SQL Server. Crear una base de datos proporciona el host, nombre de la base de datos, usuario y contraseña.!</value>
-  </data>
-  <data name="TextReport" xml:space="preserve">
-    <value>Crear un informe de un conjunto de datos. Seleccione las columnas disponibles para el conjunto de datos, reordenar las columnas, ordenar y filtrar.  Escuchar los datos como se construye el informe. Luego crear un gráfico basado en el informe.!</value>
-  </data>
-  <data name="TextUser" xml:space="preserve">
-    <value>Crear usuarios en Dash proporcionando su información de inicio de sesión y establecer las funciones para el usuario.!</value>
   </data>
   <data name="AreYouSure" xml:space="preserve">
     <value>¿Está seguro?</value>
@@ -201,44 +168,20 @@
   <data name="NoData" xml:space="preserve">
     <value>No hay resultados</value>
   </data>
-  <data name="Page" xml:space="preserve">
-    <value>Página</value>
-  </data>
   <data name="PerPage" xml:space="preserve">
     <value>Por página</value>
   </data>
   <data name="PreviousPage" xml:space="preserve">
     <value>Página Anterior</value>
   </data>
-  <data name="Showing" xml:space="preserve">
-    <value>Mostrando {0} - {1} de {2}.</value>
-  </data>
   <data name="ConfirmDeleteBody" xml:space="preserve">
     <value>¿Seguro de que desea eliminar esto {0}?</value>
-  </data>
-  <data name="ConfirmDelete" xml:space="preserve">
-    <value>Confirmar eliminación</value>
-  </data>
-  <data name="ErrorConnectingToDataSource" xml:space="preserve">
-    <value>Hubo un problema al conectar al origen de datos.!</value>
   </data>
   <data name="ErrorMinMaxLength" xml:space="preserve">
     <value>{0} debe ser al menos {1} caracteres y no más de {1} caracteres.!</value>
   </data>
-  <data name="ErrorFixIt" xml:space="preserve">
-    <value>Hay errores en el formulario.  Fijar los campos resaltados en rojo y vuelva a intentarlo.!</value>
-  </data>
   <data name="ErrorAlreadyLoggedIn" xml:space="preserve">
     <value>No se puede hacer que cuando ya estas conectado.!</value>
-  </data>
-  <data name="ErrorNotLoggedIn" xml:space="preserve">
-    <value>Tienes que iniciar sesión para acceder a la página solicitada.!</value>
-  </data>
-  <data name="ErrorMembershipProvider" xml:space="preserve">
-    <value>Póngase en contacto con su administrador de red para obtener ayuda con asuntos de cuenta.!</value>
-  </data>
-  <data name="Close" xml:space="preserve">
-    <value>Cerrar</value>
   </data>
   <data name="HelpEnabled" xml:space="preserve">
     <value>Ayuda contextual está activada ahora. Usted verá un icono de signo de interrogación que indica donde hay ayuda.!</value>
@@ -255,46 +198,70 @@
   <data name="ErrorChartLoad" xml:space="preserve">
     <value>Error al cargar la tabla.!</value>
   </data>
-  <data name="ErrorMatch" xml:space="preserve">
-    <value>{0} no coincide con {1}.!</value>
-  </data>
-  <data name="ErrorMinLength" xml:space="preserve">
-    <value>Este campo no es suficiente.!</value>
-  </data>
   <data name="MoveDown" xml:space="preserve">
     <value>Desplazar hacia abajo</value>
   </data>
   <data name="MoveUp" xml:space="preserve">
     <value>Mover hacia arriba</value>
   </data>
-  <data name="NoMatchesFound" xml:space="preserve">
-    <value>No se encontraron resultados!</value>
-  </data>
-  <data name="DeleteAll" xml:space="preserve">
-    <value>Eliminar Todas</value>
-  </data>
   <data name="Role" xml:space="preserve">
     <value>Rol</value>
-  </data>
-  <data name="SelectRole" xml:space="preserve">
-    <value>Seleccionar Rol</value>
-  </data>
-  <data name="SelectUser" xml:space="preserve">
-    <value>Seleccionar usuario</value>
   </data>
   <data name="Rename" xml:space="preserve">
     <value>Renombre</value>
   </data>
-  <data name="ID" xml:space="preserve">
-    <value>ID</value>
-  </data>
-  <data name="Owner" xml:space="preserve">
-    <value>Propietario</value>
-  </data>
-  <data name="LastModified" xml:space="preserve">
-    <value>Actualizado</value>
-  </data>
   <data name="CopyOf" xml:space="preserve">
     <value>Copia de {0}</value>
+  </data>
+  <data name="Dashboard" xml:space="preserve">
+    <value>Panel de control</value>
+  </data>
+  <data name="ViewSql" xml:space="preserve">
+    <value>Ver</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>Añadir</value>
+  </data>
+  <data name="User" xml:space="preserve">
+    <value>Usuario</value>
+  </data>
+  <data name="Export" xml:space="preserve">
+    <value>Exportar</value>
+  </data>
+  <data name="DiscardChanges" xml:space="preserve">
+    <value>Con cambios sin guardar. ¿Está seguro de que desea salir sin guardar los cambios?</value>
+  </data>
+  <data name="Okay" xml:space="preserve">
+    <value>Okay!</value>
+  </data>
+  <data name="ErrorNameRequired" xml:space="preserve">
+    <value>El nombre es obligatorio.</value>
+  </data>
+  <data name="ErrorGeneric" xml:space="preserve">
+    <value>¡Ocurrió un error!</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>¡No!</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>¡Sí!</value>
+  </data>
+  <data name="Hangfire" xml:space="preserve">
+    <value>¡Hangfire Dashboard!</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>¡Error!</value>
+  </data>
+  <data name="ErrorUserOrRole" xml:space="preserve">
+    <value>Debe seleccionar un usuario o un papel.!</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Buscar!</value>
+  </data>
+  <data name="TableOf" xml:space="preserve">
+    <value>de</value>
+  </data>
+  <data name="ErrorRefresh" xml:space="preserve">
+    <value>El informe/gráfico que está viendo está sincronizado. Por favor actualice la página.!</value>
   </data>
 </root>

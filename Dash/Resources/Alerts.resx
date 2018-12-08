@@ -145,19 +145,19 @@
     <value>Edit Alert</value>
   </data>
   <data name="ErrorCronDayOfMonth" xml:space="preserve">
-    <value>Cron day of month must be a `*` or a number between 1 and 31.</value>
+    <value>Cron day of month must be `*` or a number between 1 and 31.</value>
   </data>
   <data name="ErrorCronDayOfWeek" xml:space="preserve">
-    <value>Cron day of week must be a `*` or a number between 0 and 6.</value>
+    <value>Cron day of week must be `*` or a number between 0 and 6.</value>
   </data>
   <data name="ErrorCronHour" xml:space="preserve">
-    <value>Cron hour must be a `*` or a number between 0 and 23.</value>
+    <value>Cron hour must be `*` or a number between 0 and 23.</value>
   </data>
   <data name="ErrorCronMinute" xml:space="preserve">
-    <value>Cron minute must be a `*` or a number between 0 and 59.</value>
+    <value>Cron minute must be `*` or a number between 0 and 59.</value>
   </data>
   <data name="ErrorCronMonth" xml:space="preserve">
-    <value>Cron month must be a `*` or a number between 1 and 12.</value>
+    <value>Cron month must be `*` or a number between 1 and 12.</value>
   </data>
   <data name="ErrorCronParse" xml:space="preserve">
     <value>Cron expression is not valid.</value>

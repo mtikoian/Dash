@@ -117,103 +117,88 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ErrorCannotMatchMembership" xml:space="preserve">
-    <value>La información del usuario ingresado es válida pero no tienen acceso a este sitio.!</value>
+  <data name="AccountUpdated" xml:space="preserve">
+    <value>Su cuenta fue actualizada con éxito. Tendrá que volver a cargar esta página si ha cambiado su idioma.</value>
   </data>
-  <data name="ErrorCannotValidate" xml:space="preserve">
-    <value>Hubo un problema con la contraseña escribiste.!</value>
-  </data>
-  <data name="ErrorDuplicateEmail" xml:space="preserve">
-    <value>Ya existe un nombre de usuario para esa dirección de correo electrónico. Introduzca una dirección de correo electrónico diferente.!</value>
-  </data>
-  <data name="ErrorDuplicateUserName" xml:space="preserve">
-    <value>Nombre de usuario ya existe. Introduzca un nombre de usuario diferente.!</value>
-  </data>
-  <data name="ErrorGeneric" xml:space="preserve">
-    <value>Ha producido un error desconocido. Por favor compruebe la entrada e inténtelo de nuevo. Si el problema persiste, póngase en contacto con el administrador del sistema.!</value>
-  </data>
-  <data name="ErrorInvalidAnswer" xml:space="preserve">
-    <value>La respuesta de recuperación de la contraseña proporcionada no es válida. Por favor, compruebe el valor e inténtelo de nuevo.!</value>
-  </data>
-  <data name="ErrorInvalidEmail" xml:space="preserve">
-    <value>La dirección de correo electrónico proporcionada no es válida. Por favor, compruebe el valor e inténtelo de nuevo.!</value>
-  </data>
-  <data name="ErrorInvalidPassword" xml:space="preserve">
-    <value>La contraseña proporcionada no es válida. Las contraseñas deben ser al menos 6 caracteres, con al menos un carácter no alfanumérico.!</value>
-  </data>
-  <data name="ErrorInvalidQuestion" xml:space="preserve">
-    <value>La pregunta de recuperación de la contraseña proporcionada no es válida. Por favor, compruebe el valor e inténtelo de nuevo.!</value>
-  </data>
-  <data name="ErrorInvalidUserName" xml:space="preserve">
-    <value>El nombre de usuario proporcionado no es válido. Por favor, compruebe el valor e inténtelo de nuevo.!</value>
-  </data>
-  <data name="ErrorPasswordMatch" xml:space="preserve">
-    <value>La nueva contraseña y la confirmación de contraseña no coinciden.</value>
-  </data>
-  <data name="ErrorProviderError" xml:space="preserve">
-    <value>El proveedor de autenticación devuelve un error. Por favor compruebe la entrada e inténtelo de nuevo. Si el problema persiste, póngase en contacto con el administrador del sistema.!</value>
-  </data>
-  <data name="ErrorUserRejected" xml:space="preserve">
-    <value>Se ha cancelado la solicitud de creación de usuario. Por favor compruebe la entrada e inténtelo de nuevo. Si el problema persiste, póngase en contacto con el administrador del sistema.!</value>
+  <data name="AuthCode" xml:space="preserve">
+    <value>Código</value>
   </data>
   <data name="ConfirmPassword" xml:space="preserve">
-    <value>Confirmar Contraseña</value>
+    <value>Confirmar contraseña</value>
   </data>
-  <data name="CurrentPassword" xml:space="preserve">
-    <value>Contraseña actual</value>
+  <data name="Done" xml:space="preserve">
+    <value>Hecho</value>
   </data>
-  <data name="NewPassword" xml:space="preserve">
-    <value>Nueva contraseña</value>
+  <data name="EmailTextPasswordReset" xml:space="preserve">
+    <value>&lt;p&gt; Se recibió una solicitud para restablecer tu contraseña. Puede restablecer su contraseña &lt;a href="{0}"&gt; aquí &lt;/a&gt;. Este enlace solo es válido por 15 minutos. &lt;/p&gt; &lt;p&gt; Si no lo solicitó, puede ignorar este correo electrónico. &lt;/p&gt;</value>
   </data>
-  <data name="ChangePassword" xml:space="preserve">
-    <value>Cambiar contraseña</value>
+  <data name="EmailTitlePasswordReset" xml:space="preserve">
+    <value>Solicitud de restablecimiento de contraseña de Dash</value>
+  </data>
+  <data name="ErrorAccountLocked" xml:space="preserve">
+    <value>Esta cuenta se ha bloqueado durante {0} minutos debido a demasiados intentos de inicio de sesión fallidos.</value>
+  </data>
+  <data name="ErrorCannotValidate" xml:space="preserve">
+    <value>Hubo un problema con el nombre de usuario / contraseña que ingresaste.</value>
+  </data>
+  <data name="ErrorFactorExpired" xml:space="preserve">
+    <value>La autenticación de dos factores debe completarse en cinco minutos. Por favor, intente iniciar sesión de nuevo.</value>
+  </data>
+  <data name="ErrorFactorInvalid" xml:space="preserve">
+    <value>El código que ingresaste no era correcto.</value>
+  </data>
+  <data name="ErrorInvalidPassword" xml:space="preserve">
+    <value>La contraseña proporcionada no es válida. Las contraseñas deben tener al menos 6 caracteres, con al menos un carácter no alfanumérico.</value>
+  </data>
+  <data name="ErrorInvalidUser" xml:space="preserve">
+    <value>El usuario no pudo ser encontrado.</value>
+  </data>
+  <data name="ErrorPasswordMatch" xml:space="preserve">
+    <value>La nueva contraseña y la contraseña de confirmación no coinciden.</value>
+  </data>
+  <data name="ErrorResetPassword" xml:space="preserve">
+    <value>El enlace de restablecimiento de contraseña en el que hizo clic ha caducado o no es válido. Inténtalo de nuevo.</value>
+  </data>
+  <data name="ErrorSavingPassword" xml:space="preserve">
+    <value>Se ha producido un error al guardar la contraseña.</value>
+  </data>
+  <data name="ErrorSendingEmail" xml:space="preserve">
+    <value>Se ha producido un error enviando el correo electrónico.</value>
+  </data>
+  <data name="FactorText" xml:space="preserve">
+    <value>Para configurar la autenticación de dos factores, deberá instalar Google Authenticator en su dispositivo móvil. Una vez instalado, utilícelo para escanear el siguiente código QR. Luego haga clic en `Hecho 'para intentar iniciar sesión nuevamente.</value>
+  </data>
+  <data name="ForgotPassword" xml:space="preserve">
+    <value>Se te olvidó tu contraseña</value>
+  </data>
+  <data name="ForgotPasswordEmailSentText" xml:space="preserve">
+    <value>Se ha enviado un enlace para restablecer la contraseña de esta cuenta a la dirección de correo electrónico asociada.</value>
+  </data>
+  <data name="ForgotPasswordText" xml:space="preserve">
+    <value>Si ha olvidado su contraseña, se puede enviar un enlace para crear una nueva a la dirección de correo electrónico de su cuenta.</value>
+  </data>
+  <data name="Help" xml:space="preserve">
+    <value>Ayuda</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>Iniciar sesión</value>
   </data>
   <data name="Logout" xml:space="preserve">
     <value>Cerrar sesión</value>
   </data>
-  <data name="ChangePasswordText" xml:space="preserve">
-    <value>Utilice el siguiente formulario para cambiar su contraseña. Nuevas contraseñas deben tener un mínimo de {0} caracteres.!</value>
-  </data>
   <data name="PasswordChangedText" xml:space="preserve">
-    <value>Tu contraseña se ha cambiado correctamente.</value>
-  </data>
-  <data name="ErrorSavingPassword" xml:space="preserve">
-    <value>Error al guardar la contraseña.!</value>
-  </data>
-  <data name="ErrorOldPassword" xml:space="preserve">
-    <value>La contraseña introducida no es correcta.!</value>
-  </data>
-  <data name="ForgotPasswordText" xml:space="preserve">
-    <value>Si ha olvidado su contraseña, puede enviarse un enlace para crear una nueva a la dirección de correo electrónico para su cuenta. Introduce tu nombre de usuario y haga clic en el botón 'Enviar mensaje'. !</value>
-  </data>
-  <data name="ForgotPasswordEmailSentText" xml:space="preserve">
-    <value>Un enlace para restablecer la contraseña para esta cuenta ha sido enviada a la dirección de correo electrónico asociados.!</value>
-  </data>
-  <data name="EmailTitlePasswordReset" xml:space="preserve">
-    <value>Solicitud de reinicio de contraseña</value>
-  </data>
-  <data name="EmailTextPasswordReset" xml:space="preserve">
-    <value>&lt;p&gt;Se recibió una solicitud para restablecer su contraseña.  Puede restablecer su contraseña &lt;a href="@Model.Url"&gt;aquí&lt;/a&gt;. Este enlace sólo es válido durante 15 minutos.&lt;/p&gt;&lt;p&gt;Si usted no solicita esto, puede ignorar este mensaje.&lt;/p&gt;!</value>
-  </data>
-  <data name="ForgotPassword" xml:space="preserve">
-    <value>Olvidó la Contraseña</value>
-  </data>
-  <data name="ErrorInvalidUser" xml:space="preserve">
-    <value>Compte utilisateur activé avec succès</value>
-  </data>
-  <data name="ErrorResetPassword" xml:space="preserve">
-    <value>El enlace de restablecimiento de contraseña hizo clic ha caducado o no es válido. Por favor, inténtelo de nuevo.!</value>
+    <value>Tu contraseña ha sido cambiada exitosamente.</value>
   </data>
   <data name="ResetPassword" xml:space="preserve">
-    <value>Restablecer contraseña</value>
+    <value>Restablecer la contraseña</value>
   </data>
-  <data name="ResetPasswordText" xml:space="preserve">
-    <value>Utilice el siguiente formulario para restablecer la contraseña. Las contraseñas deben ser al menos 6 caracteres, con al menos un carácter no alfanumérico.!</value>
+  <data name="TwoFactor" xml:space="preserve">
+    <value>Autenticación de dos factores</value>
   </data>
-  <data name="ErrorSendingEmail" xml:space="preserve">
-    <value>Se ha producido un error al enviar el correo electrónico.</value>
+  <data name="UpdateAccount" xml:space="preserve">
+    <value>Actualizar cuenta</value>
   </data>
-  <data name="Login" xml:space="preserve">
-    <value>Entra</value>
+  <data name="UpdatePassword" xml:space="preserve">
+    <value>Actualiza contraseña</value>
   </data>
 </root>

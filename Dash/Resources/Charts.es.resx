@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -138,9 +138,6 @@
   <data name="ShareChart" xml:space="preserve">
     <value>¡Compartir el gráfico!</value>
   </data>
-  <data name="Rename" xml:space="preserve">
-    <value>¡Cambiar el nombre de tabla!</value>
-  </data>
   <data name="SuccessCopyingChart" xml:space="preserve">
     <value>Gráfico copiado con éxito.!</value>
   </data>
@@ -201,17 +198,11 @@
   <data name="Report" xml:space="preserve">
     <value>Informe</value>
   </data>
-  <data name="CopyChart" xml:space="preserve">
-    <value>Chart</value>
-  </data>
   <data name="NewName" xml:space="preserve">
     <value>Escriba el nombre para el nuevo gráfico.!</value>
   </data>
   <data name="Ranges" xml:space="preserve">
     <value>Rangos</value>
-  </data>
-  <data name="ShareExplain" xml:space="preserve">
-    <value>Agregar usuarios o roles para compartir esta tabla con.  Estos usuarios pueden ver la tabla, pero sólo el propietario de la tabla puede cambiar.!</value>
   </data>
   <data name="ErrorNameRequired" xml:space="preserve">
     <value>Es necesario el nombre para crear un gráfico.!</value>
@@ -240,7 +231,55 @@
   <data name="ErrorGettingData" xml:space="preserve">
     <value>Error al consultar la base de datos. Consultar los informes. O trate de recargar la página.!</value>
   </data>
-  <data name="SelectColor" xml:space="preserve">
-    <value>Seleccione un color...</value>
+  <data name="LabelType_HorizontalBar" xml:space="preserve">
+    <value>Barra horizontal</value>
+  </data>
+  <data name="ConfirmDelete" xml:space="preserve">
+    <value>¿Está seguro que desea eliminar esta tabla? Esto también eliminará cualquier widgets usando esta tabla.!</value>
+  </data>
+  <data name="ErrorNoData" xml:space="preserve">
+    <value>Ninguno de los rangos de la tabla devuelve los datos. Tratar de modificar los rangos o los informes subyacentes.!</value>
+  </data>
+  <data name="ConfirmDeleteRange" xml:space="preserve">
+    <value>¡Estás seguro! Desea Usted eliminar esto</value>
+  </data>
+  <data name="ErrorAlreadyFirstRange" xml:space="preserve">
+    <value>Esta gama ya es primera.!</value>
+  </data>
+  <data name="ErrorAlreadyLastRange" xml:space="preserve">
+    <value>Esta gama ya es la última.!</value>
+  </data>
+  <data name="SuccessDeletingRange" xml:space="preserve">
+    <value>Rango eliminado con éxito.!</value>
+  </data>
+  <data name="SuccessSavingRange" xml:space="preserve">
+    <value>Gama de guardado con éxito.!</value>
+  </data>
+  <data name="CreateRange" xml:space="preserve">
+    <value>¡Crear variedad!</value>
+  </data>
+  <data name="EditRange" xml:space="preserve">
+    <value>_Editar intervalo...</value>
+  </data>
+  <data name="SuccessDeletingShare" xml:space="preserve">
+    <value>Parte eliminado con éxito.!</value>
+  </data>
+  <data name="ConfirmDeleteShare" xml:space="preserve">
+    <value>¡Estás seguro! Desea Usted eliminar esto</value>
+  </data>
+  <data name="SuccessSavingShare" xml:space="preserve">
+    <value>Cuota de guardado con éxito.!</value>
+  </data>
+  <data name="CreateShare" xml:space="preserve">
+    <value>Crear recurso compartido</value>
+  </data>
+  <data name="EditShare" xml:space="preserve">
+    <value>Editar recurso compartido</value>
+  </data>
+  <data name="LabelType_PolarArea" xml:space="preserve">
+    <value>Polar</value>
+  </data>
+  <data name="LabelType_Radar" xml:space="preserve">
+    <value>Radial</value>
   </data>
 </root>

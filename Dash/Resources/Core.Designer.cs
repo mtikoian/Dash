@@ -97,42 +97,6 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Close.
-        /// </summary>
-        public static string Close {
-            get {
-                return ResourceManager.GetString("Close", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Confirm.
-        /// </summary>
-        public static string Confirm {
-            get {
-                return ResourceManager.GetString("Confirm", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Confirm Delete.
-        /// </summary>
-        public static string ConfirmDelete {
-            get {
-                return ResourceManager.GetString("ConfirmDelete", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Confirm Delete All.
-        /// </summary>
-        public static string ConfirmDeleteAll {
-            get {
-                return ResourceManager.GetString("ConfirmDeleteAll", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to delete this {0}?.
         /// </summary>
         public static string ConfirmDeleteBody {
@@ -160,51 +124,6 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create A Chart.
-        /// </summary>
-        public static string CreateChart {
-            get {
-                return ResourceManager.GetString("CreateChart", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Create A Database.
-        /// </summary>
-        public static string CreateDatabase {
-            get {
-                return ResourceManager.GetString("CreateDatabase", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Create A Dataset.
-        /// </summary>
-        public static string CreateDataset {
-            get {
-                return ResourceManager.GetString("CreateDataset", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Create A Report.
-        /// </summary>
-        public static string CreateReport {
-            get {
-                return ResourceManager.GetString("CreateReport", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Create A User.
-        /// </summary>
-        public static string CreateUser {
-            get {
-                return ResourceManager.GetString("CreateUser", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Dashboard.
         /// </summary>
         public static string Dashboard {
@@ -219,15 +138,6 @@ namespace Dash.Resources {
         public static string Delete {
             get {
                 return ResourceManager.GetString("Delete", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Delete All.
-        /// </summary>
-        public static string DeleteAll {
-            get {
-                return ResourceManager.GetString("DeleteAll", resourceCulture);
             }
         }
         
@@ -268,29 +178,11 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You do not have permission to access the requested resource..
-        /// </summary>
-        public static string ErrorAuthorization {
-            get {
-                return ResourceManager.GetString("ErrorAuthorization", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to There was a problem loading this chart..
         /// </summary>
         public static string ErrorChartLoad {
             get {
                 return ResourceManager.GetString("ErrorChartLoad", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to There was a problem connecting to the data source..
-        /// </summary>
-        public static string ErrorConnectingToDataSource {
-            get {
-                return ResourceManager.GetString("ErrorConnectingToDataSource", resourceCulture);
             }
         }
         
@@ -313,15 +205,6 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There are errors in the form.  Fix the fields highlighted in red and try again..
-        /// </summary>
-        public static string ErrorFixIt {
-            get {
-                return ResourceManager.GetString("ErrorFixIt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to An unhandled error occurred..
         /// </summary>
         public static string ErrorGeneric {
@@ -340,38 +223,11 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} does not match {1}..
-        /// </summary>
-        public static string ErrorMatch {
-            get {
-                return ResourceManager.GetString("ErrorMatch", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to {0} cannot be more than {1} characters..
         /// </summary>
         public static string ErrorMaxLength {
             get {
                 return ResourceManager.GetString("ErrorMaxLength", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Contact your network admin for help with account issues..
-        /// </summary>
-        public static string ErrorMembershipProvider {
-            get {
-                return ResourceManager.GetString("ErrorMembershipProvider", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to This field is not long enough..
-        /// </summary>
-        public static string ErrorMinLength {
-            get {
-                return ResourceManager.GetString("ErrorMinLength", resourceCulture);
             }
         }
         
@@ -390,15 +246,6 @@ namespace Dash.Resources {
         public static string ErrorNameRequired {
             get {
                 return ResourceManager.GetString("ErrorNameRequired", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to You have to login to access the requested page..
-        /// </summary>
-        public static string ErrorNotLoggedIn {
-            get {
-                return ResourceManager.GetString("ErrorNotLoggedIn", resourceCulture);
             }
         }
         
@@ -448,29 +295,11 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Get Started.
-        /// </summary>
-        public static string GetStarted {
-            get {
-                return ResourceManager.GetString("GetStarted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Hangfire Dashboard.
         /// </summary>
         public static string Hangfire {
             get {
                 return ResourceManager.GetString("Hangfire", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Help - .
-        /// </summary>
-        public static string Help {
-            get {
-                return ResourceManager.GetString("Help", resourceCulture);
             }
         }
         
@@ -489,24 +318,6 @@ namespace Dash.Resources {
         public static string HelpEnabled {
             get {
                 return ResourceManager.GetString("HelpEnabled", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to ID.
-        /// </summary>
-        public static string ID {
-            get {
-                return ResourceManager.GetString("ID", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Updated.
-        /// </summary>
-        public static string LastModified {
-            get {
-                return ResourceManager.GetString("LastModified", resourceCulture);
             }
         }
         
@@ -574,38 +385,11 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No matches found..
-        /// </summary>
-        public static string NoMatchesFound {
-            get {
-                return ResourceManager.GetString("NoMatchesFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Okay.
         /// </summary>
         public static string Okay {
             get {
                 return ResourceManager.GetString("Okay", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Owner.
-        /// </summary>
-        public static string Owner {
-            get {
-                return ResourceManager.GetString("Owner", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Page.
-        /// </summary>
-        public static string Page {
-            get {
-                return ResourceManager.GetString("Page", resourceCulture);
             }
         }
         
@@ -664,92 +448,11 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select.
-        /// </summary>
-        public static string Select {
-            get {
-                return ResourceManager.GetString("Select", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Select Role.
-        /// </summary>
-        public static string SelectRole {
-            get {
-                return ResourceManager.GetString("SelectRole", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Select User.
-        /// </summary>
-        public static string SelectUser {
-            get {
-                return ResourceManager.GetString("SelectUser", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Showing {0} - {1} of {2}.
-        /// </summary>
-        public static string Showing {
-            get {
-                return ResourceManager.GetString("Showing", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to of.
         /// </summary>
         public static string TableOf {
             get {
                 return ResourceManager.GetString("TableOf", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Create a chart using one or many reports. Select the report(s) you want to use, and the X and Y axis columns from each. Preview the chart as you build it..
-        /// </summary>
-        public static string TextChart {
-            get {
-                return ResourceManager.GetString("TextChart", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Any SQL Server or MySql database can be used. Create a database by providing the host, database name, user, and password..
-        /// </summary>
-        public static string TextDatabase {
-            get {
-                return ResourceManager.GetString("TextDatabase", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A dataset connects to a database and defines the tables and columns that should be included in that dataset..
-        /// </summary>
-        public static string TextDataset {
-            get {
-                return ResourceManager.GetString("TextDataset", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Create a report from a dataset. Select from the available columns for the dataset, reorder the columns, sort, and filter.  Preview data as the report is built..
-        /// </summary>
-        public static string TextReport {
-            get {
-                return ResourceManager.GetString("TextReport", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Create users by providing their login information and setting the role(s) for the user..
-        /// </summary>
-        public static string TextUser {
-            get {
-                return ResourceManager.GetString("TextUser", resourceCulture);
             }
         }
         
