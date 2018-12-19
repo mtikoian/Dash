@@ -35,15 +35,12 @@ namespace Dash.Models
         {
             var xName = xColumn.Alias;
             var yName = (Aggregators)range.AggregatorId != Aggregators.Count ? yColumn.Alias : "yValue";
-            var hasDate = range.DateIntervalId > 0 && xColumn.IsDateTime;
+            var asDictionary = data.Cast<IDictionary<string, object>>();
 
-            if (!hasDate)
+            if (!(range.DateIntervalId > 0 && xColumn.IsDateTime))
             {
-                foreach (IDictionary<string, object> row in data)
-                {
-                    Labels.Add(row[xName].ToString());
-                    Rows.Add(row[yName] ?? 0);
-                }
+                Labels = asDictionary.Select(x => x[xName].ToString()).ToList();
+                Rows = asDictionary.Select(x => x[yName] ?? 0).ToList();
                 return;
             }
 
@@ -51,11 +48,29 @@ namespace Dash.Models
             var groupedValues = new Dictionary<string, dynamic>();
             var groupedCounts = new Dictionary<string, int>();
 
-            foreach (IDictionary<string, object> row in data)
+            if (range.FillDateGaps)
             {
-                var dt = row[xName].ToDateTime();
-                var container = dt.ToInterval((DateIntervals)range.DateIntervalId);
+                var dates = asDictionary.Select(x => x[xName].ToDateTime());
+                var step = ((DateIntervals)range.DateIntervalId).ToIntervalStep();
+                if (step.Ticks > 0)
+                {
+                    var stepDate = dates.Min();
+                    var maxDate = dates.Max();
+                    while (stepDate <= maxDate)
+                    {
+                        var container = stepDate.ToInterval((DateIntervals)range.DateIntervalId);
+                        if (!groupedValues.ContainsKey(container))
+                        {
+                            groupedValues.Add(container, 0);
+                            groupedCounts.Add(container, 0);
+                        }
+                        stepDate += step;
+                    }
+                }
+            }
 
+            asDictionary.Each(row => {
+                var container = row[xName].ToDateTime().ToInterval((DateIntervals)range.DateIntervalId);
                 if (groupedValues.ContainsKey(container))
                 {
                     var value = groupedValues[container];
@@ -106,13 +121,10 @@ namespace Dash.Models
                     groupedValues.Add(container, row[yName] ?? 0);
                     groupedCounts.Add(container, 1);
                 }
-            }
+            });
 
-            foreach (var kvp in groupedValues)
-            {
-                Labels.Add(kvp.Key);
-                Rows.Add(kvp.Value);
-            }
+            Labels = groupedValues.Select(x => x.Key).ToList();
+            Rows = groupedValues.Select(x => x.Value).ToList();
         }
     }
 }

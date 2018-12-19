@@ -6,6 +6,7 @@
     [YAxisColumnId]  INT                NULL,
     [AggregatorId]   INT                NULL,
     [DateIntervalId] INT                NULL,
+    [FillDateGaps]   BIT                NULL,
     [Color]          NVARCHAR (20)      NULL,
     [DisplayOrder]   INT                NULL,
     [DateCreated]    DATETIMEOFFSET (7) DEFAULT (sysdatetimeoffset()) NOT NULL,

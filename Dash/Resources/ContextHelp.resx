@@ -271,4 +271,7 @@
   <data name="User_Password" xml:space="preserve">
     <value>Password must be at least 6 characters long and contain at least one special character.</value>
   </data>
+  <data name="ChartRange_FillDateGaps" xml:space="preserve">
+    <value>If enabled, gaps in time between intervals will be zero filled.</value>
+  </data>
 </root>

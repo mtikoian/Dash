@@ -586,6 +586,56 @@ namespace Dash
             return interval;
         }
 
+        /// <summary>
+        /// Find the correct step size for a time interval.
+        /// </summary>
+        /// <param name="dateInterval">Interval to convert to.</param>
+        /// <returns>Returns the correct sized timespan.</returns>
+        public static TimeSpan ToIntervalStep(this DateIntervals dateInterval)
+        {
+            var timeSpan = new TimeSpan();
+            switch (dateInterval)
+            {
+                case DateIntervals.Day:
+                    timeSpan = new TimeSpan(24, 0, 0);
+                    break;
+                case DateIntervals.FifteenMinutes:
+                    timeSpan = new TimeSpan(0, 15, 0);
+                    break;
+                case DateIntervals.FiveMinutes:
+                    timeSpan = new TimeSpan(0, 5, 0);
+                    break;
+                case DateIntervals.Hour:
+                    timeSpan = new TimeSpan(1, 0, 0);
+                    break;
+                case DateIntervals.Month:
+                    // rough approximation
+                    timeSpan = new TimeSpan(Math.Round(24 * 30.436875).ToInt(), 0, 0);
+                    break;
+                case DateIntervals.OneMinute:
+                    timeSpan = new TimeSpan(0, 1, 0);
+                    break;
+                case DateIntervals.Quarter:
+                    // rough approximation
+                    timeSpan = new TimeSpan(Math.Round(24 * 91.25).ToInt(), 0, 0);
+                    break;
+                case DateIntervals.TenMinutes:
+                    timeSpan = new TimeSpan(0, 10, 0);
+                    break;
+                case DateIntervals.ThirtyMinutes:
+                    timeSpan = new TimeSpan(0, 30, 0);
+                    break;
+                case DateIntervals.Week:
+                    timeSpan = new TimeSpan(24 * 7, 0, 0);
+                    break;
+                case DateIntervals.Year:
+                    // rough approximation
+                    timeSpan = new TimeSpan(24 * 365, 0, 0);
+                    break;
+            }
+            return timeSpan;
+        }
+
         public static List<SelectListItem> ToSelectList<T>(this IEnumerable<T> enumerable, Func<T, string> text, Func<T, string> value)
         {
             return enumerable.Select(f => new SelectListItem { Text = text(f), Value = value(f) }).ToList();

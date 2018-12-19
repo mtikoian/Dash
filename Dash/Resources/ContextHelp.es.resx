@@ -271,4 +271,7 @@
 &lt;/table&gt;
 &lt;p&gt;More info about formatting on &lt;a href="https://flatpickr.js.org/formatting/" target="_blank"&gt;flatpickr.js.org&lt;/a&gt;&lt;/p&gt;</value>
   </data>
+  <data name="ChartRange_FillDateGaps" xml:space="preserve">
+    <value>Si está habilitado, las brechas en el tiempo entre los intervalos se llenarán con cero.</value>
+  </data>
 </root>

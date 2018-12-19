@@ -6,6 +6,7 @@
 	@YAxisColumnId INT,
 	@AggregatorId INT = NULL,
 	@DateIntervalId INT = NULL,
+	@FillDateGaps BIT = NULL,
 	@DisplayOrder INT = NULL,
 	@Color NVARCHAR(20) = NULL,
 	@RequestUserId INT = NULL
@@ -18,14 +19,14 @@ AS
 
 			IF ISNULL(@Id, 0) = 0
 				BEGIN
-					INSERT INTO ChartRange (ChartId, ReportId, XAxisColumnId, YAxisColumnId, AggregatorId, DateIntervalId, DisplayOrder, Color, UserCreated) 
-						VALUES (@ChartId, @ReportId, @XAxisColumnId, @YAxisColumnId, @AggregatorId, @DateIntervalId, @DisplayOrder, @Color, @RequestUserId)
+					INSERT INTO ChartRange (ChartId, ReportId, XAxisColumnId, YAxisColumnId, AggregatorId, DateIntervalId, FillDateGaps, DisplayOrder, Color, UserCreated) 
+						VALUES (@ChartId, @ReportId, @XAxisColumnId, @YAxisColumnId, @AggregatorId, @DateIntervalId, @FillDateGaps, @DisplayOrder, @Color, @RequestUserId)
 					SET @Id = SCOPE_IDENTITY()
 				END
 			ELSE
 				BEGIN
-					UPDATE ChartRange SET ChartId = @ChartId, ReportId = @ReportId, XAxisColumnId = @XAxisColumnId, 
-						YAxisColumnId = @YAxisColumnId, AggregatorId = @AggregatorId, DateIntervalId = @DateIntervalId, DisplayOrder = @DisplayOrder, Color = @Color,
+					UPDATE ChartRange SET ChartId = @ChartId, ReportId = @ReportId, XAxisColumnId = @XAxisColumnId, YAxisColumnId = @YAxisColumnId, 
+                        AggregatorId = @AggregatorId, DateIntervalId = @DateIntervalId, FillDateGaps = @FillDateGaps, DisplayOrder = @DisplayOrder, Color = @Color,
 						UserUpdated = @RequestUserId, DateUpdated = SYSDATETIMEOFFSET() WHERE Id = @Id
 				END
 		COMMIT

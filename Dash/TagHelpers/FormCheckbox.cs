@@ -11,9 +11,10 @@ namespace Dash.TagHelpers
         {
         }
 
-        public string Label { get; set; }
-        public string Id { get; set; }
         public bool IsChecked { get; set; }
+        public bool? Disabled { get; set; }
+        public string Id { get; set; }
+        public string Label { get; set; }
         public string Name { get; set; }
         public string Value { get; set; }
 
@@ -37,6 +38,7 @@ namespace Dash.TagHelpers
             input.Attributes.Add("type", "checkbox");
             input.Attributes.Add("value", Value);
             input.Attributes.AddIf("checked", "true", IsChecked);
+            input.Attributes.AddIf("disabled", "true", Disabled == true);
 
             var icon = new TagBuilder("i");
             icon.AddCssClass("form-icon");

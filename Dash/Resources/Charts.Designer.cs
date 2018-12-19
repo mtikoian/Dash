@@ -277,6 +277,15 @@ namespace Dash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Fill Gaps.
+        /// </summary>
+        public static string FillDateGaps {
+            get {
+                return ResourceManager.GetString("FillDateGaps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Average.
         /// </summary>
         public static string LabelAggregator_Avg {

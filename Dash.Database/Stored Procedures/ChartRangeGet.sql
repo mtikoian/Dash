@@ -10,7 +10,7 @@ AS
 	ELSE IF (@ChartId IS NOT NULL)
 		INSERT INTO @Ids SELECT Id FROM ChartRange WHERE ChartId = @ChartId
 
-	SELECT cr.Id, ChartId, ReportId, XAxisColumnId, YAxisColumnId, AggregatorId, DateIntervalId, DisplayOrder, Color
+	SELECT cr.Id, ChartId, ReportId, XAxisColumnId, YAxisColumnId, AggregatorId, DateIntervalId, FillDateGaps, DisplayOrder, Color
 	FROM @Ids i
 	INNER JOIN ChartRange cr ON cr.Id = i.Id
 	ORDER BY cr.DisplayOrder

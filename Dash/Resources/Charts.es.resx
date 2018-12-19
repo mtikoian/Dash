@@ -282,4 +282,7 @@
   <data name="LabelType_Radar" xml:space="preserve">
     <value>Radial</value>
   </data>
+  <data name="FillDateGaps" xml:space="preserve">
+    <value>llenar los vacíos</value>
+  </data>
 </root>

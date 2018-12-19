@@ -41,6 +41,7 @@ namespace Dash.TagHelpers
             var label = new TagBuilder("label");
             label.AddCssClass("form-checkbox");
             label.Attributes.Add("for", FieldName);
+            label.Attributes.AddIf("disabled", "true", Disabled == true);
 
             var input = new TagBuilder("input");
             input.AddCssClass("form-input");
@@ -49,6 +50,7 @@ namespace Dash.TagHelpers
             input.Attributes.Add("type", "checkbox");
             input.Attributes.Add("value", "true");
             input.Attributes.AddIf("checked", "true", For?.ModelExplorer.Model?.ToString().ToBool() == true);
+            input.Attributes.AddIf("disabled", "true", Disabled == true);
 
             var icon = new TagBuilder("i");
             icon.AddCssClass("form-icon");

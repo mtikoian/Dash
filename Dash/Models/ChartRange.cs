@@ -68,8 +68,12 @@ namespace Dash.Models
 
         public int DisplayOrder { get; set; }
 
+        [Display(Name = "FillDateGaps", ResourceType = typeof(Charts))]
+        public bool FillDateGaps { get; set; }
+
         [DbIgnore]
         public bool IsLast { get; set; }
+
         public Report Report { get { return _Report ?? (_Report = DbContext.Get<Report>(ReportId)); } }
 
         [Display(Name = "Report", ResourceType = typeof(Charts))]

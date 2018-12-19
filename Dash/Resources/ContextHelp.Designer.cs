@@ -97,6 +97,15 @@ namespace Dash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to If enabled, gaps in time between intervals will be zero filled..
+        /// </summary>
+        public static string ChartRange_FillDateGaps {
+            get {
+                return ResourceManager.GetString("ChartRange_FillDateGaps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select the report that you want to supply data for this range. After selecting a report, you&apos;ll be able to select columns from that report for the X and Y axis..
         /// </summary>
         public static string ChartRange_ReportId {
