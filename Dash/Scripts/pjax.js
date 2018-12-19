@@ -295,7 +295,6 @@
             Alertify.dismissAll();
             Alertify.confirm(target.getAttribute('data-confirm'), pjax.handle.bind(null, options), function(e) { e.target.focus(); });
         } else if (target.getAttribute('data-prompt')) {
-            options.history = false;
             Alertify.dismissAll();
             Alertify.prompt(target.getAttribute('data-prompt'), function(promptValue) {
                 if (!promptValue) {
