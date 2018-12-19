@@ -247,7 +247,9 @@ textarea.form-input {
 }
 
 .form-checkbox {
-    cursor: pointer;
+    &:not([disabled="true"]) {
+        cursor: pointer;
+    }
 
     .form-icon {
         border-radius: $border-radius;
