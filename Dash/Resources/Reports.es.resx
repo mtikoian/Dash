@@ -267,4 +267,7 @@
   <data name="ErrorRangeCriteria" xml:space="preserve">
     <value>Criterios finales se requiere cuando se utiliza el operador Between.!</value>
   </data>
+  <data name="SuccessCreatingReport" xml:space="preserve">
+    <value>Informe creado con éxito. Seleccione columnas ahora.</value>
+  </data>
 </root>

@@ -62,7 +62,7 @@ namespace Dash.Controllers
                 RequestUserId = userId
             };
             newReport.Save(false);
-            ViewBag.Message = Reports.SuccessSavingReport;
+            ViewBag.Message = Reports.SuccessCreatingReport;
             // select columns for new report after creating
             return SelectColumns(newReport.Id);
         }

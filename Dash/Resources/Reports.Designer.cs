@@ -430,6 +430,15 @@ namespace Dash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Report created successfully. Select columns now to get started..
+        /// </summary>
+        public static string SuccessCreatingReport {
+            get {
+                return ResourceManager.GetString("SuccessCreatingReport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Filter deleted successfully..
         /// </summary>
         public static string SuccessDeletingFilter {
