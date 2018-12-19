@@ -41,6 +41,25 @@
     };
 
     /**
+     * Shallow copy an object, by value not by ref.
+     * @param {Object} src - Object to copy.
+     * @returns {Object} New copy of the object.
+     */
+    var clone = function(src) {
+        if ($.isNull(src)) {
+            return src;
+        }
+
+        var cpy = {};
+        for (var prop in src) {
+            if (src.hasOwnProperty(prop)) {
+                cpy[prop] = src[prop];
+            }
+        }
+        return cpy;
+    };
+
+    /**
      * Multi-sorting function for the data. this is an array that defines current sort columns.
      * @param {Object} a - First object to compare.
      * @param {Object} b - Object to compare to.
@@ -264,7 +283,7 @@
         var tempNode = $.createNode();
         tempNode.innerHTML = '<table>' + this.opts.rowTemplateFn({}) + '</table>';
 
-        $.forEach($.getAll('td', tempNode), function(x) {
+        $.getAll('td', tempNode).forEach(function(x) {
             var field = x.getAttribute('data-field');
             var width = x.getAttribute('data-width');
             width = isNaN(width) ? null : width * 1;
@@ -279,7 +298,7 @@
             }
 
             var column = {
-                width: $.hasPositiveValue(width) ? width : this.store(field + '.width'),
+                width: width ? width : this.store(field + '.width'),
                 sortable: x.getAttribute('data-sortable').toLowerCase() === 'true',
                 label: x.getAttribute('data-label'),
                 field: field,
@@ -314,7 +333,7 @@
             return $.coalesce(this.opts[key], null);
         }
         // getter
-        if ($.isUndefined(value)) {
+        if (typeof value === 'undefined') {
             return $.isNull(this.opts.storeUrl) ? localStorage[myKey] : $.coalesce(this.opts[key], null);
         }
 
@@ -328,7 +347,7 @@
                 searchQuery: this.searchQuery,
                 width: this.width,
                 sorting: this.buildSortList(),
-                columns: $.map(this.opts.columns, function(c) { return { field: c.field, width: c.width * 1.0 }; })
+                columns: this.opts.columns.map(function(x) { return { field: x.field, width: x.width * 1.0 }; })
             });
             this.storeFunction.call(null, data);
         }
@@ -411,7 +430,7 @@
      */
     doTable.prototype.buildSortList = function() {
         var sorting = [];
-        $.forEach(this.opts.columns, function(x) {
+        this.opts.columns.forEach(function(x) {
             if (x.sortDir) {
                 sorting.push({ field: x.field, sortDir: x.sortDir, sortOrder: x.sortOrder });
             }
@@ -548,7 +567,7 @@
      * @param {Object} column - Resets sort for this table column.
      */
     doTable.prototype.resetSort = function(column) {
-        $.forEach(this.opts.columns, function(x) {
+        this.opts.columns.forEach(function(x) {
             if (x !== this) {
                 delete x.sortOrder;
                 delete x.sortDir;
@@ -623,7 +642,7 @@
             var tWidth = table.offsetWidth;
             var i = 0;
             var cells = table.tHead.rows[0].cells;
-            $.forEach(this.opts.columns, function(x) {
+            this.opts.columns.forEach(function(x) {
                 if (!x.width) {
                     x.width = cells[i].offsetWidth / hWidth * 100;
                 }
@@ -862,7 +881,9 @@
         }
 
         simulatedEvent.initMouseEvent(mouseEvent, true, true, window, 1, touch.screenX, touch.screenY, touch.clientX, touch.clientY, false, false, false, false, 0, null);
-        $.dispatch(touch.target, simulatedEvent);
+        if (touch.target) {
+            touch.target.dispatchEvent(simulatedEvent);
+        }
         e.preventDefault();
     };
 
@@ -927,11 +948,11 @@
                 $.on(thead, 'touchcancel', handler);
 
                 var mouseFunc = this.onHeaderMouseDown.bind(this);
-                $.forEach($.getAll('th', thead), function(x) {
+                $.getAll('th', thead).forEach(function(x) {
                     $.on(x, 'mousedown', mouseFunc);
                 });
 
-                $.forEach($.getAll('.dotable-arrow', thead), function(x) {
+                $.getAll('.dotable-arrow', thead).forEach(function(x) {
                     $.on(x, 'click', this.changeSort.bind(this, x.getAttribute('data-field'), x.getAttribute('data-type').toLowerCase()));
                 }, this);
             }
@@ -948,8 +969,8 @@
      * @returns {Object} New object with values ready to display.
      */
     doTable.prototype.makeRow = function(obj) {
-        var newObj = $.clone(obj);
-        $.forEach(this.opts.columns, function(x) {
+        var newObj = clone(obj);
+        this.opts.columns.forEach(function(x) {
             if (newObj.hasOwnProperty(x.field)) {
                 newObj[x.field] = this(newObj[x.field], x.dataType);
             }
@@ -965,7 +986,7 @@
 
         if (this.opts.editable) {
             // update column sort icons
-            $.forEach($.getAll('.dotable-arrow', $.get('.dotable-head', $.get('.dash-table', contentNode))), function(x) {
+            $.getAll('.dotable-arrow', $.get('.dotable-head', $.get('.dash-table', contentNode))).forEach(function(x) {
                 var val = $.findByKey(this.opts.columns, 'field', x.getAttribute('data-field'));
                 if (val && val.sortDir) {
                     $.removeClass(x, 'dash-sort-up');
@@ -1004,7 +1025,7 @@
                 body.innerHTML = _templates.noDataFn(this.opts.columns.length);
             } else {
                 var bodyHTML = '';
-                $.forEach($.map(this.results, doTable.prototype.makeRow.bind(this)), function(x) {
+                this.results.map(doTable.prototype.makeRow.bind(this)).forEach(function(x) {
                     bodyHTML += this(x);
                 }, this.opts.rowTemplateFn);
                 body.innerHTML = bodyHTML;
@@ -1012,9 +1033,9 @@
         }
 
         // set values for showing `x - x of x` rows
-        $.setText($.get('.dotable-start-item', contentNode), this.filteredTotal ? this.currentStartItem + 1 : 0);
-        $.setText($.get('.dotable-end-item', contentNode), this.currentEndItem);
-        $.setText($.get('.dotable-total-items', contentNode), this.filteredTotal);
+        $.text($.get('.dotable-start-item', contentNode), this.filteredTotal ? this.currentStartItem + 1 : 0);
+        $.text($.get('.dotable-end-item', contentNode), this.currentEndItem);
+        $.text($.get('.dotable-total-items', contentNode), this.filteredTotal);
 
         this.updateLayout();
     };

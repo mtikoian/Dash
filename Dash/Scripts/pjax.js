@@ -10,7 +10,7 @@
         ignoreFileTypes: ['pdf', 'doc', 'docx', 'zip', 'rar', '7z', 'gif', 'jpeg', 'jpg', 'png'],
         excludeClass: 'pjax-no-follow',
         container: '#contentWrapper',
-        errorMessageName: null
+        errorMessagePrompt: null
     };
 
     /**
@@ -201,8 +201,8 @@
      */
     pjax.init = function() {
         var body = $.get('body');
-        if (body.hasAttribute('data-error-name')) {
-            pjax.errorMessageName = body.getAttribute('data-error-name');
+        if (body.hasAttribute('data-error-prompt')) {
+            pjax.errorMessagePrompt = body.getAttribute('data-error-prompt');
         }
         if (body.hasAttribute('data-okay')) {
             Alertify.updateResources(body.getAttribute('data-okay'), body.getAttribute('data-cancel'));
@@ -298,8 +298,8 @@
             options.history = false;
             Alertify.dismissAll();
             Alertify.prompt(target.getAttribute('data-prompt'), function(promptValue) {
-                if (!$.hasValue(promptValue)) {
-                    Alertify.error(pjax.errorMessageName);
+                if (!promptValue) {
+                    Alertify.error(pjax.errorMessagePrompt);
                     return false;
                 }
                 options.url += ((!/[?&]/.test(options.url)) ? '?prompt' : '&prompt') + '=' + encodeURIComponent(promptValue);

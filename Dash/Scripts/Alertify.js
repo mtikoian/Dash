@@ -38,9 +38,6 @@
         defaultCancelLabel: 'Cancel',
         cancelLabel: 'Cancel',
         maxLogItems: 4,
-        promptValue: '',
-        promptPlaceholder: '',
-        closeLogOnClick: true,
         delay: 5000,
         logContainerClass: 'alertify-logs bottom left',
         dialogs: {
@@ -50,8 +47,7 @@
                 cancel: '<button class="cancel btn btn-warning" tabindex="2">{{cancel}}</button>'
             },
             input: '<div class="m-2"><input type="text" class="form-input" required autofocus></div>',
-            message: '<p class="msg">{{message}}</p>',
-            log: '<div class="{{class}}">{{message}}</div>'
+            message: '<p class="msg">{{message}}</p>'
         },
 
         /**
@@ -86,9 +82,7 @@
          * @param {number} wait - [optional] Time (in ms) to wait before automatically hiding the message, if 0 never hide.
          */
         close: function(elem, wait) {
-            if (this.closeLogOnClick) {
-                $.on(elem, 'click', _hideElement.bind(null, elem));
-            }
+            $.on(elem, 'click', _hideElement.bind(null, elem));
 
             wait = !isNaN(+wait) ? +wait : this.delay;
             if (wait < 0) {
@@ -200,17 +194,13 @@
 
             // Set default value/placeholder of input
             if (input) {
-                if ($.isString(this.promptPlaceholder)) {
-                    // Set the label, if available, for MDL, etc.
-                    if (label) {
-                        label.textContent = this.promptPlaceholder;
-                    } else {
-                        input.placeholder = this.promptPlaceholder;
-                    }
+                // Set the label, if available, for MDL, etc.
+                if (label) {
+                    label.textContent = '';
+                } else {
+                    input.placeholder = '';
                 }
-                if ($.isString(this.promptValue)) {
-                    input.value = this.promptValue;
-                }
+                input.value = '';
             }
 
             /**
@@ -291,42 +281,16 @@
         },
 
         /**
-         * Set the label for the ok button.
-         * @param {string} label - Button text.
-         * @return {Object} Reference to self.
-         */
-        okBtn: function(label) {
-            this.okLabel = label;
-            return this;
-        },
-
-        /**
-         * Set the label for the cancel button.
-         * @param {string} label - Button text.
-         * @return {Object} Reference to self.
-         */
-        cancelBtn: function(label) {
-            this.cancelLabel = label;
-            return this;
-        },
-
-        /**
          * Reset the dialog to default settings.
          */
         reset: function() {
             this.parent = document.body;
-            this.okBtn(this.defaultOkLabel);
-            this.cancelBtn(this.defaultCancelLabel);
-            this.promptValue = '';
-            this.promptPlaceholder = '';
-            this.logTemplateMethod = null;
+            this.okLabel = this.defaultOkLabel;
+            this.cancelLabel = this.defaultCancelLabel;
         }
     };
 
     var Alertify = {
-        parent: function(elem) {
-            _alertify.parent = elem;
-        },
         alert: function(message, onOkay, onCancel) {
             return _alertify.dialog(message, 'alert', onOkay, onCancel) || this;
         },
@@ -336,10 +300,6 @@
         prompt: function(message, onOkay, onCancel) {
             return _alertify.dialog(message, 'prompt', onOkay, onCancel) || this;
         },
-        log: function(message, click) {
-            _alertify.log(message, 'default', click);
-            return this;
-        },
         success: function(message, click) {
             _alertify.log(message, 'success', click);
             return this;
@@ -348,29 +308,13 @@
             _alertify.log(message, 'error', click);
             return this;
         },
-        cancelBtn: function(label) {
-            _alertify.cancelBtn(label);
-            return this;
-        },
-        okBtn: function(label) {
-            _alertify.okBtn(label);
-            return this;
-        },
-        placeholder: function(str) {
-            _alertify.promptPlaceholder = str;
-            return this;
-        },
-        defaultValue: function(str) {
-            _alertify.promptValue = str;
-            return this;
-        },
         dismissAll: function() {
             _alertify.setupLogContainer().innerHTML = '';
             return this;
         },
         updateResources: function(okay, cancel) {
-            okay = $.hasValue(okay) ? okay : _alertify.defaultOkLabel;
-            cancel = $.hasValue(cancel) ? cancel : _alertify.defaultCancelLabel;
+            okay = okay ? okay : _alertify.defaultOkLabel;
+            cancel = cancel ? cancel : _alertify.defaultCancelLabel;
             _alertify.defaultOkLabel = okay;
             _alertify.okLabel = okay;
             _alertify.defaultCancelLabel = cancel;

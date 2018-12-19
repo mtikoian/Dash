@@ -13,7 +13,7 @@
     function Rect(node) {
         var classList = [].slice.call(node.classList);
         var opts = {};
-        $.forEach(classList, function(x) {
+        classList.forEach(function(x) {
             var lx = x.toLowerCase();
             if (lx.indexOf('grid-item-x-') === 0) {
                 this.x = x.replace('grid-item-x-', '') * 1;

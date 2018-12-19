@@ -268,7 +268,7 @@
             } else {
                 this.chart.run();
             }
-            $.setText($.get('.grid-updated-time', container), new Date().toLocaleTimeString());
+            $.text($.get('.grid-updated-time', container), new Date().toLocaleTimeString());
         },
 
 

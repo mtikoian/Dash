@@ -24,7 +24,7 @@
      * @returns {Node} Returns DOM node.
      */
     var getNode = function(node) {
-        return $.isNode(node) ? node : node.target;
+        return node && node.nodeType === 1 && node.nodeName ? node : node.target;
     };
 
     /**
@@ -56,7 +56,8 @@
      * @this {Node}
      */
     var disable = function() {
-        $.onChange(this, conditionallyDisable, true);
+        conditionallyDisable.call(this);
+        $.on(this, 'change', conditionallyDisable);
     };
 
     /**
@@ -85,11 +86,7 @@
                 method: self.getAttribute('data-method') || 'GET',
                 url: self.getAttribute('data-url')
             }, function(data) {
-                if (data && data.length) {
-                    _autocompletes.push(new Autocomplete({ selector: self, sourceData: data }));
-                } else {
-                    _autocompletes.push(new Autocomplete({ selector: self, sourceData: null }));
-                }
+                _autocompletes.push(new Autocomplete({ selector: self, sourceData: data && data.length ? data : null }));
             });
         } else {
             _autocompletes.push(new Autocomplete({
@@ -260,7 +257,7 @@
      * @param {bool} isLeft - True if the left column list, else false.
      */
     var updateColumnList = function(items, isLeft) {
-        $.forEach(items, function(x, i) {
+        items.forEach(function(x, i) {
             updateColumn(x, i, isLeft);
         });
     };
@@ -289,7 +286,7 @@
     var columnSelectorLoad = function() {
         var node = getNode(this);
         if (node) {
-            $.forEach($.getAll('.column-item', node), function(x) {
+            $.getAll('.column-item', node).forEach(function(x) {
                 _draggabillies.push(new Draggabilly(x).on('dragStart', startColumnDrag).on('dragEnd', stopColumnDrag));
             });
         }
@@ -299,7 +296,7 @@
      * Destroy the column selector.
      */
     var columnSelectorUnload = function() {
-        $.forEach(_draggabillies, function(x) {
+        _draggabillies.forEach(function(x) {
             x.destroy();
         });
         _draggabillies = [];
@@ -388,7 +385,7 @@
      * @this Node
      */
     var colorpickerUnload = function() {
-        $.forEach(_colorpickers, function(x) {
+        _colorpickers.forEach(function(x) {
             x.destroy();
         });
         _colorpickers = [];
@@ -399,7 +396,7 @@
      * @this Node
      */
     var contentReplaceLoad = function() {
-        $.onChange(this, function() {
+        $.on(this, 'change', function() {
             var params = {};
             if (this.hasAttribute('data-params')) {
                 this.getAttribute('data-params').split(',').forEach(function(x) {
@@ -429,7 +426,7 @@
             }, function() {
                 done();
             });
-        }, false);
+        });
     };
 
     /**
@@ -482,7 +479,7 @@
      */
     var menuLoad = function() {
         $.on(this, 'click', function() {
-            $.toggleClass('body', 'toggled', null);
+            $.toggleClass('body', 'toggled');
             $.trigger(null, 'resize');
         });
     };
@@ -625,7 +622,7 @@
         if (node.hasAttribute('data-toggle')) {
             elems.push(node);
         }
-        $.forEach(elems, function(x) {
+        elems.forEach(function(x) {
             var toggle = x.getAttribute('data-toggle');
             if (_toggles[toggle]) {
                 var func = isUnload ? _toggles[toggle].onUnload : _toggles[toggle].onLoad;
@@ -642,7 +639,7 @@
      * @param {bool} isUnload - True if unloading, false if loading
      */
     var processContent = function(node, isUnload) {
-        node = $.isEvent(node) ? null : node;
+        node = node instanceof Event ? null : node;
         if (!node) {
             return;
         }
@@ -675,8 +672,6 @@
             if ($.hasClass('#loader', 'd-none')) {
                 return;
             }
-            // @todo maybe add a way to cancel a pending request using escape?
-
             e.preventDefault();
             e.stopPropagation();
             return false;
@@ -717,6 +712,11 @@
     /**
      * Run events needed for the inital page load.
      */
-    $.ready(pjax.init);
-
+    // If document is already loaded, run method
+    if (document.readyState === 'complete') {
+        pjax.init();
+    } else {
+        // Otherwise, wait until document is loaded
+        $.on(document, 'DOMContentLoaded', pjax.init);
+    }
 })(this.$, this.Alertify, this.pjax, this.doTable, this.CollapsibleList, this.Autocomplete, this.Draggabilly, this.flatpickr, this.DashChart, this.ColorPicker, this.Widget);

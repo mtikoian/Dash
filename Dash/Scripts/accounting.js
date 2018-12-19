@@ -116,7 +116,7 @@
      */
     var unformat = function(value) {
         value = value || 0;
-        if ($.isNumber(value)) {
+        if (typeof value === 'number' && !isNaN(value)) {
             return value;
         }
 

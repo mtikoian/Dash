@@ -80,7 +80,7 @@
          * IE & Firefox<29 measures the inner-width
          */
         var div = document.createElement('div');
-        $.style(div, { width: '200px', padding: '1px 2px 3px 4px', borderStyle: 'solid', borderWidth: '1px 2px 3px 4px', boxSizing: 'border-box' });
+        div.style.cssText = 'width: 200px; padding: 1px 2px 3px 4px; borderStyle: "solid"; borderWidth: 1px 2px 3px 4px; boxSizing: "border-box"';
 
         var body = document.body || document.documentElement;
         body.appendChild(div);
@@ -99,7 +99,7 @@
         setup();
 
         elem = $.get(elem);
-        if (!$.isNode(elem)) {
+        if (!elem) {
             return;
         }
 
@@ -523,7 +523,7 @@
         this.pointerDone();
     };
 
-    proto.pointerDone = $.noop;
+    proto.pointerDone = function() { };
 
     /**
      * Event handler when the mouse click is canceled for IE.
@@ -630,7 +630,7 @@
                 handle.style[prop] = isBind ? 'none' : '';
             };
         } else {
-            binderExtra = $.noop;
+            binderExtra = function() { };
         }
         // bind each handle
         var bindMethod = isBind ? 'addEventListener' : 'removeEventListener';
@@ -1073,7 +1073,7 @@
         }
 
         // use element if element, otherwise just `true`, use the parent
-        var container = $.isNode(containment) ? containment : $.isString(containment) ? $.get(containment) : this.element.parentNode;
+        var container = containment.nodeType === 1 && containment.nodeName ? containment : $.isString(containment) ? $.get(containment) : this.element.parentNode;
         var elemSize = getSize(this.element);
         var containerSize = getSize(container);
         var elemRect = this.element.getBoundingClientRect();
@@ -1218,7 +1218,8 @@
      * Set left/top positioning.
      */
     proto.setLeftTop = function() {
-        $.style(this.element, { left: this.position.x + 'px', top: this.position.y + 'px' });
+        this.element.style.left = this.position.x + 'px';
+        this.element.style.top = this.position.y + 'px';
     };
 
     /**

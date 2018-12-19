@@ -62,23 +62,23 @@
                 var isRadial = chartType === 'pie' || chartType === 'doughnut' || chartType === 'polararea';
                 var datasets = [];
 
-                $.forEach(ranges, function(range) {
+                ranges.forEach(function(range) {
                     var type = range.xType.toLowerCase();
                     if (type === 'currency') {
                         var currencyFormat = $.accounting.parseFormat(range.currencyFormat);
-                        range.labels = $.map(range.labels, function(x) {
+                        range.labels = range.labels.map(function(x) {
                             return $.accounting.formatMoney(x, currencyFormat);
                         });
                     } else if (type === 'date') {
                         var dateFormat = range.dateFormat;
-                        range.labels = $.map(range.labels, function(x) {
+                        range.labels = range.labels.map(function(x) {
                             // replace space with `T` to make date match iso8601 as closely as possible, after that browsers should be able to parse to a Date object safely
                             return flatpickr.formatDate(new Date(x.replace(' ', 'T')), dateFormat);
                         });
                     }
 
                     if (isRadial) {
-                        $.forEach(range.rows, function(row, j) {
+                        range.rows.forEach(function(row, j) {
                             datasets.push({ value: row, label: this.labels[j] });
                         }, range);
                     } else {

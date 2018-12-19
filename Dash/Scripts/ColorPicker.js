@@ -210,7 +210,7 @@
             }
 
             this.h = (event.y - rect.top) / this.slideElement.offsetHeight * 360;
-            $.style(this.pickerElement, { 'background-color': this.hsv2rgb({ h: this.h, s: 1, v: 1 }).hex });
+            this.pickerElement.style.backgroundColor = this.hsv2rgb({ h: this.h, s: 1, v: 1 }).hex;
             if (!moveVector) {
                 this.positionIndicators();
             }
@@ -293,12 +293,10 @@
          * Helper to position indicators.
          */
         positionIndicators: function() {
-            $.style(this.slideIndicator, { top: (((this.h * this.slideElement.offsetHeight) / 360) - this.slideIndicator.offsetHeight / 2) + 'px' });
+            this.slideIndicator.style.top = (((this.h * this.slideElement.offsetHeight) / 360) - this.slideIndicator.offsetHeight / 2) + 'px';
             var pickerHeight = this.pickerElement.offsetHeight;
-            $.style(this.pickerIndicator, {
-                top: ((pickerHeight - this.v * pickerHeight) - this.pickerIndicator.offsetHeight / 2) + 'px',
-                left: ((this.s * this.pickerElement.offsetWidth) - this.pickerIndicator.offsetWidth / 2) + 'px'
-            });
+            this.pickerIndicator.style.top = ((pickerHeight - this.v * pickerHeight) - this.pickerIndicator.offsetHeight / 2) + 'px';
+            this.pickerIndicator.style.left = ((this.s * this.pickerElement.offsetWidth) - this.pickerIndicator.offsetWidth / 2) + 'px';
         },
 
         /**
