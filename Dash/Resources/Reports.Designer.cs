@@ -241,7 +241,7 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There are no columns selected for this report. Use `Select Columns` from the menu to select columns..
+        ///   Looks up a localized string similar to There are no columns selected for this report. Use `Columns` from the menu to select columns..
         /// </summary>
         public static string ErrorNoColumnsSelectedChange {
             get {
@@ -385,7 +385,7 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select Columns.
+        ///   Looks up a localized string similar to Columns.
         /// </summary>
         public static string SelectColumns {
             get {
