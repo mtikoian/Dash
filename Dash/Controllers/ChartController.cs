@@ -59,7 +59,7 @@ namespace Dash.Controllers
             }
             model.Save();
             ViewBag.Message = Charts.SuccessCopyingChart;
-            return Index();
+            return Edit(model.Id);
         }
 
         [HttpGet]

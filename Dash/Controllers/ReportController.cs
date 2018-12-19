@@ -29,7 +29,7 @@ namespace Dash.Controllers
             }
             model.Save();
             ViewBag.Message = Reports.SuccessCopyingReport;
-            return Index();
+            return Edit(model.Id);
         }
 
         [HttpGet]
