@@ -466,6 +466,15 @@ namespace Dash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Chart created successfully. Add a chart range to get started..
+        /// </summary>
+        public static string SuccessCreatingChart {
+            get {
+                return ResourceManager.GetString("SuccessCreatingChart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Chart deleted successfully..
         /// </summary>
         public static string SuccessDeletingChart {

@@ -84,9 +84,8 @@ namespace Dash.Controllers
 
             var chart = Chart.Create(model, User.UserId());
             DbContext.Save(chart);
-            ViewBag.Message = Charts.SuccessSavingChart;
-
-            return RedirectToAction("Index", "ChartRange", new { chart.Id });
+            TempData["Message"] = Charts.SuccessCreatingChart;
+            return RedirectToAction("Create", "ChartRange", new { chart.Id });
         }
 
         [HttpPost, AjaxRequestOnly]

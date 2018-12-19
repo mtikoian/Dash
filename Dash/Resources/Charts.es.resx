@@ -285,4 +285,7 @@
   <data name="FillDateGaps" xml:space="preserve">
     <value>llenar los vacíos</value>
   </data>
+  <data name="SuccessCreatingChart" xml:space="preserve">
+    <value>Gráfico creado con éxito. Añadir un rango de gráfico ahora.</value>
+  </data>
 </root>
