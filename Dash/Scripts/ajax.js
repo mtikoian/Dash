@@ -10,7 +10,7 @@
      * @param {Function} onSuccess - Function to handle success result.
      * @param {Function} onError - Function to handle error result.
      */
-    var _ajax = function(options, onSuccess, onError) {
+    var ajax = function(options, onSuccess, onError) {
         options = options || {};
         options.headers = $.extend({
             'X-Requested-With': 'XMLHttpRequest'
@@ -76,83 +76,6 @@
             });
     };
 
-    var _requestQueue = [];
-
-    /**
-     * Request constructor.
-     * @param {Object} options - Request options including url/method/etc.
-     * @param {Function} onSuccess - Function to run on success.
-     * @param {Function} onError - Function to run on error.
-     */
-    var Request = function(options, onSuccess, onError) {
-        this.options = options;
-        this.onSuccess = onSuccess;
-        this.onError = onError;
-        this.status = 0;
-    };
-
-    Request.prototype = {
-        constructor: Request,
-        key: function() {
-            return this.options.key;
-        },
-        abort: function() {
-            if (this.isInProcess()) {
-                this.promise.reject();
-            }
-            this.dequeue();
-        },
-        execute: function() {
-            _ajax(this.options, this.success.bind(this), this.error.bind(this));
-            this.status = 1;
-        },
-        success: function(data) {
-            this.dequeue();
-            if (this.onSuccess) {
-                this.onSuccess(data);
-            }
-        },
-        error: function(data) {
-            this.dequeue();
-            if (this.onError) {
-                this.onError(data);
-            }
-        },
-        isInProcess: function() {
-            return this.status === 1;
-        },
-        dequeue: function() {
-            // remove this from the queue and start the next request
-            var self = this;
-            _requestQueue = _requestQueue.filter(function(x) { return x !== self; });
-            if (_requestQueue.length) {
-                _requestQueue[0].execute();
-            }
-        }
-    };
-
-    /**
-     * Queue up an ajax request. Queue prevents one user from hammering the server.
-     * @param {Object} options - Options to use for the ajax request.
-     * @param {Function} onSuccess - Function to handle success result.
-     * @param {Function} onError - Function to handle error result.
-     */
-    var ajax = function(options, onSuccess, onError) {
-        options.key = options.key || options.url;
-        var request = new Request(options, onSuccess, onError);
-
-        // remove requests from queue that are for this key and aren't already in process
-        _requestQueue = _requestQueue.filter(function(x) {
-            return x.key() !== options.key || x.isInProcess();
-        });
-        _requestQueue.push(request);
-
-        if (_requestQueue.length === 1) {
-            // nothing else in the queue, so execute now
-            request.execute();
-        }
-    };
-
     /**
      * Check fetch response for error codes.
      * @param {Object} response - Fetch response.
@@ -206,7 +129,7 @@
         }
 
         // save error message to server
-        _ajax({ method: 'POST', url: '/Error/LogJavascriptError', data: { message: detail }, block: false }, null, null);
+        ajax({ method: 'POST', url: '/Error/LogJavascriptError', data: { message: detail }, block: false }, null, null);
     };
 
     $.ajax = ajax;
