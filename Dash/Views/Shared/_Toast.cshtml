@@ -1,8 +1,8 @@
-﻿@if (!((string)ViewBag.Message).IsEmpty())
+﻿@if (!((string)(ViewBag.Message ?? TempData["Message"])).IsEmpty())
 {
-    <toast type="Success" message="@ViewBag.Message" />
+    <toast type="Success" message="@((string)(ViewBag.Message ?? TempData["Message"]))" />
 }
-@if (!((string)ViewBag.Error).IsEmpty())
+@if (!((string)(ViewBag.Error ?? TempData["Error"])).IsEmpty())
 {
-    <toast type="Error" message="@ViewBag.Error" />
+    <toast type="Error" message="@((string)(ViewBag.Error ?? TempData["Error"]))" />
 }

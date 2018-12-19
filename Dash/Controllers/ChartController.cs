@@ -163,10 +163,6 @@ namespace Dash.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            if (TempData["Error"]?.ToString().IsEmpty() == false)
-            {
-                ViewBag.Error = TempData["Error"];
-            }
             RouteData.Values.Remove("id");
             return View("Index");
         }
