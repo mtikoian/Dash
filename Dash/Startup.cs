@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Security.Claims;
 using System.Security.Cryptography;
+using AspNetCoreRateLimit;
 using Dash.Configuration;
 using Dash.Models;
 using Dash.Utils;
@@ -57,6 +58,12 @@ namespace Dash
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IDbContext dbContext)
         {
+            // enable logging
+            app.UseMiddleware<SerilogMiddleware>();
+
+            // enable rate limiting
+            app.UseCustomIpRateLimiting();
+
             // harden headers using HardHat - https://github.com/TerribleDev/HardHat
             // pretty locked down by default, will open up later if needed
             // Turn off dns prefetch to protect the privacy of users
@@ -119,8 +126,6 @@ namespace Dash
                 });
             });
 
-            app.UseMiddleware<SerilogMiddleware>();
-
             app.UseSession();
             app.UseStaticFiles(new StaticFileOptions {
                 OnPrepareResponse = content => {
@@ -170,6 +175,11 @@ namespace Dash
             Configuration.Bind("App", appConfig);
             services.AddSingleton((IAppConfiguration)appConfig);
 
+            services.Configure<IpRateLimitOptions>(Configuration.GetSection("IpRateLimiting"));
+            services.Configure<IpRateLimitPolicies>(Configuration.GetSection("IpRateLimitPolicies"));
+            services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
+            services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
+
             services.AddAuthentication(x => {
                 x.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             }).AddCookie(x => {
@@ -195,11 +205,13 @@ namespace Dash
                 options.HeaderName = "X-XSRF-TOKEN";
                 options.Cookie.Name = AntiforgeryCookieName;
             });
-            var cache = new MemoryCache(new MemoryCacheOptions());
-            services.AddSingleton(cache);
+
+            services.AddSingleton(new MemoryCache(new MemoryCacheOptions()));
+
             services.AddSession(options => {
                 options.Cookie.HttpOnly = true;
             });
+
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddScoped<IDbContext, DbContext>();
