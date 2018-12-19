@@ -68,9 +68,10 @@ namespace Dash.Controllers
         }
 
         [HttpGet, ParentAction("Edit")]
-        public IActionResult Columns(int id, int? reportId)
+        public IActionResult Columns(int id, int chartId, int? reportId)
         {
             var model = DbContext.Get<ChartRange>(id) ?? new ChartRange(DbContext, id);
+            model.ChartId = chartId;
             model.ReportId = reportId ?? model.ReportId;
             // clear modelState so that rangeId isn't treated as the new model Id
             ModelState.Clear();
