@@ -990,7 +990,8 @@
             return this.base - this.y;
         },
         inRange: function(chartX, chartY) {
-            return (chartX >= this.x - this.width / 2 && chartX <= this.x + this.width / 2) && (chartY >= this.y && chartY <= this.base);
+            var yPadding = this.value === 0 ? 1 : 0;
+            return (chartX >= this.x - this.width / 2 && chartX <= this.x + this.width / 2) && (chartY >= this.y - yPadding && chartY <= this.base + yPadding);
         }
     });
 
