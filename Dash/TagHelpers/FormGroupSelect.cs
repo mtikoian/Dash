@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -18,13 +18,12 @@ namespace Dash.TagHelpers
         }
 
         public bool Autofocus { get; set; }
+        public IEnumerable<SelectListItem> Options { get; set; }
+        public string Match { get; set; }
         public string Params { get; set; }
         public string Target { get; set; }
-        public string Match { get; set; }
         public string Toggle { get; set; }
         public string Url { get; set; }
-        public IEnumerable<SelectListItem> Options { get; set; }
-        public bool? Disabled { get; set; }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
