@@ -126,23 +126,30 @@ namespace Dash.Models
             {
                 var filterResource = new ResourceDictionary("Filters");
                 Type operatorType;
-                switch (Column?.FilterTypeId)
+                if (Report.Dataset.IsProc)
                 {
-                    case ((int)FilterTypes.Boolean):
-                        operatorType = typeof(FilterOperatorsBoolean);
-                        break;
-                    case ((int)FilterTypes.Date):
-                        operatorType = typeof(FilterOperatorsDate);
-                        break;
-                    case ((int)FilterTypes.Numeric):
-                        operatorType = typeof(FilterOperatorsNumeric);
-                        break;
-                    case ((int)FilterTypes.Select):
-                        operatorType = typeof(FilterOperatorsSelect);
-                        break;
-                    default:
-                        operatorType = typeof(FilterOperatorsText);
-                        break;
+                    operatorType = typeof(FilterOperatorsBoolean);
+                }
+                else
+                {
+                    switch (Column?.FilterTypeId)
+                    {
+                        case ((int)FilterTypes.Boolean):
+                            operatorType = typeof(FilterOperatorsBoolean);
+                            break;
+                        case ((int)FilterTypes.Date):
+                            operatorType = typeof(FilterOperatorsDate);
+                            break;
+                        case ((int)FilterTypes.Numeric):
+                            operatorType = typeof(FilterOperatorsNumeric);
+                            break;
+                        case ((int)FilterTypes.Select):
+                            operatorType = typeof(FilterOperatorsSelect);
+                            break;
+                        default:
+                            operatorType = typeof(FilterOperatorsText);
+                            break;
+                    }
                 }
                 return operatorType.TranslatedSelect(filterResource, "LabelFilter_");
             }
