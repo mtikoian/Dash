@@ -250,6 +250,24 @@ namespace Dash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This dataset doesn&apos;t have any columns you can filter on..
+        /// </summary>
+        public static string ErrorNoFilterColumns {
+            get {
+                return ResourceManager.GetString("ErrorNoFilterColumns", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This dataset uses a stored procedure which has no parameters that can be used to create filters..
+        /// </summary>
+        public static string ErrorNoProcParams {
+            get {
+                return ResourceManager.GetString("ErrorNoProcParams", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Only the owner of the report is allowed to do this..
         /// </summary>
         public static string ErrorOwnerOnly {

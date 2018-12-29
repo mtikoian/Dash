@@ -270,4 +270,10 @@
   <data name="SuccessCreatingReport" xml:space="preserve">
     <value>Report created successfully. Select columns now to get started.</value>
   </data>
+  <data name="ErrorNoProcParams" xml:space="preserve">
+    <value>This dataset uses a stored procedure which has no parameters that can be used to create filters.</value>
+  </data>
+  <data name="ErrorNoFilterColumns" xml:space="preserve">
+    <value>This dataset doesn't have any columns you can filter on.</value>
+  </data>
 </root>

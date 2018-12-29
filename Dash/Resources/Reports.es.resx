@@ -270,4 +270,10 @@
   <data name="SuccessCreatingReport" xml:space="preserve">
     <value>Informe creado con éxito. Seleccione columnas ahora.</value>
   </data>
+  <data name="ErrorNoProcParams" xml:space="preserve">
+    <value>Este conjunto de datos utiliza un stored procedure que no tiene parámetros que puedan usarse para crear filtros.</value>
+  </data>
+  <data name="ErrorNoFilterColumns" xml:space="preserve">
+    <value>Este conjunto de datos no tiene ninguna columna que pueda filtrar.</value>
+  </data>
 </root>
