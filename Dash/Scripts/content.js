@@ -86,11 +86,20 @@
                 method: self.getAttribute('data-method') || 'GET',
                 url: self.getAttribute('data-url')
             }, function(data) {
-                _autocompletes.push(new Autocomplete({ selector: self, sourceData: data && data.length ? data : null }));
+                _autocompletes.push(new Autocomplete({
+                    selector: self,
+                    onSelect: function() {
+                        $.addClass($.closest('form', self), 'has-changes');
+                    },
+                    sourceData: data && data.length ? data : null
+                }));
             });
         } else {
             _autocompletes.push(new Autocomplete({
                 selector: self,
+                onSelect: function() {
+                    $.addClass($.closest('form', self), 'has-changes');
+                },
                 source: function(search, response) {
                     var params = { search: search };
                     if (self.hasAttribute('data-params')) {
