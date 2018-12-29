@@ -112,9 +112,6 @@
     <Build Include="Stored Procedures\ReportFilterGet.sql"/>
     <Build Include="Stored Procedures\ReportFilterSave.sql"/>
     <Build Include="Stored Procedures\ReportGet.sql"/>
-    <Build Include="Stored Procedures\ReportGroupDelete.sql"/>
-    <Build Include="Stored Procedures\ReportGroupGet.sql"/>
-    <Build Include="Stored Procedures\ReportGroupSave.sql"/>
     <Build Include="Stored Procedures\ReportSave.sql"/>
     <Build Include="Stored Procedures\ReportShareDelete.sql"/>
     <Build Include="Stored Procedures\ReportShareGet.sql"/>
@@ -158,7 +155,6 @@
     <Build Include="Tables\Report.sql"/>
     <Build Include="Tables\ReportColumn.sql"/>
     <Build Include="Tables\ReportFilter.sql"/>
-    <Build Include="Tables\ReportGroup.sql"/>
     <Build Include="Tables\ReportShare.sql"/>
     <Build Include="Tables\Role.sql"/>
     <Build Include="Tables\RolePermission.sql"/>

@@ -23,16 +23,6 @@
             <authorized-button controller="ReportFilter" action="Index" title="@Reports.Filters" route-values="@(new { Id = Model.Id })" class="BtnLink" role="tab" />
         }
     </tab-item>
-    <tab-item no-render="@(!User.IsInRole("reportgroup.index"))">
-        @if (Model.ActiveTab == ReportViewTab.Groups)
-        {
-            <tab-active id="groups">@Reports.Groups</tab-active>
-        }
-        else
-        {
-            <authorized-button controller="ReportGroup" action="Index" title="@Reports.Groups" route-values="@(new { Id = Model.Id })" class="BtnLink" role="tab" />
-        }
-    </tab-item>
     <tab-item no-render="@(!Model.IsOwner)">
         @if (Model.ActiveTab == ReportViewTab.Columns)
         {

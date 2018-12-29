@@ -21,7 +21,6 @@ namespace Dash.Models
         private List<DatasetColumn> _DatasetColumnsByDisplay;
         private List<ReportColumn> _ReportColumn;
         private List<ReportFilter> _ReportFilter;
-        private List<ReportGroup> _ReportGroup;
         private List<ReportShare> _ReportShare;
 
         public Report()
@@ -98,13 +97,6 @@ namespace Dash.Models
         }
 
         [BindNever, ValidateNever]
-        public List<ReportGroup> ReportGroup
-        {
-            get { return _ReportGroup ?? (_ReportGroup = DbContext.GetAll<ReportGroup>(new { ReportId = Id }).ToList()); }
-            set { _ReportGroup = value; }
-        }
-
-        [BindNever, ValidateNever]
         public List<ReportShare> ReportShare
         {
             get { return _ReportShare ?? (_ReportShare = DbContext.GetAll<ReportShare>(new { ReportId = Id }).ToList()); }
@@ -135,11 +127,6 @@ namespace Dash.Models
                 Criteria = x.Criteria,
                 Criteria2 = x.Criteria2,
                 OperatorId = x.OperatorId
-            }).ToList();
-
-            newReport.ReportGroup = (ReportGroup ?? DbContext.GetAll<ReportGroup>(new { ReportId = Id }))?.Select(x => new ReportGroup {
-                ColumnId = x.ColumnId,
-                DisplayOrder = x.DisplayOrder
             }).ToList();
 
             // don't copy the shares

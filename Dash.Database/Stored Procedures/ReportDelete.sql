@@ -7,7 +7,6 @@ AS
 
 	BEGIN TRY
 		BEGIN TRAN
-			DELETE FROM ReportGroup WHERE ReportId = @Id
 			DELETE FROM ReportFilter WHERE ReportId = @Id
 			DELETE FROM ReportColumn WHERE ReportId = @Id
 			DELETE FROM ReportShare WHERE ReportId = @Id
