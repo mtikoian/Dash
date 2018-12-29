@@ -70,7 +70,7 @@ namespace Dash.Models
             }
 
             asDictionary.Each(row => {
-                var container = row[xName].ToDateTime().ToInterval((DateIntervals)range.DateIntervalId);
+                var container = (row[xName] ?? "").ToDateTime().ToInterval((DateIntervals)range.DateIntervalId);
                 if (groupedValues.ContainsKey(container))
                 {
                     var value = groupedValues[container];
@@ -86,7 +86,7 @@ namespace Dash.Models
                             }
                             else if (yType == "date")
                             {
-                                value = (new[] { value, row[yName].ToDateTime() }.Max());
+                                value = (new[] { value, (row[yName] ?? "").ToDateTime() }.Max());
                             }
                             else
                             {
@@ -100,7 +100,7 @@ namespace Dash.Models
                             }
                             else if (yType == "date")
                             {
-                                value = (new[] { value, row[yName].ToDateTime() }.Min());
+                                value = (new[] { value, (row[yName] ?? "").ToDateTime() }.Min());
                             }
                             else
                             {
