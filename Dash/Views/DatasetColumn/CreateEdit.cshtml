@@ -23,7 +23,7 @@
         <form-group-select for="FilterTypeId" options="@Model.FilterTypeList" toggle="disable" target="#FilterQuery" match="@((int)FilterTypes.Select)" />
         <form-group-input for="FilterQuery" />
         <form-group-input for="Link" />
-        <form-group-checkbox for="IsParam" />
+        <form-group-checkbox for="IsParam" disabled="@(!Model.Dataset.IsProc)" />
 
         <form-buttons />
     </horizontal-form>
