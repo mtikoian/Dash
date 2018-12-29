@@ -12,6 +12,7 @@ namespace Dash.Models
 {
     public class DatasetColumn : BaseModel, IEquatable<DatasetColumn>
     {
+        private Dataset _Dataset;
         private DataType _DataType;
 
         public DatasetColumn()
@@ -39,6 +40,13 @@ namespace Dash.Models
 
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int DatasetId { get; set; }
+
+        [BindNever, ValidateNever]
+        public Dataset Dataset
+        {
+            get { return _Dataset ?? (_Dataset = DbContext.Get<Dataset>(DatasetId)); }
+            set { _Dataset = value; }
+        }
 
         [BindNever, ValidateNever]
         public DataType DataType
