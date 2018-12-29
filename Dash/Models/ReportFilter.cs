@@ -58,7 +58,7 @@ namespace Dash.Models
         [BindNever, ValidateNever]
         public List<DatasetColumn> Columns
         {
-            get { return Report?.Dataset?.DatasetColumn; }
+            get { return Report.Dataset.IsProc ? Report.Dataset.DatasetColumn.Where(x => x.IsParam).ToList() : Report.Dataset.DatasetColumn; }
         }
 
         [Display(Name = "FilterCriteria", ResourceType = typeof(Reports))]

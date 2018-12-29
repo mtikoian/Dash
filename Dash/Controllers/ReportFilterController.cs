@@ -145,6 +145,11 @@ namespace Dash.Controllers
 
         private IActionResult CreateEditView(ReportFilter model)
         {
+            if (model.Columns.Count() == 0)
+            {
+                TempData["Error"] = model.Report.Dataset.IsProc ? Reports.ErrorNoProcParams : Reports.ErrorNoFilterColumns;
+                return RedirectToAction("Edit", "Report", new { Id = model.ReportId });
+            }
             return View("CreateEdit", model);
         }
 
