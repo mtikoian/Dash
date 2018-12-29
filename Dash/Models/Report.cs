@@ -213,7 +213,7 @@ namespace Dash.Models
                 return response;
             }
 
-            var sqlQuery = new Query(this);
+            var sqlQuery = new QueryBuilder(this);
             if (!sqlQuery.HasColumns)
             {
                 // if we didn't find any columns stop
@@ -225,25 +225,33 @@ namespace Dash.Models
             var dataRes = new List<dynamic>();
             if (Dataset.IsProc)
             {
-                dataRes = Dataset.Database.Query(sqlQuery.ExecStatement(), sqlQuery.Params).ToList();
-                totalRecords = dataRes.Count();
+                try
+                {
+                    dataRes = Dataset.Database.Query(sqlQuery.ExecStatement(), sqlQuery.Params).ToList();
+                    totalRecords = dataRes.Count();
+                }
+                catch (Exception execEx)
+                {
+                    response.DataError = execEx.Message;
+                    response.Error = Reports.ErrorGettingData;
+                }
             }
             else
             {
                 // build the final sql for getting the record count
-                var countSql = sqlQuery.CountStatement(true);
+                sqlQuery.CountStatement();
                 if (includeSql)
                 {
-                    response.CountSql = countSql;
+                    response.CountSql = sqlQuery.SqlResult.Sql;
                 }
 
                 // get the total record count
                 try
                 {
-                    var countRes = Dataset.Database.Query(countSql, sqlQuery.Params);
+                    var countRes = Dataset.Database.Query(sqlQuery.SqlResult.Sql, sqlQuery.SqlResult.NamedBindings);
                     if (countRes.Any())
                     {
-                        totalRecords = ((IDictionary<string, object>)countRes.First())["cnt"].ToString().ToInt();
+                        totalRecords = ((IDictionary<string, object>)countRes.First())["count"].ToString().ToInt();
                     }
                 }
                 catch (Exception countEx)
@@ -268,16 +276,18 @@ namespace Dash.Models
             response.Total = totalRecords;
             response.FilteredTotal = totalRecords;
             response.Rows = new List<object>();
+
+            sqlQuery.SelectStatement(start, rowLimit);
             if (includeSql)
             {
-                response.DataSql = Dataset.IsProc ? sqlQuery.ExecStatement(true) : sqlQuery.SelectStatement(start, rowLimit, true);
+                response.DataSql = Dataset.IsProc ? sqlQuery.ExecStatement() : sqlQuery.SqlResult.Sql;
             }
 
             try
             {
                 if (!Dataset.IsProc)
                 {
-                    dataRes = Dataset.Database.Query(sqlQuery.SelectStatement(start, rowLimit), sqlQuery.Params).ToList();
+                    dataRes = Dataset.Database.Query(sqlQuery.SqlResult.Sql, sqlQuery.SqlResult.NamedBindings).ToList();
                 }
                 if (dataRes.Any())
                 {
@@ -293,7 +303,7 @@ namespace Dash.Models
             return response;
         }
 
-        public List<object> ProcessData(IEnumerable<dynamic> dataRes, Query sqlQuery)
+        public List<object> ProcessData(IEnumerable<dynamic> dataRes, QueryBuilder sqlQuery)
         {
             var result = new List<object>();
 
@@ -333,7 +343,6 @@ namespace Dash.Models
                 {
                     DbContext.SaveMany(this, ReportColumn);
                     DbContext.SaveMany(this, ReportFilter);
-                    DbContext.SaveMany(this, ReportGroup);
                     DbContext.SaveMany(this, ReportShare);
                 }
             });

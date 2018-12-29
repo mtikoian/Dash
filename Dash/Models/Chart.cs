@@ -151,11 +151,12 @@ namespace Dash.Models
                     continue;
                 }
 
-                var sqlQuery = new Query(report, range);
+                var sqlQuery = new QueryBuilder(report, range);
                 if (!(sqlQuery.HasColumns && sqlQuery.DatasetColumns.ContainsKey(range.XAxisColumnId) && sqlQuery.DatasetColumns.ContainsKey(range.YAxisColumnId)))
                 {
                     continue;
                 }
+                sqlQuery.SelectStatement();
 
                 var xColumn = sqlQuery.DatasetColumns[range.XAxisColumnId];
                 var yColumn = sqlQuery.DatasetColumns[range.YAxisColumnId];
@@ -166,7 +167,7 @@ namespace Dash.Models
                     Title = $"{report.Name} ({xColumn.Title})",
                     XType = xColumn.TableDataType.ToString(),
                     YType = yColumn.TableDataType.ToString(),
-                    Sql = includeSql ? (report.Dataset.IsProc ? sqlQuery.ExecStatement(true) : sqlQuery.SelectStatement(prepare: true)) : null
+                    Sql = includeSql ? (report.Dataset.IsProc ? sqlQuery.ExecStatement() : sqlQuery.SqlResult.Sql) : null
                 };
 
                 if (range.AggregatorId == 0)
@@ -180,7 +181,8 @@ namespace Dash.Models
                 // get the actual query data
                 try
                 {
-                    var dataRes = report.Dataset.Database.Query(report.Dataset.IsProc ? sqlQuery.ExecStatement() : sqlQuery.SelectStatement(), sqlQuery.Params);
+                    // @todo make it work with procs
+                    var dataRes = report.Dataset.Database.Query(report.Dataset.IsProc ? sqlQuery.ExecStatement() : sqlQuery.SqlResult.Sql, report.Dataset.IsProc ? sqlQuery.Params : sqlQuery.SqlResult.NamedBindings);
                     if (dataRes.Any())
                     {
                         result.AddData(range, report.ProcessData(dataRes, sqlQuery), xColumn, yColumn);

@@ -166,7 +166,7 @@
     <value>El tipo de datos de columna se utiliza para crear el SQL de la columna. Seleccione el tipo más cercano de la lista.!</value>
   </data>
   <data name="DatasetColumn_Derived" xml:space="preserve">
-    <value>Utilice esto para escribir SQL para modificar el valor devuelto como esta columna. Campos de referencia usando [TableName]. [ColumnName] de SQL Server, o 'TableName'. 'ColumnName' para MySQL.!</value>
+    <value>Utilice esto para escribir SQL para modificar el valor devuelto como esta columna. Campos de referencia usando SchemaName.TableName.ColumnName.</value>
   </data>
   <data name="DatasetColumn_FilterQuery" xml:space="preserve">
     <value>Utilice la consulta de filtro a los datos de búsqueda para sustituir el valor de esta columna, como reemplazar un StatusID con un nombre. El valor de la opción debe ser con alias como 'Valor' y coincide con el valor de esta columna. El texto a mostrar debe ser con alias como 'Texto'.!</value>
@@ -175,13 +175,13 @@
     <value>El tipo de filtro determina los operadores, que el usuario tendrá al crear filtros de informe con esta columna.  El tipo de filtro 'Select' permite consultar otra tabla para valores de búsqueda.!</value>
   </data>
   <data name="DatasetColumn_Link" xml:space="preserve">
-    <value>Proporcionar un enlace que haga clic en el valor de la columna se abrirá en una ventana nueva. Sustituir valores de columnas en la fila en el enlace usando el completamente qualifed nombre de columna [SchemaName]. [TableName]. [ColumnName] de SQL Server, o 'TableName'.' ColumnName' para MySQL.!</value>
+    <value>Proporcionar un enlace que haga clic en el valor de la columna se abrirá en una ventana nueva. Sustituir valores de columnas en la fila en el enlace usando el completamente qualifed nombre de columna SchemaName.TableName.ColumnName.</value>
   </data>
   <data name="DatasetColumn_Title" xml:space="preserve">
     <value>El título de la columna es un nombre de columna amable que verá el usuario al crear los informes.!</value>
   </data>
   <data name="DatasetJoin_Keys" xml:space="preserve">
-    <value>Especificar las columnas y sus relaciones que se utilizará cuando se unen las tablas. Utiliza nombres completos como [TableName]. [ColumnName] de SQL Server, o 'TableName'. 'ColumnName' para MySQL.!</value>
+    <value>Especificar las columnas y sus relaciones que se utilizará cuando se unen las tablas. Utiliza nombres completos como SchemaName.TableName.ColumnName.</value>
   </data>
   <data name="DatasetJoin_JoinTypeId" xml:space="preserve">
     <value>Especificar el tipo de SQL JOIN con esta tabla.!</value>

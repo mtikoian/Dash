@@ -420,16 +420,11 @@ namespace Dash
         /// Convert a DataRow with table schema data into a delimited column name.
         /// </summary>
         /// <param name="row">DataRow with schema info.</param>
-        /// <param name="isSqlServer">True if SQL server, else MySQL.</param>
-        /// <param name="fullyQualified">If true use fully qualified schema/table/column name, if false just column name.</param>
-        /// <returns>Returns the delimited column name.</returns>
-        public static string ToColumnName(this DataRow row, bool isSqlServer = true, bool fullyQualified = true)
+        /// <param name="hasSchema">False if MySQL server, else true.</param>
+        /// <returns>Returns the fully qualified, delimited column name.</returns>
+        public static string ToColumnName(this DataRow row, bool hasSchema = true)
         {
-            if (fullyQualified)
-            {
-                return isSqlServer ? $"[{row["TABLE_SCHEMA"]}].[{row["TABLE_NAME"]}].[{row["COLUMN_NAME"]}]" : $"`{row["TABLE_NAME"]}`.`{row["COLUMN_NAME"]}`";
-            }
-            return isSqlServer ? $"[{row["COLUMN_NAME"]}]" : $"`{row["COLUMN_NAME"]}`";
+            return hasSchema ? $"{row["TABLE_SCHEMA"]}.{row["TABLE_NAME"]}.{row["COLUMN_NAME"]}" : $"{row["TABLE_NAME"]}.{row["COLUMN_NAME"]}";
         }
 
         /// <summary>
@@ -655,11 +650,11 @@ namespace Dash
         /// Convert a DataRow with table schema data into a fully qualified, delimited table name.
         /// </summary>
         /// <param name="row">DataRow with schema info.</param>
-        /// <param name="isSqlServer">True if SQL server, else MySQL.</param>
+        /// <param name="hasSchema">False if MySQL server, else true.</param>
         /// <returns>Returns the delimited table name.</returns>
-        public static string ToTableName(this DataRow row, bool isSqlServer = true)
+        public static string ToTableName(this DataRow row, bool hasSchema = true)
         {
-            return isSqlServer ? $"[{row["TABLE_SCHEMA"]}].[{row["TABLE_NAME"]}]" : $"`{row["TABLE_NAME"]}`";
+            return hasSchema ? $"{row["TABLE_SCHEMA"]}.{row["TABLE_NAME"]}" : $"{row["TABLE_NAME"]}";
         }
 
         /// <summary>

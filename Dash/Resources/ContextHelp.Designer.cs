@@ -319,7 +319,7 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use this to enter SQL to modify the value returned as this column. Reference fields using [TableName].[ColumnName] for SQL Server, or `TableName`.`ColumnName` for MySQL..
+        ///   Looks up a localized string similar to Use this to enter SQL to modify the value returned as this column. Reference fields using SchemaName.TableName.ColumnName. This can be useful if you are using a column name that matches a keyword, like `User`..
         /// </summary>
         public static string DatasetColumn_Derived {
             get {
@@ -355,7 +355,7 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Provide a link that clicking on the column value will open in a new window. Substitute values from columns in the row into the link using the fully qualifed column name [SchemaName].[TableName].[ColumnName] for SQL Server, or `TableName&apos;.&apos;ColumnName` for MySQL..
+        ///   Looks up a localized string similar to Provide a link that clicking on the column value will open in a new window. Substitute values from columns in the row into the link using the fully qualifed column name SchemaName.TableName.ColumnName..
         /// </summary>
         public static string DatasetColumn_Link {
             get {
@@ -382,7 +382,7 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Specify the columns and their relationship(s) that will be used when joining the tables. Use fully qualified names like [TableName].[ColumnName] for SQL Server, or `TableName`.`ColumnName` for MySQL..
+        ///   Looks up a localized string similar to Specify the columns and their relationship(s) that will be used when joining the tables. Use fully qualified names like SchemaName.TableName.ColumnName..
         /// </summary>
         public static string DatasetJoin_Keys {
             get {

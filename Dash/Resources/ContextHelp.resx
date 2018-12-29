@@ -172,7 +172,7 @@
     <value>The column data type is used to create SQL for the column. Select the closest type from the list.</value>
   </data>
   <data name="DatasetColumn_Derived" xml:space="preserve">
-    <value>Use this to enter SQL to modify the value returned as this column. Reference fields using [TableName].[ColumnName] for SQL Server, or `TableName`.`ColumnName` for MySQL.</value>
+    <value>Use this to enter SQL to modify the value returned as this column. Reference fields using SchemaName.TableName.ColumnName. This can be useful if you are using a column name that matches a keyword, like `User`.</value>
   </data>
   <data name="DatasetColumn_FilterQuery" xml:space="preserve">
     <value>Use the filter query to lookup data to substitute for the value of this column, like replacing a StatusID with a name. The value for the option must be aliased as `Value` and match the value of this column. The text to display must be aliased as `Text`.</value>
@@ -181,13 +181,13 @@
     <value>The filter type determines the operators the user will have when creating report filters using this column.  The `Select` filter type lets you query another table for lookup values.</value>
   </data>
   <data name="DatasetColumn_Link" xml:space="preserve">
-    <value>Provide a link that clicking on the column value will open in a new window. Substitute values from columns in the row into the link using the fully qualifed column name [SchemaName].[TableName].[ColumnName] for SQL Server, or `TableName'.'ColumnName` for MySQL.</value>
+    <value>Provide a link that clicking on the column value will open in a new window. Substitute values from columns in the row into the link using the fully qualifed column name SchemaName.TableName.ColumnName.</value>
   </data>
   <data name="DatasetColumn_Title" xml:space="preserve">
     <value>The column title is a friendly column name that the user will see when creating reports.</value>
   </data>
   <data name="DatasetJoin_Keys" xml:space="preserve">
-    <value>Specify the columns and their relationship(s) that will be used when joining the tables. Use fully qualified names like [TableName].[ColumnName] for SQL Server, or `TableName`.`ColumnName` for MySQL.</value>
+    <value>Specify the columns and their relationship(s) that will be used when joining the tables. Use fully qualified names like SchemaName.TableName.ColumnName.</value>
   </data>
   <data name="DatasetJoin_JoinTypeId" xml:space="preserve">
     <value>Specify the type of SQL JOIN to use with this table.</value>

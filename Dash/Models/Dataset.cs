@@ -153,7 +153,7 @@ namespace Dash.Models
                 var tableList = tableNames != null ? tableNames.Distinct().ToList() : TableList();
                 tableList.Each(table => {
                     Database.GetTableSchema(table).Rows.OfType<DataRow>().Each(row => {
-                        columns.Add($"{row.ToTableName(Database.IsSqlServer)}.{row.ToColumnName(Database.IsSqlServer, false)}");
+                        columns.Add(row.ToColumnName(!Database.IsMySql));
                     });
                 });
             }
@@ -233,7 +233,7 @@ namespace Dash.Models
             sources.Each(source => {
                 Database.GetTableSchema(source).Rows.OfType<DataRow>().Each(row => {
                     totalColumns++;
-                    var columnName = row.ToColumnName(Database.IsSqlServer);
+                    var columnName = row.ToColumnName(!Database.IsMySql);
                     if (!existingColumns.ContainsKey(columnName.ToLower()))
                     {
                         var newColumn = new DatasetColumn {

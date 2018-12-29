@@ -190,6 +190,6 @@
     <value>MySQL</value>
   </data>
   <data name="LabelType_SqlServer" xml:space="preserve">
-    <value>MS SQL Server:</value>
+    <value>MS SQL Server</value>
   </data>
 </root>

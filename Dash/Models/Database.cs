@@ -69,6 +69,9 @@ namespace Dash.Models
         public bool IsEmptyPassword { get; set; } = false;
 
         [DbIgnore]
+        public bool IsMySql { get { return TypeId == (int)DatabaseTypes.MySql; } }
+
+        [DbIgnore]
         public bool IsSqlServer { get { return TypeId == (int)DatabaseTypes.SqlServer; } }
 
         [Display(Name = "Name", ResourceType = typeof(Databases))]
@@ -150,7 +153,7 @@ namespace Dash.Models
                     else if (row["TABLE_NAME"].ToString().IndexOf("conflict_") == -1)
                     {
                         // filter out tables that start with 'conflict_' - they are for replication
-                        res.Add(row.ToTableName(IsSqlServer));
+                        res.Add(row.ToTableName(!IsMySql));
                     }
                 });
                 conn.Close();
