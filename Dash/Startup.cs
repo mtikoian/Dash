@@ -87,7 +87,7 @@ namespace Dash
                 .WithStyleSource("'self'", "'unsafe-inline'") // allow styles from self and inline from js
                 .WithFontSource(CSPConstants.Self)
                 .WithFrameAncestors(CSPConstants.None)
-                .WithScriptSource("'self'", "'unsafe-eval'") // @TODO add proper support for nonce to HardHat then I can use something like CSPConstants.Nonce(nonce), and set a nonce on my script templates
+                .WithScriptSource("'self'", "'unsafe-eval'")
                 .BuildPolicy()
             );
 
