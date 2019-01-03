@@ -181,7 +181,6 @@ namespace Dash.Models
                 // get the actual query data
                 try
                 {
-                    // @todo make it work with procs
                     var dataRes = report.Dataset.Database.Query(report.Dataset.IsProc ? sqlQuery.ExecStatement() : sqlQuery.SqlResult.Sql, report.Dataset.IsProc ? sqlQuery.Params : sqlQuery.SqlResult.NamedBindings);
                     if (dataRes.Any())
                     {

@@ -77,8 +77,6 @@
      * @this {Node}
      */
     var autocompleteLoad = function() {
-        // @todo maybe add a way to include source list in original html response instead of requiring another request
-
         var preload = ['true', 'True'].indexOf(this.getAttribute('data-preload')) > -1;
         var self = this;
         if (preload) {

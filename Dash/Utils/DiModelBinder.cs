@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.Extensions.Logging;
-using System;
 
 namespace Dash
 {
@@ -27,7 +26,6 @@ namespace Dash
                 if (parameters.All(p => p != null))
                 {
                     var model = ctor.Invoke(parameters);
-                    // @todo now that this is being injected correctly, review and remove places where it was being set manually
                     var userId = bindingContext.HttpContext.User.UserId();
                     if (userId > 0)
                     {
