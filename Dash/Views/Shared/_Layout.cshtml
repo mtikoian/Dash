@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="~/css/bundle.css.gz" asp-append-version="true" />
     <link rel="icon" href="~/favicon.ico">
 </head>
-<body data-base-url="@Url.Content("~")" data-lang="@(CultureInfo.DefaultThreadCurrentCulture?.TwoLetterISOLanguageName ?? "en")"
+<body data-base-url="@Url.Content("~")" data-lang="@(CultureInfo.CurrentCulture?.TwoLetterISOLanguageName ?? "en")"
       data-okay="@Core.Okay" data-cancel="@Core.Cancel" data-error-prompt="@Core.ErrorNameRequired" data-error-refresh="@Core.ErrorRefresh">
 
     <div id="fullPageBody">
