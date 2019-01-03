@@ -28,6 +28,7 @@ Dash is a high performance dynamic reporting engine. It allows users to configur
   * Reports can be exported to Excel, and charts can be exported to PNG.
   * Create your own personalized dashboard displaying the reports and charts you choose. 
   * Dashboard widgets can be resized and arranged easily, and can refresh automatically.
+* Multilingual support - limited to English and Spanish for now, but could be easily extended to include other languages.
 * Context sensitive help teaches you how it works.
 
 ## [The Cranky Developer's Manifesto](https://dev.to/codemouse92/the-cranky-developer-manifesto--24km)
