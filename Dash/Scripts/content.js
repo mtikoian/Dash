@@ -453,12 +453,6 @@
         if (!elems.length) {
             elems = $.getAll('button:not([disabled]):not([data-toggle]), a:not([disabled]), [tabindex]:not([disabled]):not([tabindex="-1"])', node).filter($.isVisible);
         }
-        if (!elems.length) {
-            var dlg = $.closest('.rd-dialog', node);
-            if (dlg) {
-                elems = $.getAll('.rd-close', dlg).filter($.isVisible);
-            }
-        }
         if (elems.length) {
             elems[0].focus();
         }
