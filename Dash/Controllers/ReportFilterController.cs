@@ -80,10 +80,11 @@ namespace Dash.Controllers
         }
 
         [HttpGet, ParentAction("Edit")]
-        public IActionResult FilterOperators(int id, int? columnId)
+        public IActionResult FilterOperators(int id, int? columnId, int? reportId)
         {
             var model = DbContext.Get<ReportFilter>(id) ?? new ReportFilter(DbContext, id);
             model.ColumnId = columnId ?? model.ColumnId;
+            model.ReportId = reportId ?? model.ReportId;
             // clear modelState so that reportId isn't treated as the new model Id
             ModelState.Clear();
             return PartialView("_FilterOperators", model);
