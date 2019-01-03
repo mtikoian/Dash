@@ -62,36 +62,6 @@ namespace Dash
         }
 
         /// <summary>
-        /// Add a line break to a string if not empty.
-        /// </summary>
-        /// <param name="value">String to update</param>
-        /// <returns>Updated string.</returns>
-        public static string AddLine(this string value)
-        {
-            return string.IsNullOrWhiteSpace(value) ? "" : value + "\n";
-        }
-
-        /// <summary>
-        /// Add a range to an existing dictionary.
-        /// </summary>
-        /// <typeparam name="T">Type of key</typeparam>
-        /// <param name="target">Dictionary to add elements to</param>
-        /// <param name="source">Dictionary of elements to add</param>
-        public static void AddRange<T, T2>(this IDictionary<T, T2> target, IDictionary<T, T2> source)
-        {
-            source.Each(x => {
-                if (target.ContainsKey(x.Key))
-                {
-                    target[x.Key] = x.Value;
-                }
-                else
-                {
-                    target.Add(x);
-                }
-            });
-        }
-
-        /// <summary>
         /// Create a new copy of an object.
         /// </summary>
         /// <typeparam name="T">Type of the object to create.</typeparam>
@@ -117,24 +87,18 @@ namespace Dash
         /// </summary>
         /// <param name="value">Value to break up.</param>
         /// <returns>Returns a list of values.</returns>
-        public static List<object> Delimit(this string value)
+        public static List<string> Delimit(this string value)
         {
-            var result = new List<object>();
             if (value.Substring(0, 1) == "[")
             {
                 var jsonArr = JSON.Deserialize<List<string>>(value);
                 if (jsonArr != null && jsonArr.Any())
                 {
-                    result = jsonArr.Select(x => (object)x.Trim()).ToList();
-                    return result;
+                    return jsonArr.Select(x => x.Trim()).ToList();
                 }
             }
 
-            foreach (Match match in CsvRegex.Matches(value))
-            {
-                result.Add(match.Value.TrimStart(',').Trim().TrimStart('"').TrimEnd('"'));
-            }
-            return result;
+            return CsvRegex.Matches(value).Cast<Match>().Select(x => x.Value.TrimStart(',').Trim().TrimStart('"').TrimEnd('"')).ToList();
         }
 
         /// <summary>
@@ -265,6 +229,11 @@ namespace Dash
             return value.HasValue && value.Value > 0;
         }
 
+        /// <summary>
+        /// Check if the request object is an AJAX request.
+        /// </summary>
+        /// <param name="request">Current request object.</param>
+        /// <returns>True if is an ajax request, else false.</returns>
         public static bool IsAjaxRequest(this HttpRequest request)
         {
             if (request == null)
@@ -278,6 +247,15 @@ namespace Dash
             return false;
         }
 
+        /// <summary>
+        /// Check if list or viewList contains an ID.
+        /// </summary>
+        /// <typeparam name="T">List type</typeparam>
+        /// <param name="list">First list to check in.</param>
+        /// <param name="expression">Expression to get ID to look for.</param>
+        /// <param name="viewList">List of integers to check for ID in.</param>
+        /// <param name="value">ID to check for.</param>
+        /// <returns></returns>
         public static bool IsChecked<T>(IEnumerable<T> list, Func<T, bool> expression, int[] viewList, int value)
         {
             return (list != null && list.Any(expression)) || (viewList != null && viewList.Contains(value));
