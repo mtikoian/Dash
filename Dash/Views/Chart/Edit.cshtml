@@ -24,13 +24,12 @@
 
             <div class="chart-container container p-2" data-toggle="chart" data-url="@Url.Action("Data", "Chart", new { Id = Model.Id })">
                 <partial name="_Chart" />
+                <form action="@Url.Action("Export", "Chart")" class="export-form" method="POST" target="_blank">
+                    <input type="hidden" name="filename" class="export-filename" value="@Model.Name" />
+                    <input type="hidden" name="width" value="" class="export-width" />
+                    <input type="hidden" name="data" value="" class="export-data" />
+                </form>
             </div>
-
-            <form action="@Url.Action("Export", "Chart")" class="export-form" method="POST" target="_blank">
-                <input type="hidden" name="filename" class="export-filename" value="@Model.Name" />
-                <input type="hidden" name="width" value="" class="export-width" />
-                <input type="hidden" name="data" value="" class="export-data" />
-            </form>
         }
     </tab-panel>
 </body-content>

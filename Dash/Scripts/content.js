@@ -199,10 +199,9 @@
             $.on(node, 'click', function() {
                 var chartContainer = $.get('.chart-container');
                 if (chartContainer) {
-                    // @todo this is sloppy - probably need a data- attribute of some sort to help narrow querySelector down
-                    $.get('.export-width').value = chartContainer.offsetWidth;
-                    $.get('.export-data').value = _charts.length ? _charts[0].chart.toBase64Image() : null;
-                    $.get('.export-form').submit();
+                    $.get('.export-width', chartContainer).value = chartContainer.offsetWidth;
+                    $.get('.export-data', chartContainer).value = _charts.length ? _charts[0].chart.toBase64Image() : null;
+                    $.get('.export-form', chartContainer).submit();
                 }
             }, true);
         }
