@@ -144,10 +144,10 @@ namespace Dash.Controllers
             return View("ResetPassword", model);
         }
 
-        [HttpGet, Authorize]
+        [HttpGet, Authorize, ParentAction("UpdateAccount")]
         public IActionResult ToggleContextHelp()
         {
-            HttpContext.Session.SetString("ContextHelp", (!HttpContext.Session.GetString("ContextHelp").ToBool()).ToString());
+            HttpContext.Session.SetString(Help.SettingName, (!HttpContext.Session.GetString(Help.SettingName).ToBool()).ToString());
             return View("ToggleContextHelp", new Help(HttpContext.Session));
         }
 

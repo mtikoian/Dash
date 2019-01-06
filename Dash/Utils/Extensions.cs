@@ -681,7 +681,7 @@ namespace Dash
         /// <returns>True if user enabled help, else false.</returns>
         public static bool WantsHelp(this HttpContext httpContext)
         {
-            return httpContext.Session.GetString("ContextHelp").ToBool();
+            return httpContext.Session.GetString(Help.SettingName).ToBool();
         }
 
         /// <summary>

@@ -4,6 +4,8 @@ namespace Dash.Models
 {
     public class Help
     {
+        public const string SettingName = "ContextHelp";
+
         private ISession _Session;
 
         public Help(ISession session)
@@ -15,7 +17,7 @@ namespace Dash.Models
         {
             get
             {
-                return _Session.GetString("ContextHelp").ToBool();
+                return _Session.GetString(SettingName).ToBool();
             }
         }
     }

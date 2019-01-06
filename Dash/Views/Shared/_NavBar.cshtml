@@ -16,24 +16,30 @@
             <authorized-menu-item controller="Report" action="Index" title="@Reports.MenuItem" icon="ListAlt" />
             <authorized-menu-item controller="Chart" action="Index" title="@Charts.MenuItem" icon="ChartBar" />
             <authorized-menu-item controller="Alert" action="Index" title="@Alerts.MenuItem" icon="BellAlt" />
-            <authorized-menu-item controller="User" action="Index" title="@Users.MenuItem" icon="Users" />
-            <authorized-menu-item controller="Role" action="Index" title="@Roles.MenuItem" icon="Key" />
-            if (User.IsInRole("hangfire.dashboard"))
+            @if (User.HasAccess("Role", "Index") || User.HasAccess("User", "Index"))
             {
                 <li class="divider"></li>
+            }
+            <authorized-menu-item controller="Role" action="Index" title="@Roles.MenuItem" icon="Key" />
+            <authorized-menu-item controller="User" action="Index" title="@Users.MenuItem" icon="Users" />
+            @if (User.HasAccess("Hangfire", "Dashboard") || User.HasAccess("Profiler", "Dashboard"))
+            {
+                <li class="divider"></li>
+            }
+            if (User.HasAccess("Hangfire", "Dashboard"))
+            {
                 <li>
                     <a href="~/hangfire" target="_blank" title="@Core.Hangfire" class="pjax-no-follow">
                         <i class="dash dash-fire dash-lg"></i> <span>@Core.Hangfire</span>
                     </a>
                 </li>
-                <li class="divider"></li>
             }
             if (User.HasAccess("Profiler", "Dashboard"))
             {
                 <authorized-menu-item controller="Account" action="ToggleProfiling" title="@Core.ToggleProfiling" icon="Bug" force-reload="true" has-access="true" />
             }
-            <authorized-menu-item controller="Account" action="ToggleContextHelp" title="@Core.ToggleHelp" icon="Help" force-reload="true" />
             <li class="divider"></li>
+            <authorized-menu-item controller="Account" action="ToggleContextHelp" title="@Core.ToggleHelp" icon="Help" force-reload="true" />
             <authorized-menu-item controller="Account" action="UpdateAccount" title="@Account.UpdateAccount" icon="User" />
             <authorized-menu-item controller="Account" action="LogOff" title="@Account.Logout" icon="Logout" has-access="true" is-pjax="false" />
         }
