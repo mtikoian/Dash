@@ -1,0 +1,13 @@
+﻿@using Dash.Resources;
+@model Dash.Models.Profiling
+
+<body-content>
+    <breadcrumb>
+        <breadcrumb-item label="@Core.ToggleProfiling" controller="Account" action="ToggleProfiling" is-active="true" />
+    </breadcrumb>
+
+    <partial name="_Toast" />
+
+    <toast id="profiling" message="@(Model.IsEnabled ? Core.ProfilingEnabled : Core.ProfilingDisabled)" type="Info" allow-close="false" />
+    <authorized-button controller="Dashboard" action="Index" title="@Core.Reload" class="BtnWarning" target="_self" />
+</body-content>

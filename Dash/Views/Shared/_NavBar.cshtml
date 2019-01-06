@@ -28,6 +28,10 @@
                 </li>
                 <li class="divider"></li>
             }
+            if (User.HasAccess("Profiler", "Dashboard"))
+            {
+                <authorized-menu-item controller="Account" action="ToggleProfiling" title="@Core.ToggleProfiling" icon="Bug" force-reload="true" has-access="true" />
+            }
             <authorized-menu-item controller="Account" action="ToggleContextHelp" title="@Core.ToggleHelp" icon="Help" force-reload="true" />
             <li class="divider"></li>
             <authorized-menu-item controller="Account" action="UpdateAccount" title="@Account.UpdateAccount" icon="User" />

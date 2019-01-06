@@ -10,6 +10,7 @@ using Dash.Configuration;
 using FastMember;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
+using StackExchange.Profiling;
 
 namespace Dash.Models
 {
@@ -103,7 +104,7 @@ namespace Dash.Models
 
         public override DbConnection GetConnection()
         {
-            return new SqlConnection(_AppConfig.Database.ConnectionString);
+            return new StackExchange.Profiling.Data.ProfiledDbConnection(new SqlConnection(_AppConfig.Database.ConnectionString), MiniProfiler.Current);
         }
 
         public override List<DbColumn> GetTableSchema(string tableName)

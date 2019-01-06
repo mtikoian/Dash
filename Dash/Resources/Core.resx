@@ -264,4 +264,16 @@
   <data name="ErrorRefresh" xml:space="preserve">
     <value>The report/chart you are viewing is out of sync. Please refresh the page.</value>
   </data>
+  <data name="ProfilingDisabled" xml:space="preserve">
+    <value>Profiling has been disabled. Profiler will be hidden after hitting the reload button.</value>
+  </data>
+  <data name="ProfilingEnabled" xml:space="preserve">
+    <value>Profiling has been enabled. You'll see details in the bottom left corner of the screen after hitting the reload button.</value>
+  </data>
+  <data name="ToggleProfiling" xml:space="preserve">
+    <value>Toggle Profiling</value>
+  </data>
+  <data name="Reload" xml:space="preserve">
+    <value>Reload</value>
+  </data>
 </root>

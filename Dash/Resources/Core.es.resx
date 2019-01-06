@@ -264,4 +264,13 @@
   <data name="ErrorRefresh" xml:space="preserve">
     <value>El informe/gráfico que está viendo está sincronizado. Por favor actualice la página.!</value>
   </data>
+  <data name="ProfilingDisabled" xml:space="preserve">
+    <value>El perfil ha sido deshabilitado.</value>
+  </data>
+  <data name="ProfilingEnabled" xml:space="preserve">
+    <value>El perfil ha sido habilitado. Verás los detalles en la esquina inferior izquierda de la pantalla después de presionar el botón de recargar.</value>
+  </data>
+  <data name="ToggleProfiling" xml:space="preserve">
+    <value>Alternar perfil</value>
+  </data>
 </root>

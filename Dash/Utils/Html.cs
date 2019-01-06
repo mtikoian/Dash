@@ -12,6 +12,7 @@
     {
         ArrowsCw,
         BellAlt,
+        Bug,
         Calendar,
         Cancel,
         ChartBar,

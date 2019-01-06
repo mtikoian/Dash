@@ -116,5 +116,10 @@
     </script>
 
     <script type="text/javascript" src="~/js/bundle.js.gz" asp-append-version="true"></script>
+
+    @if (User.HasAccess("Profiler", "Dashboard") && Context.WantsProfiling())
+    {
+        <mini-profiler position="RenderPosition.BottomLeft" />
+    }
 </body>
 </html>

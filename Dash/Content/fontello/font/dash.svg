@@ -1,7 +1,7 @@
 <?xml version="1.0" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg xmlns="http://www.w3.org/2000/svg">
-<metadata>Copyright (C) 2018 by original authors @ fontello.com</metadata>
+<metadata>Copyright (C) 2019 by original authors @ fontello.com</metadata>
 <defs>
 <font id="dash" horiz-adv-x="1000" >
 <font-face font-family="dash" font-weight="400" font-stretch="normal" units-per-em="1000" ascent="850" descent="-150" />
@@ -93,6 +93,8 @@
 <glyph glyph-name="list-numbered" unicode="&#xf0cb;" d="M213-54q0-45-31-70t-75-26q-60 0-96 37l31 49q28-25 60-25 16 0 28 8t12 24q0 35-59 31l-14 31q4 6 18 24t24 31 20 21v1q-9 0-27-1t-27 0v-30h-59v85h186v-49l-53-65q28-6 45-27t17-49z m1 350v-89h-202q-4 20-4 30 0 29 14 52t31 38 37 27 31 24 14 25q0 14-9 22t-22 7q-25 0-45-32l-47 33q13 28 40 44t59 16q40 0 68-23t28-63q0-28-19-51t-42-36-42-28-20-30h71v34h59z m786-178v-107q0-7-5-13t-13-5h-678q-8 0-13 5t-5 13v107q0 8 5 13t13 5h678q7 0 13-6t5-12z m-786 502v-56h-187v56h60q0 22 0 67t1 68v7h-1q-5-10-28-30l-40 42 76 71h59v-225h60z m786-216v-108q0-7-5-12t-13-5h-678q-8 0-13 5t-5 12v108q0 7 5 12t13 5h678q7 0 13-5t5-12z m0 285v-107q0-7-5-12t-13-6h-678q-8 0-13 6t-5 12v107q0 8 5 13t13 5h678q7 0 13-5t5-13z" horiz-adv-x="1000" />
 
 <glyph glyph-name="bell-alt" unicode="&#xf0f3;" d="M509-96q0 8-9 8-33 0-57 24t-23 57q0 9-9 9t-9-9q0-41 29-70t69-28q9 0 9 9z m455 160q0-29-21-50t-50-21h-250q0-59-42-101t-101-42-101 42-42 101h-250q-29 0-50 21t-21 50q28 24 51 49t47 67 42 89 27 115 11 145q0 84 66 157t171 89q-5 10-5 21 0 23 16 38t38 16 38-16 16-38q0-11-5-21 106-16 171-89t66-157q0-78 11-145t28-115 41-89 48-67 50-49z" horiz-adv-x="1000" />
+
+<glyph glyph-name="bug" unicode="&#xf188;" d="M911 314q0-14-11-25t-25-10h-125q0-96-37-162l116-117q10-11 10-25t-10-25q-10-11-25-11t-25 11l-111 110q-3-3-8-7t-24-16-36-21-46-16-54-7v500h-71v-500q-29 0-57 7t-49 19-36 22-25 18l-8 8-102-116q-11-12-27-12-13 0-24 9-11 10-11 25t8 26l113 127q-32 63-32 153h-125q-15 0-25 10t-11 25 11 25 25 11h125v164l-97 97q-11 10-11 25t11 25 25 10 25-10l97-97h471l96 97q11 10 25 10t26-10 10-25-10-25l-97-97v-164h125q15 0 25-11t11-25z m-268 322h-357q0 74 52 126t126 52 127-52 52-126z" horiz-adv-x="928.6" />
 </font>
 </defs>
 </svg>

@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Security.Claims;
-using System.Security.Cryptography;
 using AspNetCoreRateLimit;
 using Dash.Configuration;
 using Dash.Models;
 using Dash.Utils;
 using Hangfire;
-using Hangfire.Dashboard;
 using HardHat;
 using HeyRed.Mime;
 using Jil;
@@ -33,17 +29,50 @@ using Serilog;
 
 namespace Dash
 {
-    public class HangfireAuthorizeFilter : IDashboardAuthorizationFilter
-    {
-        public bool Authorize(DashboardContext context)
-        {
-            var httpcontext = context.GetHttpContext();
-            return httpcontext.User.Identity.IsAuthenticated && httpcontext.User.HasClaim(x => x.Type == ClaimTypes.Role && x.Value.ToLower() == "hangfire.dashboard");
-        }
-    }
-
     public class Startup
     {
+        private bool CanAccessMiniProfiler(HttpRequest request)
+        {
+            return request.HttpContext.User.HasAccess("Profiler", "Dashboard");
+        }
+
+        /// <summary>
+        /// Scans the assembly for all controllers and updates the permissions table to match the list of available actions.
+        /// </summary>
+        /// <param name="dbContext"></param>
+        private void UpdatePermissions(IDbContext dbContext)
+        {
+            // build a list of all available actions
+            var actionList = Assembly.GetExecutingAssembly().GetTypes()
+                .Where(x => typeof(Controller).IsAssignableFrom(x)) //filter controllers
+                .SelectMany(x => x.GetMethods())
+                .Where(x => x.IsPublic && !x.IsDefined(typeof(NonActionAttribute))
+                     && (x.IsDefined(typeof(AuthorizeAttribute)) || (x.DeclaringType.IsDefined(typeof(AuthorizeAttribute)))) && !x.IsDefined(typeof(AllowAnonymousAttribute)) &!x.IsDefined(typeof(ParentActionAttribute)))
+                .Select(x => $"{x.DeclaringType.FullName.Split('.').Last().Replace("Controller", "")}.{x.Name}")
+                .Distinct()
+                .ToDictionary(x => x.ToLower(), x => x);
+
+            actionList.Add("hangfire.dashboard", "Hangfire.Dashboard");
+            actionList.Add("profiler.dashboard", "Profiler.Dashboard");
+            // query all permissions from db
+            var permissions = dbContext.GetAll<Permission>().ToDictionary(x => x.FullName.ToLower(), x => x);
+
+            // save any actions not in db
+            actionList.Where(x => !permissions.ContainsKey(x.Key)).Each(x => {
+                var parts = x.Value.Split('.');
+                dbContext.Save(new Permission { ControllerName = parts[0], ActionName = parts[1] });
+            });
+            // delete any permission not in action list
+            permissions.Where(x => !actionList.ContainsKey(x.Key)).Each(x => {
+                dbContext.Delete(x.Value);
+            });
+        }
+
+        private string MiniProfilerUser(HttpRequest request)
+        {
+            return request.HttpContext.User.Identity.Name;
+        }
+
         public static string CultureCookieName = ".Dash.Culture";
         public static string AuthCookieName = ".Dash.Auth";
         public static string AntiforgeryCookieName = ".Dash.AntiForgery";
@@ -156,6 +185,8 @@ namespace Dash
             });
             app.UseHangfireServer();
 
+            app.UseMiniProfiler();
+
             app.UseMvc(routes => {
                 routes.MapRoute("parentChild", "{controller}/{action}/{parentId:int}/{id:int}");
                 routes.MapRoute("default", "{controller=Dashboard}/{action=Index}/{id:int?}");
@@ -228,45 +259,15 @@ namespace Dash
                 options.ModelBinderProviders.Remove(provider);
                 options.ModelBinderProviders.Insert(binderIndex, new DiModelBinderProvider());
             }).AddDataAnnotationsLocalization();
-        }
 
-        /// <summary>
-        /// Scans the assembly for all controllers and updates the permissions table to match the list of available actions.
-        /// </summary>
-        /// <param name="dbContext"></param>
-        private void UpdatePermissions(IDbContext dbContext)
-        {
-            // build a list of all available actions
-            var actionList = Assembly.GetExecutingAssembly().GetTypes()
-                .Where(x => typeof(Controller).IsAssignableFrom(x)) //filter controllers
-                .SelectMany(x => x.GetMethods())
-                .Where(x => x.IsPublic && !x.IsDefined(typeof(NonActionAttribute))
-                     && (x.IsDefined(typeof(AuthorizeAttribute)) || (x.DeclaringType.IsDefined(typeof(AuthorizeAttribute)) && !x.IsDefined(typeof(AllowAnonymousAttribute)) &!x.IsDefined(typeof(ParentActionAttribute)))))
-                .Select(x => $"{x.DeclaringType.FullName.Split('.').Last().Replace("Controller", "")}.{x.Name}")
-                .Distinct()
-                .ToDictionary(x => x.ToLower(), x => x);
-
-            actionList.Add("hangfire.dashboard", "Hangfire.Dashboard");
-            // query all permissions from db
-            var permissions = dbContext.GetAll<Permission>().ToDictionary(x => x.FullName.ToLower(), x => x);
-
-            // save any actions not in db
-            actionList.Where(x => !permissions.ContainsKey(x.Key)).Each(x => {
-                var parts = x.Value.Split('.');
-                dbContext.Save(new Permission { ControllerName = parts[0], ActionName = parts[1] });
+            services.AddMiniProfiler(options => {
+                options.RouteBasePath = "/dash.profiler";
+                options.SqlFormatter = new StackExchange.Profiling.SqlFormatters.SqlServerFormatter();
+                options.PopupMaxTracesToShow = 10;
+                options.ResultsAuthorize = request => CanAccessMiniProfiler(request);
+                options.ResultsListAuthorize = request => CanAccessMiniProfiler(request);
+                options.UserIdProvider = request => MiniProfilerUser(request);
             });
-            // delete any permission not in action list
-            permissions.Where(x => !actionList.ContainsKey(x.Key)).Each(x => {
-                dbContext.Delete(x.Value);
-            });
-        }
-
-        private string GenerateNonce()
-        {
-            var rng = new RNGCryptoServiceProvider();
-            var nonceBytes = new byte[32];
-            rng.GetBytes(nonceBytes);
-            return Convert.ToBase64String(nonceBytes);
         }
     }
 }

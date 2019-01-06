@@ -685,6 +685,16 @@ namespace Dash
         }
 
         /// <summary>
+        /// Check if user has profiler enabled.
+        /// </summary>
+        /// <param name="httpContext">Current request context.</param>
+        /// <returns>True if user enabled help, else false.</returns>
+        public static bool WantsProfiling(this HttpContext httpContext)
+        {
+            return httpContext.Session.GetString(Profiling.SettingName).ToBool();
+        }
+
+        /// <summary>
         /// Get the week of the year for a date.
         /// </summary>
         /// <param name="dt">Date to get value for.</param>

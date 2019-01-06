@@ -412,6 +412,33 @@ namespace Dash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Profiling has been disabled. Profiler will be hidden after hitting the reload button..
+        /// </summary>
+        public static string ProfilingDisabled {
+            get {
+                return ResourceManager.GetString("ProfilingDisabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Profiling has been enabled. You&apos;ll see details in the bottom left corner of the screen after hitting the reload button..
+        /// </summary>
+        public static string ProfilingEnabled {
+            get {
+                return ResourceManager.GetString("ProfilingEnabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reload.
+        /// </summary>
+        public static string Reload {
+            get {
+                return ResourceManager.GetString("Reload", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rename.
         /// </summary>
         public static string Rename {
@@ -462,6 +489,15 @@ namespace Dash.Resources {
         public static string ToggleHelp {
             get {
                 return ResourceManager.GetString("ToggleHelp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Toggle Profiling.
+        /// </summary>
+        public static string ToggleProfiling {
+            get {
+                return ResourceManager.GetString("ToggleProfiling", resourceCulture);
             }
         }
         

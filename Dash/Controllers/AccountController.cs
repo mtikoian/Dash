@@ -151,6 +151,13 @@ namespace Dash.Controllers
             return View("ToggleContextHelp", new Help(HttpContext.Session));
         }
 
+        [HttpGet, Authorize, ParentAction("UpdateAccount")]
+        public IActionResult ToggleProfiling()
+        {
+            HttpContext.Session.SetString(Profiling.SettingName, (!HttpContext.Session.GetString(Profiling.SettingName).ToBool()).ToString());
+            return View("ToggleProfiling", new Profiling(HttpContext.Session));
+        }
+
         [HttpGet]
         public IActionResult TwoFactorHelp(string username)
         {
