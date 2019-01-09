@@ -142,8 +142,8 @@ function watchFiles() {
     gulp.watch(paths.css + '**/*.scss', sassFiles);
     gulp.watch(paths.css + 'fontello/font/dash.*', fonts);
     gulp.watch(paths.js + '**/*.js', jsFiles);
-    gulp.watch('*.csproj', webFixer);
-    gulp.watch('../Dash.Database/*.sqlproj', dbFixer);
+    gulp.watch('*.csproj').on('change', webFixer);
+    gulp.watch('../Dash.Database/*.sqlproj').on('change', dbFixer);
 }
 
 gulp.task('sass', sassFiles);
