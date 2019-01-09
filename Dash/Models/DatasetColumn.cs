@@ -51,7 +51,7 @@ namespace Dash.Models
         [BindNever, ValidateNever]
         public DataType DataType
         {
-            get { return _DataType ?? (_DataType = DbContext.Get<DataType>(DataTypeId)); }
+            get { return _DataType ?? (_DataType = DbContext.Get<DataType>(DataTypeId, true)); }
             set { _DataType = value; }
         }
 

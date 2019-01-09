@@ -26,6 +26,35 @@ namespace Dash.Models
         private IMemoryCache _Cache;
         private IHttpContextAccessor _HttpContextAccessor;
 
+        private T Bind<T>(T model) where T : BaseModel
+        {
+            if (model != null)
+            {
+                model.DbContext = this;
+                model.AppConfig = _AppConfig;
+                if (_HttpContextAccessor?.HttpContext != null)
+                {
+                    model.RequestUserId = _HttpContextAccessor.HttpContext.User.UserId();
+                }
+            }
+            return model;
+        }
+
+        protected T Cached<T>(string key, Func<T> onCreate) where T : class
+        {
+            if (_Cache == null)
+            {
+                return onCreate();
+            }
+
+            if (!_Cache.TryGetValue<T>(key, out var result))
+            {
+                result = onCreate();
+                _Cache.Set(key, result);
+            }
+            return result;
+        }
+
         public DbContext(IAppConfiguration config, IMemoryCache cache = null, IHttpContextAccessor httpContextAccessor = null)
         {
             _AppConfig = config;
@@ -64,25 +93,28 @@ namespace Dash.Models
             }
         }
 
-        public override T Get<T>(int id)
+        public override T Get<T>(int id, bool useCache = false)
         {
             if (id == 0)
             {
                 return null;
             }
+
+            if (useCache)
+            {
+                var res = Cached<T>($"{typeof(T).Name}_{id}", () => {
+                    using (var conn = GetConnection())
+                    {
+                        return conn.Query<T>($"{typeof(T).Name}Get", new { Id = id }, commandType: CommandType.StoredProcedure).FirstOrDefault();
+                    }
+                });
+                return Bind(res);
+            }
+
             using (var conn = GetConnection())
             {
                 var res = conn.Query<T>($"{typeof(T).Name}Get", new { Id = id }, commandType: CommandType.StoredProcedure).FirstOrDefault();
-                if (res != null)
-                {
-                    res.DbContext = this;
-                    res.AppConfig = _AppConfig;
-                    if (_HttpContextAccessor?.HttpContext != null)
-                    {
-                        res.RequestUserId = _HttpContextAccessor.HttpContext.User.UserId();
-                    }
-                }
-                return res;
+                return Bind(res);
             }
         }
 
@@ -91,14 +123,7 @@ namespace Dash.Models
             using (var conn = GetConnection())
             {
                 return conn.Query<T>($"{typeof(T).Name}Get", parameters, commandType: CommandType.StoredProcedure)
-                    .Each(x => {
-                        x.DbContext = this;
-                        x.AppConfig = _AppConfig;
-                        if (_HttpContextAccessor?.HttpContext != null)
-                        {
-                            x.RequestUserId = _HttpContextAccessor.HttpContext.User.UserId();
-                        }
-                    }).ToArray();
+                    .Each(x => Bind(x)).ToArray();
             }
         }
 
@@ -230,21 +255,6 @@ namespace Dash.Models
                     }
                 }
             }
-        }
-
-        protected T Cached<T>(string key, Func<T> onCreate) where T : class
-        {
-            if (_Cache == null)
-            {
-                return onCreate();
-            }
-
-            if (!_Cache.TryGetValue<T>(key, out var result))
-            {
-                result = onCreate();
-                _Cache.Set(key, result);
-            }
-            return result;
         }
     }
 }

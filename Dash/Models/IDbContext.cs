@@ -12,7 +12,7 @@ namespace Dash.Models
 
         public abstract void Execute(string procName, object parameters);
 
-        public abstract T Get<T>(int id) where T : BaseModel;
+        public abstract T Get<T>(int id, bool useCache = false) where T : BaseModel;
 
         public abstract IEnumerable<T> GetAll<T>(object parameters = null) where T : BaseModel;
 
