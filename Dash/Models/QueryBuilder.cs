@@ -19,127 +19,6 @@ namespace Dash.Models
         private Report Report;
 
         /// <summary>
-        /// Builds a SQL query for a report or chart range.
-        /// </summary>
-        /// <param name="report">Report object to build the query for.</param>
-        /// <param name="range">Change range to build the query for.</param>
-        public QueryBuilder(Report report, ChartRange range = null)
-        {
-            Report = report;
-            ChartRange = range;
-            IsChart = range != null;
-            Database = Report.Dataset.Database;
-            DbType = (DatabaseTypes)Database.TypeId;
-
-            Joins = report.Dataset.DatasetJoin?.ToDictionary(j => j.TableName, j => j) ?? new Dictionary<string, DatasetJoin>();
-            DatasetColumns = report.Dataset.DatasetColumn?.ToDictionary(j => j.Id, j => j) ?? new Dictionary<int, DatasetColumn>();
-            ReportColumns = Report.ReportColumn?.Where(j => DatasetColumns.ContainsKey(j.ColumnId)).ToDictionary(j => j.ColumnId, j => j) ?? new Dictionary<int, ReportColumn>();
-
-            // add the primaryTable to the list of needed tables. we always query it
-            NeededTables.Add(report.Dataset.PrimarySource, report.Dataset.PrimarySource);
-
-            if (report.Dataset.IsProc)
-            {
-                BuildProcParams();
-                return;
-            }
-
-            KataQuery.From(report.Dataset.PrimarySource);
-
-            // make the group by statement
-            BuildGroupBySql();
-
-            // build the columns
-            BuildColumnSql();
-
-            // build the where
-            BuildWhereSql();
-
-            // build the sorting
-            BuildOrderBySql();
-
-            // build the joins
-            BuildJoinSql();
-        }
-
-        public Dictionary<int, DatasetColumn> DatasetColumns { get; set; }
-        public Dictionary<int, string> NeededAliases { get; set; } = new Dictionary<int, string>();
-        public Dictionary<int, string> NeededColumns { get; set; } = new Dictionary<int, string>();
-        public Query KataQuery { get; set; } = new Query();
-        public SqlResult SqlResult { get; set; }
-
-        /// <summary>
-        /// Check if the query has any columns.
-        /// </summary>
-        /// <returns>True if there are columns selected in the query, else false.</returns>
-        public bool HasColumns
-        {
-            get
-            {
-                return NeededColumns.Count > 0 || Report.Dataset.IsProc;
-            }
-        }
-
-        public Dictionary<string, object> Params { get; } = new Dictionary<string, object>();
-
-        /// <summary>
-        /// Get the statement to get the record count.
-        /// </summary>
-        public void CountStatement()
-        {
-            if (Report.Dataset.IsProc)
-            {
-                return;
-            }
-
-            if (Database.IsSqlServer)
-            {
-                SqlResult = new SqlServerCompiler { UseLegacyPagination = !Database.AllowPaging }.Compile(KataQuery.Clone().AsCount());
-            }
-            else
-            {
-                SqlResult = new MySqlCompiler().Compile(KataQuery.Clone().AsCount());
-            }
-        }
-
-        /// <summary>
-        /// Get the statement to execute a proc.
-        /// </summary>
-        /// <returns>Returns the SQL statement.</returns>
-        public string ExecStatement()
-        {
-            return $"EXEC {Report.Dataset.PrimarySource} " + Params.Select(x => $"@{x.Key} = @{x.Key}").Join();
-        }
-
-        /// <summary>
-        /// Build the complete SQL SELECT statement to get all columns. Optionally can be limited using start and rows.
-        /// </summary>
-        /// <param name="start">Row number to start at.</param>
-        /// <param name="rows">Number of rows to return</param>
-        public void SelectStatement(int start = 0, int rows = 0)
-        {
-            if (Report.Dataset.IsProc)
-            {
-                return;
-            }
-
-            if (rows > 0)
-            {
-                KataQuery.Limit(rows);
-                KataQuery.Offset(start);
-            }
-
-            if (Database.IsSqlServer)
-            {
-                SqlResult = new SqlServerCompiler { UseLegacyPagination = !Database.AllowPaging }.Compile(KataQuery);
-            }
-            else
-            {
-                SqlResult = new MySqlCompiler().Compile(KataQuery);
-            }
-        }
-
-        /// <summary>
         /// Build a list of joins necessary to include the requested table in a query.
         /// </summary>
         /// <param name="table">Table name to get joins for.</param>
@@ -501,6 +380,118 @@ namespace Dash.Models
         private bool UsedInLink(DatasetColumn column)
         {
             return DatasetColumns.Values.Any(x => ReportColumns.ContainsKey(x.Id) && !x.Link.IsEmpty() && x.Link.IndexOf(column.ColumnName, StringComparison.CurrentCultureIgnoreCase) > -1);
+        }
+
+        /// <summary>
+        /// Builds a SQL query for a report or chart range.
+        /// </summary>
+        /// <param name="report">Report object to build the query for.</param>
+        /// <param name="range">Change range to build the query for.</param>
+        public QueryBuilder(Report report, ChartRange range = null)
+        {
+            Report = report;
+            ChartRange = range;
+            IsChart = range != null;
+            Database = Report.Dataset.Database;
+            DbType = (DatabaseTypes)Database.TypeId;
+
+            Joins = report.Dataset.DatasetJoin?.ToDictionary(j => j.TableName, j => j) ?? new Dictionary<string, DatasetJoin>();
+            DatasetColumns = report.Dataset.DatasetColumn?.ToDictionary(j => j.Id, j => j) ?? new Dictionary<int, DatasetColumn>();
+            ReportColumns = Report.ReportColumn?.Where(j => DatasetColumns.ContainsKey(j.ColumnId)).ToDictionary(j => j.ColumnId, j => j) ?? new Dictionary<int, ReportColumn>();
+
+            // add the primaryTable to the list of needed tables. we always query it
+            NeededTables.Add(report.Dataset.PrimarySource, report.Dataset.PrimarySource);
+
+            if (report.Dataset.IsProc)
+            {
+                BuildProcParams();
+                return;
+            }
+
+            KataQuery.From(report.Dataset.PrimarySource);
+
+            BuildGroupBySql();
+            BuildColumnSql();
+            BuildWhereSql();
+            BuildOrderBySql();
+            BuildJoinSql();
+        }
+
+        public Dictionary<int, DatasetColumn> DatasetColumns { get; set; }
+        public Dictionary<int, string> NeededAliases { get; set; } = new Dictionary<int, string>();
+        public Dictionary<int, string> NeededColumns { get; set; } = new Dictionary<int, string>();
+        public Query KataQuery { get; set; } = new Query();
+        public SqlResult SqlResult { get; set; }
+
+        /// <summary>
+        /// Check if the query has any columns.
+        /// </summary>
+        /// <returns>True if there are columns selected in the query, else false.</returns>
+        public bool HasColumns
+        {
+            get
+            {
+                return NeededColumns.Count > 0 || Report.Dataset.IsProc;
+            }
+        }
+
+        public Dictionary<string, object> Params { get; } = new Dictionary<string, object>();
+
+        /// <summary>
+        /// Get the statement to get the record count.
+        /// </summary>
+        public void CountStatement()
+        {
+            if (Report.Dataset.IsProc)
+            {
+                return;
+            }
+
+            if (Database.IsSqlServer)
+            {
+                SqlResult = new SqlServerCompiler { UseLegacyPagination = !Database.AllowPaging }.Compile(KataQuery.Clone().AsCount());
+            }
+            else
+            {
+                SqlResult = new MySqlCompiler().Compile(KataQuery.Clone().AsCount());
+            }
+        }
+
+        /// <summary>
+        /// Get the statement to execute a proc.
+        /// </summary>
+        /// <returns>Returns the SQL statement.</returns>
+        public string ExecStatement()
+        {
+            return $"EXEC {Report.Dataset.PrimarySource} " + Params.Select(x => $"@{x.Key} = @{x.Key}").Join();
+        }
+
+        /// <summary>
+        /// Build the complete SQL SELECT statement to get all columns. Optionally can be limited using start and rows.
+        /// </summary>
+        /// <param name="start">Row number to start at.</param>
+        /// <param name="rows">Number of rows to return</param>
+        public void SelectStatement(int start = 0, int rows = 0)
+        {
+            if (Report.Dataset.IsProc)
+            {
+                return;
+            }
+
+            if (rows > 0)
+            {
+                KataQuery.Limit(rows);
+                KataQuery.Offset(start);
+            }
+
+            if (Database.IsSqlServer)
+            {
+                SqlResult = new SqlServerCompiler { UseLegacyPagination = !Database.AllowPaging }.Compile(KataQuery);
+            }
+            else
+            {
+                SqlResult = new MySqlCompiler().Compile(KataQuery);
+            }
         }
     }
 }
