@@ -12,6 +12,7 @@ using Dash.Utils;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using StackExchange.Profiling;
 
 namespace Dash.Models
 {
@@ -132,7 +133,7 @@ namespace Dash.Models
 
             var cnn = IsSqlServer ? SqlClientFactory.Instance.CreateConnection() : MySql.Data.MySqlClient.MySqlClientFactory.Instance.CreateConnection();
             cnn.ConnectionString = connectionString;
-            return cnn;
+            return new StackExchange.Profiling.Data.ProfiledDbConnection(cnn, MiniProfiler.Current);
         }
 
         public IEnumerable<string> GetSourceList(bool includeEmpty = false, bool isProc = false)
