@@ -4,14 +4,13 @@ using Dash.Configuration;
 using Dash.Models;
 using Dash.Utils;
 using Hangfire;
-using Hangfire.AspNetCore;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
 
 namespace Dash
 {
-    public class HangfireActivator : Hangfire.JobActivator
+    public class HangfireActivator : JobActivator
     {
         private readonly IServiceProvider _serviceProvider;
 
