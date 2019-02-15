@@ -349,6 +349,18 @@ namespace Dash.Models
                                         startDate = today.AddYears(-1).StartOfYear();
                                         endDate = startDate.EndOfYear();
                                         break;
+                                    case FilterDateRanges.ThisHour:
+                                        startDate = DateTime.Now.StartOfHour();
+                                        endDate = startDate.EndOfHour();
+                                        break;
+                                    case FilterDateRanges.ThisMinute:
+                                        startDate = DateTime.Now.StartOfMinute();
+                                        endDate = startDate.EndOfMinute();
+                                        break;
+                                    case FilterDateRanges.LastMinute:
+                                        startDate = DateTime.Now.StartOfMinute().AddMinutes(-1);
+                                        endDate = startDate.EndOfMinute();
+                                        break;
                                 }
                                 KataQuery.WhereRaw($"{colAlias} BETWEEN ? AND ?", startDate.ToSqlDateTime(), endDate.ToSqlDateTime());
                                 break;

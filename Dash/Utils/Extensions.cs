@@ -122,6 +122,26 @@ namespace Dash
         }
 
         /// <summary>
+        /// Get the end time of the hour for the date.
+        /// </summary>
+        /// <param name="dt">Date to get value for.</param>
+        /// <returns>New dateTime</returns>
+        public static DateTime EndOfHour(this DateTime dt)
+        {
+            return dt.StartOfHour().AddMinutes(60);
+        }
+
+        /// <summary>
+        /// Get the end time of the minute for the date.
+        /// </summary>
+        /// <param name="dt">Date to get value for.</param>
+        /// <returns>New dateTime</returns>
+        public static DateTime EndOfMinute(this DateTime dt)
+        {
+            return dt.StartOfMinute().AddSeconds(60);
+        }
+
+        /// <summary>
         /// Get the end time of the month for the date.
         /// </summary>
         /// <param name="dt">Date to get value for.</param>
@@ -335,6 +355,26 @@ namespace Dash
             }
             sb.Append(str.Substring(previousIndex));
             return sb.ToString();
+        }
+
+        /// <summary>
+        /// Get the start time of the hour for the date.
+        /// </summary>
+        /// <param name="dt">Date to get value for.</param>
+        /// <returns>New dateTime</returns>
+        public static DateTime StartOfHour(this DateTime dt)
+        {
+            return new DateTime(dt.Year, dt.Month, dt.Day, dt.Hour, 0, 0);
+        }
+
+        /// <summary>
+        /// Get the start time of the minute for the date.
+        /// </summary>
+        /// <param name="dt">Date to get value for.</param>
+        /// <returns>New dateTime</returns>
+        public static DateTime StartOfMinute(this DateTime dt)
+        {
+            return new DateTime(dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, 0);
         }
 
         /// <summary>

@@ -252,4 +252,10 @@
   <data name="LabelDateInterval_OneMinute" xml:space="preserve">
     <value>1 minutos</value>
   </data>
+  <data name="LabelDateRange_ThisHour" xml:space="preserve">
+    <value>Esta hora</value>
+  </data>
+  <data name="LabelDateRange_ThisMinute" xml:space="preserve">
+    <value>Este minuto</value>
+  </data>
 </root>

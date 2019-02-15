@@ -169,6 +169,15 @@ namespace Dash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Last Minute.
+        /// </summary>
+        public static string LabelDateRange_LastMinute {
+            get {
+                return ResourceManager.GetString("LabelDateRange_LastMinute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Last Month.
         /// </summary>
         public static string LabelDateRange_LastMonth {
@@ -201,6 +210,24 @@ namespace Dash.Resources {
         public static string LabelDateRange_LastYear {
             get {
                 return ResourceManager.GetString("LabelDateRange_LastYear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This Hour.
+        /// </summary>
+        public static string LabelDateRange_ThisHour {
+            get {
+                return ResourceManager.GetString("LabelDateRange_ThisHour", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This Minute.
+        /// </summary>
+        public static string LabelDateRange_ThisMinute {
+            get {
+                return ResourceManager.GetString("LabelDateRange_ThisMinute", resourceCulture);
             }
         }
         

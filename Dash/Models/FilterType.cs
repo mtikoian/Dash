@@ -14,7 +14,10 @@
         LastWeek = 7,
         LastMonth = 8,
         LastQuarter = 9,
-        LastYear = 10
+        LastYear = 10,
+        ThisHour = 11,
+        ThisMinute = 12,
+        LastMinute = 13
     }
 
     /// <summary>

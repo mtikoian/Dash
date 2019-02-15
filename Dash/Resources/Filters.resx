@@ -153,6 +153,9 @@
   <data name="LabelDateInterval_Year" xml:space="preserve">
     <value>Year</value>
   </data>
+  <data name="LabelDateRange_LastMinute" xml:space="preserve">
+    <value>Last Minute</value>
+  </data>
   <data name="LabelDateRange_LastMonth" xml:space="preserve">
     <value>Last Month</value>
   </data>
@@ -164,6 +167,12 @@
   </data>
   <data name="LabelDateRange_LastYear" xml:space="preserve">
     <value>Last Year</value>
+  </data>
+  <data name="LabelDateRange_ThisHour" xml:space="preserve">
+    <value>This Hour</value>
+  </data>
+  <data name="LabelDateRange_ThisMinute" xml:space="preserve">
+    <value>This Minute</value>
   </data>
   <data name="LabelDateRange_ThisMonth" xml:space="preserve">
     <value>This Month</value>
