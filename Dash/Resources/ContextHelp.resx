@@ -274,4 +274,7 @@
   <data name="ChartRange_FillDateGaps" xml:space="preserve">
     <value>If enabled, gaps in time between intervals will be zero filled.</value>
   </data>
+  <data name="Alert_SendToWebhook" xml:space="preserve">
+    <value>Send alerts to Microsoft Teams using a webhook connector. After creating the connector, add the URL for it here.</value>
+  </data>
 </root>

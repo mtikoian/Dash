@@ -268,6 +268,8 @@ namespace Dash
                 options.ResultsListAuthorize = request => CanAccessMiniProfiler(request);
                 options.UserIdProvider = request => MiniProfilerUser(request);
             });
+
+            services.AddHttpClient();
         }
     }
 }

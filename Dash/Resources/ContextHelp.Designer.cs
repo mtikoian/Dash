@@ -70,6 +70,15 @@ namespace Dash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Send alerts to Microsoft Teams using a webhook connector. After creating the connector, add the URL for it here..
+        /// </summary>
+        public static string Alert_SendToWebhook {
+            get {
+                return ResourceManager.GetString("Alert_SendToWebhook", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select how you want the data for this range to be aggregated together when calculating the Y value..
         /// </summary>
         public static string ChartRange_AggregatorId {

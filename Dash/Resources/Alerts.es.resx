@@ -162,6 +162,9 @@
   <data name="ErrorCronParse" xml:space="preserve">
     <value>La expresión cron no es válida.</value>
   </data>
+  <data name="ErrorEmailOrWebhookRequired" xml:space="preserve">
+    <value>El correo electrónico o webhook para enviar debe estar especificado.</value>
+  </data>
   <data name="ErrorHash" xml:space="preserve">
     <value>Una alerta llamada `{0}` tiene los mismos criterios. Los criterios no pueden ser duplicados.</value>
   </data>
@@ -195,8 +198,11 @@
   <data name="Schedule" xml:space="preserve">
     <value>Programar</value>
   </data>
-  <data name="SendTo" xml:space="preserve">
-    <value>Enviar a</value>
+  <data name="SendToEmail" xml:space="preserve">
+    <value>Enviar al correo electrónico</value>
+  </data>
+  <data name="SendToWebhook" xml:space="preserve">
+    <value>Enviar a Webhook</value>
   </data>
   <data name="Subject" xml:space="preserve">
     <value>Tema</value>

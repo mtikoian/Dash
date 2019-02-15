@@ -15,7 +15,8 @@
         <form-group-input for="Name" autofocus="true" />
         <form-group-select for="ReportId" options="@Model.GetReportsForUser(User.UserId()).ToSelectList(x => x.Name, x => x.Id.ToString())" />
         <form-group-input for="Subject" />
-        <form-group-input for="SendTo" />
+        <form-group-input for="SendToEmail" />
+        <form-group-input for="SendToWebhook" />
         <form-group-input for="ResultCount" />
         <form-group-input for="NotificationInterval" />
         <form-group-checkbox for="IsActive" />

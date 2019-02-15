@@ -16,7 +16,7 @@ AS
 		INSERT INTO @Ids SELECT Id FROM Alert
 
 	SELECT a.Id, a.[Name], a.ReportId, a.OwnerId, a.DateCreated, ISNULL(a.DateUpdated, a.DateCreated) AS DateUpdated, IsActive,
-        SendTo, [Subject], ResultCount, CronMinute, CronHour, CronDayOfMonth, CronMonth, CronDayOfWeek, LastRunDate, [Hash], NotificationInterval, LastNotificationDate
+        SendToEmail, SendToWebhook, [Subject], ResultCount, CronMinute, CronHour, CronDayOfMonth, CronMonth, CronDayOfWeek, LastRunDate, [Hash], NotificationInterval, LastNotificationDate
 	FROM @Ids i
 	INNER JOIN Alert a ON a.Id = i.Id
 	ORDER BY a.[Name]

@@ -196,6 +196,15 @@ namespace Dash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Email or webhook to send to must be specified..
+        /// </summary>
+        public static string ErrorEmailOrWebhookRequired {
+            get {
+                return ResourceManager.GetString("ErrorEmailOrWebhookRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An alert named `{0}` has the same criteria. Criteria cannot be duplicated..
         /// </summary>
         public static string ErrorHash {
@@ -295,11 +304,20 @@ namespace Dash.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Send To.
+        ///   Looks up a localized string similar to Send To Email.
         /// </summary>
-        public static string SendTo {
+        public static string SendToEmail {
             get {
-                return ResourceManager.GetString("SendTo", resourceCulture);
+                return ResourceManager.GetString("SendToEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Send To Webhook.
+        /// </summary>
+        public static string SendToWebhook {
+            get {
+                return ResourceManager.GetString("SendToWebhook", resourceCulture);
             }
         }
         

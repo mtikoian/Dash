@@ -102,10 +102,13 @@ namespace Dash.Models
         [Required]
         public int ResultCount { get; set; }
 
-        [Display(Name = "SendTo", ResourceType = typeof(Alerts))]
-        [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
+        [Display(Name = "SendToEmail", ResourceType = typeof(Alerts))]
         [StringLength(1000, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
-        public string SendTo { get; set; }
+        public string SendToEmail { get; set; }
+
+        [Display(Name = "SendToWebhook", ResourceType = typeof(Alerts))]
+        [StringLength(1000, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
+        public string SendToWebhook { get; set; }
 
         [Display(Name = "Subject", ResourceType = typeof(Alerts))]
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
@@ -128,6 +131,10 @@ namespace Dash.Models
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
+            if (SendToEmail.IsEmpty() && SendToWebhook.IsEmpty())
+            {
+                yield return new ValidationResult(Alerts.ErrorEmailOrWebhookRequired, new[] { "SendToEmail" });
+            }
             if (CronMinute != "*" && !CronMinute.Contains(","))
             {
                 var x = CronMinute.ToInt();

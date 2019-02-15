@@ -87,7 +87,7 @@ namespace Dash.Controllers
         [HttpPost, AjaxRequestOnly, ParentAction("Index")]
         public IActionResult List()
         {
-            return Rows(DbContext.GetAll<Alert>(new { UserID = User.UserId() }).Select(x => new { x.Id, x.Name, x.Subject, x.SendTo, IsActive = x.IsActive ? Core.Yes : Core.No, x.LastRunDate }));
+            return Rows(DbContext.GetAll<Alert>(new { UserID = User.UserId() }).Select(x => new { x.Id, x.Name, x.Subject, IsActive = x.IsActive ? Core.Yes : Core.No, x.LastRunDate }));
         }
 
         private IActionResult CreateEditView(Alert model)

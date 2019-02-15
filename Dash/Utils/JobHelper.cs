@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Linq;
+using System.Net.Http;
 using Dash.Configuration;
 using Dash.Models;
 using Dash.Utils;
 using Hangfire;
+using Jil;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
@@ -29,11 +31,13 @@ namespace Dash
     {
         private IAppConfiguration _AppConfig;
         private IDbContext _DbContext;
+        private IHttpClientFactory _ClientFactory;
 
-        public JobHelper(IDbContext dbContext, IAppConfiguration appConfig)
+        public JobHelper(IDbContext dbContext, IAppConfiguration appConfig, IHttpClientFactory clientFactory)
         {
             _DbContext = dbContext;
             _AppConfig = appConfig;
+            _ClientFactory = clientFactory;
         }
 
         [AutomaticRetry(Attempts = 0)]
@@ -43,8 +47,9 @@ namespace Dash
             alert.LastRunDate = DateTimeOffset.Now;
 
             var emailHelper = new EmailHelper();
-            var recipients = alert.SendTo.Split(',').Where(x => emailHelper.IsValidEmail(x));
-            if (!recipients.Any())
+            var recipients = alert.SendToEmail?.Split(',').Where(x => emailHelper.IsValidEmail(x));
+
+            if (recipients?.Any() != true && alert.SendToWebhook.IsEmpty())
             {
                 return;
             }
@@ -52,25 +57,39 @@ namespace Dash
             var reportResult = alert.Report.GetData(_AppConfig, 0, 99999, false);
             if (reportResult.Total > alert.ResultCount)
             {
-                var emailMessage = new MimeMessage();
-                emailMessage.From.Add(new MailboxAddress(_AppConfig.Mail.FromName, _AppConfig.Mail.FromAddress));
-                recipients.Each(x => emailMessage.To.Add(new MailboxAddress(x)));
-                // @todo better subject?
-                emailMessage.Subject = $"Dash: {alert.Name}";
-
-                var builder = new BodyBuilder();
-                var export = new ExportData { Report = alert.Report, AppConfig = _AppConfig, FileName = $"{alert.Name} {DateTime.Now.Ticks}" };
-                builder.Attachments.Add(export.FormattedFileName, export.Stream());
-                // @todo better body
-                builder.TextBody = "See attached file.";
-                emailMessage.Body = builder.ToMessageBody();
-
-                using (var client = new SmtpClient())
+                var subject = $"Dash Alert: {alert.Name} ({reportResult.Total} records)";
+                if (recipients?.Any() == true)
                 {
-                    client.Connect(_AppConfig.Mail.Smtp.Host, _AppConfig.Mail.Smtp.Port, SecureSocketOptions.None);
-                    client.Authenticate(_AppConfig.Mail.Smtp.Username, _AppConfig.Mail.Smtp.Password);
-                    client.Send(emailMessage);
-                    client.Disconnect(true);
+                    var emailMessage = new MimeMessage();
+                    emailMessage.From.Add(new MailboxAddress(_AppConfig.Mail.FromName, _AppConfig.Mail.FromAddress));
+                    recipients.Each(x => emailMessage.To.Add(new MailboxAddress(x)));
+                    emailMessage.Subject = subject;
+
+                    var builder = new BodyBuilder();
+                    var export = new ExportData { Report = alert.Report, AppConfig = _AppConfig, FileName = $"{alert.Name} {DateTime.Now.Ticks}" };
+                    builder.Attachments.Add(export.FormattedFileName, export.Stream());
+                    // @todo better body
+                    builder.TextBody = "See attached file.";
+                    emailMessage.Body = builder.ToMessageBody();
+
+                    using (var client = new SmtpClient())
+                    {
+                        client.Connect(_AppConfig.Mail.Smtp.Host, _AppConfig.Mail.Smtp.Port, SecureSocketOptions.None);
+                        if (!_AppConfig.Mail.Smtp.Username.IsEmpty())
+                        {
+                            client.Authenticate(_AppConfig.Mail.Smtp.Username, _AppConfig.Mail.Smtp.Password);
+                        }
+                        client.Send(emailMessage);
+                        client.Disconnect(true);
+                    }
+                }
+                if (!alert.SendToWebhook.IsEmpty())
+                {
+                    var res = _ClientFactory.CreateClient().PostAsync(alert.SendToWebhook, new StringContent(JSON.Serialize(new { Text = subject }))).Result;
+                    if (!res.IsSuccessStatusCode)
+                    {
+                        throw new Exception($"Error sending to webhook: {res.StatusCode}: {res.Content.ReadAsStringAsync().Result}");
+                    }
                 }
 
                 alert.LastNotificationDate = DateTimeOffset.Now;
