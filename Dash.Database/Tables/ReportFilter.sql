@@ -4,7 +4,7 @@
     [ColumnId]     INT                NOT NULL,
     [DisplayOrder] INT                NOT NULL,
     [OperatorId]   INT                NOT NULL,
-    [Criteria]     NVARCHAR (250)     NULL,
+    [Criteria]     NVARCHAR (4000)     NULL,
     [Criteria2]    NVARCHAR (250)     NULL,
     [DateCreated]  DATETIMEOFFSET (7) DEFAULT (sysdatetimeoffset()) NOT NULL,
     [UserCreated]  INT                NULL,

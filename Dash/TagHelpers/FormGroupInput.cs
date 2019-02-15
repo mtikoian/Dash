@@ -17,8 +17,10 @@ namespace Dash.TagHelpers
         }
 
         public bool Autofocus { get; set; }
+        public string Match { get; set; }
         public string Params { get; set; }
         public bool Preload { get; set; }
+        public string Target { get; set; }
         public string Toggle { get; set; }
         public string Url { get; set; }
 
@@ -117,6 +119,8 @@ namespace Dash.TagHelpers
             input.Attributes.AddIf("data-params", Params, !Params.IsEmpty());
             input.Attributes.AddIf("data-preload", "true", Preload);
             input.Attributes.AddIf("data-input", "", Toggle == "datepicker");
+            input.Attributes.AddIf("data-target", Target, !Target.IsEmpty());
+            input.Attributes.AddIf("data-match", Match, Match != null);
 
             return input;
         }

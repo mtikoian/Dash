@@ -166,7 +166,7 @@ namespace Dash.Controllers
                 ViewBag.Error = ModelState.ToErrorString();
                 return CreateEditView(model);
             }
-            DbContext.Save(model);
+            model.Save();
             ViewBag.Message = Reports.SuccessSavingFilter;
             return Index(model.ReportId);
         }

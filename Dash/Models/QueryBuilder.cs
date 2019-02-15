@@ -291,10 +291,13 @@ namespace Dash.Models
                                 KataQuery.WhereRaw($"{colAlias} BETWEEN ? AND ?", value1, value2);
                                 break;
                             case FilterOperatorsAbstract.In:
-                                KataQuery.WhereRaw($"{colAlias} IN ?", x.Criteria.Delimit());
+                                // kata doesn't like passing a single quoted list, tries to escape em unless we do it this way
+                                // @todo should look at hardening this later to prevent injection
+                                KataQuery.WhereRaw($"{colAlias} IN ({x.Criteria.Delimit()})");
                                 break;
                             case FilterOperatorsAbstract.NotIn:
-                                KataQuery.WhereRaw($"{colAlias} NOT IN ?", x.Criteria.Delimit());
+                                // kata doesn't like passing a single quoted list, tries to escape em unless we do it this way
+                                KataQuery.WhereRaw($"{colAlias} NOT IN ({x.Criteria.Delimit()})");
                                 break;
                             case FilterOperatorsAbstract.Like:
                                 KataQuery.WhereRaw($"{colAlias} LIKE '%?%'", value1);

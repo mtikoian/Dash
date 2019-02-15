@@ -86,19 +86,19 @@ namespace Dash
         /// Breaks a JSON array, or comma delimited string into a list.
         /// </summary>
         /// <param name="value">Value to break up.</param>
-        /// <returns>Returns a list of values.</returns>
-        public static List<string> Delimit(this string value)
+        /// <returns>Returns a list of values as a string.</returns>
+        public static string Delimit(this string value)
         {
             if (value.Substring(0, 1) == "[")
             {
                 var jsonArr = JSON.Deserialize<List<string>>(value);
                 if (jsonArr != null && jsonArr.Any())
                 {
-                    return jsonArr.Select(x => x.Trim()).ToList();
+                    return jsonArr.Select(x => x.Trim()).Select(x => $"'{x.Replace("'", "''")}'").Join();
                 }
             }
 
-            return CsvRegex.Matches(value).Cast<Match>().Select(x => x.Value.TrimStart(',').Trim().TrimStart('"').TrimEnd('"')).ToList();
+            return CsvRegex.Matches(value).Cast<Match>().Select(x => x.Value.TrimStart(',').Trim().TrimStart('"').TrimEnd('"')).Select(x => $"'{x.Replace("'", "''")}'").Join();
         }
 
         /// <summary>
@@ -187,6 +187,25 @@ namespace Dash
         public static DateTime EndOfYear(this DateTime dt)
         {
             return dt.StartOfYear().AddYears(1).AddMilliseconds(-1);
+        }
+
+        /// <summary>
+        /// Returns a trimmed string. If longer than max length includes ellipsis at end.
+        /// </summary>
+        /// <param name="value">Value to break up.</param>
+        /// <param name="maxLength">Maximum length of returned string.</param>
+        /// <returns>Returns a pretty string.</returns>
+        public static string PrettyTrim(this string value, int maxLength)
+        {
+            if (value.IsEmpty())
+            {
+                return value;
+            }
+            if (value.Length > (maxLength - 4))
+            {
+                return $"{value.Substring(0, maxLength - 4)} ...";
+            }
+            return value;
         }
 
         /// <summary>

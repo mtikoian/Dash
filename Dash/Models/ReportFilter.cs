@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Dash.Resources;
 using Dash.Utils;
+using Jil;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -62,9 +63,11 @@ namespace Dash.Models
         }
 
         [Display(Name = "FilterCriteria", ResourceType = typeof(Reports))]
-        [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
-        [StringLength(250, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
+        [StringLength(4000, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string Criteria { get; set; }
+
+        [DbIgnore]
+        public List<string> CriteriaList { get; set; }
 
         [Display(Name = "FilterCriteria2", ResourceType = typeof(Reports))]
         [StringLength(250, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
@@ -88,9 +91,19 @@ namespace Dash.Models
                 }
                 if (Column.FilterTypeId == (int)FilterTypes.Select)
                 {
-                    return FilterSelectListItems.FirstOrDefault(x => x.Value == Criteria)?.Text;
+                    if (!IsMultipleSelect)
+                    {
+                        return FilterSelectListItems.FirstOrDefault(x => x.Value == Criteria)?.Text;
+                    }
+                    var items = FilterSelectListItems.ToList();
+                    try
+                    {
+                        // @todo a really big list of criteria can go awry quickly and start throwin deserialization errors. may need to create a new table to store list values
+                        return JSON.Deserialize<List<string>>(Criteria)?.Select(x => items.FirstOrDefault(y => y.Value == x)?.Text).Join().PrettyTrim(250);
+                    }
+                    catch { }
                 }
-                return Criteria;
+                return Criteria.PrettyTrim(250);
             }
         }
 
@@ -107,13 +120,16 @@ namespace Dash.Models
                     return new List<SelectListItem>();
                 }
                 return Report.Dataset.Database.Query<LookupItem>(Column.FilterQuery)
-                    .Prepend(new LookupItem { Value = "", Text = Reports.FilterCriteria })
+                    .Prepend(new LookupItem { Value = "", Text = Reports.FilterCriteria }, !IsMultipleSelect)
                     .ToSelectList(x => x.Text, x => x.Value);
             }
         }
 
         [DbIgnore]
         public bool IsLast { get; set; }
+
+        [DbIgnore]
+        public bool IsMultipleSelect => OperatorId == (int)FilterOperatorsAbstract.In || OperatorId == (int)FilterOperatorsAbstract.NotIn;
 
         [Display(Name = "FilterOperator", ResourceType = typeof(Reports))]
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
@@ -213,6 +229,16 @@ namespace Dash.Models
                 DisplayOrder--;
                 DbContext.Save(this);
             });
+            return true;
+        }
+
+        public bool Save(bool lazySave = true)
+        {
+            if (CriteriaList?.Any() == true)
+            {
+                Criteria = JSON.Serialize(CriteriaList);
+            }
+            DbContext.Save(this);
             return true;
         }
 

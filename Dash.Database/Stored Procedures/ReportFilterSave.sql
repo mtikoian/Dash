@@ -4,7 +4,7 @@
 	@ColumnId INT,
 	@DisplayOrder INT,
 	@OperatorId INT,
-	@Criteria NVARCHAR(250),
+	@Criteria NVARCHAR(4000),
 	@Criteria2 NVARCHAR(250) = NULL,
 	@RequestUserId INT = NULL
 AS
