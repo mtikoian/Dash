@@ -1015,6 +1015,7 @@
         var body = $.get('.dotable-body', contentNode);
         if (body) {
             body.innerHTML = '';
+            $.hide('.dotable-footer', contentNode);
 
             if (this.loading) {
                 body.innerHTML = _templates.loadingFn(this.opts.columns.length);
@@ -1029,6 +1030,7 @@
                     bodyHTML += this(x);
                 }, this.opts.rowTemplateFn);
                 body.innerHTML = bodyHTML;
+                $.show('.dotable-footer', contentNode);
             }
         }
 
