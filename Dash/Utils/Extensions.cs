@@ -62,6 +62,29 @@ namespace Dash
         }
 
         /// <summary>
+        /// Create/fetch objects from memory cache.
+        /// </summary>
+        /// <typeparam name="T">Type of object to pull from cache.</typeparam>
+        /// <param name="cache">Memory cache instance.</param>
+        /// <param name="key">Unique key of the item.</param>
+        /// <param name="onCreate">Method to create item if it doesn't exist in cache.</param>
+        /// <returns>Item from cache or result of onCreate function.</returns>
+        public static T Cached<T>(this IMemoryCache cache, string key, Func<T> onCreate) where T : class
+        {
+            if (cache == null)
+            {
+                return onCreate();
+            }
+
+            if (!cache.TryGetValue<T>(key, out var result))
+            {
+                result = onCreate();
+                cache.Set(key, result);
+            }
+            return result;
+        }
+
+        /// <summary>
         /// Create a new copy of an object.
         /// </summary>
         /// <typeparam name="T">Type of the object to create.</typeparam>

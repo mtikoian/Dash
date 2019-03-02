@@ -40,21 +40,6 @@ namespace Dash.Models
             return model;
         }
 
-        protected T Cached<T>(string key, Func<T> onCreate) where T : class
-        {
-            if (_Cache == null)
-            {
-                return onCreate();
-            }
-
-            if (!_Cache.TryGetValue<T>(key, out var result))
-            {
-                result = onCreate();
-                _Cache.Set(key, result);
-            }
-            return result;
-        }
-
         public DbContext(IAppConfiguration config, IMemoryCache cache = null, IHttpContextAccessor httpContextAccessor = null)
         {
             _AppConfig = config;
@@ -102,7 +87,7 @@ namespace Dash.Models
 
             if (useCache)
             {
-                var res = Cached<T>($"{typeof(T).Name}_{id}", () => {
+                var res = _Cache.Cached<T>($"dbResult_{typeof(T).Name}_{id}", () => {
                     using (var conn = GetConnection())
                     {
                         return conn.Query<T>($"{typeof(T).Name}Get", new { Id = id }, commandType: CommandType.StoredProcedure).FirstOrDefault();
@@ -161,7 +146,7 @@ namespace Dash.Models
             {
                 // build the parameters for saving
                 var paramList = new DynamicParameters();
-                var accessor = Cached(myType.Name, () => { return TypeAccessor.Create(myType); });
+                var accessor = _Cache.Cached($"typeAccessor_{myType.Name}", () => { return TypeAccessor.Create(myType); });
 
                 // iterate through all the properties of the object adding to param list
                 accessor.GetMembers()
