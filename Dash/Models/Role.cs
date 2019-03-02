@@ -16,10 +16,7 @@ namespace Dash.Models
         {
         }
 
-        public Role(IDbContext dbContext)
-        {
-            DbContext = dbContext;
-        }
+        public Role(IDbContext dbContext) => DbContext = dbContext;
 
         [BindNever, ValidateNever]
         public Dictionary<string, List<Permission>> ControllerPermissions
@@ -53,8 +50,8 @@ namespace Dash.Models
         [BindNever, ValidateNever]
         public List<RolePermission> RolePermission
         {
-            get { return _RolePermission ?? (_RolePermission = DbContext.GetAll<RolePermission>(new { RoleId = Id }).ToList()); }
-            set { _RolePermission = value; }
+            get => _RolePermission ?? (_RolePermission = DbContext.GetAll<RolePermission>(new { RoleId = Id }).ToList());
+            set => _RolePermission = value;
         }
 
         public Role Copy(string name = null)
@@ -67,10 +64,7 @@ namespace Dash.Models
             return newRole;
         }
 
-        public bool IsUniqueName(string name, int id)
-        {
-            return !DbContext.GetAll<Role>(new { Name = name }).Any(x => x.Id != id);
-        }
+        public bool IsUniqueName(string name, int id) => !DbContext.GetAll<Role>(new { Name = name }).Any(x => x.Id != id);
 
         public void Save()
         {

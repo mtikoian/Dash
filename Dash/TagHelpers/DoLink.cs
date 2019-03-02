@@ -10,10 +10,9 @@ namespace Dash.TagHelpers
     {
         private IHttpContextAccessor _HttpContextAccessor;
 
-        public DoLinkTagHelper(IHtmlHelper htmlHelper, IHttpContextAccessor httpContextAccessor) : base(htmlHelper)
-        {
-            _HttpContextAccessor = httpContextAccessor;
-        }
+        internal TagBuilder InnerContent { get; set; }
+
+        public DoLinkTagHelper(IHtmlHelper htmlHelper, IHttpContextAccessor httpContextAccessor) : base(htmlHelper) => _HttpContextAccessor = httpContextAccessor;
 
         public string Action { get; set; }
         public string Class { get; set; } = "btn btn-link";
@@ -27,7 +26,6 @@ namespace Dash.TagHelpers
         public bool RenderWithoutAccess { get; set; } = false;
         public string TextProperty { get; set; }
         public string Title { get; set; }
-        internal TagBuilder InnerContent { get; set; }
 
         public HttpVerbs GetMethod()
         {

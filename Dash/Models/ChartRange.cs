@@ -20,10 +20,7 @@ namespace Dash.Models
         {
         }
 
-        public ChartRange(IDbContext dbContext)
-        {
-            DbContext = dbContext;
-        }
+        public ChartRange(IDbContext dbContext) => DbContext = dbContext;
 
         public ChartRange(IDbContext dbContext, int chartId)
         {
@@ -35,36 +32,27 @@ namespace Dash.Models
         public int AggregatorId { get; set; }
 
         [DbIgnore, BindNever, ValidateNever]
-        public IEnumerable<SelectListItem> AggregatorListItems
-        {
-            get { return typeof(Aggregators).TranslatedSelect(new ResourceDictionary("Filters"), "LabelGroup_"); }
-        }
+        public IEnumerable<SelectListItem> AggregatorListItems => typeof(Aggregators).TranslatedSelect(new ResourceDictionary("Filters"), "LabelGroup_");
 
-        public Chart Chart { get { return _Chart ?? (_Chart = DbContext.Get<Chart>(ChartId)); } }
+        public Chart Chart => _Chart ?? (_Chart = DbContext.Get<Chart>(ChartId));
 
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int ChartId { get; set; }
 
         [DbIgnore, BindNever, ValidateNever]
-        public string ChartName { get { return Chart?.Name; } }
+        public string ChartName => Chart?.Name;
 
         [Display(Name = "Color", ResourceType = typeof(Charts))]
         public string Color { get; set; }
 
         [DbIgnore, BindNever, ValidateNever]
-        public IEnumerable<SelectListItem> ColumnSelectListItems
-        {
-            get { return Report?.Dataset?.DatasetColumn.OrderBy(x => x.Title).ToSelectList(x => x.Title, x => x.Id.ToString()); }
-        }
+        public IEnumerable<SelectListItem> ColumnSelectListItems => Report?.Dataset?.DatasetColumn.OrderBy(x => x.Title).ToSelectList(x => x.Title, x => x.Id.ToString());
 
         [Display(Name = "DateInterval", ResourceType = typeof(Charts))]
         public int? DateIntervalId { get; set; }
 
         [DbIgnore, BindNever, ValidateNever]
-        public IEnumerable<SelectListItem> DateIntervalSelectListItems
-        {
-            get { return typeof(DateIntervals).TranslatedSelect(new ResourceDictionary("Filters"), "LabelDateInterval_"); }
-        }
+        public IEnumerable<SelectListItem> DateIntervalSelectListItems => typeof(DateIntervals).TranslatedSelect(new ResourceDictionary("Filters"), "LabelDateInterval_");
 
         public int DisplayOrder { get; set; }
 
@@ -74,40 +62,37 @@ namespace Dash.Models
         [DbIgnore]
         public bool IsLast { get; set; }
 
-        public Report Report { get { return _Report ?? (_Report = DbContext.Get<Report>(ReportId)); } }
+        public Report Report => _Report ?? (_Report = DbContext.Get<Report>(ReportId));
 
         [Display(Name = "Report", ResourceType = typeof(Charts))]
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int ReportId { get; set; }
 
         [DbIgnore, BindNever, ValidateNever]
-        public string ReportName { get { return Report?.Name; } }
+        public string ReportName => Report?.Name;
 
         [DbIgnore, BindNever, ValidateNever]
-        public IEnumerable<SelectListItem> ReportSelectListItems
-        {
-            get { return DbContext.GetAll<Report>(new { UserId = RequestUserId }).ToSelectList(x => x.Name, x => x.Id.ToString()); }
-        }
+        public IEnumerable<SelectListItem> ReportSelectListItems => DbContext.GetAll<Report>(new { UserId = RequestUserId }).ToSelectList(x => x.Name, x => x.Id.ToString());
 
         [DbIgnore, BindNever, ValidateNever]
-        public DatasetColumn XAxisColumn { get { return _XAxisColumn ?? (_XAxisColumn = DbContext.Get<DatasetColumn>(XAxisColumnId)); } }
+        public DatasetColumn XAxisColumn => _XAxisColumn ?? (_XAxisColumn = DbContext.Get<DatasetColumn>(XAxisColumnId));
 
         [Display(Name = "XAxisColumn", ResourceType = typeof(Charts))]
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int XAxisColumnId { get; set; }
 
         [DbIgnore, BindNever, ValidateNever]
-        public string XAxisColumnName { get { return XAxisColumn?.Title; } }
+        public string XAxisColumnName => XAxisColumn?.Title;
 
         [DbIgnore, BindNever, ValidateNever]
-        public DatasetColumn YAxisColumn { get { return _YAxisColumn ?? (_YAxisColumn = DbContext.Get<DatasetColumn>(YAxisColumnId)); } }
+        public DatasetColumn YAxisColumn => _YAxisColumn ?? (_YAxisColumn = DbContext.Get<DatasetColumn>(YAxisColumnId));
 
         [Display(Name = "YAxisColumn", ResourceType = typeof(Charts))]
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int YAxisColumnId { get; set; }
 
         [DbIgnore, BindNever, ValidateNever]
-        public string YAxisColumnName { get { return YAxisColumn?.Title; } }
+        public string YAxisColumnName => YAxisColumn?.Title;
 
         public bool MoveDown(out string error)
         {

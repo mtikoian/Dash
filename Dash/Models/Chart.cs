@@ -57,33 +57,30 @@ namespace Dash.Models
         {
         }
 
-        public static IEnumerable<SelectListItem> ChartTypeSelectList
-        {
-            get { return typeof(ChartTypes).TranslatedSelect(new ResourceDictionary("Charts"), "LabelType_"); }
-        }
+        public static IEnumerable<SelectListItem> ChartTypeSelectList => typeof(ChartTypes).TranslatedSelect(new ResourceDictionary("Charts"), "LabelType_");
 
         [BindNever, ValidateNever]
         public List<ChartRange> ChartRange
         {
-            get { return _ChartRange ?? (_ChartRange = DbContext.GetAll<ChartRange>(new { ChartId = Id }).ToList()); }
-            set { _ChartRange = value; }
+            get => _ChartRange ?? (_ChartRange = DbContext.GetAll<ChartRange>(new { ChartId = Id }).ToList());
+            set => _ChartRange = value;
         }
 
         [BindNever, ValidateNever]
         public List<ChartShare> ChartShare
         {
-            get { return _ChartShare ?? (_ChartShare = DbContext.GetAll<ChartShare>(new { ChartId = Id }).ToList()); }
-            set { _ChartShare = value; }
+            get => _ChartShare ?? (_ChartShare = DbContext.GetAll<ChartShare>(new { ChartId = Id }).ToList());
+            set => _ChartShare = value;
         }
 
         [Display(Name = "Type", ResourceType = typeof(Charts))]
         public int ChartTypeId { get; set; }
 
         [DbIgnore]
-        public bool IsOwner { get { return RequestUserId == OwnerId; } }
+        public bool IsOwner => RequestUserId == OwnerId;
 
         [DbIgnore, BindNever, ValidateNever]
-        public bool IsRadial { get { return ChartTypeId == (int)ChartTypes.Pie || ChartTypeId == (int)ChartTypes.Doughnut || ChartTypeId == (int)ChartTypes.PolarArea; } }
+        public bool IsRadial => ChartTypeId == (int)ChartTypes.Pie || ChartTypeId == (int)ChartTypes.Doughnut || ChartTypeId == (int)ChartTypes.PolarArea;
 
         [Display(Name = "Name", ResourceType = typeof(Charts))]
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
@@ -93,10 +90,7 @@ namespace Dash.Models
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int OwnerId { get; set; }
 
-        public static Chart Create(CreateChart chart, int userId)
-        {
-            return new Chart { Name = chart.Name, ChartTypeId = chart.ChartTypeId, OwnerId = userId, RequestUserId = userId };
-        }
+        public static Chart Create(CreateChart chart, int userId) => new Chart { Name = chart.Name, ChartTypeId = chart.ChartTypeId, OwnerId = userId, RequestUserId = userId };
 
         public Chart Copy(string name = null)
         {

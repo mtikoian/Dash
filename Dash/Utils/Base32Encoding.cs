@@ -5,8 +5,46 @@ namespace Dash.Utils
     /// <summary>
     /// http://stackoverflow.com/questions/641361/base32-decoding
     /// </summary>
-    public class Base32Encoding
+    public static class Base32Encoding
     {
+        private static int CharToValue(char c)
+        {
+            var value = (int)c;
+
+            //65-90 == uppercase letters
+            if (value < 91 && value > 64)
+            {
+                return value - 65;
+            }
+            //50-55 == numbers 2-7
+            if (value < 56 && value > 49)
+            {
+                return value - 24;
+            }
+            //97-122 == lowercase letters
+            if (value < 123 && value > 96)
+            {
+                return value - 97;
+            }
+
+            throw new ArgumentException("Character is not a Base32 character.", nameof(c));
+        }
+
+        private static char ValueToChar(byte b)
+        {
+            if (b < 26)
+            {
+                return (char)(b + 65);
+            }
+
+            if (b < 32)
+            {
+                return (char)(b + 24);
+            }
+
+            throw new ArgumentException("Byte is not a value Base32 value.", nameof(b));
+        }
+
         /// <summary>
         /// Base32 encoded string to byte[]
         /// </summary>
@@ -16,19 +54,19 @@ namespace Dash.Utils
         {
             if (string.IsNullOrEmpty(input))
             {
-                throw new ArgumentNullException("input");
+                throw new ArgumentNullException(nameof(input));
             }
 
             input = input.TrimEnd('='); //remove padding characters
-            int byteCount = input.Length * 5 / 8; //this must be TRUNCATED
-            byte[] returnArray = new byte[byteCount];
+            var byteCount = input.Length * 5 / 8; //this must be TRUNCATED
+            var returnArray = new byte[byteCount];
 
             byte curByte = 0, bitsRemaining = 8;
             int mask = 0, arrayIndex = 0;
 
-            foreach (char c in input)
+            foreach (var c in input)
             {
-                int cValue = CharToValue(c);
+                var cValue = CharToValue(c);
 
                 if (bitsRemaining > 5)
                 {
@@ -64,16 +102,16 @@ namespace Dash.Utils
         {
             if (input == null || input.Length == 0)
             {
-                throw new ArgumentNullException("input");
+                throw new ArgumentNullException(nameof(input));
             }
 
-            int charCount = (int)Math.Ceiling(input.Length / 5d) * 8;
-            char[] returnArray = new char[charCount];
+            var charCount = (int)Math.Ceiling(input.Length / 5d) * 8;
+            var returnArray = new char[charCount];
 
             byte nextChar = 0, bitsRemaining = 5;
-            int arrayIndex = 0;
+            var arrayIndex = 0;
 
-            foreach (byte b in input)
+            foreach (var b in input)
             {
                 nextChar = (byte)(nextChar | (b >> (8 - bitsRemaining)));
                 returnArray[arrayIndex++] = ValueToChar(nextChar);
@@ -97,44 +135,6 @@ namespace Dash.Utils
             }
 
             return new string(returnArray);
-        }
-
-        private static int CharToValue(char c)
-        {
-            int value = (int)c;
-
-            //65-90 == uppercase letters
-            if (value < 91 && value > 64)
-            {
-                return value - 65;
-            }
-            //50-55 == numbers 2-7
-            if (value < 56 && value > 49)
-            {
-                return value - 24;
-            }
-            //97-122 == lowercase letters
-            if (value < 123 && value > 96)
-            {
-                return value - 97;
-            }
-
-            throw new ArgumentException("Character is not a Base32 character.", "c");
-        }
-
-        private static char ValueToChar(byte b)
-        {
-            if (b < 26)
-            {
-                return (char)(b + 65);
-            }
-
-            if (b < 32)
-            {
-                return (char)(b + 24);
-            }
-
-            throw new ArgumentException("Byte is not a value Base32 value.", "b");
         }
     }
 }

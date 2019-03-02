@@ -10,6 +10,25 @@ namespace Dash.Controllers
     [Authorize(Policy = "HasPermission"), Pjax]
     public class RoleController : BaseController
     {
+        private IActionResult CreateEditView(Role model) => View("CreateEdit", model);
+
+        private IActionResult Save(Role model)
+        {
+            if (model == null)
+            {
+                ViewBag.Error = Core.ErrorGeneric;
+                return CreateEditView(model);
+            }
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Error = ModelState.ToErrorString();
+                return CreateEditView(model);
+            }
+            model.Save();
+            ViewBag.Message = Roles.SuccessSavingRole;
+            return Index();
+        }
+
         public RoleController(IDbContext dbContext, IAppConfiguration appConfig) : base(dbContext, appConfig)
         {
         }
@@ -33,16 +52,10 @@ namespace Dash.Controllers
         }
 
         [HttpGet]
-        public IActionResult Create()
-        {
-            return CreateEditView(new Role(DbContext));
-        }
+        public IActionResult Create() => CreateEditView(new Role(DbContext));
 
         [HttpPost, ValidateAntiForgeryToken]
-        public IActionResult Create(Role model)
-        {
-            return Save(model);
-        }
+        public IActionResult Create(Role model) => Save(model);
 
         [HttpDelete]
         public IActionResult Delete(int id)
@@ -71,10 +84,7 @@ namespace Dash.Controllers
         }
 
         [HttpPut, ValidateAntiForgeryToken]
-        public IActionResult Edit(Role model)
-        {
-            return Save(model);
-        }
+        public IActionResult Edit(Role model) => Save(model);
 
         [HttpGet]
         public IActionResult Index()
@@ -84,31 +94,6 @@ namespace Dash.Controllers
         }
 
         [HttpPost, AjaxRequestOnly, ParentAction("Index")]
-        public IActionResult List()
-        {
-            return Rows(DbContext.GetAll<Role>().Select(x => new { x.Id, x.Name }));
-        }
-
-        private IActionResult CreateEditView(Role model)
-        {
-            return View("CreateEdit", model);
-        }
-
-        private IActionResult Save(Role model)
-        {
-            if (model == null)
-            {
-                ViewBag.Error = Core.ErrorGeneric;
-                return CreateEditView(model);
-            }
-            if (!ModelState.IsValid)
-            {
-                ViewBag.Error = ModelState.ToErrorString();
-                return CreateEditView(model);
-            }
-            model.Save();
-            ViewBag.Message = Roles.SuccessSavingRole;
-            return Index();
-        }
+        public IActionResult List() => Rows(DbContext.GetAll<Role>().Select(x => new { x.Id, x.Name }));
     }
 }

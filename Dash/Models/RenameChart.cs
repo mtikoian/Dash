@@ -15,8 +15,8 @@ namespace Dash.Models
         [BindNever, ValidateNever]
         public Chart Chart
         {
-            get { return _Chart ?? (_Chart = DbContext.Get<Chart>(Id)); }
-            set { _Chart = value; }
+            get => _Chart ?? (_Chart = DbContext.Get<Chart>(Id));
+            set => _Chart = value;
         }
 
         [Display(Name = "Name", ResourceType = typeof(Charts))]

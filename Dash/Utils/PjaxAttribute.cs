@@ -1,30 +1,14 @@
-﻿using System;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Dash
 {
-    public class PjaxAttribute : ActionFilterAttribute
+    public sealed class PjaxAttribute : ActionFilterAttribute
     {
+        public PjaxAttribute(bool isPjax = true) => IsPjax = isPjax;
+
         public bool IsPjax { get; set; }
-
-        public PjaxAttribute(bool isPjax = true)
-        {
-            IsPjax = isPjax;
-        }
-
-        public override void OnActionExecuting(ActionExecutingContext filterContext)
-        {
-            if (!IsPjax)
-            {
-                return;
-            }
-            var pjaxController = (Controller)filterContext.Controller;
-            var pjax = filterContext.HttpContext.Request.Headers[PjaxConstants.PjaxHeader];
-            pjaxController.ViewBag.IsPjaxRequest = bool.TryParse(pjax, out var isPjaxRequest) && isPjaxRequest;
-            pjaxController.ViewBag.PjaxVersion = PjaxConstants.PjaxVersionValue;
-        }
 
         public override void OnActionExecuted(ActionExecutedContext filterContext)
         {
@@ -41,6 +25,18 @@ namespace Dash
             {
                 filterContext.HttpContext.Response.Headers.Add(PjaxConstants.PjaxVersion, PjaxConstants.PjaxVersionValue);
             }
+        }
+
+        public override void OnActionExecuting(ActionExecutingContext filterContext)
+        {
+            if (!IsPjax)
+            {
+                return;
+            }
+            var pjaxController = (Controller)filterContext.Controller;
+            var pjax = filterContext.HttpContext.Request.Headers[PjaxConstants.PjaxHeader];
+            pjaxController.ViewBag.IsPjaxRequest = bool.TryParse(pjax, out var isPjaxRequest) && isPjaxRequest;
+            pjaxController.ViewBag.PjaxVersion = PjaxConstants.PjaxVersionValue;
         }
 
         public override void OnResultExecuted(ResultExecutedContext filterContext)

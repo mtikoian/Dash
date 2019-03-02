@@ -10,6 +10,26 @@ namespace Dash.Controllers
     [Authorize(Policy = "HasPermission"), Pjax]
     public class DatasetColumnController : BaseController
     {
+        private IActionResult CreateEditView(DatasetColumn model) => View("CreateEdit", model);
+
+        private IActionResult Save(DatasetColumn model)
+        {
+            if (model == null)
+            {
+                ViewBag.Error = Core.ErrorGeneric;
+                return CreateEditView(model);
+            }
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Error = ModelState.ToErrorString();
+                return CreateEditView(model);
+            }
+            model.RequestUserId = User.UserId();
+            DbContext.Save(model);
+            ViewBag.Message = Datasets.SuccessSavingColumn;
+            return Index(model.DatasetId);
+        }
+
         public DatasetColumnController(IDbContext dbContext, IAppConfiguration appConfig) : base(dbContext, appConfig)
         {
         }
@@ -29,10 +49,7 @@ namespace Dash.Controllers
         }
 
         [HttpPost, ValidateAntiForgeryToken]
-        public IActionResult Create(DatasetColumn model)
-        {
-            return Save(model);
-        }
+        public IActionResult Create(DatasetColumn model) => Save(model);
 
         [HttpDelete, AjaxRequestOnly]
         public IActionResult Delete(int id)
@@ -61,10 +78,7 @@ namespace Dash.Controllers
         }
 
         [HttpPut, ValidateAntiForgeryToken]
-        public IActionResult Edit(DatasetColumn model)
-        {
-            return Save(model);
-        }
+        public IActionResult Edit(DatasetColumn model) => Save(model);
 
         [HttpGet, ParentAction("Create")]
         public IActionResult Import(int id)
@@ -94,32 +108,6 @@ namespace Dash.Controllers
         }
 
         [HttpPost, AjaxRequestOnly, ParentAction("Index")]
-        public IActionResult List(int id)
-        {
-            return Rows(DbContext?.GetAll<DatasetColumn>(new { DatasetId = id }).Select(x => new { x.Id, x.DatasetId, x.Title, x.ColumnName, x.DataTypeName }));
-        }
-
-        private IActionResult CreateEditView(DatasetColumn model)
-        {
-            return View("CreateEdit", model);
-        }
-
-        private IActionResult Save(DatasetColumn model)
-        {
-            if (model == null)
-            {
-                ViewBag.Error = Core.ErrorGeneric;
-                return CreateEditView(model);
-            }
-            if (!ModelState.IsValid)
-            {
-                ViewBag.Error = ModelState.ToErrorString();
-                return CreateEditView(model);
-            }
-            model.RequestUserId = User.UserId();
-            DbContext.Save(model);
-            ViewBag.Message = Datasets.SuccessSavingColumn;
-            return Index(model.DatasetId);
-        }
+        public IActionResult List(int id) => Rows(DbContext?.GetAll<DatasetColumn>(new { DatasetId = id }).Select(x => new { x.Id, x.DatasetId, x.Title, x.ColumnName, x.DataTypeName }));
     }
 }

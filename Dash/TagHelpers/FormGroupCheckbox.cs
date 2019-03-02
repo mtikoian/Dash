@@ -8,6 +8,32 @@ namespace Dash.TagHelpers
 {
     public class FormGroupCheckboxTagHelper : FormBaseTagHelper
     {
+        private IHtmlContent BuildCheckbox()
+        {
+            var label = new TagBuilder("label");
+            label.AddCssClass("form-checkbox");
+            label.Attributes.Add("for", FieldName);
+            label.Attributes.AddIf("disabled", "true", Disabled == true);
+
+            var input = new TagBuilder("input");
+            input.AddCssClass("form-input");
+            input.Attributes.Add("id", FieldName);
+            input.Attributes.Add("name", FieldName);
+            input.Attributes.Add("type", "checkbox");
+            input.Attributes.Add("value", "true");
+            input.Attributes.AddIf("checked", "true", For?.ModelExplorer.Model?.ToString().ToBool() == true);
+            input.Attributes.AddIf("disabled", "true", Disabled == true);
+
+            var icon = new TagBuilder("i");
+            icon.AddCssClass("form-icon");
+
+            label.InnerHtml.AppendHtml(input);
+            label.InnerHtml.AppendHtml(icon);
+            label.InnerHtml.Append(FieldTitle);
+
+            return label;
+        }
+
         public FormGroupCheckboxTagHelper(IHtmlHelper htmlHelper) : base(htmlHelper)
         {
         }
@@ -34,32 +60,6 @@ namespace Dash.TagHelpers
             output.Content.AppendHtml(div);
 
             base.Process(context, output);
-        }
-
-        private IHtmlContent BuildCheckbox()
-        {
-            var label = new TagBuilder("label");
-            label.AddCssClass("form-checkbox");
-            label.Attributes.Add("for", FieldName);
-            label.Attributes.AddIf("disabled", "true", Disabled == true);
-
-            var input = new TagBuilder("input");
-            input.AddCssClass("form-input");
-            input.Attributes.Add("id", FieldName);
-            input.Attributes.Add("name", FieldName);
-            input.Attributes.Add("type", "checkbox");
-            input.Attributes.Add("value", "true");
-            input.Attributes.AddIf("checked", "true", For?.ModelExplorer.Model?.ToString().ToBool() == true);
-            input.Attributes.AddIf("disabled", "true", Disabled == true);
-
-            var icon = new TagBuilder("i");
-            icon.AddCssClass("form-icon");
-
-            label.InnerHtml.AppendHtml(input);
-            label.InnerHtml.AppendHtml(icon);
-            label.InnerHtml.Append(FieldTitle);
-
-            return label;
         }
     }
 }

@@ -51,7 +51,7 @@ namespace Dash.Models
         {
             using (var conn = GetConnection())
             {
-                conn.Execute($"{type.Name}Delete", new {
+                conn.ExecuteAsync($"{type.Name}Delete", new {
                     RequestUserId = requestUserId ?? _HttpContextAccessor.HttpContext?.User.UserId(),
                     Id = id
                 }, commandType: CommandType.StoredProcedure);
@@ -63,7 +63,7 @@ namespace Dash.Models
             var myType = model.GetType();
             using (var conn = GetConnection())
             {
-                conn.Execute($"{myType.Name}Delete", new {
+                conn.ExecuteAsync($"{myType.Name}Delete", new {
                     RequestUserId = model.RequestUserId ?? _HttpContextAccessor.HttpContext?.User.UserId(),
                     Id = myType.GetProperty("Id").GetValue(model)
                 }, commandType: CommandType.StoredProcedure);
@@ -74,7 +74,7 @@ namespace Dash.Models
         {
             using (var conn = GetConnection())
             {
-                conn.Execute(procName, parameters, commandType: CommandType.StoredProcedure);
+                conn.ExecuteAsync(procName, parameters, commandType: CommandType.StoredProcedure);
             }
         }
 
@@ -90,7 +90,7 @@ namespace Dash.Models
                 var res = _Cache.Cached<T>($"dbResult_{typeof(T).Name}_{id}", () => {
                     using (var conn = GetConnection())
                     {
-                        return conn.Query<T>($"{typeof(T).Name}Get", new { Id = id }, commandType: CommandType.StoredProcedure).FirstOrDefault();
+                        return conn.QueryAsync<T>($"{typeof(T).Name}Get", new { Id = id }, commandType: CommandType.StoredProcedure).Result.FirstOrDefault();
                     }
                 });
                 return Bind(res);
@@ -98,7 +98,7 @@ namespace Dash.Models
 
             using (var conn = GetConnection())
             {
-                var res = conn.Query<T>($"{typeof(T).Name}Get", new { Id = id }, commandType: CommandType.StoredProcedure).FirstOrDefault();
+                var res = conn.QueryAsync<T>($"{typeof(T).Name}Get", new { Id = id }, commandType: CommandType.StoredProcedure).Result.FirstOrDefault();
                 return Bind(res);
             }
         }
@@ -107,22 +107,19 @@ namespace Dash.Models
         {
             using (var conn = GetConnection())
             {
-                return conn.Query<T>($"{typeof(T).Name}Get", parameters, commandType: CommandType.StoredProcedure)
-                    .Each(x => Bind(x)).ToArray();
+                return conn.QueryAsync<T>($"{typeof(T).Name}Get", parameters, commandType: CommandType.StoredProcedure)
+                    .Result.Each(x => Bind(x)).ToArray();
             }
         }
 
-        public override DbConnection GetConnection()
-        {
-            return new StackExchange.Profiling.Data.ProfiledDbConnection(new SqlConnection(_AppConfig.Database.ConnectionString), MiniProfiler.Current);
-        }
+        public override DbConnection GetConnection() => new StackExchange.Profiling.Data.ProfiledDbConnection(new SqlConnection(_AppConfig.Database.ConnectionString), MiniProfiler.Current);
 
         public override List<DbColumn> GetTableSchema(string tableName)
         {
             using (var conn = GetConnection())
             {
                 var cmd = new SqlCommand($"SELECT TOP 1 * FROM {tableName}", (SqlConnection)conn);
-                var reader = cmd.ExecuteReader(System.Data.CommandBehavior.SchemaOnly);
+                var reader = cmd.ExecuteReaderAsync(CommandBehavior.SchemaOnly).Result;
                 if (reader.CanGetColumnSchema())
                 {
                     return reader.GetColumnSchema().ToList();
@@ -135,7 +132,7 @@ namespace Dash.Models
         {
             using (var conn = GetConnection())
             {
-                return conn.Query<T>(procName, parameters, commandType: CommandType.StoredProcedure);
+                return conn.QueryAsync<T>(procName, parameters, commandType: CommandType.StoredProcedure).Result;
             }
         }
 
@@ -160,7 +157,7 @@ namespace Dash.Models
                         paramList.Add(x.Name, val, null, x.Name.ToLower() == "id" ? ParameterDirection.InputOutput : ParameterDirection.Input);
                     });
 
-                conn.Execute($"{myType.Name}Save", paramList, commandType: CommandType.StoredProcedure);
+                var res = conn.ExecuteAsync($"{myType.Name}Save", paramList, commandType: CommandType.StoredProcedure).Result;
                 var id = paramList.Get<int>("Id");
                 model.Id = paramList.Get<int>("Id");
             }
@@ -184,7 +181,7 @@ namespace Dash.Models
                         // first lets get the full list from the db so we can figure out who to delete
                         var childParams = new DynamicParameters();
                         childParams.Add($"{parentType.Name}Id", model.Id);
-                        existingObjs = conn.Query<T2>($"{childType.Name}Get", childParams, commandType: CommandType.StoredProcedure).ToList().ToDictionary(x => x.Id, x => x);
+                        existingObjs = conn.QueryAsync<T2>($"{childType.Name}Get", childParams, commandType: CommandType.StoredProcedure).Result.ToList().ToDictionary(x => x.Id, x => x);
                     }
                     catch { }
 

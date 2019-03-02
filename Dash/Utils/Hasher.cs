@@ -33,9 +33,6 @@ namespace Dash.Utils
             );
         }
 
-        public static bool VerifyPassword(string hash, string password, string salt)
-        {
-            return hash == HashPassword(password, salt);
-        }
+        public static bool VerifyPassword(string hash, string password, string salt) => hash == HashPassword(password, salt);
     }
 }

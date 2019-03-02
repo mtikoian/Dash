@@ -15,10 +15,7 @@ namespace Dash.Models
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int UserId { get; set; }
 
-        public bool Equals(UserRole other)
-        {
-            return other.UserId == UserId && other.RoleId == RoleId;
-        }
+        public bool Equals(UserRole other) => other.UserId == UserId && other.RoleId == RoleId;
 
         public override bool Equals(object obj)
         {
@@ -28,9 +25,6 @@ namespace Dash.Models
             return Equals(obj as UserRole);
         }
 
-        public override int GetHashCode()
-        {
-            throw new NotImplementedException();
-        }
+        public override int GetHashCode() => throw new NotImplementedException();
     }
 }

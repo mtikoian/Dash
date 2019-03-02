@@ -14,10 +14,7 @@ namespace Dash
         private const string _KeyPrefix = "AuthSessionStore-";
         private IMemoryCache _Cache;
 
-        public MemoryCacheTicketStore()
-        {
-            _Cache = new MemoryCache(new MemoryCacheOptions());
-        }
+        public MemoryCacheTicketStore() => _Cache = new MemoryCache(new MemoryCacheOptions());
 
         public Task RemoveAsync(string key)
         {
@@ -42,8 +39,7 @@ namespace Dash
 
         public Task<AuthenticationTicket> RetrieveAsync(string key)
         {
-            AuthenticationTicket ticket;
-            _Cache.TryGetValue(key, out ticket);
+            _Cache.TryGetValue(key, out AuthenticationTicket ticket);
             return Task.FromResult(ticket);
         }
 

@@ -16,22 +16,16 @@ namespace Dash
     {
         private readonly IServiceProvider _serviceProvider;
 
-        public HangfireActivator(IServiceProvider serviceProvider)
-        {
-            _serviceProvider = serviceProvider;
-        }
+        public HangfireActivator(IServiceProvider serviceProvider) => _serviceProvider = serviceProvider;
 
-        public override object ActivateJob(Type type)
-        {
-            return _serviceProvider.GetService(type);
-        }
+        public override object ActivateJob(Type type) => _serviceProvider.GetService(type);
     }
 
     public class JobHelper
     {
         private IAppConfiguration _AppConfig;
-        private IDbContext _DbContext;
         private IHttpClientFactory _ClientFactory;
+        private IDbContext _DbContext;
 
         public JobHelper(IDbContext dbContext, IAppConfiguration appConfig, IHttpClientFactory clientFactory)
         {
@@ -74,13 +68,13 @@ namespace Dash
 
                     using (var client = new SmtpClient())
                     {
-                        client.Connect(_AppConfig.Mail.Smtp.Host, _AppConfig.Mail.Smtp.Port, SecureSocketOptions.None);
+                        client.ConnectAsync(_AppConfig.Mail.Smtp.Host, _AppConfig.Mail.Smtp.Port, SecureSocketOptions.None);
                         if (!_AppConfig.Mail.Smtp.Username.IsEmpty())
                         {
-                            client.Authenticate(_AppConfig.Mail.Smtp.Username, _AppConfig.Mail.Smtp.Password);
+                            client.AuthenticateAsync(_AppConfig.Mail.Smtp.Username, _AppConfig.Mail.Smtp.Password);
                         }
-                        client.Send(emailMessage);
-                        client.Disconnect(true);
+                        client.SendAsync(emailMessage);
+                        client.DisconnectAsync(true);
                     }
                 }
                 if (!alert.SendToWebhook.IsEmpty())

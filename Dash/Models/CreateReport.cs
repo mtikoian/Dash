@@ -25,10 +25,7 @@ namespace Dash.Models
         [MaxLength(250, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength"), StringLength(250)]
         public string Name { get; set; }
 
-        public IEnumerable<Dataset> GetDatasetsForUser()
-        {
-            return DbContext.GetAll<Dataset>(new { UserId = RequestUserId });
-        }
+        public IEnumerable<Dataset> GetDatasetsForUser() => DbContext.GetAll<Dataset>(new { UserId = RequestUserId });
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {

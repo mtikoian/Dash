@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 
 namespace Dash.Configuration
 {
@@ -13,9 +12,6 @@ namespace Dash.Configuration
         public int MinRequiredPasswordLength { get; set; }
         public string Scheme { get; set; }
 
-        public bool IsValidPassword(string password)
-        {
-            return !(password.IsEmpty() || password.Length < MinRequiredPasswordLength || password.ToCharArray().Count(c => !Char.IsLetterOrDigit(c)) < MinRequiredNonAlphanumericCharacters);
-        }
+        public bool IsValidPassword(string password) => !(password.IsEmpty() || password.Length < MinRequiredPasswordLength || password.ToCharArray().Count(c => !char.IsLetterOrDigit(c)) < MinRequiredNonAlphanumericCharacters);
     }
 }

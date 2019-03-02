@@ -38,7 +38,7 @@ namespace Dash.Models
         public IActionContextAccessor ActionContextAccessor { get; set; }
 
         [DbIgnore]
-        public bool AllowEdit { get { return UserId == RequestUserId; } }
+        public bool AllowEdit => UserId == RequestUserId;
 
         [Display(Name = "Chart", ResourceType = typeof(Widgets))]
         public int? ChartId { get; set; }
@@ -52,28 +52,22 @@ namespace Dash.Models
         [DbIgnore]
         public string DisplayDateFormat { get; set; }
 
+        [DbIgnore, BindNever, ValidateNever]
+        public IEnumerable<DropdownListItem> DropDownItems => new List<DropdownListItem> {
+            new DropdownListItem { Label = Widgets.Refresh, ExtraClasses = "btn btn-link btn-refresh", Icon = DashIcons.ArrowsCw },
+            new DropdownListItem { Label = Widgets.ToggleFullScreen, ExtraClasses = "btn btn-link btn-fullscreen", Icon = DashIcons.Max },
+            (ChartId.HasPositiveValue() ? new DropdownListItem { Label = Widgets.ViewChart, Controller = "Chart", Action = "Edit", RouteValues = new { Id = ChartId }, ExtraClasses = "btn btn-link fs-disabled", Icon = DashIcons.Info } :
+                new DropdownListItem { Label = Widgets.ViewReport, Controller = "Report", Action = "Edit", RouteValues = new { Id = ReportId }, ExtraClasses = "btn btn-link fs-disabled", Icon = DashIcons.Info }),
+            new DropdownListItem { Label = Widgets.EditWidget, Controller = "Dashboard", Action = "Edit", RouteValues = new { Id = Id }, ExtraClasses = "btn btn-link fs-disabled", Icon = DashIcons.Pencil },
+            new DropdownListItem { Label = Widgets.DeleteWidget, Controller = "Dashboard", Action = "Delete", RouteValues = new { Id = Id }, Method = HttpVerbs.Delete,
+                ExtraClasses = "btn btn-link fs-disabled", Icon = DashIcons.Trash, IconExtraClasses = "text-error", Confirm = Core.AreYouSure
+            }
+        };
+
         public int Height { get; set; } = 4;
 
-        [DbIgnore, BindNever, ValidateNever]
-        public IEnumerable<DropdownListItem> DropDownItems
-        {
-            get
-            {
-                return new List<DropdownListItem> {
-                    new DropdownListItem { Label = Widgets.Refresh, ExtraClasses = "btn btn-link btn-refresh", Icon = DashIcons.ArrowsCw },
-                    new DropdownListItem { Label = Widgets.ToggleFullScreen, ExtraClasses = "btn btn-link btn-fullscreen", Icon = DashIcons.Max },
-                    (ChartId.HasPositiveValue() ? new DropdownListItem { Label = Widgets.ViewChart, Controller = "Chart", Action = "Edit", RouteValues = new { Id = ChartId }, ExtraClasses = "btn btn-link fs-disabled", Icon = DashIcons.Info } :
-                        new DropdownListItem { Label = Widgets.ViewReport, Controller = "Report", Action = "Edit", RouteValues = new { Id = ReportId }, ExtraClasses = "btn btn-link fs-disabled", Icon = DashIcons.Info }),
-                    new DropdownListItem { Label = Widgets.EditWidget, Controller = "Dashboard", Action = "Edit", RouteValues = new { Id = Id }, ExtraClasses = "btn btn-link fs-disabled", Icon = DashIcons.Pencil },
-                    new DropdownListItem { Label = Widgets.DeleteWidget, Controller = "Dashboard", Action = "Delete", RouteValues = new { Id = Id }, Method = HttpVerbs.Delete,
-                        ExtraClasses = "btn btn-link fs-disabled", Icon = DashIcons.Trash, IconExtraClasses = "text-error", Confirm = Core.AreYouSure
-                    }
-                };
-            }
-        }
-
         [DbIgnore]
-        public bool IsData { get { return ReportId.HasPositiveValue(); } }
+        public bool IsData => ReportId.HasPositiveValue();
 
         [Display(Name = "RefreshRate", ResourceType = typeof(Widgets))]
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
@@ -113,15 +107,6 @@ namespace Dash.Models
             }
         }
 
-        [Display(Name = "Report", ResourceType = typeof(Widgets))]
-        public int? ReportId { get; set; }
-
-        [DbIgnore]
-        public int ReportRowLimit { get; set; }
-
-        [DbIgnore]
-        public decimal ReportWidth { get; set; }
-
         public Report Report
         {
             get
@@ -141,6 +126,15 @@ namespace Dash.Models
                 return _Report;
             }
         }
+
+        [Display(Name = "Report", ResourceType = typeof(Widgets))]
+        public int? ReportId { get; set; }
+
+        [DbIgnore]
+        public int ReportRowLimit { get; set; }
+
+        [DbIgnore]
+        public decimal ReportWidth { get; set; }
 
         [Display(Name = "Title", ResourceType = typeof(Widgets))]
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]

@@ -28,7 +28,7 @@ namespace Dash.Models
         public string Hash { get; set; }
 
         [DbIgnore, BindNever, ValidateNever]
-        public string HelpText { get { return PasswordHelper.HelpText(AppConfig); } }
+        public string HelpText => PasswordHelper.HelpText(AppConfig);
 
         public bool IsReset { get; set; }
 

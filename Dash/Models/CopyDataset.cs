@@ -11,16 +11,13 @@ namespace Dash.Models
         private Dataset _Dataset;
 
         [BindNever, ValidateNever]
-        public Dataset Dataset { get { return _Dataset ?? (_Dataset = DbContext.Get<Dataset>(Id)); } }
+        public Dataset Dataset => _Dataset ?? (_Dataset = DbContext.Get<Dataset>(Id));
 
         [Required(ErrorMessageResourceType = typeof(Datasets), ErrorMessageResourceName = "ErrorNameRequired")]
         [StringLength(100, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string Prompt { get; set; }
 
-        public void Save()
-        {
-            Dataset.Copy(Prompt).Save();
-        }
+        public void Save() => Dataset.Copy(Prompt).Save();
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {

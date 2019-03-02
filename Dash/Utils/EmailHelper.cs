@@ -8,6 +8,22 @@ namespace Dash.Utils
     {
         private bool invalid = false;
 
+        private string DomainMapper(Match match)
+        {
+            // IdnMapping class with default property values.
+            var idn = new IdnMapping();
+            var domainName = match.Groups[2].Value;
+            try
+            {
+                domainName = idn.GetAscii(domainName);
+            }
+            catch (ArgumentException)
+            {
+                invalid = true;
+            }
+            return match.Groups[1].Value + domainName;
+        }
+
         public bool IsValidEmail(string strIn)
         {
             invalid = false;
@@ -43,22 +59,6 @@ namespace Dash.Utils
             {
                 return false;
             }
-        }
-
-        private string DomainMapper(Match match)
-        {
-            // IdnMapping class with default property values.
-            var idn = new IdnMapping();
-            var domainName = match.Groups[2].Value;
-            try
-            {
-                domainName = idn.GetAscii(domainName);
-            }
-            catch (ArgumentException)
-            {
-                invalid = true;
-            }
-            return match.Groups[1].Value + domainName;
         }
     }
 }

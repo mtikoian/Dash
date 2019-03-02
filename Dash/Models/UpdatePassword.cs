@@ -27,7 +27,7 @@ namespace Dash.Models
         public string ConfirmPassword { get; set; }
 
         [DbIgnore, BindNever, ValidateNever]
-        public string HelpText { get { return PasswordHelper.HelpText(AppConfig); } }
+        public string HelpText => PasswordHelper.HelpText(AppConfig);
 
         [DbIgnore]
         public string Password { get; set; }

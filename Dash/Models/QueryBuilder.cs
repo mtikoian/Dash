@@ -8,15 +8,14 @@ namespace Dash.Models
 {
     public class QueryBuilder
     {
-        private bool HasGrouping = false;
-        private bool IsChart;
+        private readonly bool IsChart;
         private ChartRange ChartRange;
         private Database Database;
-        private DatabaseTypes DbType;
-        private Dictionary<int, ReportColumn> ReportColumns;
+        private bool HasGrouping = false;
         private Dictionary<string, DatasetJoin> Joins;
         private Dictionary<string, string> NeededTables = new Dictionary<string, string>();
         private Report Report;
+        private Dictionary<int, ReportColumn> ReportColumns;
 
         /// <summary>
         /// Build a list of joins necessary to include the requested table in a query.
@@ -227,6 +226,17 @@ namespace Dash.Models
         }
 
         /// <summary>
+        /// Build parameter list for proc calls.
+        /// </summary>
+        private void BuildProcParams() => Report.ReportFilter.Where(x => DatasetColumns.ContainsKey(x.ColumnId)).Each(x => {
+            var column = DatasetColumns[x.ColumnId];
+            if (column.IsParam)
+            {
+                Params.Add(column.ColumnName, column.IsDateTime ? x.Criteria.ToDateTime().ToSqlDateTime() : x.Criteria);
+            }
+        });
+
+        /// <summary>
         /// Build the where statement for the sql query.
         /// </summary>
         private void BuildWhereSql()
@@ -374,28 +384,11 @@ namespace Dash.Models
         }
 
         /// <summary>
-        /// Build parameter list for proc calls.
-        /// </summary>
-        private void BuildProcParams()
-        {
-            Report.ReportFilter.Where(x => DatasetColumns.ContainsKey(x.ColumnId)).Each(x => {
-                var column = DatasetColumns[x.ColumnId];
-                if (column.IsParam)
-                {
-                    Params.Add(column.ColumnName, column.IsDateTime ? x.Criteria.ToDateTime().ToSqlDateTime() : x.Criteria);
-                }
-            });
-        }
-
-        /// <summary>
         /// Check if a dataset column is being used to build a link for a column that is displayed in the report.
         /// </summary>
         /// <param name="column">Dataset column to check usage for.</param>
         /// <returns>Returns true if any links need this column.</returns>
-        private bool UsedInLink(DatasetColumn column)
-        {
-            return DatasetColumns.Values.Any(x => ReportColumns.ContainsKey(x.Id) && !x.Link.IsEmpty() && x.Link.IndexOf(column.ColumnName, StringComparison.CurrentCultureIgnoreCase) > -1);
-        }
+        private bool UsedInLink(DatasetColumn column) => DatasetColumns.Values.Any(x => ReportColumns.ContainsKey(x.Id) && !x.Link.IsEmpty() && x.Link.IndexOf(column.ColumnName, StringComparison.CurrentCultureIgnoreCase) > -1);
 
         /// <summary>
         /// Builds a SQL query for a report or chart range.
@@ -408,7 +401,6 @@ namespace Dash.Models
             ChartRange = range;
             IsChart = range != null;
             Database = Report.Dataset.Database;
-            DbType = (DatabaseTypes)Database.TypeId;
 
             Joins = report.Dataset.DatasetJoin?.ToDictionary(j => j.TableName, j => j) ?? new Dictionary<string, DatasetJoin>();
             DatasetColumns = report.Dataset.DatasetColumn?.ToDictionary(j => j.Id, j => j) ?? new Dictionary<int, DatasetColumn>();
@@ -433,28 +425,13 @@ namespace Dash.Models
         }
 
         public Dictionary<int, DatasetColumn> DatasetColumns { get; set; }
+        public bool HasColumns => NeededColumns.Count > 0 || Report.Dataset.IsProc;
+        public Query KataQuery { get; set; } = new Query();
         public Dictionary<int, string> NeededAliases { get; set; } = new Dictionary<int, string>();
         public Dictionary<int, string> NeededColumns { get; set; } = new Dictionary<int, string>();
-        public Query KataQuery { get; set; } = new Query();
+        public Dictionary<string, object> Params { get; } = new Dictionary<string, object>();
         public SqlResult SqlResult { get; set; }
 
-        /// <summary>
-        /// Check if the query has any columns.
-        /// </summary>
-        /// <returns>True if there are columns selected in the query, else false.</returns>
-        public bool HasColumns
-        {
-            get
-            {
-                return NeededColumns.Count > 0 || Report.Dataset.IsProc;
-            }
-        }
-
-        public Dictionary<string, object> Params { get; } = new Dictionary<string, object>();
-
-        /// <summary>
-        /// Get the statement to get the record count.
-        /// </summary>
         public void CountStatement()
         {
             if (Report.Dataset.IsProc)
@@ -472,14 +449,7 @@ namespace Dash.Models
             }
         }
 
-        /// <summary>
-        /// Get the statement to execute a proc.
-        /// </summary>
-        /// <returns>Returns the SQL statement.</returns>
-        public string ExecStatement()
-        {
-            return $"EXEC {Report.Dataset.PrimarySource} " + Params.Select(x => $"@{x.Key} = @{x.Key}").Join();
-        }
+        public string ExecStatement() => $"EXEC {Report.Dataset.PrimarySource} " + Params.Select(x => $"@{x.Key} = @{x.Key}").Join();
 
         /// <summary>
         /// Build the complete SQL SELECT statement to get all columns. Optionally can be limited using start and rows.

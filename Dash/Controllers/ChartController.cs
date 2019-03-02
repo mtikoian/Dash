@@ -63,10 +63,7 @@ namespace Dash.Controllers
         }
 
         [HttpGet]
-        public IActionResult Create()
-        {
-            return View("Create", new CreateChart(DbContext, User.UserId()));
-        }
+        public IActionResult Create() => View("Create", new CreateChart(DbContext, User.UserId()));
 
         [HttpPost, ValidateAntiForgeryToken]
         public IActionResult Create(CreateChart model)
@@ -167,10 +164,7 @@ namespace Dash.Controllers
         }
 
         [HttpPost, AjaxRequestOnly, ParentAction("Index")]
-        public IActionResult List()
-        {
-            return Rows(DbContext.GetAll<Chart>(new { UserId = User.UserId() }).Select(x => new { x.Id, x.Name }));
-        }
+        public IActionResult List() => Rows(DbContext.GetAll<Chart>(new { UserId = User.UserId() }).Select(x => new { x.Id, x.Name }));
 
         [HttpGet, ParentAction("Edit")]
         public IActionResult Rename(int id)

@@ -10,6 +10,25 @@ namespace Dash.Controllers
     [Authorize(Policy = "HasPermission"), Pjax]
     public class ChartShareController : BaseController
     {
+        private IActionResult CreateEditView(ChartShare model) => View("CreateEdit", model);
+
+        private IActionResult Save(ChartShare model)
+        {
+            if (model == null)
+            {
+                ViewBag.Error = Core.ErrorGeneric;
+                return CreateEditView(model);
+            }
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Error = ModelState.ToErrorString();
+                return CreateEditView(model);
+            }
+            DbContext.Save(model);
+            ViewBag.Message = Charts.SuccessSavingShare;
+            return Index(model.ChartId);
+        }
+
         public ChartShareController(IDbContext dbContext, IAppConfiguration appConfig) : base(dbContext, appConfig)
         {
         }
@@ -29,10 +48,7 @@ namespace Dash.Controllers
         }
 
         [HttpPost, ValidateAntiForgeryToken]
-        public IActionResult Create(ChartShare model)
-        {
-            return Save(model);
-        }
+        public IActionResult Create(ChartShare model) => Save(model);
 
         [HttpDelete, AjaxRequestOnly]
         public IActionResult Delete(int id)
@@ -61,10 +77,7 @@ namespace Dash.Controllers
         }
 
         [HttpPut, ValidateAntiForgeryToken]
-        public IActionResult Edit(ChartShare model)
-        {
-            return Save(model);
-        }
+        public IActionResult Edit(ChartShare model) => Save(model);
 
         [HttpGet]
         public IActionResult Index(int id)
@@ -74,31 +87,6 @@ namespace Dash.Controllers
         }
 
         [HttpPost, AjaxRequestOnly, ParentAction("Index")]
-        public IActionResult List(int id)
-        {
-            return Rows(DbContext.GetAll<ChartShare>(new { ChartId = id }).Select(x => new { x.Id, x.ChartId, x.UserName, x.RoleName }));
-        }
-
-        private IActionResult CreateEditView(ChartShare model)
-        {
-            return View("CreateEdit", model);
-        }
-
-        private IActionResult Save(ChartShare model)
-        {
-            if (model == null)
-            {
-                ViewBag.Error = Core.ErrorGeneric;
-                return CreateEditView(model);
-            }
-            if (!ModelState.IsValid)
-            {
-                ViewBag.Error = ModelState.ToErrorString();
-                return CreateEditView(model);
-            }
-            DbContext.Save(model);
-            ViewBag.Message = Charts.SuccessSavingShare;
-            return Index(model.ChartId);
-        }
+        public IActionResult List(int id) => Rows(DbContext.GetAll<ChartShare>(new { ChartId = id }).Select(x => new { x.Id, x.ChartId, x.UserName, x.RoleName }));
     }
 }

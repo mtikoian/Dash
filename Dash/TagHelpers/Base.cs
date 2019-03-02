@@ -12,16 +12,15 @@ namespace Dash.TagHelpers
         {
         }
 
-        public BaseTagHelper(IHtmlHelper htmlHelper)
-        {
-            _HtmlHelper = htmlHelper;
-        }
+        public BaseTagHelper(IHtmlHelper htmlHelper) => _HtmlHelper = htmlHelper;
 
         public bool NoRender { get; set; }
 
         [ViewContext]
         [HtmlAttributeNotBound]
         public ViewContext ViewContext { get; set; }
+
+        public void Contextualize() => (_HtmlHelper as IViewContextAware).Contextualize(ViewContext);
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
@@ -30,11 +29,6 @@ namespace Dash.TagHelpers
                 output.SuppressOutput();
             }
             base.Process(context, output);
-        }
-
-        public void Contextualize()
-        {
-            (_HtmlHelper as IViewContextAware).Contextualize(ViewContext);
         }
     }
 }

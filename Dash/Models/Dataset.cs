@@ -25,14 +25,23 @@ namespace Dash.Models
         private List<DatasetJoin> _DatasetJoin;
         private List<DatasetRole> _DatasetRole;
 
+        private List<string> TableList()
+        {
+            var tableList = new List<string>();
+            if (!PrimarySource.IsEmpty())
+            {
+                tableList.Add(PrimarySource);
+            }
+            // add any joined tables as groups
+            tableList.AddRange(DatasetJoin?.Select(x => x.TableName).Distinct().Where(x => !tableList.Contains(x)));
+            return tableList;
+        }
+
         public Dataset()
         {
         }
 
-        public Dataset(IDbContext dbContext)
-        {
-            DbContext = dbContext;
-        }
+        public Dataset(IDbContext dbContext) => DbContext = dbContext;
 
         [Display(Name = "Conditions", ResourceType = typeof(Datasets))]
         [StringLength(250, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
@@ -46,8 +55,8 @@ namespace Dash.Models
         [BindNever, ValidateNever]
         public Database Database
         {
-            get { return _Database ?? (_Database = DbContext.Get<Database>(DatabaseId)); }
-            set { _Database = value; }
+            get => _Database ?? (_Database = DbContext.Get<Database>(DatabaseId));
+            set => _Database = value;
         }
 
         [DbIgnore]
@@ -63,22 +72,22 @@ namespace Dash.Models
         [BindNever, ValidateNever]
         public List<DatasetColumn> DatasetColumn
         {
-            get { return _DatasetColumn ?? (_DatasetColumn = DbContext?.GetAll<DatasetColumn>(new { DatasetId = Id }).ToList()); }
-            set { _DatasetColumn = value; }
+            get => _DatasetColumn ?? (_DatasetColumn = DbContext?.GetAll<DatasetColumn>(new { DatasetId = Id }).ToList());
+            set => _DatasetColumn = value;
         }
 
         [BindNever, ValidateNever]
         public List<DatasetJoin> DatasetJoin
         {
-            get { return _DatasetJoin ?? (_DatasetJoin = DbContext?.GetAll<DatasetJoin>(new { DatasetId = Id }).ToList()); }
-            set { _DatasetJoin = value; }
+            get => _DatasetJoin ?? (_DatasetJoin = DbContext?.GetAll<DatasetJoin>(new { DatasetId = Id }).ToList());
+            set => _DatasetJoin = value;
         }
 
         [BindNever, ValidateNever]
         public List<DatasetRole> DatasetRole
         {
-            get { return _DatasetRole ?? (_DatasetRole = DbContext.GetAll<DatasetRole>(new { DatasetId = Id }).ToList()); }
-            set { _DatasetRole = value; }
+            get => _DatasetRole ?? (_DatasetRole = DbContext.GetAll<DatasetRole>(new { DatasetId = Id }).ToList());
+            set => _DatasetRole = value;
         }
 
         [Display(Name = "DateFormat", ResourceType = typeof(Datasets))]
@@ -87,34 +96,22 @@ namespace Dash.Models
         public string DateFormat { get; set; } = "Y-m-d H:i:S";
 
         [DbIgnore]
-        public List<DropdownListItem> DefaultCurrencyFormats
-        {
-            get
-            {
-                return new List<DropdownListItem> {
-                    new DropdownListItem { Label = "{s:$} {[t:,][d:.][p:2]}" },
-                    new DropdownListItem { Label = "{s:£}{[t:,][d:.][p:2]}" },
-                    new DropdownListItem { Label = "{[t:.][d:,][p:2]} {s:€}" }
-                };
-            }
-        }
+        public List<DropdownListItem> DefaultCurrencyFormats => new List<DropdownListItem> {
+            new DropdownListItem { Label = "{s:$} {[t:,][d:.][p:2]}" },
+            new DropdownListItem { Label = "{s:£}{[t:,][d:.][p:2]}" },
+            new DropdownListItem { Label = "{[t:.][d:,][p:2]} {s:€}" }
+        };
 
         [DbIgnore]
-        public List<DropdownListItem> DefaultDateFormats
-        {
-            get
-            {
-                return new List<DropdownListItem> {
-                    new DropdownListItem { Label = "Y-m-d H:i:S" },
-                    new DropdownListItem { Label = "Y-m-d" },
-                    new DropdownListItem { Label = "n/j/Y H:i:S" },
-                    new DropdownListItem { Label = "n/j/y" }
-                };
-            }
-        }
+        public List<DropdownListItem> DefaultDateFormats => new List<DropdownListItem> {
+            new DropdownListItem { Label = "Y-m-d H:i:S" },
+            new DropdownListItem { Label = "Y-m-d" },
+            new DropdownListItem { Label = "n/j/Y H:i:S" },
+            new DropdownListItem { Label = "n/j/y" }
+        };
 
         [DbIgnore]
-        public bool IsProc { get { return TypeId == (int)DatasetTypes.Proc; } }
+        public bool IsProc => TypeId == (int)DatasetTypes.Proc;
 
         [Display(Name = "Name", ResourceType = typeof(Datasets))]
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
@@ -135,10 +132,7 @@ namespace Dash.Models
         public int TypeId { get; set; }
 
         [DbIgnore]
-        public IEnumerable<SelectListItem> TypeList
-        {
-            get { return typeof(DatasetTypes).TranslatedSelect(new ResourceDictionary("Datasets"), "LabelType_"); }
-        }
+        public IEnumerable<SelectListItem> TypeList => typeof(DatasetTypes).TranslatedSelect(new ResourceDictionary("Datasets"), "LabelType_");
 
         public List<object> AvailableColumns(string[] tableNames = null)
         {
@@ -181,10 +175,7 @@ namespace Dash.Models
             return newDataset;
         }
 
-        public List<Role> GetAllRoles()
-        {
-            return _AllRoles ?? (_AllRoles = DbContext.GetAll<Role>().OrderBy(r => r.Name).ToList());
-        }
+        public List<Role> GetAllRoles() => _AllRoles ?? (_AllRoles = DbContext.GetAll<Role>().OrderBy(r => r.Name).ToList());
 
         public Dictionary<int, Dictionary<string, LookupItem>> GetSelectFilters(bool prependEmpty = false)
         {
@@ -284,10 +275,7 @@ namespace Dash.Models
             return true;
         }
 
-        public bool IsUniqueName(string name, int id)
-        {
-            return !DbContext.GetAll<Dataset>(new { Name = name }).Any(x => x.Id != id);
-        }
+        public bool IsUniqueName(string name, int id) => !DbContext.GetAll<Dataset>(new { Name = name }).Any(x => x.Id != id);
 
         public void Save(bool lazySave = true, bool rolesOnly = false)
         {
@@ -317,18 +305,6 @@ namespace Dash.Models
             {
                 yield return new ValidationResult(Datasets.ErrorDuplicateName, new[] { "Name" });
             }
-        }
-
-        private List<string> TableList()
-        {
-            var tableList = new List<string>();
-            if (!PrimarySource.IsEmpty())
-            {
-                tableList.Add(PrimarySource);
-            }
-            // add any joined tables as groups
-            tableList.AddRange(DatasetJoin?.Select(x => x.TableName).Distinct().Where(x => !tableList.Contains(x)));
-            return tableList;
         }
     }
 

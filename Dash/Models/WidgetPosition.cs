@@ -8,9 +8,6 @@
         public int X { get; set; } = -1;
         public int Y { get; set; } = -1;
 
-        public int SanitizedId()
-        {
-            return Id.Replace("widget_", "").ToInt();
-        }
+        public int SanitizedId() => Id.Replace("widget_", "").ToInt();
     }
 }

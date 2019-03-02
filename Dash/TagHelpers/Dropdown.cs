@@ -8,16 +8,29 @@ using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace Dash.TagHelpers
 {
+    public class DropdownListItem
+    {
+        public string Action { get; set; }
+        public string Confirm { get; set; }
+        public string Controller { get; set; }
+        public string ExtraClasses { get; set; }
+        public DashIcons Icon { get; set; }
+        public string IconExtraClasses { get; set; }
+        public string Label { get; set; }
+        public HttpVerbs Method { get; set; } = HttpVerbs.Get;
+        public object RouteValues { get; set; }
+    }
+
     public class DropdownTagHelper : BaseTagHelper
     {
         public DropdownTagHelper(IHtmlHelper htmlHelper) : base(htmlHelper)
         {
         }
 
-        public string Label { get; set; }
         public string Id { get; set; }
         public bool IsChecked { get; set; }
         public IEnumerable<DropdownListItem> Items { get; set; }
+        public string Label { get; set; }
         public string Name { get; set; }
         public string TargetId { get; set; }
         public string Toggle { get; set; }
@@ -87,18 +100,5 @@ namespace Dash.TagHelpers
 
             base.Process(context, output);
         }
-    }
-
-    public class DropdownListItem
-    {
-        public string Action { get; set; }
-        public string ExtraClasses { get; set; }
-        public string Confirm { get; set; }
-        public string Controller { get; set; }
-        public DashIcons Icon { get; set; }
-        public string IconExtraClasses { get; set; }
-        public string Label { get; set; }
-        public HttpVerbs Method { get; set; } = HttpVerbs.Get;
-        public object RouteValues { get; set; }
     }
 }

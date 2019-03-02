@@ -21,10 +21,7 @@ namespace Dash.Models
         {
         }
 
-        public DatasetJoin(IDbContext dbContext)
-        {
-            DbContext = dbContext;
-        }
+        public DatasetJoin(IDbContext dbContext) => DbContext = dbContext;
 
         public DatasetJoin(IDbContext dbContext, int datasetId)
         {
@@ -39,10 +36,7 @@ namespace Dash.Models
         public bool IsLast { get; set; }
 
         [DbIgnore]
-        public string JoinName
-        {
-            get { return ((JoinTypes)JoinTypeId).ToString(); }
-        }
+        public string JoinName => ((JoinTypes)JoinTypeId).ToString();
 
         [Required]
         public int JoinOrder { get; set; }
@@ -52,10 +46,7 @@ namespace Dash.Models
         public int JoinTypeId { get; set; }
 
         [DbIgnore]
-        public IEnumerable<SelectListItem> JoinTypeList
-        {
-            get { return typeof(JoinTypes).TranslatedSelect(new ResourceDictionary("Datasets"), "LabelJoinType_"); }
-        }
+        public IEnumerable<SelectListItem> JoinTypeList => typeof(JoinTypes).TranslatedSelect(new ResourceDictionary("Datasets"), "LabelJoinType_");
 
         [Display(Name = "JoinKeys", ResourceType = typeof(Datasets))]
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
@@ -67,10 +58,7 @@ namespace Dash.Models
         [StringLength(100, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string TableName { get; set; }
 
-        public bool Equals(DatasetJoin other)
-        {
-            return other.DatasetId == DatasetId && other.TableName == TableName && other.JoinTypeId == JoinTypeId && other.Keys == Keys && other.JoinOrder == JoinOrder;
-        }
+        public bool Equals(DatasetJoin other) => other.DatasetId == DatasetId && other.TableName == TableName && other.JoinTypeId == JoinTypeId && other.Keys == Keys && other.JoinOrder == JoinOrder;
 
         public override bool Equals(object obj)
         {
@@ -80,10 +68,7 @@ namespace Dash.Models
             return Equals(obj as DatasetJoin);
         }
 
-        public override int GetHashCode()
-        {
-            throw new NotImplementedException();
-        }
+        public override int GetHashCode() => throw new NotImplementedException();
 
         public bool MoveDown(out string error)
         {

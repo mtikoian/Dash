@@ -16,19 +16,62 @@ namespace Dash.Utils
     /// </summary>
     public class TwoFactorAuthenticator
     {
+        private static long GetCurrentCounter() => GetCurrentCounter(DateTime.UtcNow, _epoch, 30);
+
+        private static long GetCurrentCounter(DateTime now, DateTime epoch, int timeStep) => (long)(now - epoch).TotalSeconds / timeStep;
+
+        private static string RemoveWhitespace(string str) => new string(str.Where(c => !char.IsWhiteSpace(c)).ToArray());
+
+        private static string UrlEncode(string value)
+        {
+            var result = new StringBuilder();
+            var validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.~";
+
+            foreach (var symbol in value)
+            {
+                if (validChars.IndexOf(symbol) != -1)
+                {
+                    result.Append(symbol);
+                }
+                else
+                {
+                    result.Append('%' + string.Format("{0:X2}", (int)symbol));
+                }
+            }
+
+            return result.ToString().Replace(" ", "%20");
+        }
+
+        internal static string GenerateHashedCode(string secret, long iterationNumber, int digits = 6) => GenerateHashedCode(Base32Encoding.ToBytes(secret), iterationNumber, digits);
+
+        internal static string GenerateHashedCode(byte[] key, long iterationNumber, int digits = 6)
+        {
+            var counter = BitConverter.GetBytes(iterationNumber);
+            if (BitConverter.IsLittleEndian)
+            {
+                Array.Reverse(counter);
+            }
+
+            var hash = new HMACSHA1(key).ComputeHash(counter);
+            var offset = hash[hash.Length - 1] & 0xf;
+
+            // Convert the 4 bytes into an integer, ignoring the sign.
+            var binary =
+                ((hash[offset] & 0x7f) << 24)
+                | (hash[offset + 1] << 16)
+                | (hash[offset + 2] << 8)
+                | (hash[offset + 3]);
+
+            var password = binary % (int)Math.Pow(10, digits);
+            return password.ToString(new string('0', digits));
+        }
         public static DateTime _epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
-        public TwoFactorAuthenticator()
-        {
-            DefaultClockDriftTolerance = TimeSpan.FromMinutes(1);
-        }
+        public TwoFactorAuthenticator() => DefaultClockDriftTolerance = TimeSpan.FromMinutes(1);
 
         public TimeSpan DefaultClockDriftTolerance { get; set; }
 
-        public string GeneratePINAtInterval(string accountSecretKey, long counter, int digits = 6)
-        {
-            return GenerateHashedCode(accountSecretKey, counter, digits);
-        }
+        public static string GeneratePINAtInterval(string accountSecretKey, long counter, int digits = 6) => GenerateHashedCode(accountSecretKey, counter, digits);
 
         /// <summary>
         /// Generate a setup code for a Google Authenticator user to scan
@@ -39,13 +82,9 @@ namespace Dash.Utils
         /// <param name="secretIsBase32">Flag saying if accountSecretKey is in Base32 format or original secret</param>
         /// <param name="QRPixelsPerModule">Number of pixels per QR Module (2 pixels give ~ 100x100px QRCode)</param>
         /// <returns>SetupCode object</returns>
-        public SetupCode GenerateSetupCode(string issuer, string accountTitleNoSpaces, string accountSecretKey, bool secretIsBase32, int QRPixelsPerModule)
-        {
-            return
-                secretIsBase32 ?
+        public static SetupCode GenerateSetupCode(string issuer, string accountTitleNoSpaces, string accountSecretKey, bool secretIsBase32, int QRPixelsPerModule) => secretIsBase32 ?
                 GenerateSetupCode(issuer, accountTitleNoSpaces, Base32Encoding.ToBytes(accountSecretKey), QRPixelsPerModule) :
                 GenerateSetupCode(issuer, accountTitleNoSpaces, Encoding.UTF8.GetBytes(accountSecretKey), QRPixelsPerModule);
-        }
 
         /// <summary>
         /// Generate a setup code for a Google Authenticator user to scan
@@ -55,7 +94,7 @@ namespace Dash.Utils
         /// <param name="accountSecretKey">Account Secret Key as byte[]</param>
         /// <param name="QRPixelsPerModule">Number of pixels per QR Module (2 = ~120x120px QRCode)</param>
         /// <returns>SetupCode object</returns>
-        public SetupCode GenerateSetupCode(string issuer, string accountTitleNoSpaces, byte[] accountSecretKey, int QRPixelsPerModule)
+        public static SetupCode GenerateSetupCode(string issuer, string accountTitleNoSpaces, byte[] accountSecretKey, int QRPixelsPerModule)
         {
             if (accountTitleNoSpaces == null)
             {
@@ -87,22 +126,11 @@ namespace Dash.Utils
             return new SetupCode(accountTitleNoSpaces, encodedSecretKey, $"data:image/png;base64,{result}");
         }
 
-        public string GetCurrentPIN(string accountSecretKey)
-        {
-            return GeneratePINAtInterval(accountSecretKey, GetCurrentCounter());
-        }
+        public static string GetCurrentPIN(string accountSecretKey) => GeneratePINAtInterval(accountSecretKey, GetCurrentCounter());
 
-        public string GetCurrentPIN(string accountSecretKey, DateTime now)
-        {
-            return GeneratePINAtInterval(accountSecretKey, GetCurrentCounter(now, _epoch, 30));
-        }
+        public static string GetCurrentPIN(string accountSecretKey, DateTime now) => GeneratePINAtInterval(accountSecretKey, GetCurrentCounter(now, _epoch, 30));
 
-        public string[] GetCurrentPINs(string accountSecretKey)
-        {
-            return GetCurrentPINs(accountSecretKey, DefaultClockDriftTolerance);
-        }
-
-        public string[] GetCurrentPINs(string accountSecretKey, TimeSpan timeTolerance)
+        public static string[] GetCurrentPINs(string accountSecretKey, TimeSpan timeTolerance)
         {
             var codes = new List<string>();
             var iterationCounter = GetCurrentCounter();
@@ -122,76 +150,10 @@ namespace Dash.Utils
             return codes.ToArray();
         }
 
-        public bool ValidateTwoFactorPIN(string accountSecretKey, string twoFactorCodeFromClient)
-        {
-            return ValidateTwoFactorPIN(accountSecretKey, twoFactorCodeFromClient, DefaultClockDriftTolerance);
-        }
+        public static bool ValidateTwoFactorPIN(string accountSecretKey, string twoFactorCodeFromClient, TimeSpan timeTolerance) => GetCurrentPINs(accountSecretKey, timeTolerance).Any(c => c == twoFactorCodeFromClient);
 
-        public bool ValidateTwoFactorPIN(string accountSecretKey, string twoFactorCodeFromClient, TimeSpan timeTolerance)
-        {
-            return GetCurrentPINs(accountSecretKey, timeTolerance).Any(c => c == twoFactorCodeFromClient);
-        }
+        public string[] GetCurrentPINs(string accountSecretKey) => GetCurrentPINs(accountSecretKey, DefaultClockDriftTolerance);
 
-        internal string GenerateHashedCode(string secret, long iterationNumber, int digits = 6)
-        {
-            return GenerateHashedCode(Base32Encoding.ToBytes(secret), iterationNumber, digits);
-        }
-
-        internal string GenerateHashedCode(byte[] key, long iterationNumber, int digits = 6)
-        {
-            var counter = BitConverter.GetBytes(iterationNumber);
-            if (BitConverter.IsLittleEndian)
-            {
-                Array.Reverse(counter);
-            }
-
-            var hash = new HMACSHA1(key).ComputeHash(counter);
-            var offset = hash[hash.Length - 1] & 0xf;
-
-            // Convert the 4 bytes into an integer, ignoring the sign.
-            var binary =
-                ((hash[offset] & 0x7f) << 24)
-                | (hash[offset + 1] << 16)
-                | (hash[offset + 2] << 8)
-                | (hash[offset + 3]);
-
-            var password = binary % (int)Math.Pow(10, digits);
-            return password.ToString(new string('0', digits));
-        }
-
-        private static string RemoveWhitespace(string str)
-        {
-            return new string(str.Where(c => !Char.IsWhiteSpace(c)).ToArray());
-        }
-
-        private long GetCurrentCounter()
-        {
-            return GetCurrentCounter(DateTime.UtcNow, _epoch, 30);
-        }
-
-        private long GetCurrentCounter(DateTime now, DateTime epoch, int timeStep)
-        {
-            return (long)(now - epoch).TotalSeconds / timeStep;
-        }
-
-        private string UrlEncode(string value)
-        {
-            var result = new StringBuilder();
-            var validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.~";
-
-            foreach (var symbol in value)
-            {
-                if (validChars.IndexOf(symbol) != -1)
-                {
-                    result.Append(symbol);
-                }
-                else
-                {
-                    result.Append('%' + String.Format("{0:X2}", (int)symbol));
-                }
-            }
-
-            return result.ToString().Replace(" ", "%20");
-        }
+        public bool ValidateTwoFactorPIN(string accountSecretKey, string twoFactorCodeFromClient) => ValidateTwoFactorPIN(accountSecretKey, twoFactorCodeFromClient, DefaultClockDriftTolerance);
     }
 }

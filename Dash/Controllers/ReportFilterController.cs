@@ -10,6 +10,33 @@ namespace Dash.Controllers
     [Authorize(Policy = "HasPermission"), Pjax]
     public class ReportFilterController : BaseController
     {
+        private IActionResult CreateEditView(ReportFilter model)
+        {
+            if (model.Columns.Count() == 0)
+            {
+                TempData["Error"] = model.Report.Dataset.IsProc ? Reports.ErrorNoProcParams : Reports.ErrorNoFilterColumns;
+                return RedirectToAction("Edit", "Report", new { Id = model.ReportId });
+            }
+            return View("CreateEdit", model);
+        }
+
+        private IActionResult Save(ReportFilter model)
+        {
+            if (model == null)
+            {
+                ViewBag.Error = Core.ErrorGeneric;
+                return CreateEditView(model);
+            }
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Error = ModelState.ToErrorString();
+                return CreateEditView(model);
+            }
+            model.Save();
+            ViewBag.Message = Reports.SuccessSavingFilter;
+            return Index(model.ReportId);
+        }
+
         public ReportFilterController(IDbContext dbContext, IAppConfiguration appConfig) : base(dbContext, appConfig)
         {
         }
@@ -29,10 +56,7 @@ namespace Dash.Controllers
         }
 
         [HttpPost, ValidateAntiForgeryToken]
-        public IActionResult Create(ReportFilter model)
-        {
-            return Save(model);
-        }
+        public IActionResult Create(ReportFilter model) => Save(model);
 
         [HttpDelete, AjaxRequestOnly]
         public IActionResult Delete(int id)
@@ -62,10 +86,7 @@ namespace Dash.Controllers
         }
 
         [HttpPut, ValidateAntiForgeryToken]
-        public IActionResult Edit(ReportFilter model)
-        {
-            return Save(model);
-        }
+        public IActionResult Edit(ReportFilter model) => Save(model);
 
         [HttpGet, ParentAction("Edit")]
         public IActionResult FilterCriteria(int id, int reportId, int? columnId, int? operatorId)
@@ -140,33 +161,6 @@ namespace Dash.Controllers
                 ViewBag.Error = error;
                 return Index(model.ReportId);
             }
-            ViewBag.Message = Reports.SuccessSavingFilter;
-            return Index(model.ReportId);
-        }
-
-        private IActionResult CreateEditView(ReportFilter model)
-        {
-            if (model.Columns.Count() == 0)
-            {
-                TempData["Error"] = model.Report.Dataset.IsProc ? Reports.ErrorNoProcParams : Reports.ErrorNoFilterColumns;
-                return RedirectToAction("Edit", "Report", new { Id = model.ReportId });
-            }
-            return View("CreateEdit", model);
-        }
-
-        private IActionResult Save(ReportFilter model)
-        {
-            if (model == null)
-            {
-                ViewBag.Error = Core.ErrorGeneric;
-                return CreateEditView(model);
-            }
-            if (!ModelState.IsValid)
-            {
-                ViewBag.Error = ModelState.ToErrorString();
-                return CreateEditView(model);
-            }
-            model.Save();
             ViewBag.Message = Reports.SuccessSavingFilter;
             return Index(model.ReportId);
         }

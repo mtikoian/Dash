@@ -8,10 +8,7 @@
 
     public class AccountView
     {
-        public AccountView(AccountViewTab activeTab)
-        {
-            ActiveTab = activeTab;
-        }
+        public AccountView(AccountViewTab activeTab) => ActiveTab = activeTab;
 
         public AccountViewTab ActiveTab { get; set; }
     }

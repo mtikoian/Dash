@@ -13,10 +13,7 @@ namespace Dash.Models
         {
         }
 
-        public ChartShare(IDbContext dbContext)
-        {
-            DbContext = dbContext;
-        }
+        public ChartShare(IDbContext dbContext) => DbContext = dbContext;
 
         public ChartShare(IDbContext dbContext, int chartId)
         {
@@ -25,12 +22,12 @@ namespace Dash.Models
         }
 
         [BindNever, ValidateNever]
-        public Chart Chart { get { return _Chart ?? (_Chart = DbContext.Get<Chart>(ChartId)); } }
+        public Chart Chart => _Chart ?? (_Chart = DbContext.Get<Chart>(ChartId));
 
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int ChartId { get; set; }
 
         [DbIgnore, BindNever, ValidateNever]
-        public string ChartName { get { return Chart?.Name; } }
+        public string ChartName => Chart?.Name;
     }
 }

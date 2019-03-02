@@ -11,10 +11,10 @@
             HasAccess = hasAccess;
         }
 
-        public string Label { get; set; }
         public string Action { get; set; }
         public string Controller { get; set; }
-        public object RouteValues { get; set; }
         public bool HasAccess { get; set; }
+        public string Label { get; set; }
+        public object RouteValues { get; set; }
     }
 }

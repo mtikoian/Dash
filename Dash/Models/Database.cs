@@ -35,13 +35,7 @@ namespace Dash.Models
         }
 
         [BindNever, ValidateNever]
-        public static IEnumerable<SelectListItem> DatabaseTypeSelectList
-        {
-            get
-            {
-                return typeof(DatabaseTypes).TranslatedSelect(new ResourceDictionary("Databases"), "LabelType_");
-            }
-        }
+        public static IEnumerable<SelectListItem> DatabaseTypeSelectList => typeof(DatabaseTypes).TranslatedSelect(new ResourceDictionary("Databases"), "LabelType_");
 
         [Display(Name = "AllowPaging", ResourceType = typeof(Databases))]
         public bool AllowPaging { get; set; }
@@ -70,10 +64,10 @@ namespace Dash.Models
         public bool IsEmptyPassword { get; set; } = false;
 
         [DbIgnore]
-        public bool IsMySql { get { return TypeId == (int)DatabaseTypes.MySql; } }
+        public bool IsMySql => TypeId == (int)DatabaseTypes.MySql;
 
         [DbIgnore]
-        public bool IsSqlServer { get { return TypeId == (int)DatabaseTypes.SqlServer; } }
+        public bool IsSqlServer => TypeId == (int)DatabaseTypes.SqlServer;
 
         [Display(Name = "Name", ResourceType = typeof(Databases))]
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
@@ -138,14 +132,15 @@ namespace Dash.Models
 
         public IEnumerable<string> GetSourceList(bool includeEmpty = false, bool isProc = false)
         {
+            var res = new List<string>();
+            if (includeEmpty)
+            {
+                res.Add("");
+            }
+
             using (var conn = GetConnection())
             {
                 conn.Open();
-                var res = new List<string>();
-                if (includeEmpty)
-                {
-                    res.Add("");
-                }
                 conn.GetSchema(isProc ? "Procedures" : "Tables").Rows.OfType<DataRow>().Each(row => {
                     if (isProc)
                     {
@@ -164,17 +159,18 @@ namespace Dash.Models
 
         public DataTable GetTableSchema(string tableName)
         {
+            var parts = tableName.Split('.');
+            if (parts.Any())
+            {
+                parts = parts.Select(p => IsSqlServer ? p.Replace("[", "").Replace("]", "") : p.Replace("`", "")).ToArray();
+            }
+            var columnRestrictions = new string[4];
+            columnRestrictions[1] = parts.Length > 1 ? parts[0] : null;
+            columnRestrictions[2] = parts.Length > 1 ? parts[1] : parts[0];
+
             using (var conn = GetConnection())
             {
                 conn.Open();
-                var parts = tableName.Split('.');
-                if (parts.Any())
-                {
-                    parts = parts.Select(p => IsSqlServer ? p.Replace("[", "").Replace("]", "") : p.Replace("`", "")).ToArray();
-                }
-                var columnRestrictions = new string[4];
-                columnRestrictions[1] = parts.Length > 1 ? parts[0] : null;
-                columnRestrictions[2] = parts.Length > 1 ? parts[1] : parts[0];
                 var tableSchema = conn.GetSchema("Columns", columnRestrictions);
                 conn.Close();
                 return tableSchema;
@@ -185,7 +181,7 @@ namespace Dash.Models
         {
             using (var conn = GetConnection())
             {
-                return conn.Query(sql, parameters);
+                return conn.QueryAsync(sql, parameters).Result;
             }
         }
 
@@ -193,7 +189,7 @@ namespace Dash.Models
         {
             using (var conn = GetConnection())
             {
-                return conn.Query<T>(sql);
+                return conn.QueryAsync<T>(sql).Result;
             }
         }
 
@@ -225,7 +221,7 @@ namespace Dash.Models
             {
                 using (var conn = GetConnection())
                 {
-                    conn.Query("SELECT 1");
+                    var res = conn.QueryAsync("SELECT 1").Result;
                     errorMessage = "";
                     return true;
                 }

@@ -32,12 +32,12 @@ namespace Dash.Models
         [BindNever, ValidateNever]
         public Dataset Dataset
         {
-            get { return _Dataset ?? (_Dataset = DbContext.Get<Dataset>(DatasetId)); }
-            set { _Dataset = value; }
+            get => _Dataset ?? (_Dataset = DbContext.Get<Dataset>(DatasetId));
+            set => _Dataset = value;
         }
 
         [DbIgnore, BindNever, ValidateNever]
-        public List<DatasetColumn> DatasetColumns { get { return _DatasetColumns ?? (_DatasetColumns = Dataset?.DatasetColumn ?? new List<DatasetColumn>()); } }
+        public List<DatasetColumn> DatasetColumns => _DatasetColumns ?? (_DatasetColumns = Dataset?.DatasetColumn ?? new List<DatasetColumn>());
 
         [BindNever, ValidateNever]
         public List<DatasetColumn> DatasetColumnsByDisplay
@@ -72,7 +72,7 @@ namespace Dash.Models
         public bool IsDashboard { get; set; } = false;
 
         [DbIgnore]
-        public bool IsOwner { get { return RequestUserId == OwnerId; } }
+        public bool IsOwner => RequestUserId == OwnerId;
 
         [Display(Name = "Name", ResourceType = typeof(Reports))]
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
@@ -85,22 +85,22 @@ namespace Dash.Models
         [BindNever, ValidateNever]
         public List<ReportColumn> ReportColumn
         {
-            get { return _ReportColumn ?? (_ReportColumn = DbContext.GetAll<ReportColumn>(new { ReportId = Id }).ToList()); }
-            set { _ReportColumn = value; }
+            get => _ReportColumn ?? (_ReportColumn = DbContext.GetAll<ReportColumn>(new { ReportId = Id }).ToList());
+            set => _ReportColumn = value;
         }
 
         [BindNever, ValidateNever]
         public List<ReportFilter> ReportFilter
         {
-            get { return _ReportFilter ?? (_ReportFilter = DbContext.GetAll<ReportFilter>(new { ReportId = Id }).ToList()); }
-            set { _ReportFilter = value; }
+            get => _ReportFilter ?? (_ReportFilter = DbContext.GetAll<ReportFilter>(new { ReportId = Id }).ToList());
+            set => _ReportFilter = value;
         }
 
         [BindNever, ValidateNever]
         public List<ReportShare> ReportShare
         {
-            get { return _ReportShare ?? (_ReportShare = DbContext.GetAll<ReportShare>(new { ReportId = Id }).ToList()); }
-            set { _ReportShare = value; }
+            get => _ReportShare ?? (_ReportShare = DbContext.GetAll<ReportShare>(new { ReportId = Id }).ToList());
+            set => _ReportShare = value;
         }
 
         public int RowLimit { get; set; } = 10;

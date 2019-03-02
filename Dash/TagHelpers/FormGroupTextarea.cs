@@ -8,6 +8,25 @@ namespace Dash.TagHelpers
 {
     public class FormGroupTextareaTagHelper : FormBaseTagHelper
     {
+        private IHtmlContent BuildInput()
+        {
+            var textarea = new TagBuilder("textarea");
+            textarea.AddCssClass("form-input");
+            textarea.Attributes.Add("id", FieldName);
+            textarea.Attributes.Add("name", FieldName);
+            textarea.Attributes.AddIf("required", "true", IsRequired == true || (!IsRequired.HasValue && For?.Metadata.IsRequired == true));
+            if (For != null)
+            {
+                var maxLength = GetMaxLength(For.ModelExplorer.Metadata.ValidatorMetadata);
+                textarea.Attributes.AddIf("maxlength", maxLength.ToString(), maxLength > 0);
+                var minLength = GetMinLength(For.ModelExplorer.Metadata.ValidatorMetadata);
+                textarea.Attributes.AddIf("minLength", minLength.ToString(), minLength > 0);
+            }
+            textarea.Attributes.AddIf("rows", Rows.ToString(), Rows > 0);
+            textarea.InnerHtml.Append(For?.ModelExplorer.Model?.ToString());
+            return textarea;
+        }
+
         public FormGroupTextareaTagHelper(IHtmlHelper htmlHelper) : base(htmlHelper)
         {
         }
@@ -35,25 +54,6 @@ namespace Dash.TagHelpers
             output.Content.AppendHtml(div);
 
             base.Process(context, output);
-        }
-
-        private IHtmlContent BuildInput()
-        {
-            var textarea = new TagBuilder("textarea");
-            textarea.AddCssClass("form-input");
-            textarea.Attributes.Add("id", FieldName);
-            textarea.Attributes.Add("name", FieldName);
-            textarea.Attributes.AddIf("required", "true", IsRequired == true || (!IsRequired.HasValue && For?.Metadata.IsRequired == true));
-            if (For != null)
-            {
-                var maxLength = GetMaxLength(For.ModelExplorer.Metadata.ValidatorMetadata);
-                textarea.Attributes.AddIf("maxlength", maxLength.ToString(), maxLength > 0);
-                var minLength = GetMinLength(For.ModelExplorer.Metadata.ValidatorMetadata);
-                textarea.Attributes.AddIf("minLength", minLength.ToString(), minLength > 0);
-            }
-            textarea.Attributes.AddIf("rows", Rows.ToString(), Rows > 0);
-            textarea.InnerHtml.Append(For?.ModelExplorer.Model?.ToString());
-            return textarea;
         }
     }
 }

@@ -10,10 +10,7 @@ namespace Dash.TagHelpers
     {
         private IHttpContextAccessor _HttpContextAccessor;
 
-        public AuthorizedMenuItemTagHelper(IHtmlHelper htmlHelper, IHttpContextAccessor httpContextAccessor) : base(htmlHelper)
-        {
-            _HttpContextAccessor = httpContextAccessor;
-        }
+        public AuthorizedMenuItemTagHelper(IHtmlHelper htmlHelper, IHttpContextAccessor httpContextAccessor) : base(htmlHelper) => _HttpContextAccessor = httpContextAccessor;
 
         public string Action { get; set; }
         public string Controller { get; set; }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Security.Claims;
@@ -17,6 +18,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Dash
 {
@@ -149,30 +151,21 @@ namespace Dash
         /// </summary>
         /// <param name="dt">Date to get value for.</param>
         /// <returns>New dateTime</returns>
-        public static DateTime EndOfHour(this DateTime dt)
-        {
-            return dt.StartOfHour().AddMinutes(60);
-        }
+        public static DateTime EndOfHour(this DateTime dt) => dt.StartOfHour().AddMinutes(60);
 
         /// <summary>
         /// Get the end time of the minute for the date.
         /// </summary>
         /// <param name="dt">Date to get value for.</param>
         /// <returns>New dateTime</returns>
-        public static DateTime EndOfMinute(this DateTime dt)
-        {
-            return dt.StartOfMinute().AddSeconds(60);
-        }
+        public static DateTime EndOfMinute(this DateTime dt) => dt.StartOfMinute().AddSeconds(60);
 
         /// <summary>
         /// Get the end time of the month for the date.
         /// </summary>
         /// <param name="dt">Date to get value for.</param>
         /// <returns>New dateTime</returns>
-        public static DateTime EndOfMonth(this DateTime dt)
-        {
-            return dt.StartOfMonth().AddMonths(1).AddMilliseconds(-1);
-        }
+        public static DateTime EndOfMonth(this DateTime dt) => dt.StartOfMonth().AddMonths(1).AddMilliseconds(-1);
 
         /// <summary>
         /// Get the end time of the quarter for the date.
@@ -197,39 +190,14 @@ namespace Dash
         /// </summary>
         /// <param name="dt">Date to get value for.</param>
         /// <returns>New dateTime</returns>
-        public static DateTime EndOfWeek(this DateTime dt)
-        {
-            return dt.StartOfWeek().AddDays(7).AddMilliseconds(-1);
-        }
+        public static DateTime EndOfWeek(this DateTime dt) => dt.StartOfWeek().AddDays(7).AddMilliseconds(-1);
 
         /// <summary>
         /// Get the end time of the year for the date.
         /// </summary>
         /// <param name="dt">Date to get value for.</param>
         /// <returns>New dateTime</returns>
-        public static DateTime EndOfYear(this DateTime dt)
-        {
-            return dt.StartOfYear().AddYears(1).AddMilliseconds(-1);
-        }
-
-        /// <summary>
-        /// Returns a trimmed string. If longer than max length includes ellipsis at end.
-        /// </summary>
-        /// <param name="value">Value to break up.</param>
-        /// <param name="maxLength">Maximum length of returned string.</param>
-        /// <returns>Returns a pretty string.</returns>
-        public static string PrettyTrim(this string value, int maxLength)
-        {
-            if (value.IsEmpty())
-            {
-                return value;
-            }
-            if (value.Length > (maxLength - 4))
-            {
-                return $"{value.Substring(0, maxLength - 4)} ...";
-            }
-            return value;
-        }
+        public static DateTime EndOfYear(this DateTime dt) => dt.StartOfYear().AddYears(1).AddMilliseconds(-1);
 
         /// <summary>
         /// Get an attribute for a property if it exists.
@@ -237,10 +205,7 @@ namespace Dash
         /// <typeparam name="T">Attribute to check for.</typeparam>
         /// <param name="member">Property to check against.</param>
         /// <returns>Returns attribute if member has the attribute, else false.</returns>
-        public static T GetMemberAttribute<T>(this Member member) where T : Attribute
-        {
-            return GetPrivateField<MemberInfo>(member, "member").GetCustomAttribute<T>();
-        }
+        public static T GetMemberAttribute<T>(this Member member) where T : Attribute => GetPrivateField<MemberInfo>(member, "member").GetCustomAttribute<T>();
 
         /// <summary>
         /// Get details about a private field in a class.
@@ -264,11 +229,7 @@ namespace Dash
         /// <param name="controller">Requested controller.</param>
         /// <param name="action">Requested action.</param>
         /// <returns>True if user has access, else false.</returns>
-        public static bool HasAccess(this ClaimsPrincipal claimsPrincipal, string controller, string action, HttpVerbs method = HttpVerbs.Get)
-        {
-            var permissions = new ControllerAction(controller, action, method).EffectivePermissions();
-            return permissions.Any(x => claimsPrincipal.IsInRole(x));
-        }
+        public static bool HasAccess(this ClaimsPrincipal claimsPrincipal, string controller, string action, HttpVerbs method = HttpVerbs.Get) => new ControllerAction(controller, action, method).EffectivePermissions().Any(x => claimsPrincipal.IsInRole(x));
 
         /// <summary>
         /// Check if a member has an attribute assigned to it.
@@ -276,20 +237,14 @@ namespace Dash
         /// <typeparam name="T">Attribute to check for.</typeparam>
         /// <param name="member">Property to check against.</param>
         /// <returns>Returns true if member has attribute set, else false.</returns>
-        public static bool HasAttribute<T>(this Member member) where T : Attribute
-        {
-            return member.GetMemberAttribute<T>() != null;
-        }
+        public static bool HasAttribute<T>(this Member member) where T : Attribute => member.GetMemberAttribute<T>() != null;
 
         /// <summary>
         /// Check if an integer has a value greater than zero.
         /// </summary>
         /// <param name="value">Integer to check.</param>
         /// <returns>Returns true if the integer is not null and greater than zero.</returns>
-        public static bool HasPositiveValue(this int? value)
-        {
-            return value.HasValue && value.Value > 0;
-        }
+        public static bool HasPositiveValue(this int? value) => value.HasValue && value.Value > 0;
 
         /// <summary>
         /// Check if the request object is an AJAX request.
@@ -300,7 +255,7 @@ namespace Dash
         {
             if (request == null)
             {
-                throw new ArgumentNullException("request");
+                throw new ArgumentNullException(nameof(request));
             }
             if (request.Headers != null)
             {
@@ -318,20 +273,14 @@ namespace Dash
         /// <param name="viewList">List of integers to check for ID in.</param>
         /// <param name="value">ID to check for.</param>
         /// <returns></returns>
-        public static bool IsChecked<T>(IEnumerable<T> list, Func<T, bool> expression, int[] viewList, int value)
-        {
-            return (list != null && list.Any(expression)) || (viewList != null && viewList.Contains(value));
-        }
+        public static bool IsChecked<T>(IEnumerable<T> list, Func<T, bool> expression, int[] viewList, int value) => (list != null && list.Any(expression)) || (viewList != null && viewList.Contains(value));
 
         /// <summary>
         /// Check if a string is empty or null.
         /// </summary>
         /// <param name="value">String to check.</param>
         /// <returns>True if string is not null or empty.</returns>
-        public static bool IsEmpty(this string value)
-        {
-            return string.IsNullOrWhiteSpace(value);
-        }
+        public static bool IsEmpty(this string value) => string.IsNullOrWhiteSpace(value);
 
         /// <summary>
         /// Join a list of string using separator.
@@ -339,10 +288,7 @@ namespace Dash
         /// <param name="value">String list to combine.</param>
         /// <param name="separator">String to use between list items.</param>
         /// <returns>Joined string.</returns>
-        public static string Join(this IEnumerable<string> value, string separator = ", ")
-        {
-            return string.Join(separator, value);
-        }
+        public static string Join(this IEnumerable<string> value, string separator = ", ") => string.Join(separator, value);
 
         /// <summary>
         /// Prepend an item to the beginning of a list.
@@ -363,14 +309,30 @@ namespace Dash
         }
 
         /// <summary>
+        /// Returns a trimmed string. If longer than max length includes ellipsis at end.
+        /// </summary>
+        /// <param name="value">Value to break up.</param>
+        /// <param name="maxLength">Maximum length of returned string.</param>
+        /// <returns>Returns a pretty string.</returns>
+        public static string PrettyTrim(this string value, int maxLength)
+        {
+            if (value.IsEmpty())
+            {
+                return value;
+            }
+            if (value.Length > (maxLength - 4))
+            {
+                return $"{value.Substring(0, maxLength - 4)} ...";
+            }
+            return value;
+        }
+
+        /// <summary>
         /// Get the quarter of the year for a dae.
         /// </summary>
         /// <param name="dt">Date to get value for.</param>
         /// <returns>Quarter number.</returns>
-        public static int Quarter(this DateTime dt)
-        {
-            return (dt.Month + 2) / 3;
-        }
+        public static int Quarter(this DateTime dt) => (dt.Month + 2) / 3;
 
         /// <summary>
         /// String replace that allows you to specify case handling.
@@ -404,41 +366,28 @@ namespace Dash
         /// </summary>
         /// <param name="dt">Date to get value for.</param>
         /// <returns>New dateTime</returns>
-        public static DateTime StartOfHour(this DateTime dt)
-        {
-            return new DateTime(dt.Year, dt.Month, dt.Day, dt.Hour, 0, 0);
-        }
+        public static DateTime StartOfHour(this DateTime dt) => new DateTime(dt.Year, dt.Month, dt.Day, dt.Hour, 0, 0);
 
         /// <summary>
         /// Get the start time of the minute for the date.
         /// </summary>
         /// <param name="dt">Date to get value for.</param>
         /// <returns>New dateTime</returns>
-        public static DateTime StartOfMinute(this DateTime dt)
-        {
-            return new DateTime(dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, 0);
-        }
+        public static DateTime StartOfMinute(this DateTime dt) => new DateTime(dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, 0);
 
         /// <summary>
         /// Get the start time of the month for the date.
         /// </summary>
         /// <param name="dt">Date to get value for.</param>
         /// <returns>New dateTime</returns>
-        public static DateTime StartOfMonth(this DateTime dt)
-        {
-            return new DateTime(dt.Year, dt.Month, 1);
-        }
+        public static DateTime StartOfMonth(this DateTime dt) => new DateTime(dt.Year, dt.Month, 1);
 
         /// <summary>
         /// Get the start time of the quarter for the date.
         /// </summary>
         /// <param name="dt">Date to get value for.</param>
         /// <returns>New dateTime</returns>
-        public static DateTime StartOfQuarter(this DateTime dt)
-        {
-            var currQuarter = (dt.Month - 1) / 3 + 1;
-            return new DateTime(dt.Year, 3 * currQuarter - 2, 1);
-        }
+        public static DateTime StartOfQuarter(this DateTime dt) => new DateTime(dt.Year, 3 * ((dt.Month - 1) / 3 + 1) - 2, 1);
 
         /// <summary>
         /// Get the start time of the week for the date.
@@ -461,19 +410,26 @@ namespace Dash
         /// </summary>
         /// <param name="dt">Date to get value for.</param>
         /// <returns>New dateTime</returns>
-        public static DateTime StartOfYear(this DateTime dt)
-        {
-            return new DateTime(dt.Year, 1, 1);
-        }
+        public static DateTime StartOfYear(this DateTime dt) => new DateTime(dt.Year, 1, 1);
 
         /// <summary>
         /// Converts a string value to a boolean. Default to false.
         /// </summary>
         /// <param name="val">Value to attempt to convert.</param>
         /// <returns>Bool value</returns>
-        public static bool ToBool(this string val)
+        public static bool ToBool(this string val) => val != null && (val == "1" || val.ToLower() == "true");
+
+        /// <summary>
+        /// Sanitize a filename for filesystem and add extension.
+        /// </summary>
+        /// <param name="fileName">Name to sanitize.</param>
+        /// <param name="extension">Extension to add to file name.</param>
+        /// <returns>Sanitized file name with extension.</returns>
+        public static string ToCleanFileName(this string fileName, string extension)
         {
-            return val != null && (val == "1" || val.ToLower() == "true");
+            var formattedName = fileName;
+            Array.ForEach(Path.GetInvalidFileNameChars(), c => formattedName = formattedName.Replace(c.ToString(), string.Empty));
+            return $"{formattedName}.{extension}";
         }
 
         /// <summary>
@@ -482,30 +438,21 @@ namespace Dash
         /// <param name="row">DataRow with schema info.</param>
         /// <param name="hasSchema">False if MySQL server, else true.</param>
         /// <returns>Returns the fully qualified, delimited column name.</returns>
-        public static string ToColumnName(this DataRow row, bool hasSchema = true)
-        {
-            return hasSchema ? $"{row["TABLE_SCHEMA"]}.{row["TABLE_NAME"]}.{row["COLUMN_NAME"]}" : $"{row["TABLE_NAME"]}.{row["COLUMN_NAME"]}";
-        }
+        public static string ToColumnName(this DataRow row, bool hasSchema = true) => hasSchema ? $"{row["TABLE_SCHEMA"]}.{row["TABLE_NAME"]}.{row["COLUMN_NAME"]}" : $"{row["TABLE_NAME"]}.{row["COLUMN_NAME"]}";
 
         /// <summary>
         /// Convert a button enum to a css class name.
         /// </summary>
         /// <param name="val">String value to convert.</param>
         /// <returns>Css class name string.</returns>
-        public static string ToCssClass(this DashButtons val)
-        {
-            return CssRegex.Replace(val.ToString(), "-$1").Trim('-').ToLower();
-        }
+        public static string ToCssClass(this DashButtons val) => CssRegex.Replace(val.ToString(), "-$1").Trim('-').ToLower();
 
         /// <summary>
         /// Convert an icon enum to a css class name.
         /// </summary>
         /// <param name="val">String value to convert.</param>
         /// <returns>Css class name string.</returns>
-        public static string ToCssClass(this DashIcons val)
-        {
-            return CssRegex.Replace(val.ToString(), "-$1").Trim('-').ToLower();
-        }
+        public static string ToCssClass(this DashIcons val) => CssRegex.Replace(val.ToString(), "-$1").Trim('-').ToLower();
 
         /// <summary>
         /// Convert an object with a datetime into a datetime object.
@@ -535,20 +482,14 @@ namespace Dash
         /// </summary>
         /// <param name="state">State of a model.</param>
         /// <returns>Space separated list of errors.</returns>
-        public static string ToErrorString(this ModelStateDictionary state)
-        {
-            return string.Join(" <br />", state.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToArray());
-        }
+        public static string ToErrorString(this ModelStateDictionary state) => string.Join(" <br />", state.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToArray());
 
         /// <summary>
         /// Convert list of validation errors into a string of errors a view can display.
         /// </summary>
         /// <param name="errors">List of validation results.</param>
         /// <returns>Space separated list of errors.</returns>
-        public static string ToErrorString(this IEnumerable<ValidationResult> errors)
-        {
-            return string.Join(" <br />", errors.Select(x => x.ErrorMessage).ToArray());
-        }
+        public static string ToErrorString(this IEnumerable<ValidationResult> errors) => string.Join(" <br />", errors.Select(x => x.ErrorMessage).ToArray());
 
         /// <summary>
         /// Convert an integer into an Excel column name.
@@ -588,10 +529,7 @@ namespace Dash
         /// </summary>
         /// <param name="val">Object value to convert.</param>
         /// <returns>Integer value.</returns>
-        public static int ToInt(this object val)
-        {
-            return (val.ToString() ?? "").ToInt();
-        }
+        public static int ToInt(this object val) => (val.ToString() ?? "").ToInt();
 
         /// <summary>
         /// Adjust a datetime to the closest matching interval step (ie 11:07 for hour interval becomes 11:00).
@@ -691,20 +629,22 @@ namespace Dash
             return timeSpan;
         }
 
-        public static List<SelectListItem> ToSelectList<T>(this IEnumerable<T> enumerable, Func<T, string> text, Func<T, string> value)
-        {
-            return enumerable.Select(f => new SelectListItem { Text = text(f), Value = value(f) }).ToList();
-        }
+        /// <summary>
+        /// Convert IEnumerable to a list of select list items.
+        /// </summary>
+        /// <typeparam name="T">Enumerable type.</typeparam>
+        /// <param name="enumerable">List of items to convert.</param>
+        /// <param name="text">Function to get the option text.</param>
+        /// <param name="value">Funciton to get the option value.</param>
+        /// <returns>List of select list items.</returns>
+        public static List<SelectListItem> ToSelectList<T>(this IEnumerable<T> enumerable, Func<T, string> text, Func<T, string> value) => enumerable.Select(f => new SelectListItem { Text = text(f), Value = value(f) }).ToList();
 
         /// <summary>
         /// Format a datetime into a string SQL will always understand - to avoid culture issues.
         /// </summary>
         /// <param name="val">Date value to format.</param>
         /// <returns>DateTime value.</returns>
-        public static string ToSqlDateTime(this DateTime val)
-        {
-            return val.ToString("yyyy-MM-dd HH:mm:ss");
-        }
+        public static string ToSqlDateTime(this DateTime val) => val.ToString("yyyy-MM-dd HH:mm:ss");
 
         /// <summary>
         /// Convert a DataRow with table schema data into a fully qualified, delimited table name.
@@ -712,10 +652,7 @@ namespace Dash
         /// <param name="row">DataRow with schema info.</param>
         /// <param name="hasSchema">False if MySQL server, else true.</param>
         /// <returns>Returns the delimited table name.</returns>
-        public static string ToTableName(this DataRow row, bool hasSchema = true)
-        {
-            return hasSchema ? $"{row["TABLE_SCHEMA"]}.{row["TABLE_NAME"]}" : $"{row["TABLE_NAME"]}";
-        }
+        public static string ToTableName(this DataRow row, bool hasSchema = true) => hasSchema ? $"{row["TABLE_SCHEMA"]}.{row["TABLE_NAME"]}" : $"{row["TABLE_NAME"]}";
 
         /// <summary>
         /// Converts Enumeration type into an object of ids and names.
@@ -741,49 +678,34 @@ namespace Dash
         /// </summary>
         /// <param name="value">String to update.</param>
         /// <returns>Updated string.</returns>
-        public static string UppercaseFirst(this string value)
-        {
-            return value.IsEmpty() ? string.Empty : (char.ToUpper(value[0]) + value.Substring(1));
-        }
+        public static string UppercaseFirst(this string value) => value.IsEmpty() ? string.Empty : (char.ToUpper(value[0]) + value.Substring(1));
 
         /// <summary>
         /// Get the user ID from the claims.
         /// </summary>
         /// <param name="claimsPrincipal">Claims principal for user.</param>
         /// <returns>UserID if available, else null.</returns>
-        public static int UserId(this ClaimsPrincipal claimsPrincipal)
-        {
-            return claimsPrincipal?.Claims.FirstOrDefault(x => x.Type == ClaimTypes.PrimarySid)?.Value.ToInt() ?? 0;
-        }
+        public static int UserId(this ClaimsPrincipal claimsPrincipal) => claimsPrincipal?.Claims.FirstOrDefault(x => x.Type == ClaimTypes.PrimarySid)?.Value.ToInt() ?? 0;
 
         /// <summary>
         /// Check if user has help enabled.
         /// </summary>
         /// <param name="httpContext">Current request context.</param>
         /// <returns>True if user enabled help, else false.</returns>
-        public static bool WantsHelp(this HttpContext httpContext)
-        {
-            return httpContext.Session.GetString(Help.SettingName).ToBool();
-        }
+        public static bool WantsHelp(this HttpContext httpContext) => httpContext.Session.GetString(Help.SettingName).ToBool();
 
         /// <summary>
         /// Check if user has profiler enabled.
         /// </summary>
         /// <param name="httpContext">Current request context.</param>
         /// <returns>True if user enabled help, else false.</returns>
-        public static bool WantsProfiling(this HttpContext httpContext)
-        {
-            return httpContext.Session.GetString(Profiling.SettingName).ToBool();
-        }
+        public static bool WantsProfiling(this HttpContext httpContext) => httpContext.Session.GetString(Profiling.SettingName).ToBool();
 
         /// <summary>
         /// Get the week of the year for a date.
         /// </summary>
         /// <param name="dt">Date to get value for.</param>
         /// <returns>Week number</returns>
-        public static int Week(this DateTime dt)
-        {
-            return CultureInfo.CurrentCulture.Calendar.GetWeekOfYear(dt, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
-        }
+        public static int Week(this DateTime dt) => CultureInfo.CurrentCulture.Calendar.GetWeekOfYear(dt, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
     }
 }

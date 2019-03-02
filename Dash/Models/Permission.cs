@@ -6,6 +6,6 @@
         public string ControllerName { get; set; }
 
         [DbIgnore]
-        public string FullName { get { return ControllerName?.Trim() + "." + ActionName?.Trim(); } }
+        public string FullName => $"{ControllerName?.Trim()}.{ActionName?.Trim()}";
     }
 }

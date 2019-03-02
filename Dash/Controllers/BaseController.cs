@@ -8,20 +8,19 @@ namespace Dash.Controllers
 {
     public abstract class BaseController : Controller
     {
+        protected IAppConfiguration AppConfig { get; set; }
+
+        protected IDbContext DbContext { get; set; }
+
+        protected int ID { get; set; }
+
         public BaseController(IDbContext dbContext, IAppConfiguration appConfig)
         {
             DbContext = dbContext;
             AppConfig = appConfig;
         }
 
-        protected IAppConfiguration AppConfig { get; set; }
-        protected IDbContext DbContext { get; set; }
-        protected int ID { get; set; }
-
-        public IActionResult Data(object data)
-        {
-            return Ok(data);
-        }
+        public IActionResult Data(object data) => Ok(data);
 
         public IActionResult Error(string error)
         {
@@ -34,10 +33,7 @@ namespace Dash.Controllers
             return View("Error");
         }
 
-        public IActionResult Rows(IEnumerable<object> rows)
-        {
-            return Ok(new { Rows = rows });
-        }
+        public IActionResult Rows(IEnumerable<object> rows) => Ok(new { Rows = rows });
 
         public IActionResult Success(string message = "")
         {
@@ -47,11 +43,7 @@ namespace Dash.Controllers
                 ViewBag.Error = Core.ErrorGeneric;
                 return View("Error");
             }
-            if (message.IsEmpty())
-            {
-                return Ok(new { result = true });
-            }
-            return Ok(new { message });
+            return message.IsEmpty() ? Ok(new { result = true }) : Ok(new { message });
         }
     }
 }

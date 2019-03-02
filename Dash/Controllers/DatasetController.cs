@@ -10,6 +10,25 @@ namespace Dash.Controllers
     [Authorize(Policy = "HasPermission"), Pjax]
     public class DatasetController : BaseController
     {
+        private IActionResult CreateEditView(Dataset model) => View("CreateEdit", model);
+
+        private IActionResult Save(Dataset model)
+        {
+            if (model == null)
+            {
+                ViewBag.Error = Core.ErrorGeneric;
+                return CreateEditView(model);
+            }
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Error = ModelState.ToErrorString();
+                return CreateEditView(model);
+            }
+            model.Save(false, rolesOnly: true);
+            ViewBag.Message = Datasets.SuccessSavingDataset;
+            return CreateEditView(model);
+        }
+
         public DatasetController(IDbContext dbContext, IAppConfiguration appConfig) : base(dbContext, appConfig)
         {
         }
@@ -44,16 +63,10 @@ namespace Dash.Controllers
         }
 
         [HttpGet]
-        public IActionResult Create()
-        {
-            return CreateEditView(new Dataset(DbContext));
-        }
+        public IActionResult Create() => CreateEditView(new Dataset(DbContext));
 
         [HttpPost, ValidateAntiForgeryToken]
-        public IActionResult Create(Dataset model)
-        {
-            return Save(model);
-        }
+        public IActionResult Create(Dataset model) => Save(model);
 
         [HttpDelete]
         public IActionResult Delete(int id)
@@ -82,10 +95,7 @@ namespace Dash.Controllers
         }
 
         [HttpPut, ValidateAntiForgeryToken]
-        public IActionResult Edit(Dataset model)
-        {
-            return Save(model);
-        }
+        public IActionResult Edit(Dataset model) => Save(model);
 
         [HttpGet]
         public IActionResult Index()
@@ -95,10 +105,7 @@ namespace Dash.Controllers
         }
 
         [HttpPost, AjaxRequestOnly, ParentAction("Index")]
-        public IActionResult List()
-        {
-            return Rows(DbContext.GetAll<Dataset>().Select(x => new { x.Id, x.Name, x.DatabaseName, x.DatabaseHost, x.PrimarySource, x.DatabaseId }));
-        }
+        public IActionResult List() => Rows(DbContext.GetAll<Dataset>().Select(x => new { x.Id, x.Name, x.DatabaseName, x.DatabaseHost, x.PrimarySource, x.DatabaseId }));
 
         [HttpGet, AjaxRequestOnly, ParentAction("Create,Edit")]
         public IActionResult Sources(int? id = null, int? databaseId = null, int? typeId = null, string search = null)
@@ -123,32 +130,6 @@ namespace Dash.Controllers
                 return Data(results);
             }
             return Data(new { });
-        }
-
-        private IActionResult CreateEditView(Dataset model)
-        {
-            if (model.Database == null && model.DatabaseId > 0)
-            {
-                model.Database = DbContext.Get<Database>(model.DatabaseId);
-            }
-            return View("CreateEdit", model);
-        }
-
-        private IActionResult Save(Dataset model)
-        {
-            if (model == null)
-            {
-                ViewBag.Error = Core.ErrorGeneric;
-                return CreateEditView(model);
-            }
-            if (!ModelState.IsValid)
-            {
-                ViewBag.Error = ModelState.ToErrorString();
-                return CreateEditView(model);
-            }
-            model.Save(false, rolesOnly: true);
-            ViewBag.Message = Datasets.SuccessSavingDataset;
-            return CreateEditView(model);
         }
     }
 }

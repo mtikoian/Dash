@@ -32,7 +32,7 @@ namespace Dash.Models
         public bool AllowSingleFactor { get; set; } = false;
 
         [BindNever, ValidateNever]
-        public List<Role> AllRoles { get { return _AllRoles ?? (_AllRoles = DbContext.GetAll<Role>().ToList()); } }
+        public List<Role> AllRoles => _AllRoles ?? (_AllRoles = DbContext.GetAll<Role>().ToList());
 
         [DbIgnore]
         public string ConfirmPassword { get; set; }
@@ -50,10 +50,7 @@ namespace Dash.Models
         public string FirstName { get; set; }
 
         [DbIgnore]
-        public string FullName { get { return $"{LastName?.Trim()}, {FirstName?.Trim()}".Trim(new char[] { ' ', ',' }); } }
-
-        [DbIgnore, BindNever, ValidateNever]
-        public string PasswordHelpText { get { return PasswordHelper.HelpText(AppConfig); } }
+        public string FullName => $"{LastName?.Trim()}, {FirstName?.Trim()}".Trim(new char[] { ' ', ',' });
 
         [DbIgnore, BindNever, ValidateNever]
         public bool IsLocked
@@ -66,7 +63,7 @@ namespace Dash.Models
                 }
                 return _IsLocked.Value;
             }
-            set { _IsLocked = value; }
+            set => _IsLocked = value;
         }
 
         [DbIgnore]
@@ -87,6 +84,9 @@ namespace Dash.Models
         [DbIgnore]
         public string Password { get; set; }
 
+        [DbIgnore, BindNever, ValidateNever]
+        public string PasswordHelpText => PasswordHelper.HelpText(AppConfig);
+
         [Display(Name = "Roles", ResourceType = typeof(Users))]
         [DbIgnore]
         public List<int> RoleIds { get; set; }
@@ -99,14 +99,11 @@ namespace Dash.Models
         [BindNever, ValidateNever]
         public List<UserRole> UserRole
         {
-            get { return _UserRole ?? (_UserRole ?? DbContext.GetAll<UserRole>(new { UserId = Id }).ToList()); }
-            set { _UserRole = value; }
+            get => _UserRole ?? (_UserRole ?? DbContext.GetAll<UserRole>(new { UserId = Id }).ToList());
+            set => _UserRole = value;
         }
 
-        public bool CanAccessDataset(int datasetId)
-        {
-            return Id == DbContext.Query<int>("UserHasDatasetAccess", new { UserId = Id, DatasetId = datasetId }).FirstOrDefault();
-        }
+        public bool CanAccessDataset(int datasetId) => Id == DbContext.Query<int>("UserHasDatasetAccess", new { UserId = Id, DatasetId = datasetId }).FirstOrDefault();
 
         public bool CanViewChart(Chart chart)
         {
@@ -152,10 +149,7 @@ namespace Dash.Models
             return true;
         }
 
-        public void Unlock()
-        {
-            DbContext.Execute("UserLoginAttemptsSave", new { Id = Id, LoginAttempts = 0, DateUnlocks = DateTimeOffset.MinValue });
-        }
+        public void Unlock() => DbContext.Execute("UserLoginAttemptsSave", new { Id = Id, LoginAttempts = 0, DateUnlocks = DateTimeOffset.MinValue });
 
         public bool UpdateProfile(out string errorMsg)
         {

@@ -10,6 +10,25 @@ namespace Dash.Controllers
     [Authorize(Policy = "HasPermission"), Pjax]
     public class DatasetJoinController : BaseController
     {
+        private IActionResult CreateEditView(DatasetJoin model) => View("CreateEdit", model);
+
+        private IActionResult Save(DatasetJoin model)
+        {
+            if (model == null)
+            {
+                ViewBag.Error = Core.ErrorGeneric;
+                return CreateEditView(model);
+            }
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Error = ModelState.ToErrorString();
+                return CreateEditView(model);
+            }
+            DbContext.Save(model);
+            ViewBag.Message = Datasets.SuccessSavingJoin;
+            return Index(model.DatasetId);
+        }
+
         public DatasetJoinController(IDbContext dbContext, IAppConfiguration appConfig) : base(dbContext, appConfig)
         {
         }
@@ -29,10 +48,7 @@ namespace Dash.Controllers
         }
 
         [HttpPost, ValidateAntiForgeryToken]
-        public IActionResult Create(DatasetJoin model)
-        {
-            return Save(model);
-        }
+        public IActionResult Create(DatasetJoin model) => Save(model);
 
         [HttpDelete, AjaxRequestOnly]
         public IActionResult Delete(int id)
@@ -62,10 +78,7 @@ namespace Dash.Controllers
         }
 
         [HttpPut, ValidateAntiForgeryToken]
-        public IActionResult Edit(DatasetJoin model)
-        {
-            return Save(model);
-        }
+        public IActionResult Edit(DatasetJoin model) => Save(model);
 
         [HttpGet]
         public IActionResult Index(int id)
@@ -117,28 +130,6 @@ namespace Dash.Controllers
                 ViewBag.Error = error;
                 return Index(model.DatasetId);
             }
-            ViewBag.Message = Datasets.SuccessSavingJoin;
-            return Index(model.DatasetId);
-        }
-
-        private IActionResult CreateEditView(DatasetJoin model)
-        {
-            return View("CreateEdit", model);
-        }
-
-        private IActionResult Save(DatasetJoin model)
-        {
-            if (model == null)
-            {
-                ViewBag.Error = Core.ErrorGeneric;
-                return CreateEditView(model);
-            }
-            if (!ModelState.IsValid)
-            {
-                ViewBag.Error = ModelState.ToErrorString();
-                return CreateEditView(model);
-            }
-            DbContext.Save(model);
             ViewBag.Message = Datasets.SuccessSavingJoin;
             return Index(model.DatasetId);
         }

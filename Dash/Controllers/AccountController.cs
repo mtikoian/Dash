@@ -170,7 +170,7 @@ namespace Dash.Controllers
             {
                 return Error(Core.ErrorGeneric);
             }
-            return View("TwoFactorHelp", new TwoFactorAuthenticator().GenerateSetupCode(AppConfig.Membership.AuthenticatorAppName, membership.Email, AppConfig.Membership.AuthenticatorKey, true, 2));
+            return View("TwoFactorHelp", TwoFactorAuthenticator.GenerateSetupCode(AppConfig.Membership.AuthenticatorAppName, membership.Email, AppConfig.Membership.AuthenticatorKey, true, 2));
         }
 
         [HttpPost, ValidateAntiForgeryToken]
@@ -197,10 +197,7 @@ namespace Dash.Controllers
         }
 
         [HttpGet, Authorize]
-        public IActionResult UpdateAccount()
-        {
-            return View("UpdateAccount", new UpdateAccount(DbContext, AppConfig, User.Identity.Name));
-        }
+        public IActionResult UpdateAccount() => View("UpdateAccount", new UpdateAccount(DbContext, AppConfig, User.Identity.Name));
 
         [HttpPost, Authorize, ValidateAntiForgeryToken]
         public IActionResult UpdateAccount(UpdateAccount model)
@@ -224,10 +221,7 @@ namespace Dash.Controllers
         }
 
         [HttpGet, Authorize]
-        public IActionResult UpdatePassword()
-        {
-            return View("UpdatePassword", new UpdatePassword(DbContext, AppConfig));
-        }
+        public IActionResult UpdatePassword() => View("UpdatePassword", new UpdatePassword(DbContext, AppConfig));
 
         [HttpPost, Authorize, ValidateAntiForgeryToken]
         public IActionResult UpdatePassword(UpdatePassword model)

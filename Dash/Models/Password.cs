@@ -8,11 +8,8 @@ namespace Dash.Models
 {
     public static class PasswordHelper
     {
-        public static string HelpText(IAppConfiguration appConfig)
-        {
-            return Users.PasswordHelp.Replace("{0}", appConfig.Membership.MinRequiredPasswordLength.ToString())
-                    .Replace("{1}", appConfig.Membership.MinRequiredNonAlphanumericCharacters.ToString());
-        }
+        public static string HelpText(IAppConfiguration appConfig) => Users.PasswordHelp.Replace("{0}", appConfig.Membership.MinRequiredPasswordLength.ToString())
+            .Replace("{1}", appConfig.Membership.MinRequiredNonAlphanumericCharacters.ToString());
 
         public static ValidationResult Validate(IAppConfiguration appConfig, string password, string confirmPassword)
         {

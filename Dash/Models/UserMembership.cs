@@ -21,7 +21,7 @@ namespace Dash.Models
         public DateTimeOffset? DateUnlocks { get; set; }
         public string Email { get; set; }
         public string FirstName { get; set; }
-        public string FullName { get { return $"{FirstName.Trim()} {LastName}".Trim(); } }
+        public string FullName => $"{FirstName.Trim()} {LastName}".Trim();
         public string LanguageCode { get; set; }
         public int LanguageId { get; set; }
         public string LastName { get; set; }

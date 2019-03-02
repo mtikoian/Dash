@@ -11,9 +11,9 @@ namespace Dash.TagHelpers
         {
         }
 
-        public bool IsChecked { get; set; }
         public bool? Disabled { get; set; }
         public string Id { get; set; }
+        public bool IsChecked { get; set; }
         public string Label { get; set; }
         public string Name { get; set; }
         public string Value { get; set; }

@@ -15,11 +15,11 @@ namespace Dash.TagHelpers
         }
 
         public bool? Disabled { get; set; }
-        public bool? IsRequired { get; set; }
+        public string FieldName => For == null ? Name : For.Name;
+        public string FieldTitle => For == null ? Title : For.Metadata.DisplayName;
         public ModelExpression For { get; set; }
-        public string FieldName { get { return For == null ? Name : For.Name; } }
-        public string FieldTitle { get { return For == null ? Title : For.Metadata.DisplayName; } }
         public string HelpText { get; set; }
+        public bool? IsRequired { get; set; }
         public string Name { get; set; }
         public string Title { get; set; }
 
@@ -112,9 +112,6 @@ namespace Dash.TagHelpers
             return label;
         }
 
-        public override void Process(TagHelperContext context, TagHelperOutput output)
-        {
-            base.Process(context, output);
-        }
+        public override void Process(TagHelperContext context, TagHelperOutput output) => base.Process(context, output);
     }
 }

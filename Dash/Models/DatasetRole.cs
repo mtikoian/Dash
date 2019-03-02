@@ -11,10 +11,7 @@ namespace Dash.Models
         [Required]
         public int RoleId { get; set; }
 
-        public bool Equals(DatasetRole other)
-        {
-            return other.DatasetId == DatasetId && other.RoleId == RoleId;
-        }
+        public bool Equals(DatasetRole other) => other.DatasetId == DatasetId && other.RoleId == RoleId;
 
         public override bool Equals(object obj)
         {
@@ -24,9 +21,6 @@ namespace Dash.Models
             return Equals(obj as DatasetRole);
         }
 
-        public override int GetHashCode()
-        {
-            throw new NotImplementedException();
-        }
+        public override int GetHashCode() => throw new NotImplementedException();
     }
 }

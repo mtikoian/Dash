@@ -20,10 +20,7 @@ namespace Dash.Models
         {
         }
 
-        public ReportFilter(IDbContext dbContext)
-        {
-            DbContext = dbContext;
-        }
+        public ReportFilter(IDbContext dbContext) => DbContext = dbContext;
 
         public ReportFilter(IDbContext dbContext, int reportId)
         {
@@ -32,46 +29,34 @@ namespace Dash.Models
         }
 
         [DbIgnore, BindNever, ValidateNever]
-        public static IEnumerable<SelectListItem> BooleanSelectListItems
-        {
-            get { return new List<SelectListItem> { new SelectListItem(Reports.True, "1"), new SelectListItem(Reports.False, "0") }; }
-        }
+        public static IEnumerable<SelectListItem> BooleanSelectListItems => new List<SelectListItem> { new SelectListItem(Reports.True, "1"), new SelectListItem(Reports.False, "0") };
 
         [DbIgnore, BindNever, ValidateNever]
-        public static IEnumerable<SelectListItem> DateIntervalSelectListItems
-        {
-            get { return typeof(FilterDateRanges).TranslatedSelect(new ResourceDictionary("Filters"), "LabelDateRange_"); }
-        }
+        public static IEnumerable<SelectListItem> DateIntervalSelectListItems => typeof(FilterDateRanges).TranslatedSelect(new ResourceDictionary("Filters"), "LabelDateRange_");
 
         [DbIgnore, BindNever, ValidateNever]
-        public DatasetColumn Column { get { return _Column ?? (_Column = DbContext.Get<DatasetColumn>(ColumnId)); } }
+        public DatasetColumn Column => _Column ?? (_Column = DbContext.Get<DatasetColumn>(ColumnId));
 
         [Display(Name = "FilterColumn", ResourceType = typeof(Reports))]
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int ColumnId { get; set; }
 
         [DbIgnore, BindNever, ValidateNever]
-        public string ColumnName
-        {
-            get { return Column?.Title; }
-        }
+        public string ColumnName => Column?.Title;
 
         [BindNever, ValidateNever]
-        public List<DatasetColumn> Columns
-        {
-            get { return Report.Dataset.IsProc ? Report.Dataset.DatasetColumn.Where(x => x.IsParam).ToList() : Report.Dataset.DatasetColumn; }
-        }
+        public List<DatasetColumn> Columns => Report.Dataset.IsProc ? Report.Dataset.DatasetColumn.Where(x => x.IsParam).ToList() : Report.Dataset.DatasetColumn;
 
         [Display(Name = "FilterCriteria", ResourceType = typeof(Reports))]
         [StringLength(4000, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string Criteria { get; set; }
 
-        [DbIgnore]
-        public List<string> CriteriaList { get; set; }
-
         [Display(Name = "FilterCriteria2", ResourceType = typeof(Reports))]
         [StringLength(250, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string Criteria2 { get; set; }
+
+        [DbIgnore]
+        public List<string> CriteriaList { get; set; }
 
         [DbIgnore, BindNever, ValidateNever]
         public string CriteriaValue
@@ -183,14 +168,14 @@ namespace Dash.Models
             }
         }
 
+        [BindNever, ValidateNever]
+        public Report Report => _Report ?? (_Report = DbContext.Get<Report>(ReportId));
+
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int ReportId { get; set; }
 
         [DbIgnore, BindNever, ValidateNever]
-        public string ReportName { get { return Report?.Name; } }
-
-        [BindNever, ValidateNever]
-        public Report Report { get { return _Report ?? (_Report = DbContext.Get<Report>(ReportId)); } }
+        public string ReportName => Report?.Name;
 
         public bool MoveDown(out string error)
         {

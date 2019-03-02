@@ -1,8 +1,7 @@
-﻿// https://github.com/codebude/QRCoder/blob/master/QRCoder/QRCode.cs
-
-using System;
+﻿using System;
 using System.Drawing;
 
+// https://github.com/codebude/QRCoder/blob/master/QRCoder/QRCode.cs
 namespace QRCoder
 {
     public class DashQRCode : AbstractQRCode, IDisposable

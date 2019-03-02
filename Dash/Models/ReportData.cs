@@ -19,19 +19,16 @@ namespace Dash.Models
         public int? Items { get; set; }
 
         [BindNever, ValidateNever]
-        public Report Report { get { return _Report ?? (_Report = DbContext.Get<Report>(Id)); } }
+        public Report Report => _Report ?? (_Report = DbContext.Get<Report>(Id));
 
         public bool Save { get; set; }
         public List<TableSorting> Sort { get; set; }
         public int? StartItem { get; set; }
 
         [BindNever, ValidateNever]
-        public int TotalItems { get { return Items ?? Report?.RowLimit ?? 0; } }
+        public int TotalItems => Items ?? Report?.RowLimit ?? 0;
 
-        public ReportResult GetResult()
-        {
-            return Report.GetData(AppConfig, StartItem ?? 0, TotalItems, false);
-        }
+        public ReportResult GetResult() => Report.GetData(AppConfig, StartItem ?? 0, TotalItems, false);
 
         public void Update()
         {

@@ -12,6 +12,55 @@ namespace Dash.TagHelpers
     {
         private static readonly Type[] NumberTypes = { typeof(int), typeof(long), typeof(decimal), typeof(double), typeof(int?), typeof(long?), typeof(decimal?), typeof(double?) };
 
+        private IHtmlContent BuildInput()
+        {
+            var input = new TagBuilder("input");
+            input.AddCssClass("form-input");
+            input.Attributes.Add("id", FieldName);
+            input.Attributes.Add("name", FieldName);
+
+            var name = FieldName.ToLower();
+            var type = "text";
+            if (name.EndsWith("password"))
+            {
+                type = "password";
+            }
+            else if (name.EndsWith("email"))
+            {
+                type = "email";
+            }
+            else if (name.EndsWith("date"))
+            {
+                Toggle = "datepicker";
+            }
+            else if (For != null && NumberTypes.Contains(For.ModelExplorer.ModelType))
+            {
+                type = "number";
+            }
+            input.Attributes.Add("type", type);
+            input.Attributes.Add("value", type == "password" ? "" : For?.ModelExplorer.Model?.ToString());
+
+            input.Attributes.AddIf("required", "true", (IsRequired.HasValue && IsRequired.Value) || (!IsRequired.HasValue && For?.Metadata.IsRequired == true));
+            input.Attributes.AddIf("autofocus", "true", Autofocus);
+
+            if (For != null)
+            {
+                var maxLength = GetMaxLength(For.ModelExplorer.Metadata.ValidatorMetadata);
+                input.Attributes.AddIf("maxlength", maxLength.ToString(), maxLength > 0);
+                var minLength = GetMinLength(For.ModelExplorer.Metadata.ValidatorMetadata);
+                input.Attributes.AddIf("minLength", minLength.ToString(), minLength > 0);
+            }
+            input.Attributes.AddIf("data-toggle", Toggle, !Toggle.IsEmpty());
+            input.Attributes.AddIf("data-url", Url, !Url.IsEmpty());
+            input.Attributes.AddIf("data-params", Params, !Params.IsEmpty());
+            input.Attributes.AddIf("data-preload", "true", Preload);
+            input.Attributes.AddIf("data-input", "", Toggle == "datepicker");
+            input.Attributes.AddIf("data-target", Target, !Target.IsEmpty());
+            input.Attributes.AddIf("data-match", Match, Match != null);
+
+            return input;
+        }
+
         public FormGroupInputTagHelper(IHtmlHelper htmlHelper) : base(htmlHelper)
         {
         }
@@ -74,55 +123,6 @@ namespace Dash.TagHelpers
             output.Content.AppendHtml(div);
 
             base.Process(context, output);
-        }
-
-        private IHtmlContent BuildInput()
-        {
-            var input = new TagBuilder("input");
-            input.AddCssClass("form-input");
-            input.Attributes.Add("id", FieldName);
-            input.Attributes.Add("name", FieldName);
-
-            var name = FieldName.ToLower();
-            var type = "text";
-            if (name.EndsWith("password"))
-            {
-                type = "password";
-            }
-            else if (name.EndsWith("email"))
-            {
-                type = "email";
-            }
-            else if (name.EndsWith("date"))
-            {
-                Toggle = "datepicker";
-            }
-            else if (For != null && NumberTypes.Contains(For.ModelExplorer.ModelType))
-            {
-                type = "number";
-            }
-            input.Attributes.Add("type", type);
-            input.Attributes.Add("value", type == "password" ? "" : For?.ModelExplorer.Model?.ToString());
-
-            input.Attributes.AddIf("required", "true", (IsRequired.HasValue && IsRequired.Value) || (!IsRequired.HasValue && For?.Metadata.IsRequired == true));
-            input.Attributes.AddIf("autofocus", "true", Autofocus);
-
-            if (For != null)
-            {
-                var maxLength = GetMaxLength(For.ModelExplorer.Metadata.ValidatorMetadata);
-                input.Attributes.AddIf("maxlength", maxLength.ToString(), maxLength > 0);
-                var minLength = GetMinLength(For.ModelExplorer.Metadata.ValidatorMetadata);
-                input.Attributes.AddIf("minLength", minLength.ToString(), minLength > 0);
-            }
-            input.Attributes.AddIf("data-toggle", Toggle, !Toggle.IsEmpty());
-            input.Attributes.AddIf("data-url", Url, !Url.IsEmpty());
-            input.Attributes.AddIf("data-params", Params, !Params.IsEmpty());
-            input.Attributes.AddIf("data-preload", "true", Preload);
-            input.Attributes.AddIf("data-input", "", Toggle == "datepicker");
-            input.Attributes.AddIf("data-target", Target, !Target.IsEmpty());
-            input.Attributes.AddIf("data-match", Match, Match != null);
-
-            return input;
         }
     }
 }

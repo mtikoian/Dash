@@ -17,11 +17,11 @@ namespace Dash.TagHelpers
 
         public string Action { get; set; }
         public string Controller { get; set; }
+        public object For { get; set; }
         public bool IsFullWidth { get; set; }
         public bool IsPjax { get; set; } = true;
         public HttpVerbs Method { get; set; } = HttpVerbs.Post;
         public object RouteValues { get; set; }
-        public object For { get; set; }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {

@@ -22,22 +22,24 @@ namespace Dash.Controllers
             return View("Error");
         }
 
-        public void LogJavascriptError(string message)
-        {
-            Serilog.Log.Error(new JavaScriptException(message), "Javascript Exception");
-        }
+        public void LogJavascriptError(string message) => Serilog.Log.Error(new JavaScriptException(message), "Javascript Exception");
     }
 
     [Serializable]
     public class JavaScriptException : Exception
     {
+        protected JavaScriptException(System.Runtime.Serialization.SerializationInfo serializationInfo, System.Runtime.Serialization.StreamingContext streamingContext) => throw new NotImplementedException();
+
         public JavaScriptException(string message) : base(message)
         {
         }
 
-        protected JavaScriptException(System.Runtime.Serialization.SerializationInfo serializationInfo, System.Runtime.Serialization.StreamingContext streamingContext)
+        public JavaScriptException()
         {
-            throw new NotImplementedException();
+        }
+
+        public JavaScriptException(string message, Exception innerException) : base(message, innerException)
+        {
         }
     }
 }

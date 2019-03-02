@@ -11,10 +11,7 @@ namespace Dash.TagHelpers
     {
         private IHttpContextAccessor _HttpContextAccessor;
 
-        public AuthorizedButtonTagHelper(IHtmlHelper htmlHelper, IHttpContextAccessor httpContextAccessor) : base(htmlHelper)
-        {
-            _HttpContextAccessor = httpContextAccessor;
-        }
+        public AuthorizedButtonTagHelper(IHtmlHelper htmlHelper, IHttpContextAccessor httpContextAccessor) : base(htmlHelper) => _HttpContextAccessor = httpContextAccessor;
 
         public string Action { get; set; }
         public DashButtons Class { get; set; } = DashButtons.BtnPrimary;

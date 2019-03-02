@@ -19,10 +19,7 @@ namespace Dash.Models
         {
         }
 
-        public DatasetColumn(IDbContext dbContext)
-        {
-            DbContext = dbContext;
-        }
+        public DatasetColumn(IDbContext dbContext) => DbContext = dbContext;
 
         public DatasetColumn(IDbContext dbContext, int datasetid)
         {
@@ -31,28 +28,28 @@ namespace Dash.Models
         }
 
         [DbIgnore]
-        public string Alias { get { return $"column{Id}"; } }
+        public string Alias => $"column{Id}";
 
         [Display(Name = "ColumnName", ResourceType = typeof(Datasets))]
         [StringLength(250, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public string ColumnName { get; set; }
 
+        [BindNever, ValidateNever]
+        public Dataset Dataset
+        {
+            get => _Dataset ?? (_Dataset = DbContext.Get<Dataset>(DatasetId));
+            set => _Dataset = value;
+        }
+
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int DatasetId { get; set; }
 
         [BindNever, ValidateNever]
-        public Dataset Dataset
-        {
-            get { return _Dataset ?? (_Dataset = DbContext.Get<Dataset>(DatasetId)); }
-            set { _Dataset = value; }
-        }
-
-        [BindNever, ValidateNever]
         public DataType DataType
         {
-            get { return _DataType ?? (_DataType = DbContext.Get<DataType>(DataTypeId, true)); }
-            set { _DataType = value; }
+            get => _DataType ?? (_DataType = DbContext.Get<DataType>(DataTypeId, true));
+            set => _DataType = value;
         }
 
         [Display(Name = "ColumnDataType", ResourceType = typeof(Datasets))]
@@ -60,22 +57,10 @@ namespace Dash.Models
         public int DataTypeId { get; set; }
 
         [DbIgnore, BindNever, ValidateNever]
-        public IEnumerable<SelectListItem> DataTypeList
-        {
-            get { return DbContext.GetAll<DataType>().OrderBy(d => d.Name).ToSelectList(x => x.Name, x => x.Id.ToString()); }
-        }
+        public IEnumerable<SelectListItem> DataTypeList => DbContext.GetAll<DataType>().OrderBy(d => d.Name).ToSelectList(x => x.Name, x => x.Id.ToString());
 
         [DbIgnore, BindNever, ValidateNever]
-        public IEnumerable<SelectListItem> FilterTypeList
-        {
-            get { return typeof(FilterTypes).TranslatedSelect(new ResourceDictionary("Filters"), "LabelType_"); }
-        }
-
-        [DbIgnore, BindNever, ValidateNever]
-        public string DataTypeName
-        {
-            get { return DataType?.Name; }
-        }
+        public string DataTypeName => DataType?.Name;
 
         [Display(Name = "ColumnTransform", ResourceType = typeof(Datasets))]
         [StringLength(500, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
@@ -93,31 +78,34 @@ namespace Dash.Models
         public int FilterTypeId { get; set; }
 
         [DbIgnore, BindNever, ValidateNever]
-        public bool IsBinary { get { return DataType.IsBinary; } }
+        public IEnumerable<SelectListItem> FilterTypeList => typeof(FilterTypes).TranslatedSelect(new ResourceDictionary("Filters"), "LabelType_");
 
         [DbIgnore, BindNever, ValidateNever]
-        public bool IsBool { get { return DataType.IsBool; } }
+        public bool IsBinary => DataType.IsBinary;
 
         [DbIgnore, BindNever, ValidateNever]
-        public bool IsCurrency { get { return DataType.IsCurrency; } }
+        public bool IsBool => DataType.IsBool;
 
         [DbIgnore, BindNever, ValidateNever]
-        public bool IsDateTime { get { return DataType.IsDateTime; } }
+        public bool IsCurrency => DataType.IsCurrency;
 
         [DbIgnore, BindNever, ValidateNever]
-        public bool IsDecimal { get { return DataType.IsDecimal; } }
+        public bool IsDateTime => DataType.IsDateTime;
 
         [DbIgnore, BindNever, ValidateNever]
-        public bool IsInteger { get { return DataType.IsInteger; } }
+        public bool IsDecimal => DataType.IsDecimal;
+
+        [DbIgnore, BindNever, ValidateNever]
+        public bool IsInteger => DataType.IsInteger;
 
         [Display(Name = "ColumnIsParam", ResourceType = typeof(Datasets))]
         public bool IsParam { get; set; }
 
         [DbIgnore]
-        public bool IsSelect { get { return FilterTypeId == (int)FilterTypes.Select; } }
+        public bool IsSelect => FilterTypeId == (int)FilterTypes.Select;
 
         [DbIgnore, BindNever, ValidateNever]
-        public bool IsText { get { return DataType.IsText; } }
+        public bool IsText => DataType.IsText;
 
         [Display(Name = "ColumnLink", ResourceType = typeof(Datasets))]
         [StringLength(250, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
@@ -190,12 +178,9 @@ namespace Dash.Models
             return includeAlias ? $"{columnSql} AS {Alias}" : columnSql;
         }
 
-        public bool Equals(DatasetColumn other)
-        {
-            return other.DatasetId == DatasetId && other.Title == Title && other.ColumnName == ColumnName && other.Derived == Derived
-                && other.FilterTypeId == FilterTypeId && other.FilterQuery == FilterQuery && other.IsParam == IsParam && other.DataTypeId == DataTypeId
-                && other.Link == Link;
-        }
+        public bool Equals(DatasetColumn other) => other.DatasetId == DatasetId && other.Title == Title && other.ColumnName == ColumnName && other.Derived == Derived
+            && other.FilterTypeId == FilterTypeId && other.FilterQuery == FilterQuery && other.IsParam == IsParam && other.DataTypeId == DataTypeId
+            && other.Link == Link;
 
         public override bool Equals(object obj)
         {
@@ -205,9 +190,6 @@ namespace Dash.Models
             return Equals(obj as DatasetColumn);
         }
 
-        public override int GetHashCode()
-        {
-            throw new NotImplementedException();
-        }
+        public override int GetHashCode() => throw new NotImplementedException();
     }
 }

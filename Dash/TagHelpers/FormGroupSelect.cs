@@ -14,42 +14,6 @@ namespace Dash.TagHelpers
     {
         private static readonly Type[] NumberTypes = { typeof(int), typeof(long), typeof(decimal), typeof(double), typeof(int?), typeof(long?), typeof(decimal?), typeof(double?) };
 
-        public FormGroupSelectTagHelper(IHtmlHelper htmlHelper) : base(htmlHelper)
-        {
-        }
-
-        public bool Autofocus { get; set; }
-        public IEnumerable<SelectListItem> Options { get; set; }
-        public string Match { get; set; }
-        public bool Multiple { get; set; }
-        public string Params { get; set; }
-        public string Target { get; set; }
-        public string Toggle { get; set; }
-        public string Url { get; set; }
-
-        public override void Process(TagHelperContext context, TagHelperOutput output)
-        {
-            Contextualize();
-
-            output.TagMode = TagMode.StartTagAndEndTag;
-            output.TagName = "div";
-            output.AddClass("form-group", HtmlEncoder.Default);
-
-            var div = new TagBuilder("div");
-            div.AddCssClass("col-8");
-
-            var inputGroup = new TagBuilder("div");
-            inputGroup.AddCssClass("input-group");
-            inputGroup.InnerHtml.AppendHtml(BuildInput());
-            inputGroup.InnerHtml.AppendHtml(BuildHelp());
-            div.InnerHtml.AppendHtml(inputGroup);
-
-            output.Content.AppendHtml(BuildLabel());
-            output.Content.AppendHtml(div);
-
-            base.Process(context, output);
-        }
-
         private IHtmlContent BuildInput()
         {
             var input = new TagBuilder("select");
@@ -91,6 +55,42 @@ namespace Dash.TagHelpers
             });
 
             return input;
+        }
+
+        public FormGroupSelectTagHelper(IHtmlHelper htmlHelper) : base(htmlHelper)
+        {
+        }
+
+        public bool Autofocus { get; set; }
+        public string Match { get; set; }
+        public bool Multiple { get; set; }
+        public IEnumerable<SelectListItem> Options { get; set; }
+        public string Params { get; set; }
+        public string Target { get; set; }
+        public string Toggle { get; set; }
+        public string Url { get; set; }
+
+        public override void Process(TagHelperContext context, TagHelperOutput output)
+        {
+            Contextualize();
+
+            output.TagMode = TagMode.StartTagAndEndTag;
+            output.TagName = "div";
+            output.AddClass("form-group", HtmlEncoder.Default);
+
+            var div = new TagBuilder("div");
+            div.AddCssClass("col-8");
+
+            var inputGroup = new TagBuilder("div");
+            inputGroup.AddCssClass("input-group");
+            inputGroup.InnerHtml.AppendHtml(BuildInput());
+            inputGroup.InnerHtml.AppendHtml(BuildHelp());
+            div.InnerHtml.AppendHtml(inputGroup);
+
+            output.Content.AppendHtml(BuildLabel());
+            output.Content.AppendHtml(div);
+
+            base.Process(context, output);
         }
     }
 }

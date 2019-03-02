@@ -36,10 +36,10 @@ namespace Dash.Models
         public IDbContext DbContext { get; set; }
 
         [DbIgnore, JilDirective(true)]
-        public string FormAction { get { return IsCreate ? "Create" : "Edit"; } }
+        public string FormAction => IsCreate ? "Create" : "Edit";
 
         [DbIgnore, JilDirective(true)]
-        public HttpVerbs FormMethod { get { return IsCreate ? HttpVerbs.Post : HttpVerbs.Put; } }
+        public HttpVerbs FormMethod => IsCreate ? HttpVerbs.Post : HttpVerbs.Put;
 
         [DbIgnore, JilDirective(true)]
         public bool ForSave { get; set; } = false;
@@ -47,37 +47,25 @@ namespace Dash.Models
         public int Id { get; set; }
 
         [DbIgnore, JilDirective(true)]
-        public bool IsCreate { get { return Id == 0; } }
+        public bool IsCreate => Id == 0;
 
         [JilDirective(true)]
         public int? RequestUserId { get; set; }
 
-        public override void SetAppConfig(IAppConfiguration appConfig)
-        {
-            AppConfig = appConfig;
-        }
+        public override void SetAppConfig(IAppConfiguration appConfig) => AppConfig = appConfig;
 
-        public override void SetDbContext(IDbContext dbContext)
-        {
-            DbContext = dbContext;
-        }
+        public override void SetDbContext(IDbContext dbContext) => DbContext = dbContext;
 
-        public override void SetForSave(bool forSave)
-        {
-            ForSave = forSave;
-        }
+        public override void SetForSave(bool forSave) => ForSave = forSave;
 
-        public override void SetRequestUserId(int? userId)
-        {
-            RequestUserId = userId;
-        }
+        public override void SetRequestUserId(int? userId) => RequestUserId = userId;
     }
 
     /// <summary>
     /// Attribute that specifies a property should be ignored when inserting into or updating the db.
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, Inherited = true)]
-    public class DbIgnore : Attribute
+    public sealed class DbIgnore : Attribute
     {
         public DbIgnore()
         {

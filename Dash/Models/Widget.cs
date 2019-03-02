@@ -17,17 +17,16 @@ namespace Dash.Models
         {
         }
 
-        public Widget(IDbContext dbContext)
-        {
-            DbContext = dbContext;
-        }
+        public Widget(IDbContext dbContext) => DbContext = dbContext;
 
         [DbIgnore, JilDirective(true)]
-        public bool AllowEdit { get { return UserId == RequestUserId; } }
+        public bool AllowEdit => UserId == RequestUserId;
 
         [Display(Name = "Chart", ResourceType = typeof(Widgets))]
         public int? ChartId { get; set; }
 
+        [DbIgnore, BindNever, ValidateNever]
+        public IEnumerable<SelectListItem> ChartSelectListItems => DbContext.GetAll<Chart>(new { UserId = RequestUserId }).ToSelectList(r => r.Name, r => r.Id.ToString());
         public int Height { get; set; } = 4;
 
         [Display(Name = "RefreshRate", ResourceType = typeof(Widgets))]
@@ -36,6 +35,9 @@ namespace Dash.Models
 
         [Display(Name = "Report", ResourceType = typeof(Widgets))]
         public int? ReportId { get; set; }
+
+        [DbIgnore, BindNever, ValidateNever]
+        public IEnumerable<SelectListItem> ReportSelectListItems => DbContext.GetAll<Report>(new { UserId = RequestUserId }).ToSelectList(r => r.Name, r => r.Id.ToString());
 
         [Display(Name = "Title", ResourceType = typeof(Widgets))]
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
@@ -46,38 +48,13 @@ namespace Dash.Models
         [Required]
         public int UserId { get; set; }
 
+        [DbIgnore, BindNever, ValidateNever]
+        public IEnumerable<SelectListItem> WidgetRefreshRateSelectListItems => typeof(WidgetRefreshRates).TranslatedSelect(new ResourceDictionary("Widgets"), "LabelRefreshRate_");
         public int Width { get; set; } = 4;
 
         public int X { get; set; } = -1;
 
         public int Y { get; set; } = -1;
-
-        [DbIgnore, BindNever, ValidateNever]
-        public IEnumerable<SelectListItem> ChartSelectListItems
-        {
-            get
-            {
-                return DbContext.GetAll<Chart>(new { UserId = RequestUserId }).ToSelectList(r => r.Name, r => r.Id.ToString());
-            }
-        }
-
-        [DbIgnore, BindNever, ValidateNever]
-        public IEnumerable<SelectListItem> ReportSelectListItems
-        {
-            get
-            {
-                return DbContext.GetAll<Report>(new { UserId = RequestUserId }).ToSelectList(r => r.Name, r => r.Id.ToString());
-            }
-        }
-
-        [DbIgnore, BindNever, ValidateNever]
-        public IEnumerable<SelectListItem> WidgetRefreshRateSelectListItems
-        {
-            get
-            {
-                return typeof(WidgetRefreshRates).TranslatedSelect(new ResourceDictionary("Widgets"), "LabelRefreshRate_");
-            }
-        }
 
         public void Save()
         {

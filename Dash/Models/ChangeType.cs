@@ -11,7 +11,7 @@ namespace Dash.Models
         private Chart _Chart;
 
         [BindNever, ValidateNever]
-        public Chart Chart { get { return _Chart ?? (_Chart = DbContext.Get<Chart>(Id)); } }
+        public Chart Chart => _Chart ?? (_Chart = DbContext.Get<Chart>(Id));
 
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int ChartTypeId { get; set; }

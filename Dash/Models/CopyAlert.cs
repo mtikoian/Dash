@@ -13,8 +13,8 @@ namespace Dash.Models
         [BindNever, ValidateNever]
         public Alert Alert
         {
-            get { return _Alert ?? (_Alert = DbContext.Get<Alert>(Id)); }
-            set { _Alert = value; }
+            get => _Alert ?? (_Alert = DbContext.Get<Alert>(Id));
+            set => _Alert = value;
         }
 
         [Required(ErrorMessageResourceType = typeof(Reports), ErrorMessageResourceName = "ErrorNameRequired")]

@@ -33,10 +33,7 @@ namespace Dash.Controllers
         }
 
         [HttpGet]
-        public IActionResult Create()
-        {
-            return View("Create", new CreateReport(DbContext, User.UserId()));
-        }
+        public IActionResult Create() => View("Create", new CreateReport(DbContext, User.UserId()));
 
         [HttpPost, ValidateAntiForgeryToken]
         public IActionResult Create(CreateReport model)
@@ -161,10 +158,7 @@ namespace Dash.Controllers
         }
 
         [HttpPost, AjaxRequestOnly, ParentAction("Index")]
-        public IActionResult List()
-        {
-            return Rows(DbContext.GetAll<Report>(new { UserId = User.UserId() }).Select(x => new { x.Id, x.Name, x.DatasetName, x.DatasetId }));
-        }
+        public IActionResult List() => Rows(DbContext.GetAll<Report>(new { UserId = User.UserId() }).Select(x => new { x.Id, x.Name, x.DatasetName, x.DatasetId }));
 
         [HttpGet, ParentAction("Edit")]
         public IActionResult Rename(int id)

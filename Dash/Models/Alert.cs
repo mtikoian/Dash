@@ -19,10 +19,7 @@ namespace Dash.Models
         {
         }
 
-        public Alert(IDbContext dbContext)
-        {
-            DbContext = dbContext;
-        }
+        public Alert(IDbContext dbContext) => DbContext = dbContext;
 
         public Alert(IDbContext dbContext, int userId)
         {
@@ -31,10 +28,7 @@ namespace Dash.Models
         }
 
         [DbIgnore, JilDirective(true)]
-        public string Cron
-        {
-            get { return $"{CronMinute} {CronHour} {CronDayOfMonth} {CronMonth} {CronDayOfWeek}"; }
-        }
+        public string Cron => $"{CronMinute} {CronHour} {CronDayOfMonth} {CronMonth} {CronDayOfWeek}";
 
         [Display(Name = "CronDayOfMonth", ResourceType = typeof(Alerts))]
         [Required]
@@ -92,7 +86,7 @@ namespace Dash.Models
         public int OwnerId { get; set; }
 
         [DbIgnore, JilDirective(true), BindNever, ValidateNever]
-        public Report Report { get { return _Report ?? (_Report = DbContext.Get<Report>(ReportId)); } }
+        public Report Report => _Report ?? (_Report = DbContext.Get<Report>(ReportId));
 
         [Display(Name = "Report", ResourceType = typeof(Alerts))]
         [Required]
@@ -124,10 +118,7 @@ namespace Dash.Models
             return newAlert;
         }
 
-        public IEnumerable<Report> GetReportsForUser(int userId)
-        {
-            return DbContext.GetAll<Report>(new { UserId = userId }).OrderBy(x => x.Name);
-        }
+        public IEnumerable<Report> GetReportsForUser(int userId) => DbContext.GetAll<Report>(new { UserId = userId }).OrderBy(x => x.Name);
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {

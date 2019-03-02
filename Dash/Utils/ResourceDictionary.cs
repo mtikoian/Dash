@@ -10,15 +10,13 @@ namespace Dash.Utils
     /// </summary>
     public class ResourceDictionary
     {
-        private Dictionary<string, string> _resourceMap;
-
         /// <summary>
         /// Load a resource file matching the resourceName into a dictionary.
         /// </summary>
         /// <param name="resourceName">Name of the resource file to load.</param>
         public ResourceDictionary(string resourceName)
         {
-            _resourceMap = new Dictionary<string, string>();
+            Dictionary = new Dictionary<string, string>();
             try
             {
                 var myAssembly = System.Reflection.Assembly.GetExecutingAssembly();
@@ -28,18 +26,14 @@ namespace Dash.Utils
                     var stream = myAssembly.GetManifestResourceStream(name);
                     if (stream != null)
                     {
-                        _resourceMap = new ResourceSet(stream).Cast<DictionaryEntry>().ToDictionary(r => r.Key.ToString(), r => r.Value.ToString());
+                        Dictionary = new ResourceSet(stream).Cast<DictionaryEntry>().ToDictionary(r => r.Key.ToString(), r => r.Value.ToString());
                     }
                 }
             }
             catch { }
         }
 
-        public Dictionary<string, string> Dictionary
-        {
-            get { return _resourceMap; }
-            set { _resourceMap = value; }
-        }
+        public Dictionary<string, string> Dictionary { get; set; }
 
         /// <summary>
         /// Accessor for the resource dictionary.
@@ -48,13 +42,14 @@ namespace Dash.Utils
         /// <returns>Text for this index.</returns>
         public string this[string index]
         {
-            get { return _resourceMap.ContainsKey(index) ? _resourceMap[index] : index; }
+            get => Dictionary.ContainsKey(index) ? Dictionary[index] : index;
             set
             {
-                if (_resourceMap == null)
+                if (Dictionary == null)
                 {
-                    _resourceMap = new Dictionary<string, string>();
-                    _resourceMap[index] = value;
+                    Dictionary = new Dictionary<string, string> {
+                        [index] = value
+                    };
                 }
             }
         }
@@ -64,9 +59,6 @@ namespace Dash.Utils
         /// </summary>
         /// <param name="index">Key to check for.</param>
         /// <returns>Returns true if the key exists in the dictionary.</returns>
-        public bool ContainsKey(string index)
-        {
-            return _resourceMap.ContainsKey(index);
-        }
+        public bool ContainsKey(string index) => Dictionary.ContainsKey(index);
     }
 }

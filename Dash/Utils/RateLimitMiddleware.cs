@@ -18,10 +18,7 @@ namespace Dash.Utils
     {
         private ILogger _logger;
 
-        public IpRateLimitMiddlewareCustom(RequestDelegate next, IOptions<IpRateLimitOptions> options, IRateLimitCounterStore counterStore, IIpPolicyStore policyStore, ILogger<IpRateLimitMiddleware> logger, IIpAddressParser ipParser = null) : base(next, options, counterStore, policyStore, logger, ipParser)
-        {
-            _logger = logger;
-        }
+        public IpRateLimitMiddlewareCustom(RequestDelegate next, IOptions<IpRateLimitOptions> options, IRateLimitCounterStore counterStore, IIpPolicyStore policyStore, ILogger<IpRateLimitMiddleware> logger, IIpAddressParser ipParser = null) : base(next, options, counterStore, policyStore, logger, ipParser) => _logger = logger;
 
         public override void LogBlockedRequest(HttpContext httpContext, ClientRequestIdentity identity, RateLimitCounter counter, RateLimitRule rule)
         {

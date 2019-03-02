@@ -14,10 +14,10 @@ namespace Dash.TagHelpers
 
     public class ToastTagHelper : BaseTagHelper
     {
-        public ToastType Type { get; set; }
+        public bool AllowClose { get; set; } = true;
         public string Id { get; set; }
         public string Message { get; set; }
-        public bool AllowClose { get; set; } = true;
+        public ToastType Type { get; set; }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {

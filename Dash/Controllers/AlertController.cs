@@ -10,6 +10,25 @@ namespace Dash.Controllers
     [Authorize(Policy = "HasPermission"), Pjax]
     public class AlertController : BaseController
     {
+        private IActionResult CreateEditView(Alert model) => View("CreateEdit", model);
+
+        private IActionResult Save(Alert model)
+        {
+            if (model == null)
+            {
+                ViewBag.Error = Core.ErrorGeneric;
+                return CreateEditView(model);
+            }
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Error = ModelState.ToErrorString();
+                return CreateEditView(model);
+            }
+            DbContext.Save(model);
+            ViewBag.Message = Alerts.SuccessSavingAlert;
+            return Index();
+        }
+
         public AlertController(IDbContext dbContext, AppConfiguration appConfig) : base(dbContext, appConfig)
         {
         }
@@ -33,10 +52,7 @@ namespace Dash.Controllers
         }
 
         [HttpGet]
-        public IActionResult Create()
-        {
-            return CreateEditView(new Alert(DbContext, User.UserId()));
-        }
+        public IActionResult Create() => CreateEditView(new Alert(DbContext, User.UserId()));
 
         [HttpPost, ValidateAntiForgeryToken]
         public IActionResult Create(Alert model)
@@ -72,10 +88,7 @@ namespace Dash.Controllers
         }
 
         [HttpPut, ValidateAntiForgeryToken]
-        public IActionResult Edit(Alert model)
-        {
-            return Save(model);
-        }
+        public IActionResult Edit(Alert model) => Save(model);
 
         [HttpGet]
         public IActionResult Index()
@@ -85,31 +98,6 @@ namespace Dash.Controllers
         }
 
         [HttpPost, AjaxRequestOnly, ParentAction("Index")]
-        public IActionResult List()
-        {
-            return Rows(DbContext.GetAll<Alert>(new { UserID = User.UserId() }).Select(x => new { x.Id, x.Name, x.Subject, IsActive = x.IsActive ? Core.Yes : Core.No, x.LastRunDate }));
-        }
-
-        private IActionResult CreateEditView(Alert model)
-        {
-            return View("CreateEdit", model);
-        }
-
-        private IActionResult Save(Alert model)
-        {
-            if (model == null)
-            {
-                ViewBag.Error = Core.ErrorGeneric;
-                return CreateEditView(model);
-            }
-            if (!ModelState.IsValid)
-            {
-                ViewBag.Error = ModelState.ToErrorString();
-                return CreateEditView(model);
-            }
-            DbContext.Save(model);
-            ViewBag.Message = Alerts.SuccessSavingAlert;
-            return Index();
-        }
+        public IActionResult List() => Rows(DbContext.GetAll<Alert>(new { UserID = User.UserId() }).Select(x => new { x.Id, x.Name, x.Subject, IsActive = x.IsActive ? Core.Yes : Core.No, x.LastRunDate }));
     }
 }

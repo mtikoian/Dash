@@ -15,12 +15,9 @@ namespace Dash.Models
         public string Prompt { get; set; }
 
         [BindNever, ValidateNever]
-        public Role Role { get { return _Role ?? (_Role = DbContext.Get<Role>(Id)); } }
+        public Role Role => _Role ?? (_Role = DbContext.Get<Role>(Id));
 
-        public void Save()
-        {
-            Role.Copy(Prompt).Save();
-        }
+        public void Save() => Role.Copy(Prompt).Save();
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {

@@ -19,9 +19,6 @@ namespace Dash
             SupportedMediaTypes.Add(MediaTypeHeaderValue.Parse("application/json"));
         }
 
-        public override Task WriteResponseBodyAsync(OutputFormatterWriteContext context, Encoding selectedEncoding)
-        {
-            return context.HttpContext.Response.WriteAsync(JSON.SerializeDynamic(context.Object, Options), selectedEncoding, context.HttpContext.RequestAborted);
-        }
+        public override Task WriteResponseBodyAsync(OutputFormatterWriteContext context, Encoding selectedEncoding) => context.HttpContext.Response.WriteAsync(JSON.SerializeDynamic(context.Object, Options), selectedEncoding, context.HttpContext.RequestAborted);
     }
 }

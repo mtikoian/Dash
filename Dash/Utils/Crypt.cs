@@ -11,12 +11,9 @@ namespace Dash
     /// </summary>
     public class Crypt
     {
-        public Crypt(IAppConfiguration appConfiguration)
-        {
-            AppConfiguration = appConfiguration;
-        }
-
         private IAppConfiguration AppConfiguration { get; set; }
+
+        public Crypt(IAppConfiguration appConfiguration) => AppConfiguration = appConfiguration;
 
         public string Decrypt(string cipherText)
         {
@@ -34,7 +31,7 @@ namespace Dash
                 using (var msDecrypt = new MemoryStream(cipher))
                 using (var csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
                 using (var srDecrypt = new StreamReader(csDecrypt))
-                    result = srDecrypt.ReadToEnd();
+                    result = srDecrypt.ReadToEndAsync().Result;
                 return result;
             }
         }
@@ -48,7 +45,7 @@ namespace Dash
             {
                 using (var csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
                 using (var swEncrypt = new StreamWriter(csEncrypt))
-                    swEncrypt.Write(text);
+                    swEncrypt.WriteAsync(text);
                 var iv = aesAlg.IV;
                 var decryptedContent = msEncrypt.ToArray();
                 var result = new byte[iv.Length + decryptedContent.Length];

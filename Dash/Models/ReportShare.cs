@@ -13,10 +13,7 @@ namespace Dash.Models
         {
         }
 
-        public ReportShare(IDbContext dbContext)
-        {
-            DbContext = dbContext;
-        }
+        public ReportShare(IDbContext dbContext) => DbContext = dbContext;
 
         public ReportShare(IDbContext dbContext, int reportId)
         {
@@ -25,12 +22,12 @@ namespace Dash.Models
         }
 
         [BindNever, ValidateNever]
-        public Report Report { get { return _Report ?? (_Report = DbContext.Get<Report>(ReportId)); } }
+        public Report Report => _Report ?? (_Report = DbContext.Get<Report>(ReportId));
 
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int ReportId { get; set; }
 
         [DbIgnore, BindNever, ValidateNever]
-        public string ReportName { get { return Report?.Name; } }
+        public string ReportName => Report?.Name;
     }
 }

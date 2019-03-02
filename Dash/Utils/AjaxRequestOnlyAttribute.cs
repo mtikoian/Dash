@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Routing;
 
 namespace Dash
 {
-    public class AjaxRequestOnlyAttribute : ActionMethodSelectorAttribute
+    public sealed class AjaxRequestOnlyAttribute : ActionMethodSelectorAttribute
     {
         public override bool IsValidForRequest(RouteContext routeContext, ActionDescriptor action)
         {

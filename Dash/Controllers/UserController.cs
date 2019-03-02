@@ -10,21 +10,38 @@ namespace Dash.Controllers
     [Authorize(Policy = "HasPermission"), Pjax]
     public class UserController : BaseController
     {
+        private IActionResult CreateEditView(User model) => View("CreateEdit", model);
+
+        private IActionResult Save(User model)
+        {
+            if (model == null)
+            {
+                ViewBag.Error = Core.ErrorGeneric;
+                return CreateEditView(model);
+            }
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Error = ModelState.ToErrorString();
+                return CreateEditView(model);
+            }
+            if (!model.Save())
+            {
+                ViewBag.Error = Users.ErrorSavingUser;
+                return CreateEditView(model);
+            }
+            ViewBag.Message = Users.SuccessSavingUser;
+            return Index();
+        }
+
         public UserController(IDbContext dbContext, IAppConfiguration appConfig) : base(dbContext, appConfig)
         {
         }
 
         [HttpGet]
-        public IActionResult Create()
-        {
-            return CreateEditView(new User(DbContext, AppConfig));
-        }
+        public IActionResult Create() => CreateEditView(new User(DbContext, AppConfig));
 
         [HttpPost, ValidateAntiForgeryToken]
-        public IActionResult Create(User model)
-        {
-            return Save(model);
-        }
+        public IActionResult Create(User model) => Save(model);
 
         [HttpDelete]
         public IActionResult Delete(int id)
@@ -53,10 +70,7 @@ namespace Dash.Controllers
         }
 
         [HttpPut, ValidateAntiForgeryToken]
-        public IActionResult Edit(User model)
-        {
-            return Save(model);
-        }
+        public IActionResult Edit(User model) => Save(model);
 
         [HttpGet]
         public IActionResult Index()
@@ -66,10 +80,7 @@ namespace Dash.Controllers
         }
 
         [HttpPost, AjaxRequestOnly, ParentAction("Index")]
-        public IActionResult List()
-        {
-            return Rows(DbContext.GetAll<User>().Select(x => new { x.Id, x.UserName, x.FirstName, x.LastName, x.Email, x.IsLocked }));
-        }
+        public IActionResult List() => Rows(DbContext.GetAll<User>().Select(x => new { x.Id, x.UserName, x.FirstName, x.LastName, x.Email, x.IsLocked }));
 
         [HttpPut, ParentAction("Create,Edit")]
         public IActionResult Unlock(int id)
@@ -82,32 +93,6 @@ namespace Dash.Controllers
             }
             model.Unlock();
             ViewBag.Message = Users.SuccessUnlockingUser;
-            return Index();
-        }
-
-        private IActionResult CreateEditView(User model)
-        {
-            return View("CreateEdit", model);
-        }
-
-        private IActionResult Save(User model)
-        {
-            if (model == null)
-            {
-                ViewBag.Error = Core.ErrorGeneric;
-                return CreateEditView(model);
-            }
-            if (!ModelState.IsValid)
-            {
-                ViewBag.Error = ModelState.ToErrorString();
-                return CreateEditView(model);
-            }
-            if (!model.Save())
-            {
-                ViewBag.Error = Users.ErrorSavingUser;
-                return CreateEditView(model);
-            }
-            ViewBag.Message = Users.SuccessSavingUser;
             return Index();
         }
     }

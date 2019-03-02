@@ -41,10 +41,13 @@ namespace Dash.Models
 
                     using (var client = new SmtpClient())
                     {
-                        client.Connect(appConfig.Mail.Smtp.Host, appConfig.Mail.Smtp.Port, SecureSocketOptions.None);
-                        client.Authenticate(appConfig.Mail.Smtp.Username, appConfig.Mail.Smtp.Password);
-                        client.Send(emailMessage);
-                        client.Disconnect(true);
+                        client.ConnectAsync(appConfig.Mail.Smtp.Host, appConfig.Mail.Smtp.Port, SecureSocketOptions.None);
+                        if (!appConfig.Mail.Smtp.Username.IsEmpty())
+                        {
+                            client.AuthenticateAsync(appConfig.Mail.Smtp.Username, appConfig.Mail.Smtp.Password);
+                        }
+                        client.SendAsync(emailMessage);
+                        client.DisconnectAsync(true);
                     }
 
                     return true;

@@ -8,6 +8,7 @@ namespace Dash.TagHelpers
 {
     public class DoTableTagHelper : BaseTagHelper
     {
+        public bool CheckUpdateDate { get; set; }
         public string DisplayCurrencyFormat { get; set; }
         public string DisplayDateFormat { get; set; }
         public bool Editable { get; set; } = true;
@@ -16,13 +17,12 @@ namespace Dash.TagHelpers
         public bool LoadAll { get; set; } = true;
         public HttpVerbs RequestMethod { get; set; } = HttpVerbs.Post;
         public object RequestParams { get; set; }
+        public string ResultUrl { get; set; }
         public bool Searchable { get; set; } = true;
         public HttpVerbs? StoreRequestMethod { get; set; }
         public string StoreUrl { get; set; }
         public string Template { get; set; }
-        public string ResultUrl { get; set; }
         public string Width { get; set; }
-        public bool CheckUpdateDate { get; set; }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {

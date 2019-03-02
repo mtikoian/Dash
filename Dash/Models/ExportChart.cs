@@ -17,15 +17,7 @@ namespace Dash.Models
         [Display(Name = "ExportChartName", ResourceType = typeof(Charts))]
         public string FileName { get; set; }
 
-        public string FormattedFileName
-        {
-            get
-            {
-                var formattedName = FileName;
-                Array.ForEach(Path.GetInvalidFileNameChars(), c => formattedName = formattedName.Replace(c.ToString(), string.Empty));
-                return $"{formattedName}.png";
-            }
-        }
+        public string FormattedFileName => FileName.ToCleanFileName("png");
 
         [Required, Display(Name = "ExportChartWidth", ResourceType = typeof(Charts))]
         public int Width { get; set; }

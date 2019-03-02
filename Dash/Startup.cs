@@ -31,10 +31,9 @@ namespace Dash
 {
     public class Startup
     {
-        private bool CanAccessMiniProfiler(HttpRequest request)
-        {
-            return request.HttpContext.User.HasAccess("Profiler", "Dashboard");
-        }
+        private static bool CanAccessMiniProfiler(HttpRequest request) => request.HttpContext.User.HasAccess("Profiler", "Dashboard");
+
+        private static string MiniProfilerUser(HttpRequest request) => request.HttpContext.User.Identity.Name;
 
         /// <summary>
         /// Scans the assembly for all controllers and updates the permissions table to match the list of available actions.
@@ -68,19 +67,11 @@ namespace Dash
             });
         }
 
-        private string MiniProfilerUser(HttpRequest request)
-        {
-            return request.HttpContext.User.Identity.Name;
-        }
-
-        public static string CultureCookieName = ".Dash.Culture";
-        public static string AuthCookieName = ".Dash.Auth";
         public static string AntiforgeryCookieName = ".Dash.AntiForgery";
+        public static string AuthCookieName = ".Dash.Auth";
+        public static string CultureCookieName = ".Dash.Culture";
 
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+        public Startup(IConfiguration configuration) => Configuration = configuration;
 
         public IConfiguration Configuration { get; }
 

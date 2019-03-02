@@ -18,8 +18,8 @@ namespace Dash.Models
         [BindNever, ValidateNever]
         public Report Report
         {
-            get { return _Report ?? (_Report = DbContext.Get<Report>(Id)); }
-            set { _Report = value; }
+            get => _Report ?? (_Report = DbContext.Get<Report>(Id));
+            set => _Report = value;
         }
 
         public void Save()

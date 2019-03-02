@@ -16,8 +16,8 @@
 
     public class TableSorting
     {
-        public string SortDir { get; set; }
         public string Field { get; set; }
+        public string SortDir { get; set; }
         public int SortOrder { get; set; }
     }
 }

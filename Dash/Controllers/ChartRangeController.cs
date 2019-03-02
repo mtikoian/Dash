@@ -10,8 +10,38 @@ namespace Dash.Controllers
     [Authorize(Policy = "HasPermission"), Pjax]
     public class ChartRangeController : BaseController
     {
+        private IActionResult CreateEditView(ChartRange model) => View("CreateEdit", model);
+
+        private IActionResult Save(ChartRange model)
+        {
+            if (model == null)
+            {
+                ViewBag.Error = Core.ErrorGeneric;
+                return CreateEditView(model);
+            }
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Error = ModelState.ToErrorString();
+                return CreateEditView(model);
+            }
+            DbContext.Save(model);
+            ViewBag.Message = Charts.SuccessSavingRange;
+            return Index(model.ChartId);
+        }
+
         public ChartRangeController(IDbContext dbContext, IAppConfiguration appConfig) : base(dbContext, appConfig)
         {
+        }
+
+        [HttpGet, ParentAction("Edit")]
+        public IActionResult Columns(int id, int chartId, int? reportId)
+        {
+            var model = DbContext.Get<ChartRange>(id) ?? new ChartRange(DbContext, id);
+            model.ChartId = chartId;
+            model.ReportId = reportId ?? model.ReportId;
+            // clear modelState so that rangeId isn't treated as the new model Id
+            ModelState.Clear();
+            return PartialView("_Columns", model);
         }
 
         [HttpGet]
@@ -29,9 +59,16 @@ namespace Dash.Controllers
         }
 
         [HttpPost, ValidateAntiForgeryToken]
-        public IActionResult Create(ChartRange model)
+        public IActionResult Create(ChartRange model) => Save(model);
+
+        [HttpGet, ParentAction("Edit")]
+        public IActionResult DateInterval(int id, int? xAxisColumnId)
         {
-            return Save(model);
+            var model = DbContext.Get<ChartRange>(id) ?? new ChartRange(DbContext, id);
+            model.XAxisColumnId = xAxisColumnId ?? model.XAxisColumnId;
+            // clear modelState so that rangeId isn't treated as the new model Id
+            ModelState.Clear();
+            return PartialView("_DateInterval", model);
         }
 
         [HttpDelete, AjaxRequestOnly]
@@ -62,31 +99,7 @@ namespace Dash.Controllers
         }
 
         [HttpPut, ValidateAntiForgeryToken]
-        public IActionResult Edit(ChartRange model)
-        {
-            return Save(model);
-        }
-
-        [HttpGet, ParentAction("Edit")]
-        public IActionResult Columns(int id, int chartId, int? reportId)
-        {
-            var model = DbContext.Get<ChartRange>(id) ?? new ChartRange(DbContext, id);
-            model.ChartId = chartId;
-            model.ReportId = reportId ?? model.ReportId;
-            // clear modelState so that rangeId isn't treated as the new model Id
-            ModelState.Clear();
-            return PartialView("_Columns", model);
-        }
-
-        [HttpGet, ParentAction("Edit")]
-        public IActionResult DateInterval(int id, int? xAxisColumnId)
-        {
-            var model = DbContext.Get<ChartRange>(id) ?? new ChartRange(DbContext, id);
-            model.XAxisColumnId = xAxisColumnId ?? model.XAxisColumnId;
-            // clear modelState so that rangeId isn't treated as the new model Id
-            ModelState.Clear();
-            return PartialView("_DateInterval", model);
-        }
+        public IActionResult Edit(ChartRange model) => Save(model);
 
         [HttpGet]
         public IActionResult Index(int id)
@@ -138,28 +151,6 @@ namespace Dash.Controllers
                 ViewBag.Error = error;
                 return Index(model.ChartId);
             }
-            ViewBag.Message = Charts.SuccessSavingRange;
-            return Index(model.ChartId);
-        }
-
-        private IActionResult CreateEditView(ChartRange model)
-        {
-            return View("CreateEdit", model);
-        }
-
-        private IActionResult Save(ChartRange model)
-        {
-            if (model == null)
-            {
-                ViewBag.Error = Core.ErrorGeneric;
-                return CreateEditView(model);
-            }
-            if (!ModelState.IsValid)
-            {
-                ViewBag.Error = ModelState.ToErrorString();
-                return CreateEditView(model);
-            }
-            DbContext.Save(model);
             ViewBag.Message = Charts.SuccessSavingRange;
             return Index(model.ChartId);
         }
