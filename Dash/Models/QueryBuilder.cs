@@ -300,10 +300,10 @@ namespace Dash.Models
                                 KataQuery.WhereRaw($"{colAlias} NOT IN ({x.Criteria.Delimit()})");
                                 break;
                             case FilterOperatorsAbstract.Like:
-                                KataQuery.WhereRaw($"{colAlias} LIKE '%?%'", value1);
+                                KataQuery.WhereRaw($"{colAlias} LIKE ?", $"%{value1}%");
                                 break;
                             case FilterOperatorsAbstract.NotLike:
-                                KataQuery.WhereRaw($"{colAlias} NOT LIKE '%?%'", value1);
+                                KataQuery.WhereRaw($"{colAlias} NOT LIKE ?", $"%{value1}%");
                                 break;
                             case FilterOperatorsAbstract.DateInterval:
                                 // handle special date functions
