@@ -1,5 +1,4 @@
-﻿using System;
-using Dash.Configuration;
+﻿using Dash.Configuration;
 using Dash.Models;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
@@ -22,24 +21,11 @@ namespace Dash.Controllers
             return View("Error");
         }
 
-        public void LogJavascriptError(string message) => Serilog.Log.Error(new JavaScriptException(message), "Javascript Exception");
-    }
-
-    [Serializable]
-    public class JavaScriptException : Exception
-    {
-        protected JavaScriptException(System.Runtime.Serialization.SerializationInfo serializationInfo, System.Runtime.Serialization.StreamingContext streamingContext) => throw new NotImplementedException();
-
-        public JavaScriptException(string message) : base(message)
+        [HttpPost]
+        public IActionResult LogJavascriptError([FromBody] JavascriptError error)
         {
-        }
-
-        public JavaScriptException()
-        {
-        }
-
-        public JavaScriptException(string message, Exception innerException) : base(message, innerException)
-        {
+            Serilog.Log.Error(new JavaScriptException(error.Message), "Javascript Exception");
+            return Ok();
         }
     }
 }
