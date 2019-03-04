@@ -1,7 +1,7 @@
 ﻿/*!
  * Wraps content processing functionality.
  */
-(function($, Alertify, pjax, doTable, CollapsibleList, Autocomplete, Draggabilly, flatpickr, DashChart, ColorPicker, Widget) {
+(function($, doT, Alertify, pjax, doTable, CollapsibleList, Autocomplete, Draggabilly, flatpickr, DashChart, ColorPicker, Widget) {
     'use strict';
 
     var _autocompletes = [];
@@ -9,6 +9,7 @@
     var _charts = [];
     var _colorpickers = [];
     var _dashboardEvents = null;
+    var _chipFn = doT.template('<span class="chip">{{=x.text}}<a aria-label="close" class="btn-clear btn" role="button"></a><input name="{{=x.fieldName}}[]" type="hidden" value="{{=x.value}}"></span>');
 
     /**
      * Display context help.
@@ -79,20 +80,7 @@
     var autocompleteLoad = function() {
         var preload = ['true', 'True'].indexOf(this.getAttribute('data-preload')) > -1;
         var self = this;
-        if (preload) {
-            $.ajax({
-                method: self.getAttribute('data-method') || 'GET',
-                url: self.getAttribute('data-url')
-            }, function(data) {
-                _autocompletes.push(new Autocomplete({
-                    selector: self,
-                    onSelect: function() {
-                        $.addClass($.closest('form', self), 'has-changes');
-                    },
-                    sourceData: data && data.length ? data : null
-                }));
-            });
-        } else {
+        if (!preload) {
             _autocompletes.push(new Autocomplete({
                 selector: self,
                 onSelect: function() {
@@ -120,7 +108,98 @@
                     });
                 }
             }));
+            return;
         }
+
+        if (this.hasAttribute('data-options')) {
+            var useChips = self.hasAttribute('data-chip-input-name');
+            var options = [];
+            try {
+                options = JSON.parse(this.getAttribute('data-options'));
+            } catch (ex) {
+                // let it go
+            }
+            _autocompletes.push(new Autocomplete({
+                selector: self,
+                onSelect: function(e, term) {
+                    $.addClass($.closest('form', self), 'has-changes');
+
+                    if (!useChips) {
+                        return;
+                    }
+
+                    e.preventDefault();
+                    self.value = '';
+
+                    var regex = /.*\(([^)]+)\)/;
+                    var found = term.match(regex);
+                    if (!found) {
+                        return;
+                    }
+
+                    var parentDiv = $.closest('.form-group', self);
+                    if (!parentDiv) {
+                        return;
+                    }
+
+                    var chipDiv = $.get('.input-group-chips', parentDiv);
+                    if (!chipDiv) {
+                        return;
+                    }
+
+                    // @todo escape found[1] when searching?
+                    if (!$.get('input[value="' + found[1] + '"]', chipDiv)) {
+                        chipDiv.appendChild($.createNode(_chipFn({
+                            text: found[0], value: found[1], fieldName: self.getAttribute('data-chip-input-name')
+                        })));
+                    }
+                },
+                source: function(search, response) {
+                    search = search.toLowerCase();
+                    // @todo filter our items that are already in chip list if using chips?
+                    response(options.filter(function(x) {
+                        return x.toLowerCase().indexOf(search) > -1;
+                    }));
+                }
+            }));
+            this.removeAttribute('data-options');
+
+            if (useChips) {
+                var parentDiv = $.closest('.form-group', self);
+                if (!parentDiv) {
+                    return;
+                }
+                var chipDiv = $.get('.input-group-chips', parentDiv);
+                if (!chipDiv) {
+                    return;
+                }
+                $.on(chipDiv, 'click', function(event) {
+                    var target = event.target || event.srcElement;
+                    if (!$.hasClass(target, 'btn-clear')) {
+                        return;
+                    }
+                    var node = $.closest('.chip', target);
+                    if (node) {
+                        node.parentNode.removeChild(node);
+                    }
+                });
+            }
+
+            return;
+        }
+
+        $.ajax({
+            method: self.getAttribute('data-method') || 'GET',
+            url: self.getAttribute('data-url')
+        }, function(data) {
+            _autocompletes.push(new Autocomplete({
+                selector: self,
+                onSelect: function() {
+                    $.addClass($.closest('form', self), 'has-changes');
+                },
+                sourceData: data && data.length ? data : []
+            }));
+        });
     };
 
     /**
@@ -718,4 +797,4 @@
         // Otherwise, wait until document is loaded
         $.on(document, 'DOMContentLoaded', pjax.init);
     }
-})(this.$, this.Alertify, this.pjax, this.doTable, this.CollapsibleList, this.Autocomplete, this.Draggabilly, this.flatpickr, this.DashChart, this.ColorPicker, this.Widget);
+})(this.$, this.doT, this.Alertify, this.pjax, this.doTable, this.CollapsibleList, this.Autocomplete, this.Draggabilly, this.flatpickr, this.DashChart, this.ColorPicker, this.Widget);

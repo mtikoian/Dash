@@ -13,18 +13,17 @@ namespace Dash.TagHelpers
     public class FormGroupSelectTagHelper : FormBaseTagHelper
     {
         private static readonly Type[] NumberTypes = { typeof(int), typeof(long), typeof(decimal), typeof(double), typeof(int?), typeof(long?), typeof(decimal?), typeof(double?) };
+        private Dictionary<string, string> OptionsDictionary;
+        private List<string> SelectedValues;
 
         private IHtmlContent BuildInput()
         {
-            var input = new TagBuilder("select");
+            var input = new TagBuilder(Multiple ? "input" : "select");
             input.AddCssClass("form-input");
-            input.AddCssClass("form-select");
             input.Attributes.Add("id", FieldName);
-            input.Attributes.Add("name", Multiple ? $"{FieldName}List" : FieldName);
+            input.Attributes.Add("name", Multiple ? $"{FieldName}Autocomplete" : FieldName);
             input.Attributes.AddIf("required", "true", IsRequired == true || (!IsRequired.HasValue && For?.Metadata.IsRequired == true));
             input.Attributes.AddIf("autofocus", "true", Autofocus);
-            input.Attributes.AddIf("multiple", "multiple", Multiple);
-            input.Attributes.AddIf("size", "10", Multiple);
             input.Attributes.AddIf("data-toggle", Toggle, !Toggle.IsEmpty());
             input.Attributes.AddIf("data-url", Url, !Url.IsEmpty());
             input.Attributes.AddIf("data-params", Params, !Params.IsEmpty());
@@ -32,27 +31,31 @@ namespace Dash.TagHelpers
             input.Attributes.AddIf("data-match", Match, Match != null);
             input.Attributes.AddIf("disabled", "true", Disabled == true);
 
-            var selectedValues = new List<string>();
+            SelectedValues = new List<string>();
             if (Multiple)
             {
                 try
                 {
-                    selectedValues = JSON.Deserialize<List<string>>(For?.ModelExplorer.Model?.ToString());
+                    SelectedValues = JSON.Deserialize<List<string>>(For?.ModelExplorer.Model?.ToString());
                 }
                 catch { }
+                input.Attributes.Add("data-preload", "true");
+                input.Attributes.Add("data-chip-input-name", $"{FieldName}List");
+                input.Attributes.Add("data-options", JSON.Serialize(Options.Select(x => $"{x.Text} ({x.Value})"), JilOutputFormatter.Options));
             }
             else
             {
-                selectedValues.Add(For?.ModelExplorer.Model?.ToString());
+                input.AddCssClass("form-select");
+                SelectedValues.Add(For?.ModelExplorer.Model?.ToString());
+                input.InnerHtml.AppendHtml(new TagBuilder("option"));
+                Options.ToList().ForEach(x => {
+                    var opt = new TagBuilder("option");
+                    opt.Attributes.Add("value", x.Value);
+                    opt.Attributes.AddIf("selected", "true", SelectedValues.Contains(x.Value));
+                    opt.InnerHtml.Append(x.Text);
+                    input.InnerHtml.AppendHtml(opt);
+                });
             }
-            input.InnerHtml.AppendHtml(new TagBuilder("option"));
-            Options.ToList().ForEach(x => {
-                var opt = new TagBuilder("option");
-                opt.Attributes.Add("value", x.Value);
-                opt.Attributes.AddIf("selected", "true", selectedValues.Contains(x.Value));
-                opt.InnerHtml.Append(x.Text);
-                input.InnerHtml.AppendHtml(opt);
-            });
 
             return input;
         }
@@ -74,6 +77,13 @@ namespace Dash.TagHelpers
         {
             Contextualize();
 
+            Toggle = Multiple ? "autocomplete" : Toggle;
+            if (Options != null)
+            {
+                Options = Options.GroupBy(x => x.Value).Select(x => x.First());
+                OptionsDictionary = Options.ToDictionary(x => x.Value, x => x.Text);
+            }
+
             output.TagMode = TagMode.StartTagAndEndTag;
             output.TagName = "div";
             output.AddClass("form-group", HtmlEncoder.Default);
@@ -89,6 +99,34 @@ namespace Dash.TagHelpers
 
             output.Content.AppendHtml(BuildLabel());
             output.Content.AppendHtml(div);
+
+            if (Multiple)
+            {
+                var chipGroupDiv = new TagBuilder("div");
+                chipGroupDiv.AddCssClass("input-group-chips");
+                var optionsDictionary =
+                SelectedValues.Each(x => {
+                    var chipDiv = new TagBuilder("span");
+                    chipDiv.AddCssClass("chip");
+                    chipDiv.InnerHtml.Append(OptionsDictionary?.ContainsKey(x) == true ? $"{OptionsDictionary[x]} ({x})" : "");
+
+                    var chipBtn = new TagBuilder("a");
+                    chipBtn.AddCssClass("btn");
+                    chipBtn.AddCssClass("btn-clear");
+                    chipBtn.Attributes.Add("aria-label", "close");
+                    chipBtn.Attributes.Add("role", "button");
+                    chipDiv.InnerHtml.AppendHtml(chipBtn);
+
+                    var chipInput = new TagBuilder("input");
+                    chipInput.Attributes.Add("type", "hidden");
+                    chipInput.Attributes.Add("name", $"{FieldName}List[]");
+                    chipInput.Attributes.Add("value", x);
+                    chipDiv.InnerHtml.AppendHtml(chipInput);
+
+                    chipGroupDiv.InnerHtml.AppendHtml(chipDiv);
+                });
+                div.InnerHtml.AppendHtml(chipGroupDiv);
+            }
 
             base.Process(context, output);
         }
