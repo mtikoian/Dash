@@ -6,8 +6,7 @@
 
     @if $rtl == true {
         text-align: right;
-    }
-    @else {
+  } @else {
         text-align: left;
     }
 
@@ -39,7 +38,8 @@
             }
         }
     }
-    // Tables with horizontal scrollbar
+
+  // Scollable tables
     &.table-scroll {
         display: block;
         overflow-x: auto;

@@ -1,5 +1,5 @@
 // Core variables
-$version: "0.5.1";
+$version: "0.5.8";
 
 // Core features
 $rtl: false !default;
@@ -21,6 +21,7 @@ $gray-color-light: lighten($gray-color, 15%) !default;
 
 $border-color: lighten($dark-color, 60%) !default;
 $border-color-dark: darken($border-color, 10%) !default;
+$border-color-light: lighten($border-color, 8%) !default;
 $bg-color: lighten($dark-color, 66%) !default;
 $bg-color-dark: darken($bg-color, 3%) !default;
 $bg-color-light: $light-color !default;
@@ -39,7 +40,7 @@ $body-bg: $bg-color-light !default;
 $body-font-color: $dark-color !default;
 $link-color: darken($info-color, 10%) !default;
 $link-color-dark: darken($link-color, 10%) !default;
-
+$link-color-light: lighten($link-color, 10%) !default;
 $teal: #20c997 !default;
 
 // Fonts
