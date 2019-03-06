@@ -9,7 +9,9 @@
     var _charts = [];
     var _colorpickers = [];
     var _dashboardEvents = null;
-    var _chipFn = doT.template('<span class="chip">{{=x.text}}<a aria-label="close" class="btn-clear btn" role="button"></a><input name="{{=x.fieldName}}[]" type="hidden" value="{{=x.value}}"></span>');
+    var _chipFn = doT.template('<span class="chip">{{=x.text}}<button aria-label="close" class="btn-clear btn" role="button"></button><input name="{{=x.fieldName}}[]" type="hidden" value="{{=x.value}}"></span>');
+    var _tagListAutocompletes = [];
+    var _tagListItemRegex = /.*\(([^)]+)\)/;
 
     /**
      * Display context help.
@@ -26,6 +28,40 @@
      */
     var getNode = function(node) {
         return node && node.nodeType === 1 && node.nodeName ? node : node.target;
+    };
+
+    /**
+     * Add the has-changes class for a form.
+     * @this {Node}
+     */
+    var formChanged = function() {
+        $.addClass($.closest('form', this), 'has-changes');
+    };
+
+    /**
+     * Destroy list of items;
+     * @param {object[]} list List of objects to destroy.
+     */
+    var destroyList = function(list) {
+        list.forEach(function(x) {
+            x.destroy();
+        });
+        list.splice(0, list.length);
+    };
+
+    /**
+     * Turn a data-options attribute into an array of values.
+     * @param {Node} node Node to get data from.
+     * @returns {string[]} Array of values.
+     */
+    var parseOptions = function(node) {
+        var options = [];
+        try {
+            options = JSON.parse(node.getAttribute('data-options'));
+        } catch (ex) {
+            // let it go
+        }
+        return options;
     };
 
     /**
@@ -74,29 +110,40 @@
     };
 
     /**
+     * Build params objects based on a list of nodes.
+     * @param {Node} node Node to get the params attribute from.
+     * @returns {Object} Object with parameter values.
+     */
+    var buildParams = function(node) {
+        var params = {};
+        var data = node.getAttribute('data-params');
+        if (data) {
+            data.split(',').forEach(function(x) {
+                var paramNode = $.get(x);
+                if (paramNode) {
+                    params[paramNode.id] = paramNode.value;
+                }
+            });
+        }
+        return params;
+    };
+
+    /**
      * Initialize autocomplete.
      * @this {Node}
      */
     var autocompleteLoad = function() {
         var preload = ['true', 'True'].indexOf(this.getAttribute('data-preload')) > -1;
         var self = this;
+
+        // request autocomplete options from server during use
         if (!preload) {
             _autocompletes.push(new Autocomplete({
                 selector: self,
-                onSelect: function() {
-                    $.addClass($.closest('form', self), 'has-changes');
-                },
+                onSelect: formChanged.bind(self),
                 source: function(search, response) {
-                    var params = { search: search };
-                    if (self.hasAttribute('data-params')) {
-                        self.getAttribute('data-params').split(',').forEach(function(x) {
-                            var node = $.get(x);
-                            if (node) {
-                                params[node.id] = node.value;
-                            }
-                        });
-                    }
-
+                    var params = buildParams(self);
+                    params.search = search;
                     $.ajax({
                         method: self.getAttribute('data-method') || 'GET',
                         url: self.getAttribute('data-url'),
@@ -111,106 +158,108 @@
             return;
         }
 
+        // load autocomplete options from a data attribute at initialization
         if (this.hasAttribute('data-options')) {
-            var useChips = self.hasAttribute('data-chip-input-name');
-            var options = [];
-            try {
-                options = JSON.parse(this.getAttribute('data-options'));
-            } catch (ex) {
-                // let it go
-            }
+            var options = parseOptions(this);
             _autocompletes.push(new Autocomplete({
                 selector: self,
-                onSelect: function(e, term) {
-                    $.addClass($.closest('form', self), 'has-changes');
-
-                    if (!useChips) {
-                        return;
-                    }
-
-                    e.preventDefault();
-                    self.value = '';
-
-                    var regex = /.*\(([^)]+)\)/;
-                    var found = term.match(regex);
-                    if (!found) {
-                        return;
-                    }
-
-                    var parentDiv = $.closest('.form-group', self);
-                    if (!parentDiv) {
-                        return;
-                    }
-
-                    var chipDiv = $.get('.input-group-chips', parentDiv);
-                    if (!chipDiv) {
-                        return;
-                    }
-
-                    // @todo escape found[1] when searching?
-                    if (!$.get('input[value="' + found[1] + '"]', chipDiv)) {
-                        chipDiv.appendChild($.createNode(_chipFn({
-                            text: found[0], value: found[1], fieldName: self.getAttribute('data-chip-input-name')
-                        })));
-                    }
-                },
+                onSelect: formChanged.bind(self),
                 source: function(search, response) {
                     search = search.toLowerCase();
-                    // @todo filter our items that are already in chip list if using chips?
                     response(options.filter(function(x) {
                         return x.toLowerCase().indexOf(search) > -1;
                     }));
                 }
             }));
             this.removeAttribute('data-options');
-
-            if (useChips) {
-                var parentDiv = $.closest('.form-group', self);
-                if (!parentDiv) {
-                    return;
-                }
-                var chipDiv = $.get('.input-group-chips', parentDiv);
-                if (!chipDiv) {
-                    return;
-                }
-                $.on(chipDiv, 'click', function(event) {
-                    var target = event.target || event.srcElement;
-                    if (!$.hasClass(target, 'btn-clear')) {
-                        return;
-                    }
-                    var node = $.closest('.chip', target);
-                    if (node) {
-                        node.parentNode.removeChild(node);
-                    }
-                });
-            }
-
             return;
         }
 
+        // load autocomplete options from the server at initialization
         $.ajax({
             method: self.getAttribute('data-method') || 'GET',
             url: self.getAttribute('data-url')
         }, function(data) {
             _autocompletes.push(new Autocomplete({
                 selector: self,
-                onSelect: function() {
-                    $.addClass($.closest('form', self), 'has-changes');
-                },
+                onSelect: formChanged.bind(self),
                 sourceData: data && data.length ? data : []
             }));
         });
     };
 
     /**
-     * Destroy autocompletes on this page.
-     * @this Node
+     * Find a hidden input by value.
+     * @param {Node} node Node to search inside of
+     * @param {string} value Input value to search for.
+     * @returns {Node} Matched node if any.
      */
-    var autocompleteUnload = function() {
-        _autocompletes.forEach(function(x) {
-            x.destroy();
+    var findChip = function(node, value) {
+        return $.get('input[value="' + value.replace(/"/g, '\\"') + '"]', node);
+    };
+
+    /**
+     * Initialize tag list.
+     * @this {Node}
+     */
+    var tagListLoad = function() {
+        var self = this;
+
+        var parentNode = $.closest('.form-group', self);
+        if (!parentNode) {
+            return;
+        }
+        var chipNode = $.get('.input-group-chips', parentNode);
+        if (!chipNode) {
+            return;
+        }
+
+        // @todo may want to add support for fetching the list from a URL instead of as data-options later
+        var options = parseOptions(this);
+        _tagListAutocompletes.push(new Autocomplete({
+            selector: self,
+            cache: false,
+            onSelect: function(e, term) {
+                e.preventDefault();
+                formChanged.call(self);
+                self.value = '';
+
+                var matches = term.match(_tagListItemRegex);
+                if (!matches) {
+                    return;
+                }
+
+                if (!findChip(chipNode, matches[1])) {
+                    chipNode.appendChild($.createNode(_chipFn({
+                        text: matches[0], value: matches[1], fieldName: self.getAttribute('data-chip-input-name')
+                    })));
+                }
+            },
+            source: function(search, response) {
+                search = search.toLowerCase();
+                response(options.filter(function(x) {
+                    if (x.toLowerCase().indexOf(search) === -1) {
+                        return false;
+                    }
+                    var matches = x.match(_tagListItemRegex);
+                    return !matches ? false : !findChip(chipNode, matches[1]);
+                }));
+            }
+        }));
+        this.removeAttribute('data-options');
+
+        $.on(chipNode, 'click', function(event) {
+            var target = event.target || event.srcElement;
+            if (!$.hasClass(target, 'btn-clear')) {
+                return;
+            }
+            var node = $.closest('.chip', target);
+            if (node) {
+                formChanged.call(self);
+                node.parentNode.removeChild(node);
+                self.focus();
+            }
         });
-        _autocompletes = [];
     };
 
     /**
@@ -254,17 +303,6 @@
         if (node) {
             _charts.push(new DashChart(node, true));
         }
-    };
-
-    /**
-     * Destroy a chart instance
-     * @this Node
-     */
-    var chartUnload = function() {
-        _charts.forEach(function(x) {
-            x.destroy();
-        });
-        _charts = [];
     };
 
     /**
@@ -323,7 +361,7 @@
 
         updateColumnList(leftItems, true);
         updateColumnList(rightItems, false);
-        $.addClass($.closest('form', target), 'has-changes');
+        formChanged.call(target);
     };
 
     /**
@@ -357,11 +395,7 @@
         element.className = element.className.replace(/column-item-y-([0-9]*)/i, '').trim() + ' column-item-y-' + index;
         var input = $.get('.column-grid-display-order', element);
         if (input) {
-            if (isLeft) {
-                input.value = 0;
-            } else {
-                input.value = index + 1;
-            }
+            input.value = isLeft ? 0 : index + 1;
         }
     };
 
@@ -375,16 +409,6 @@
                 _draggabillies.push(new Draggabilly(x).on('dragStart', startColumnDrag).on('dragEnd', stopColumnDrag));
             });
         }
-    };
-
-    /**
-     * Destroy the column selector.
-     */
-    var columnSelectorUnload = function() {
-        _draggabillies.forEach(function(x) {
-            x.destroy();
-        });
-        _draggabillies = [];
     };
 
     /**
@@ -465,37 +489,16 @@
     };
 
     /**
-     * Destroy colorpickers on this page.
-     * @this Node
-     */
-    var colorpickerUnload = function() {
-        _colorpickers.forEach(function(x) {
-            x.destroy();
-        });
-        _colorpickers = [];
-    };
-
-    /**
      * Initialize content replacer.
      * @this Node
      */
     var contentReplaceLoad = function() {
         $.on(this, 'change', function() {
-            var params = {};
-            if (this.hasAttribute('data-params')) {
-                this.getAttribute('data-params').split(',').forEach(function(x) {
-                    var node = $.get(x);
-                    if (node) {
-                        params[node.id] = node.value;
-                    }
-                });
-            }
-
             loading();
             $.ajax({
                 method: this.getAttribute('data-method') || 'GET',
                 url: this.getAttribute('data-url'),
-                data: params
+                data: buildParams(this)
             }, function(html) {
                 var node = $.createNode(html);
                 if (node.id) {
@@ -537,18 +540,16 @@
      * Replace the value of the data-target node with the data-value from this. Used for providing defaults via a dropdown.
      */
     var inputReplace = function() {
-        if (this.hasAttribute('data-target') && this.hasAttribute('data-value')) {
-            var target = $.get(this.getAttribute('data-target'));
-            if (target && !$.isNull(target.value)) {
-                if (target.value !== this.getAttribute('data-value')) {
-                    target.value = this.getAttribute('data-value');
-                    // update form has-changes for pjax confirmation handling
-                    var form = $.closest('FORM', target);
-                    if (form) {
-                        $.addClass(form, 'has-changes');
-                    }
-                }
-            }
+        if (!(this.hasAttribute('data-target') && this.hasAttribute('data-value'))) {
+            return;
+        }
+        var target = $.get(this.getAttribute('data-target'));
+        if (!target || $.isNull(target.value)) {
+            return;
+        }
+        if (target.value !== this.getAttribute('data-value')) {
+            target.value = this.getAttribute('data-value');
+            formChanged.call(target);
         }
     };
 
@@ -655,14 +656,19 @@
         },
         'autocomplete': {
             onLoad: autocompleteLoad,
-            onUnload: autocompleteUnload
+            onUnload: destroyList.bind(null, _autocompletes)
+        },
+        'tag-list': {
+            onLoad: tagListLoad,
+            onUnload: destroyList.bind(null, _tagListAutocompletes)
         },
         'column-selector': {
             onLoad: columnSelectorLoad,
-            onUnload: columnSelectorUnload
+            onUnload: destroyList.bind(null, _draggabillies)
         },
         'content-replace': {
-            onLoad: contentReplaceLoad
+            onLoad: contentReplaceLoad,
+            onUnload: null
         },
         'datepicker': {
             onLoad: datepickerLoad,
@@ -670,7 +676,7 @@
         },
         'chart': {
             onLoad: chartLoad,
-            onUnload: chartUnload
+            onUnload: destroyList.bind(null, _charts)
         },
         'chart-export': {
             onLoad: chartExportLoad,
@@ -678,7 +684,7 @@
         },
         'colorpicker': {
             onLoad: colorpickerLoad,
-            onUnload: colorpickerUnload
+            onUnload: destroyList.bind(null, _colorpickers)
         },
         'widget': {
             onLoad: widgetLoad,
