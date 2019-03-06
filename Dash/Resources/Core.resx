@@ -276,4 +276,7 @@
   <data name="Reload" xml:space="preserve">
     <value>Reload</value>
   </data>
+  <data name="StartTyping" xml:space="preserve">
+    <value>Start typing to search...</value>
+  </data>
 </root>

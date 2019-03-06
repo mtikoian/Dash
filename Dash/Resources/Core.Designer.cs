@@ -475,6 +475,15 @@ namespace Dash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Start typing to search....
+        /// </summary>
+        public static string StartTyping {
+            get {
+                return ResourceManager.GetString("StartTyping", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to of.
         /// </summary>
         public static string TableOf {

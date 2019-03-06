@@ -21,7 +21,14 @@
         }
         else if (Model.Column?.FilterTypeId == (int)FilterTypes.Select)
         {
-            <form-group-select for="Criteria" options="Model.FilterSelectListItems" multiple="Model.IsMultipleSelect" />
+            @if (Model.IsMultipleSelect)
+            {
+                <form-group-tag-list for="Criteria" options="Model.FilterSelectListItems" />
+            }
+            else
+            {
+                <form-group-select for="Criteria" options="Model.FilterSelectListItems" />
+            }
         }
         else
         {
