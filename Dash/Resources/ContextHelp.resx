@@ -175,7 +175,7 @@
     <value>Use this to enter SQL to modify the value returned as this column. Reference fields using SchemaName.TableName.ColumnName. This can be useful if you are using a column name that matches a keyword, like `User`.</value>
   </data>
   <data name="DatasetColumn_FilterQuery" xml:space="preserve">
-    <value>Use the filter query to lookup data to substitute for the value of this column, like replacing a StatusID with a name. The value for the option must be aliased as `Value` and match the value of this column. The text to display must be aliased as `Text`.</value>
+    <value>Use the filter query to lookup data to substitute for the value of this column, like replacing a StatusID with a name. The value for the option must be aliased as `Value` and match the value of this column. The text to display must be aliased as `Text`. Each record must have a distinct non-empty value.</value>
   </data>
   <data name="DatasetColumn_FilterTypeId" xml:space="preserve">
     <value>The filter type determines the operators the user will have when creating report filters using this column.  The `Select` filter type lets you query another table for lookup values.</value>

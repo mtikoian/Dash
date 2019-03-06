@@ -80,11 +80,14 @@ namespace Dash.Models
                     {
                         return FilterSelectListItems.FirstOrDefault(x => x.Value == Criteria)?.Text;
                     }
-                    var items = FilterSelectListItems.ToList();
+                    var items = FilterSelectListItems.ToList().Where(x => !x.Value.IsEmpty()).GroupBy(x => x.Value).Select(x => x.First());
                     try
                     {
                         // @todo a really big list of criteria can go awry quickly and start throwin deserialization errors. may need to create a new table to store list values
-                        return JSON.Deserialize<List<string>>(Criteria)?.Select(x => items.FirstOrDefault(y => y.Value == x)?.Text).Join().PrettyTrim(250);
+                        return JSON.Deserialize<List<string>>(Criteria)?.Select(x => {
+                            var item = items.FirstOrDefault(y => y.Value == x);
+                            return $"{item?.Text.Trim()} ({item?.Value.Trim()})".Trim();
+                        }).OrderBy(x => x).Join().PrettyTrim(250);
                     }
                     catch { }
                 }
