@@ -21,7 +21,7 @@ Dash is a high performance dynamic reporting engine. It allows users to configur
 	* [Spectre styles](https://github.com/picturepan2/spectre)
 	* ... and a lot of native javascript.
 * Designed to work on desktop and mobile devices.
-* Supports IE 10+, Edge, Android 4+, Safari for iOS 5+, Firefox 16+, and Chrome 12+.
+* Supports Chrome 42+(preferred), Firefox 39+, Edge 14+, Opera 29+, Android 5+, Safari 10.3+.
 	* Usage will be challenging/limited on devices smaller than 1024x768.
 * Users can create custom reports from any SQL data source.
   * Use those reports to create charts and alerts.

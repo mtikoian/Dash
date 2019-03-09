@@ -80,7 +80,6 @@ function sassFiles() {
 function jsFiles() {
     return gulp.src([
         // core libraries and helpers
-        paths.js + 'polyfills.js',         // Polyfills for promise/fetch
         paths.js + 'core.js',              // common js functions for the site
         paths.js + 'Alertify.js',          // alerts/modals
         paths.js + 'pjax.js',              // pjax library
