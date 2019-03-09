@@ -38,10 +38,8 @@
             options.method = method[0].getAttribute('data-pjax-method');
         }
 
-        // Get container node
-        var node = $.get(options.container || pjax.container);
         // Update the DOM with the new content
-        node.innerHTML = html;
+        $.get(options.container || pjax.container).innerHTML = html;
 
         return options;
     };
@@ -51,9 +49,7 @@
      * @param {Object} options - Configuration options.
      */
     pjax.onLoad = function(options) {
-        var node = $.get(options.container);
-        $.content.load(node);
-
+        $.content.load($.get(options.container));
         if (!$.isNull(options.title)) {
             // Set page title
             document.title = options.title;
@@ -70,8 +66,7 @@
      * @param {Object} options - Configuration options.
      */
     pjax.onUnload = function(options) {
-        var node = $.get(options.container);
-        $.content.unload(node);
+        $.content.unload($.get(options.container));
     };
 
     /**
@@ -116,7 +111,6 @@
      */
     pjax.request = function(options, callback) {
         $.content.loading();
-
         $.ajax({
             method: options.method || 'GET',
             url: options.url + ((!/[?&]/.test(options.url)) ? '?_pjax' : '&_pjax'),
@@ -137,10 +131,8 @@
      */
     pjax.submit = function(form, callback) {
         $.content.loading();
-
-        var method = form.getAttribute('data-method') || form.getAttribute('method') || 'POST';
         $.ajax({
-            method: method,
+            method: form.getAttribute('data-method') || form.getAttribute('method') || 'POST',
             url: form.getAttribute('action'),
             headers: { 'X-PJAX': 'true' },
             body: new FormData(form)
@@ -230,18 +222,17 @@
      */
     $.on(window, 'popstate', function(e) {
         if (e.state !== null) {
-            var opt = $.coalesce({
+            // Convert state data to PJAX options
+            var options = pjax.parseOptions($.coalesce({
                 url: e.state.url,
                 container: e.state.container,
                 title: e.state.title,
                 method: e.state.method,
                 history: false
-            });
-
-            // Convert state data to PJAX options
-            var options = pjax.parseOptions(opt);
+            }));
             // If something went wrong, return.
-            if (options === false) return;
+            if (options === false)
+                return;
             // If there is a state object, handle it as a page load.
             pjax.handle(options);
         }
@@ -350,9 +341,8 @@
             return;
         }
 
-        var options = { url: target.action };
         // Check options are valid.
-        options = pjax.parseOptions(options, target);
+        var options = pjax.parseOptions({ url: target.action }, target);
         if (options === false) return;
 
         // Don't fire normal event

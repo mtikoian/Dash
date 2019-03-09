@@ -15,8 +15,7 @@
      * @returns {string} CSS class list.
      */
     var buildClassList = function(obj) {
-        return 'grid-item grid-item-width-' + obj.width + ' grid-item-height-' + obj.height +
-            ' grid-item-x-' + obj.x + ' grid-item-y-' + obj.y;
+        return 'grid-item grid-item-width-' + obj.width + ' grid-item-height-' + obj.height + ' grid-item-x-' + obj.x + ' grid-item-y-' + obj.y;
     };
 
     /**
@@ -97,8 +96,7 @@
          * @returns {Number} Refresh rate in seconds. Zero means no refresh.
          */
         getRefreshRate: function() {
-            var container = this.getContainer();
-            return container.hasAttribute('data-refresh') ? container.getAttribute('data-refresh') * 1 : 0;
+            return this.getContainer().getAttribute('data-refresh') * 1 || 0;
         },
 
         /**
@@ -106,8 +104,8 @@
          * @returns {Object} Grid settings.
          */
         makeGrid: function() {
-            var dashboardNode = this.getDashboardContainer();
-            return { columns: _columns, rows: _rows, columnWidth: dashboardNode.parentNode.offsetWidth / _columns, rowHeight: dashboardNode.parentNode.offsetHeight / _rows };
+            var node = this.getDashboardContainer().parentNode;
+            return { columns: _columns, rows: _rows, columnWidth: node.offsetWidth / _columns, rowHeight: node.offsetHeight / _rows };
         },
 
         /**
@@ -157,21 +155,20 @@
          * Save position settings back to server.
          */
         savePosition: function() {
-            var positions = this.getWidgets().map(function(w) {
-                return {
-                    Id: w.opts.id || 0,
-                    Width: w.rect.width || 1,
-                    Height: w.rect.height || 1,
-                    X: w.rect.x || 0,
-                    Y: w.rect.y || 0
-                };
-            });
-
-            var dash = this.getDashboardContainer();
             $.ajax({
                 method: 'POST',
-                url: dash.getAttribute('data-save-url'),
-                data: { Widgets: positions },
+                url: this.getDashboardContainer().getAttribute('data-save-url'),
+                data: {
+                    Widgets: this.getWidgets().map(function(w) {
+                        return {
+                            Id: w.opts.id || 0,
+                            Width: w.rect.width || 1,
+                            Height: w.rect.height || 1,
+                            X: w.rect.x || 0,
+                            Y: w.rect.y || 0
+                        };
+                    })
+                },
                 block: false
             }, null);
         },
@@ -192,8 +189,7 @@
             var handle = $.get('.resizable-handle', container);
             this.resizeDraggie = new Draggabilly(handle, { grid: [g.columnWidth, g.rowHeight] }).on('dragStart', this.initResize.bind(this)).on('dragEnd', this.stopResize.bind(this));
 
-            var style = handle.currentStyle || window.getComputedStyle(handle);
-            this.dragMargin = style.marginRight.replace('px', '') * 1;
+            this.dragMargin = (handle.currentStyle || window.getComputedStyle(handle)).marginRight.replace('px', '') * 1;
         },
 
         /**
@@ -240,13 +236,11 @@
          * Update the widget after the user finishes resizing.
          */
         stopResize: function() {
-            var container = this.getContainer();
             var w = Math.max(this.width + this.resizeDraggie.position.x + this.dragMargin, this.opts.grid.columnWidth * 4);
             var h = Math.max(this.height + this.resizeDraggie.position.y, this.opts.grid.rowHeight * 4);
-
             this.setSize(Math.min(Math.round(w / this.opts.grid.columnWidth), this.opts.grid.columns), Math.min(Math.round(h / this.opts.grid.rowHeight), this.opts.grid.rows));
 
-            var handle = $.get('.resizable-handle', container);
+            var handle = $.get('.resizable-handle', this.getContainer());
             if (handle) {
                 handle.removeAttribute('style');
             }

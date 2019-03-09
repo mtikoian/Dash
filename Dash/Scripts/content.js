@@ -133,11 +133,10 @@
      * @this {Node}
      */
     var autocompleteLoad = function() {
-        var preload = ['true', 'True'].indexOf(this.getAttribute('data-preload')) > -1;
         var self = this;
 
         // request autocomplete options from server during use
-        if (!preload) {
+        if (!['true', 'True'].indexOf(this.getAttribute('data-preload')) > -1) {
             _autocompletes.push(new Autocomplete({
                 selector: self,
                 onSelect: formChanged.bind(self),
@@ -327,8 +326,7 @@
      * @param {Event} event - Original mousedown or touchstart event
      */
     var startColumnDrag = function(event) {
-        var target = $.hasClass(event.target, 'column-item') ? event.target : event.target.parentNode;
-        target.style['z-index'] = 9999;
+        ($.hasClass(event.target, 'column-item') ? event.target : event.target.parentNode).style['z-index'] = 9999;
     };
 
     /**
@@ -568,15 +566,15 @@
      * @this Node
      */
     var dashboardLoad = function() {
-        var node = getNode(this);
-        if (node) {
-            _dashboardEvents = {
-                keydown: dashboardCheckKeyPress,
-                resize: $.debounce(dashboardResizeLayout, 200)
-            };
-            $.on(window, 'keydown', _dashboardEvents.keydown);
-            $.on(window, 'resize', _dashboardEvents.resize);
+        if (_dashboardEvents) {
+            return;
         }
+        _dashboardEvents = {
+            keydown: dashboardCheckKeyPress,
+            resize: $.debounce(dashboardResizeLayout, 200)
+        };
+        $.on(window, 'keydown', _dashboardEvents.keydown);
+        $.on(window, 'resize', _dashboardEvents.resize);
     };
 
     /**
@@ -586,8 +584,8 @@
         if (_dashboardEvents) {
             $.off(window, 'keydown', _dashboardEvents.keydown);
             $.off(window, 'resize', _dashboardEvents.resize);
+            _dashboardEvents = null;
         }
-        _dashboardEvents = null;
     };
 
     /**
@@ -612,8 +610,7 @@
      * @param {Event} evt - Key press event.
      */
     var dashboardCheckKeyPress = function(evt) {
-        evt = evt || window.event;
-        if (evt.keyCode === 27) {
+        if ((evt || window.event).keyCode === 27) {
             getWidgets().filter(function(x) { return x.isFullscreen; }).forEach(function(x) { x.toggleFullScreen(); });
         }
     };
