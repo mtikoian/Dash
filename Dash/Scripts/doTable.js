@@ -334,12 +334,12 @@
         }
         // getter
         if (typeof value === 'undefined') {
-            return $.isNull(this.opts.storeUrl) ? localStorage[myKey] : $.coalesce(this.opts[key], null);
+            return $.isNull(this.opts.storeUrl) ? sessionStorage[myKey] : $.coalesce(this.opts[key], null);
         }
 
         // setter
         if ($.isNull(this.storeFunction)) {
-            localStorage[myKey] = value;
+            sessionStorage[myKey] = value;
         } else {
             var data = $.extend(this.opts.requestParams, {
                 itemsPerPage: this.itemsPerPage,
