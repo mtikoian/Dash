@@ -15,7 +15,6 @@ namespace Dash.TagHelpers
     {
         private static readonly Type[] NumberTypes = { typeof(int), typeof(long), typeof(decimal), typeof(double), typeof(int?), typeof(long?), typeof(decimal?), typeof(double?) };
         private Dictionary<string, string> OptionsDictionary;
-        private List<string> SelectedValues;
 
         private IHtmlContent BuildInput()
         {
@@ -28,12 +27,15 @@ namespace Dash.TagHelpers
             input.Attributes.AddIf("autofocus", "true", Autofocus);
             input.Attributes.AddIf("disabled", "true", Disabled == true);
 
-            SelectedValues = new List<string>();
-            try
+            if (SelectedValues == null)
             {
-                SelectedValues = JSON.Deserialize<List<string>>(For?.ModelExplorer.Model?.ToString());
+                SelectedValues = new List<string>();
+                try
+                {
+                    SelectedValues = JSON.Deserialize<List<string>>(For?.ModelExplorer.Model?.ToString());
+                }
+                catch { }
             }
-            catch { }
             input.Attributes.Add("data-chip-input-name", $"{FieldName}List");
             input.Attributes.Add("data-options", JSON.Serialize(Options.Select(x => $"{x.Text} ({x.Value})"), JilOutputFormatter.Options));
 
@@ -46,6 +48,8 @@ namespace Dash.TagHelpers
 
         public bool Autofocus { get; set; }
         public IEnumerable<SelectListItem> Options { get; set; }
+
+        public List<string> SelectedValues { get; set; }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {

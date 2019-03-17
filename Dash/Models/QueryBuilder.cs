@@ -303,11 +303,11 @@ namespace Dash.Models
                             case FilterOperatorsAbstract.In:
                                 // kata doesn't like passing a single quoted list, tries to escape em unless we do it this way
                                 // @todo should look at hardening this later to prevent injection
-                                KataQuery.WhereRaw($"{colAlias} IN ({x.Criteria.Delimit()})");
+                                KataQuery.WhereRaw($"{colAlias} IN ({x.ReportFilterCriteria.Select(c => $"'{c.Value.Replace("'", "''")}'").Join()})");
                                 break;
                             case FilterOperatorsAbstract.NotIn:
                                 // kata doesn't like passing a single quoted list, tries to escape em unless we do it this way
-                                KataQuery.WhereRaw($"{colAlias} NOT IN ({x.Criteria.Delimit()})");
+                                KataQuery.WhereRaw($"{colAlias} NOT IN ({x.ReportFilterCriteria.Select(c => $"'{c.Value.Replace("'", "''")}'").Join()})");
                                 break;
                             case FilterOperatorsAbstract.Like:
                                 KataQuery.WhereRaw($"{colAlias} LIKE ?", $"%{value1}%");

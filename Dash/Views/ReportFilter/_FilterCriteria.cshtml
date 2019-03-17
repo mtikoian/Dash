@@ -23,7 +23,7 @@
         {
             @if (Model.IsMultipleSelect)
             {
-                <form-group-tag-list for="Criteria" options="Model.FilterSelectListItems" />
+                <form-group-tag-list for="Criteria" options="Model.FilterSelectListItems" selected-values="Model.ReportFilterCriteria.Select(x => x.Value).ToList()" />
             }
             else
             {

@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Dash.Resources;
 using Dash.Utils;
-using Jil;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -15,6 +14,7 @@ namespace Dash.Models
     {
         private DatasetColumn _Column;
         private Report _Report;
+        private List<ReportFilterCriteria> _ReportFilterCriteria;
 
         public ReportFilter()
         {
@@ -70,22 +70,20 @@ namespace Dash.Models
                 if (OperatorId == (int)FilterOperatorsAbstract.DateInterval)
                 {
                     var key = ((FilterDateRanges)Criteria.ToInt()).ToString();
-                    var resx = new ResourceDictionary("Filters");
-                    resx.Dictionary.TryGetValue($"LabelDateRange_{key}", out var value);
+                    new ResourceDictionary("Filters").Dictionary.TryGetValue($"LabelDateRange_{key}", out var value);
                     return value.IsEmpty() ? key : value;
                 }
                 if (Column.FilterTypeId == (int)FilterTypes.Select)
                 {
                     if (!IsMultipleSelect)
                     {
-                        return FilterSelectListItems.FirstOrDefault(x => x.Value == Criteria)?.Text;
+                        return FilterSelectListItems.FirstOrDefault(x => x.Value.Equals(Criteria, StringComparison.CurrentCultureIgnoreCase))?.Text;
                     }
                     var items = FilterSelectListItems.ToList().Where(x => !x.Value.IsEmpty()).GroupBy(x => x.Value).Select(x => x.First());
                     try
                     {
-                        // @todo a really big list of criteria can go awry quickly and start throwin deserialization errors. may need to create a new table to store list values
-                        return JSON.Deserialize<List<string>>(Criteria)?.Select(x => {
-                            var item = items.FirstOrDefault(y => y.Value == x);
+                        return ReportFilterCriteria.Select(x => {
+                            var item = items.FirstOrDefault(y => y.Value.Equals(x.Value, StringComparison.CurrentCultureIgnoreCase));
                             return $"{item?.Text.Trim()} ({item?.Value.Trim()})".Trim();
                         }).OrderBy(x => x).Join().PrettyTrim(250);
                     }
@@ -128,7 +126,6 @@ namespace Dash.Models
         {
             get
             {
-                var filterResource = new ResourceDictionary("Filters");
                 Type operatorType;
                 if (Report.Dataset.IsProc)
                 {
@@ -155,7 +152,7 @@ namespace Dash.Models
                             break;
                     }
                 }
-                return operatorType.TranslatedSelect(filterResource, "LabelFilter_");
+                return operatorType.TranslatedSelect(new ResourceDictionary("Filters"), "LabelFilter_");
             }
         }
 
@@ -165,14 +162,20 @@ namespace Dash.Models
             get
             {
                 var key = ((FilterOperatorsAbstract)OperatorId).ToString();
-                var resx = new ResourceDictionary("Filters");
-                resx.Dictionary.TryGetValue($"LabelFilter_{key}", out var value);
+                new ResourceDictionary("Filters").Dictionary.TryGetValue($"LabelFilter_{key}", out var value);
                 return value.IsEmpty() ? key : value;
             }
         }
 
         [BindNever, ValidateNever]
         public Report Report => _Report ?? (_Report = DbContext.Get<Report>(ReportId));
+
+        [BindNever, ValidateNever]
+        public List<ReportFilterCriteria> ReportFilterCriteria
+        {
+            get => _ReportFilterCriteria ?? (_ReportFilterCriteria = DbContext.GetAll<ReportFilterCriteria>(new { ReportFilterId = Id }).ToList());
+            set => _ReportFilterCriteria = value;
+        }
 
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int ReportId { get; set; }
@@ -222,11 +225,19 @@ namespace Dash.Models
 
         public bool Save(bool lazySave = true)
         {
-            if (CriteriaList?.Any() == true)
-            {
-                Criteria = JSON.Serialize(CriteriaList);
-            }
-            DbContext.Save(this);
+            DbContext.WithTransaction(() => {
+                if (IsMultipleSelect)
+                {
+                    Criteria = null;
+                    ReportFilterCriteria?.Where(criteria => CriteriaList?.Any(x => x.Equals(criteria.Value, StringComparison.CurrentCultureIgnoreCase)) != true).Each(x => {
+                        DbContext.Delete(x);
+                    });
+                    CriteriaList?.Where(x => ReportFilterCriteria?.Any(y => string.Equals(y.Value, x, StringComparison.CurrentCultureIgnoreCase)) != true).Each(x => {
+                        DbContext.Save(new ReportFilterCriteria(DbContext, Id, x, RequestUserId));
+                    });
+                }
+                DbContext.Save(this);
+            });
             return true;
         }
 
