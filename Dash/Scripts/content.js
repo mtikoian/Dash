@@ -610,8 +610,18 @@
      * @param {Event} evt - Key press event.
      */
     var dashboardCheckKeyPress = function(evt) {
-        if ((evt || window.event).keyCode === 27) {
-            getWidgets().filter(function(x) { return x.isFullscreen; }).forEach(function(x) { x.toggleFullScreen(); });
+        evt = (evt || window.event);
+        if (evt.keyCode === 27) {
+            getWidgets().filter(function(x) {
+                return x.isFullscreen;
+            }).forEach(function(x) {
+                x.toggleFullScreen();
+            });
+        } else if (evt.key === 'F5' && !evt.ctrlKey) {
+            getWidgets().forEach(function(x) {
+                x.refresh();
+            });
+            evt.preventDefault();
         }
     };
 
