@@ -511,7 +511,6 @@ textarea.form-input {
 
 // validation based on :placeholder-shown (Edge doesn't support it yet)
 .form-input {
-  &:not(:placeholder-shown) {
     &:invalid {
         border-color: $error-color;
 
@@ -524,7 +523,6 @@ textarea.form-input {
             color: $error-color;
         }
     }
-}
 }
 
 // Form disabled and readonly

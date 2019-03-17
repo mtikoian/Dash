@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Text.Encodings.Web;
+using Dash.Resources;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.TagHelpers;
@@ -57,6 +58,11 @@ namespace Dash.TagHelpers
             input.Attributes.AddIf("data-input", "", Toggle == "datepicker");
             input.Attributes.AddIf("data-target", Target, !Target.IsEmpty());
             input.Attributes.AddIf("data-match", Match, Match != null);
+            // @todo create an enum for toggles
+            if (Toggle == "autocomplete")
+            {
+                input.Attributes.Add("placeholder", Core.StartTyping);
+            }
 
             return input;
         }
