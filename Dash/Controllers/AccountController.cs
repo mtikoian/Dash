@@ -86,7 +86,7 @@ namespace Dash.Controllers
 
             if (model.Membership.AllowSingleFactor)
             {
-                if (!model.ReturnUrl.IsEmpty() && !model.ReturnUrl.Contains("/Data/", System.StringComparison.OrdinalIgnoreCase))
+                if (!model.ReturnUrl.IsEmpty() && !model.ReturnUrl.Contains("/Data/", System.StringComparison.CurrentCultureIgnoreCase))
                 {
                     return Redirect(model.ReturnUrl);
                 }
