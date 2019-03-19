@@ -206,10 +206,10 @@ textarea.form-input {
 .form-checkbox,
 .form-radio,
 .form-switch {
-  display: block;
+    display: inline-block;
     line-height: $line-height;
     margin: ($control-size - $control-size-sm) / 2 0;
-  min-height: $control-size-sm;
+    min-height: $control-size-sm;
     padding: (($control-size-sm - $line-height) / 2) $control-padding-x (($control-size-sm - $line-height) / 2) ($control-icon-size + $control-padding-x);
     position: relative;
 
@@ -237,7 +237,7 @@ textarea.form-input {
         cursor: pointer;
         display: inline-block;
         position: absolute;
-    transition: background .2s, border .2s, box-shadow .2s, color .2s;
+        transition: background .2s, border .2s, box-shadow .2s, color .2s;
     }
     // Input checkbox, radio and switch sizes
     &.input-sm {
