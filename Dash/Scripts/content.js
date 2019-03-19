@@ -136,7 +136,7 @@
         var self = this;
 
         // request autocomplete options from server during use
-        if (!['true', 'True'].indexOf(this.getAttribute('data-preload')) > -1) {
+        if ((this.getAttribute('data-preload') || '').toLowerCase() !== 'true') {
             _autocompletes.push(new Autocomplete({
                 selector: self,
                 onSelect: formChanged.bind(self),
