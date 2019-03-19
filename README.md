@@ -12,12 +12,10 @@ Dash is a high performance dynamic reporting engine. It allows users to configur
 	* [CollapsibleList](http://code.stephenmorley.org/)
 	* [doT](https://github.com/olado/doT)
 	* [Draggabilly](http://draggabilly.desandro.com)
-	* [Fetch polyfill](https://github.com/developit/unfetch)
 	* [FlexiColorPicker](https://github.com/DavidDurman/FlexiColorPicker)
 	* [flatpickr](https://github.com/flatpickr/flatpickr)
 	* [Fontello](http://fontello.com/)
 	* [pJax](https://github.com/thybag/PJAX-Standalone)
-	* [Promise polyfill](https://github.com/taylorhakes/promise-polyfill)
 	* [Spectre styles](https://github.com/picturepan2/spectre)
 	* ... and a lot of native javascript.
 * Designed to work on desktop and mobile devices.
