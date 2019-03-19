@@ -29,17 +29,13 @@ namespace Dash.Models
         {
             var tableList = new List<string>();
             if (!PrimarySource.IsEmpty())
-            {
                 tableList.Add(PrimarySource);
-            }
             // add any joined tables as groups
             tableList.AddRange(DatasetJoin?.Select(x => x.TableName).Distinct().Where(x => !tableList.Contains(x)));
             return tableList;
         }
 
-        public Dataset()
-        {
-        }
+        public Dataset() { }
 
         public Dataset(IDbContext dbContext) => DbContext = dbContext;
 
@@ -138,9 +134,7 @@ namespace Dash.Models
         {
             var columns = new List<object>();
             if (Id == 0)
-            {
                 return columns;
-            }
 
             if (Database?.TestConnection(out var error) == true)
             {
@@ -244,21 +238,13 @@ namespace Dash.Models
 
                             // try to set the correct filtertype
                             if ((dataTypes[dataType].IsInteger || dataTypes[dataType].IsDecimal))
-                            {
                                 newColumn.FilterTypeId = (int)FilterTypes.Numeric;
-                            }
                             else if (dataTypes[dataType].IsBool)
-                            {
                                 newColumn.FilterTypeId = (int)FilterTypes.Boolean;
-                            }
                             else if (dataTypes[dataType].IsDateTime)
-                            {
                                 newColumn.FilterTypeId = (int)FilterTypes.Date;
-                            }
                             else
-                            {
                                 newColumn.FilterTypeId = (int)FilterTypes.Text;
-                            }
 
                             DbContext.Save(newColumn);
                             existingColumns.Add(columnName.ToLower(), newColumn);
@@ -293,18 +279,14 @@ namespace Dash.Models
                     DbContext.SaveMany(this, DatasetRole);
                 }
                 if (rolesOnly)
-                {
                     DbContext.SaveMany(this, DatasetRole);
-                }
             });
         }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             if (!IsUniqueName(Name, Id))
-            {
                 yield return new ValidationResult(Datasets.ErrorDuplicateName, new[] { "Name" });
-            }
         }
     }
 

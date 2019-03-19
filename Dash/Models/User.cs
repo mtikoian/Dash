@@ -18,9 +18,7 @@ namespace Dash.Models
         private bool? _IsLocked;
         private List<UserRole> _UserRole;
 
-        public User()
-        {
-        }
+        public User() { }
 
         public User(IDbContext dbContext, IAppConfiguration appConfig)
         {
@@ -58,9 +56,7 @@ namespace Dash.Models
             get
             {
                 if (!_IsLocked.HasValue)
-                {
                     _IsLocked = LoginAttempts > AppConfig.Membership.MaxLoginAttempts;
-                }
                 return _IsLocked.Value;
             }
             set => _IsLocked = value;
@@ -135,9 +131,7 @@ namespace Dash.Models
             DbContext.WithTransaction(() => {
                 DbContext.Save(this);
                 if (lazySave)
-                {
                     DbContext.SaveMany(this, UserRole);
-                }
 
                 if (!Password.IsEmpty())
                 {
@@ -176,9 +170,7 @@ namespace Dash.Models
             {
                 var language = DbContext.Get<Language>(user.LanguageId);
                 if (language != null)
-                {
                     LanguageCode = language.LanguageCode;
-                }
                 return true;
             }
             errorMsg = Core.ErrorGeneric;
@@ -188,25 +180,14 @@ namespace Dash.Models
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             if (DbContext.GetAll<User>(new { UserName }).Any(x => x.Id != Id))
-            {
                 yield return new ValidationResult(Users.ErrorDuplicateName, new[] { "UserName" });
-            }
-
             if (Id == 0)
-            {
                 if (Password.IsEmpty())
-                {
                     yield return new ValidationResult(Account.ErrorInvalidPassword, new[] { "Password" });
-                }
                 else
-                {
                     yield return PasswordHelper.Validate(AppConfig, Password, ConfirmPassword);
-                }
-            }
             else if (!Password.IsEmpty())
-            {
                 yield return PasswordHelper.Validate(AppConfig, Password, ConfirmPassword);
-            }
         }
     }
 }

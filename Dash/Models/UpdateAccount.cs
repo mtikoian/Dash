@@ -9,9 +9,7 @@ namespace Dash.Models
 {
     public class UpdateAccount : BaseModel
     {
-        public UpdateAccount()
-        {
-        }
+        public UpdateAccount() { }
 
         public UpdateAccount(IDbContext dbContext, IAppConfiguration appConfig)
         {
@@ -54,10 +52,7 @@ namespace Dash.Models
         [StringLength(100, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string LastName { get; set; }
 
-        public IEnumerable<SelectListItem> GetLanguageList()
-        {
-            return DbContext.GetAll<Language>().ToSelectList(x => x.Name, x => x.Id.ToString());
-        }
+        public IEnumerable<SelectListItem> GetLanguageList() => DbContext.GetAll<Language>().ToSelectList(x => x.Name, x => x.Id.ToString());
 
         public bool Save(string userName, out string errorMsg)
         {
@@ -83,9 +78,7 @@ namespace Dash.Models
             {
                 var language = DbContext.Get<Language>(user.LanguageId);
                 if (language != null)
-                {
                     LanguageCode = language.LanguageCode;
-                }
                 return true;
             }
             errorMsg = Core.ErrorGeneric;

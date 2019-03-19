@@ -14,18 +14,12 @@ namespace Dash.Models
         public static ValidationResult Validate(IAppConfiguration appConfig, string password, string confirmPassword)
         {
             if (password.IsEmpty() || confirmPassword.IsEmpty())
-            {
                 return new ValidationResult(Account.ErrorInvalidPassword, new[] { "Password" });
-            }
             else if (password != confirmPassword)
-            {
                 return new ValidationResult(Account.ErrorPasswordMatch, new[] { "ConfirmPassword" });
-            }
             else if (password.Length < appConfig.Membership.MinRequiredPasswordLength ||
                 password.ToCharArray().Count(c => !Char.IsLetterOrDigit(c)) < appConfig.Membership.MinRequiredNonAlphanumericCharacters)
-            {
                 return new ValidationResult(Account.ErrorInvalidPassword, new[] { "Password" });
-            }
             return null;
         }
     }

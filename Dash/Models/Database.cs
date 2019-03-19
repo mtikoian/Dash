@@ -24,9 +24,7 @@ namespace Dash.Models
 
     public class Database : BaseModel, IValidatableObject
     {
-        public Database()
-        {
-        }
+        public Database() { }
 
         public Database(IDbContext dbContext, IAppConfiguration appConfig)
         {
@@ -118,9 +116,7 @@ namespace Dash.Models
                         Password = crypt.Decrypt(Password)
                     };
                     if (Port.HasPositiveValue())
-                    {
                         connBuilder.Port = (uint)Port.ToInt();
-                    }
                     connectionString = connBuilder.ToString();
                 }
             }
@@ -134,23 +130,17 @@ namespace Dash.Models
         {
             var res = new List<string>();
             if (includeEmpty)
-            {
                 res.Add("");
-            }
 
             using (var conn = GetConnection())
             {
                 conn.Open();
                 conn.GetSchema(isProc ? "Procedures" : "Tables").Rows.OfType<DataRow>().Each(row => {
                     if (isProc)
-                    {
                         res.Add(row["ROUTINE_NAME"].ToString());
-                    }
                     else if (row["TABLE_NAME"].ToString().IndexOf("conflict_") == -1)
-                    {
                         // filter out tables that start with 'conflict_' - they are for replication
                         res.Add(row.ToTableName(!IsMySql));
-                    }
                 });
                 conn.Close();
                 return res.OrderBy(x => x);
@@ -161,9 +151,7 @@ namespace Dash.Models
         {
             var parts = tableName.Split('.');
             if (parts.Any())
-            {
                 parts = parts.Select(p => IsSqlServer ? p.Replace("[", "").Replace("]", "") : p.Replace("`", "")).ToArray();
-            }
             var columnRestrictions = new string[4];
             columnRestrictions[1] = parts.Length > 1 ? parts[0] : null;
             columnRestrictions[2] = parts.Length > 1 ? parts[1] : parts[0];
@@ -180,17 +168,13 @@ namespace Dash.Models
         public IEnumerable<dynamic> Query(string sql, Dictionary<string, object> parameters = null)
         {
             using (var conn = GetConnection())
-            {
                 return conn.QueryAsync(sql, parameters).Result;
-            }
         }
 
         public IEnumerable<T> Query<T>(string sql)
         {
             using (var conn = GetConnection())
-            {
                 return conn.QueryAsync<T>(sql).Result;
-            }
         }
 
         public bool Save()
@@ -201,9 +185,7 @@ namespace Dash.Models
             {
                 var myDatabase = DbContext.Get<Database>(Id);
                 if (myDatabase != null)
-                {
                     Password = Password.IsEmpty() ? myDatabase.Password : crypt.Encrypt(Password);
-                }
             }
             else
             {
@@ -236,20 +218,13 @@ namespace Dash.Models
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             if (DbContext.GetAll<Database>(new { Name }).Any(x => x.Id != Id))
-            {
                 yield return new ValidationResult(Databases.ErrorDuplicateName, new[] { "Name" });
-            }
             if (ConnectionString.IsEmpty())
             {
                 if (User.IsEmpty())
-                {
                     yield return new ValidationResult(Databases.ErrorUsernameRequired, new[] { "User" });
-                }
-
                 if (Password != ConfirmPassword)
-                {
                     yield return new ValidationResult(Databases.ErrorPasswordMatching, new[] { "Password" });
-                }
             }
         }
     }

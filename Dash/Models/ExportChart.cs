@@ -30,9 +30,7 @@ namespace Dash.Models
             var bytes = Convert.FromBase64String(Data.Replace("data:image/png;base64,", ""));
             Image image;
             using (var ms = new MemoryStream(bytes))
-            {
                 image = Image.FromStream(ms);
-            }
 
             // Convert PNG to non-transparent background. Might make this an option later.
             using (var nonTransparent = new Bitmap(image.Width, image.Height))

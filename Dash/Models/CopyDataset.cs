@@ -23,13 +23,9 @@ namespace Dash.Models
         {
             DbContext = (IDbContext)validationContext.GetService(typeof(IDbContext));
             if (Dataset == null)
-            {
                 yield return new ValidationResult(Core.ErrorInvalidId);
-            }
             if (!Dataset.IsUniqueName(Prompt, 0))
-            {
                 yield return new ValidationResult(Datasets.ErrorDuplicateName);
-            }
         }
     }
 }

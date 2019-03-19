@@ -33,9 +33,7 @@ namespace Dash.Models
                 model.DbContext = this;
                 model.AppConfig = _AppConfig;
                 if (_HttpContextAccessor?.HttpContext != null)
-                {
                     model.RequestUserId = _HttpContextAccessor.HttpContext.User.UserId();
-                }
             }
             return model;
         }
@@ -62,54 +60,41 @@ namespace Dash.Models
         {
             var myType = model.GetType();
             using (var conn = GetConnection())
-            {
                 conn.ExecuteAsync($"{myType.Name}Delete", new {
                     RequestUserId = model.RequestUserId ?? _HttpContextAccessor.HttpContext?.User.UserId(),
                     Id = myType.GetProperty("Id").GetValue(model)
                 }, commandType: CommandType.StoredProcedure);
-            }
         }
 
         public override void Execute(string procName, object parameters)
         {
             using (var conn = GetConnection())
-            {
                 conn.ExecuteAsync(procName, parameters, commandType: CommandType.StoredProcedure);
-            }
         }
 
         public override T Get<T>(int id, bool useCache = false)
         {
             if (id == 0)
-            {
                 return null;
-            }
 
             if (useCache)
             {
                 var res = _Cache.Cached<T>($"dbResult_{typeof(T).Name}_{id}", () => {
                     using (var conn = GetConnection())
-                    {
                         return conn.QueryAsync<T>($"{typeof(T).Name}Get", new { Id = id }, commandType: CommandType.StoredProcedure).Result.FirstOrDefault();
-                    }
                 });
                 return Bind(res);
             }
 
             using (var conn = GetConnection())
-            {
-                var res = conn.QueryAsync<T>($"{typeof(T).Name}Get", new { Id = id }, commandType: CommandType.StoredProcedure).Result.FirstOrDefault();
-                return Bind(res);
-            }
+                return Bind(conn.QueryAsync<T>($"{typeof(T).Name}Get", new { Id = id }, commandType: CommandType.StoredProcedure).Result.FirstOrDefault());
         }
 
         public override IEnumerable<T> GetAll<T>(object parameters = null)
         {
             using (var conn = GetConnection())
-            {
                 return conn.QueryAsync<T>($"{typeof(T).Name}Get", parameters, commandType: CommandType.StoredProcedure)
                     .Result.Each(x => Bind(x)).ToArray();
-            }
         }
 
         public override DbConnection GetConnection() => new StackExchange.Profiling.Data.ProfiledDbConnection(new SqlConnection(_AppConfig.Database.ConnectionString), MiniProfiler.Current);
@@ -121,9 +106,7 @@ namespace Dash.Models
                 var cmd = new SqlCommand($"SELECT TOP 1 * FROM {tableName}", (SqlConnection)conn);
                 var reader = cmd.ExecuteReaderAsync(CommandBehavior.SchemaOnly).Result;
                 if (reader.CanGetColumnSchema())
-                {
                     return reader.GetColumnSchema().ToList();
-                }
             }
             return null;
         }
@@ -131,9 +114,7 @@ namespace Dash.Models
         public override IEnumerable<T> Query<T>(string procName, object parameters = null)
         {
             using (var conn = GetConnection())
-            {
                 return conn.QueryAsync<T>(procName, parameters, commandType: CommandType.StoredProcedure).Result;
-            }
         }
 
         public override void Save<T>(T model)
@@ -151,9 +132,7 @@ namespace Dash.Models
                     .ToList().ForEach(x => {
                         var val = accessor[model, x.Name];
                         if (x.Type.GetTypeInfo().BaseType == typeof(Enum))
-                        {
                             val = Enum.GetName(x.Type, val) ?? val.ToString();
-                        }
                         paramList.Add(x.Name, val, null, x.Name.ToLower() == "id" ? ParameterDirection.InputOutput : ParameterDirection.Input);
                     });
 
@@ -171,9 +150,7 @@ namespace Dash.Models
                     var parentType = typeof(T);
                     var childType = typeof(T2);
                     if (children == null && !forceSaveNulls)
-                    {
                         return;
-                    }
 
                     var existingObjs = new Dictionary<int, T2>();
                     try
@@ -192,10 +169,8 @@ namespace Dash.Models
                         foreach (var child in children)
                         {
                             if (existingObjs.TryGetValue(child.Id, out var savedChild))
-                            {
                                 // remove this id from the list that has to be cleaned up later
                                 existingObjs.Remove(child.Id);
-                            }
                             if (savedChild == null || !child.Equals(savedChild))
                             {
                                 // make sure the parent Id is set on the child object

@@ -15,9 +15,7 @@ namespace Dash.Models
         private Dataset _Dataset;
         private DataType _DataType;
 
-        public DatasetColumn()
-        {
-        }
+        public DatasetColumn() { }
 
         public DatasetColumn(IDbContext dbContext) => DbContext = dbContext;
 
@@ -120,21 +118,13 @@ namespace Dash.Models
             get
             {
                 if ((FilterTypes)FilterTypeId == FilterTypes.Select)
-                {
                     return TableDataType.String;
-                }
                 if (IsCurrency)
-                {
                     return TableDataType.Currency;
-                }
                 if (IsInteger || IsDecimal)
-                {
                     return TableDataType.Int;
-                }
                 if (IsDateTime)
-                {
                     return TableDataType.Date;
-                }
                 return TableDataType.String;
             }
         }
@@ -161,18 +151,14 @@ namespace Dash.Models
         {
             var columnSql = Derived.IsEmpty() ? ColumnName : Derived;
             if (columnSql.Length == 0)
-            {
                 return columnSql;
-            }
 
             columnSql = $"({columnSql})";
             if (aggregatorId > 0)
             {
                 if (IsBinary && DataType.Name.ToLower() != "binary")
-                {
                     // handling for guids
                     columnSql = $"(CAST({columnSql} AS NVARCHAR(1000)))";
-                }
                 columnSql = $"({(IsText || IsDateTime ? "MAX" : ((Aggregators)aggregatorId).ToString().ToUpper())}{columnSql})";
             }
             return includeAlias ? $"{columnSql} AS {Alias}" : columnSql;
@@ -184,9 +170,12 @@ namespace Dash.Models
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != GetType()) return false;
+            if (ReferenceEquals(null, obj))
+                return false;
+            if (ReferenceEquals(this, obj))
+                return true;
+            if (obj.GetType() != GetType())
+                return false;
             return Equals(obj as DatasetColumn);
         }
 

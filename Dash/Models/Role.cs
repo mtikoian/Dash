@@ -12,9 +12,7 @@ namespace Dash.Models
         private Dictionary<string, List<Permission>> _ControllerPermissions;
         private List<RolePermission> _RolePermission;
 
-        public Role()
-        {
-        }
+        public Role() { }
 
         public Role(IDbContext dbContext) => DbContext = dbContext;
 
@@ -82,9 +80,7 @@ namespace Dash.Models
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             if (!IsUniqueName(Name, Id))
-            {
                 yield return new ValidationResult(Roles.ErrorDuplicateName, new[] { "Name" });
-            }
         }
     }
 }

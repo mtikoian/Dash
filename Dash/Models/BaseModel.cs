@@ -10,9 +10,7 @@ namespace Dash.Models
     /// </summary>
     public class BaseModel : IModel
     {
-        public BaseModel()
-        {
-        }
+        public BaseModel() { }
 
         public BaseModel(IDbContext dbContext, IAppConfiguration appConfig)
         {
@@ -67,8 +65,6 @@ namespace Dash.Models
     [AttributeUsage(AttributeTargets.Property, Inherited = true)]
     public sealed class DbIgnore : Attribute
     {
-        public DbIgnore()
-        {
-        }
+        public DbIgnore() { }
     }
 }

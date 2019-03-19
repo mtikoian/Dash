@@ -13,9 +13,7 @@ namespace Dash.Models
     [ModelMetadataType(typeof(PasswordMetadata))]
     public class UpdatePassword : BaseModel, IValidatableObject
     {
-        public UpdatePassword()
-        {
-        }
+        public UpdatePassword() { }
 
         public UpdatePassword(IDbContext dbContext, IAppConfiguration appConfig)
         {
