@@ -103,20 +103,16 @@ namespace Dash.Models
 
         public bool CanViewChart(Chart chart)
         {
-            if (chart.OwnerId == Id)
-            {
+            if (chart.UserCreated == Id)
                 return true;
-            }
             var res = DbContext.Query<bool>("ChartCheckUserAccess", new { UserId = Id, ChartId = chart.Id });
             return res?.Any() == true && res.First();
         }
 
         public bool CanViewReport(Report report)
         {
-            if (report.OwnerId == Id)
-            {
+            if (report.UserCreated == Id)
                 return true;
-            }
             var res = DbContext.Query<bool>("ReportCheckUserAccess", new { UserId = Id, ReportId = report.Id });
             return res?.Any() == true && res.First();
         }
