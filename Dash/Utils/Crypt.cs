@@ -11,9 +11,9 @@ namespace Dash
     /// </summary>
     public class Crypt
     {
-        private IAppConfiguration AppConfiguration { get; set; }
+        IAppConfiguration _AppConfiguration { get; set; }
 
-        public Crypt(IAppConfiguration appConfiguration) => AppConfiguration = appConfiguration;
+        public Crypt(IAppConfiguration appConfiguration) => _AppConfiguration = appConfiguration;
 
         public string Decrypt(string cipherText)
         {
@@ -22,7 +22,7 @@ namespace Dash
             var cipher = new byte[fullCipher.Length - iv.Length];
             Buffer.BlockCopy(fullCipher, 0, iv, 0, iv.Length);
             Buffer.BlockCopy(fullCipher, iv.Length, cipher, 0, fullCipher.Length - iv.Length);
-            var key = Encoding.UTF8.GetBytes(AppConfiguration.CryptKey);
+            var key = Encoding.UTF8.GetBytes(_AppConfiguration.CryptKey);
 
             using (var aesAlg = Aes.Create())
             using (var decryptor = aesAlg.CreateDecryptor(key, iv))
@@ -38,7 +38,7 @@ namespace Dash
 
         public string Encrypt(string text)
         {
-            var key = Encoding.UTF8.GetBytes(AppConfiguration.CryptKey);
+            var key = Encoding.UTF8.GetBytes(_AppConfiguration.CryptKey);
             using (var aesAlg = Aes.Create())
             using (var encryptor = aesAlg.CreateEncryptor(key, aesAlg.IV))
             using (var msEncrypt = new MemoryStream())

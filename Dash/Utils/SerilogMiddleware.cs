@@ -10,11 +10,11 @@ namespace Dash
 {
     internal class SerilogMiddleware
     {
-        private const string _MessageTemplate = "HTTP {RequestMethod} {RequestPath} responded {StatusCode} in {Elapsed:0.0000} ms";
-        private static readonly ILogger _Log = Serilog.Log.ForContext<SerilogMiddleware>();
-        private readonly RequestDelegate _Next;
+        const string _MessageTemplate = "HTTP {RequestMethod} {RequestPath} responded {StatusCode} in {Elapsed:0.0000} ms";
+        static readonly ILogger _Log = Log.ForContext<SerilogMiddleware>();
+        readonly RequestDelegate _Next;
 
-        private static bool LogException(HttpContext httpContext, Stopwatch sw, Exception ex)
+        static bool LogException(HttpContext httpContext, Stopwatch sw, Exception ex)
         {
             sw.Stop();
             LogForErrorContext(httpContext)
@@ -22,7 +22,7 @@ namespace Dash
             return false;
         }
 
-        private static ILogger LogForErrorContext(HttpContext httpContext)
+        static ILogger LogForErrorContext(HttpContext httpContext)
         {
             var request = httpContext.Request;
             var result = _Log
@@ -34,15 +34,12 @@ namespace Dash
             return result;
         }
 
-        public SerilogMiddleware(RequestDelegate next)
-        {
-            if (next == null) throw new ArgumentNullException(nameof(next));
-            _Next = next;
-        }
+        public SerilogMiddleware(RequestDelegate next) => _Next = next ?? throw new ArgumentNullException(nameof(next));
 
         public async Task Invoke(HttpContext httpContext)
         {
-            if (httpContext == null) throw new ArgumentNullException(nameof(httpContext));
+            if (httpContext == null)
+                throw new ArgumentNullException(nameof(httpContext));
 
             var sw = Stopwatch.StartNew();
             try

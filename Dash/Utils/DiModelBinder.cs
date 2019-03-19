@@ -17,19 +17,16 @@ namespace Dash
             var ctors = modelType.GetConstructors().OrderByDescending(x => x.GetParameters().Length);
             foreach (var ctor in ctors)
             {
-                var paramTypes = ctor.GetParameters().Select(p => p.ParameterType).ToList();
-                var parameters = paramTypes.Select(p => services.GetService(p)).ToArray();
+                var parameters = ctor.GetParameters().Select(p => p.ParameterType).ToList().Select(p => services.GetService(p)).ToArray();
                 if (parameters.All(p => p != null))
                 {
                     var model = ctor.Invoke(parameters);
                     var userId = bindingContext.HttpContext.User.UserId();
                     if (userId > 0)
                     {
-                        var prop = modelType.GetProperties().FirstOrDefault( x=> x.Name == "RequestUserId");
+                        var prop = modelType.GetProperties().FirstOrDefault(x => x.Name == "RequestUserId");
                         if (prop != null)
-                        {
                             prop.SetValue(model, userId);
-                        }
                     }
 
                     return model;
@@ -39,23 +36,17 @@ namespace Dash
             return null;
         }
 
-        public DiModelBinder(IDictionary<ModelMetadata, IModelBinder> propertyBinders, ILoggerFactory loggerFactory) : base(propertyBinders, loggerFactory)
-        {
-        }
+        public DiModelBinder(IDictionary<ModelMetadata, IModelBinder> propertyBinders, ILoggerFactory loggerFactory) : base(propertyBinders, loggerFactory) { }
     }
 
     public class DiModelBinderProvider : IModelBinderProvider
     {
         public IModelBinder GetBinder(ModelBinderProviderContext context)
         {
-            if (context == null) { throw new ArgumentNullException(nameof(context)); }
-
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
             if (context.Metadata.IsComplexType && !context.Metadata.IsCollectionType)
-            {
-                var propertyBinders = context.Metadata.Properties.ToDictionary(property => property, context.CreateBinder);
-                return new DiModelBinder(propertyBinders, (ILoggerFactory)context.Services.GetService(typeof(ILoggerFactory)));
-            }
-
+                return new DiModelBinder(context.Metadata.Properties.ToDictionary(property => property, context.CreateBinder), (ILoggerFactory)context.Services.GetService(typeof(ILoggerFactory)));
             return null;
         }
     }

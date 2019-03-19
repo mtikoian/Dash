@@ -14,18 +14,18 @@ namespace Dash
 {
     public class HangfireActivator : JobActivator
     {
-        private readonly IServiceProvider _serviceProvider;
+        readonly IServiceProvider _ServiceProvider;
 
-        public HangfireActivator(IServiceProvider serviceProvider) => _serviceProvider = serviceProvider;
+        public HangfireActivator(IServiceProvider serviceProvider) => _ServiceProvider = serviceProvider;
 
-        public override object ActivateJob(Type type) => _serviceProvider.GetService(type);
+        public override object ActivateJob(Type type) => _ServiceProvider.GetService(type);
     }
 
     public class JobHelper
     {
-        private IAppConfiguration _AppConfig;
-        private IHttpClientFactory _ClientFactory;
-        private IDbContext _DbContext;
+        IAppConfiguration _AppConfig;
+        IHttpClientFactory _ClientFactory;
+        IDbContext _DbContext;
 
         public JobHelper(IDbContext dbContext, IAppConfiguration appConfig, IHttpClientFactory clientFactory)
         {
@@ -44,9 +44,7 @@ namespace Dash
             var recipients = alert.SendToEmail?.Split(',').Where(x => emailHelper.IsValidEmail(x));
 
             if (recipients?.Any() != true && alert.SendToWebhook.IsEmpty())
-            {
                 return;
-            }
 
             var reportResult = alert.Report.GetData(_AppConfig, 0, 99999, false);
             if (reportResult.Total > alert.ResultCount)
@@ -70,20 +68,17 @@ namespace Dash
                     {
                         client.ConnectAsync(_AppConfig.Mail.Smtp.Host, _AppConfig.Mail.Smtp.Port, SecureSocketOptions.None);
                         if (!_AppConfig.Mail.Smtp.Username.IsEmpty())
-                        {
                             client.AuthenticateAsync(_AppConfig.Mail.Smtp.Username, _AppConfig.Mail.Smtp.Password);
-                        }
                         client.SendAsync(emailMessage);
                         client.DisconnectAsync(true);
                     }
                 }
+
                 if (!alert.SendToWebhook.IsEmpty())
                 {
                     var res = _ClientFactory.CreateClient().PostAsync(alert.SendToWebhook, new StringContent(JSON.Serialize(new { Text = subject }))).Result;
                     if (!res.IsSuccessStatusCode)
-                    {
                         throw new Exception($"Error sending to webhook: {res.StatusCode}: {res.Content.ReadAsStringAsync().Result}");
-                    }
                 }
 
                 alert.LastNotificationDate = DateTimeOffset.Now;
@@ -96,12 +91,8 @@ namespace Dash
         public void ProcessAlerts()
         {
             _DbContext.Query<Alert>("AlertGetActive").Each(alert => {
-                var scheduler = NCrontab.CrontabSchedule.Parse(alert.Cron);
-                var test = scheduler.GetNextOccurrence(DateTime.Now);
-                if (scheduler.GetNextOccurrence(DateTime.Now) < DateTime.Now.AddSeconds(60) && (alert.LastNotificationDate == null || alert.LastNotificationDate < DateTime.Now.AddMinutes(-alert.NotificationInterval)))
-                {
+                if (NCrontab.CrontabSchedule.Parse(alert.Cron).GetNextOccurrence(DateTime.Now) < DateTime.Now.AddSeconds(60) && (alert.LastNotificationDate == null || alert.LastNotificationDate < DateTime.Now.AddMinutes(-alert.NotificationInterval)))
                     BackgroundJob.Enqueue<JobHelper>(x => x.ProcessAlert(alert.Id));
-                }
             });
         }
     }

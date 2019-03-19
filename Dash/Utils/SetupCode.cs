@@ -2,9 +2,7 @@
 {
     public class SetupCode
     {
-        public SetupCode()
-        {
-        }
+        public SetupCode() { }
 
         public SetupCode(string account, string manualEntryKey, string qrCode)
         {

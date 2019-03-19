@@ -9,46 +9,37 @@ namespace Dash
 {
     public class ControllerAction
     {
-        private static readonly string _Namespace = typeof(Controllers.BaseController).Namespace;
-        private static List<Type> _CheckableType = new List<Type> { typeof(HttpPostAttribute), typeof(HttpPutAttribute), typeof(HttpDeleteAttribute) };
-        private IMemoryCache _Cache;
+        static readonly string _Namespace = typeof(Controllers.BaseController).Namespace;
+        static List<Type> _CheckableType = new List<Type> { typeof(HttpPostAttribute), typeof(HttpPutAttribute), typeof(HttpDeleteAttribute) };
+        IMemoryCache _Cache;
 
-        private Type GetControllerType() => Assembly.GetExecutingAssembly().GetType($"{_Namespace}.{Controller}Controller", false, true);
+        Type GetControllerType() => Assembly.GetExecutingAssembly().GetType($"{_Namespace}.{Controller}Controller", false, true);
 
-        private MethodInfo GetMethod()
+        MethodInfo GetMethod()
         {
             var controllerType = GetControllerType();
-            if (controllerType == null) return null;
+            if (controllerType == null)
+                return null;
 
             var requestType = RequestType();
             var methods = controllerType.GetMethods().Where(x => x.Name.ToLower() == Action.ToLower());
             if (requestType != null)
-            {
                 return methods.FirstOrDefault(x => x.GetCustomAttributes(false).Any(a => a.GetType() == requestType));
-            }
             return methods.FirstOrDefault(x => !x.GetCustomAttributes(false).Any(a => _CheckableType.Contains(a.GetType())));
         }
 
-        private Type RequestType()
+        Type RequestType()
         {
             if (Method == HttpVerbs.Post)
-            {
                 return typeof(HttpPostAttribute);
-            }
             if (Method == HttpVerbs.Put)
-            {
                 return typeof(HttpPutAttribute);
-            }
             if (Method == HttpVerbs.Delete)
-            {
                 return typeof(HttpDeleteAttribute);
-            }
             return null;
         }
 
-        public ControllerAction()
-        {
-        }
+        public ControllerAction() { }
 
         public ControllerAction(IMemoryCache cache) => _Cache = cache;
 
@@ -69,10 +60,7 @@ namespace Dash
             {
                 var parentAttr = method.GetCustomAttributes(false).FirstOrDefault(x => x.GetType() == typeof(ParentActionAttribute));
                 if (parentAttr != null)
-                {
-                    var parentAction = ((ParentActionAttribute)parentAttr).Action.ToLower().Trim().Split(',');
-                    return parentAction.Select(x => $"{Controller.ToLower().Trim()}.{x.Trim()}").ToList();
-                }
+                    return ((ParentActionAttribute)parentAttr).Action.ToLower().Trim().Split(',').Select(x => $"{Controller.ToLower().Trim()}.{x.Trim()}").ToList();
             }
             return new List<string> { $"{Controller.ToLower().Trim()}.{Action.ToLower().Trim()}" };
         });

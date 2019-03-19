@@ -14,18 +14,12 @@ namespace Dash.Utils
             var parentActionAttributes = (mvcContext.ActionDescriptor as ControllerActionDescriptor).MethodInfo
                 .GetCustomAttributes(typeof(ParentActionAttribute), true).Cast<ParentActionAttribute>().Where(x => !x.Action.IsEmpty());
             if (parentActionAttributes.Any())
-            {
                 parentActionAttributes.SelectMany(x => x.Action.Split(',')).Where(x => !x.IsEmpty()).Each(action => {
                     if (context.User.IsInRole($"{mvcContext.RouteData.Values["Controller"]}.{action}".ToLower()))
-                    {
                         context.Succeed(requirement);
-                    }
                 });
-            }
             else if (context.User.IsInRole($"{mvcContext.RouteData.Values["Controller"]}.{mvcContext.RouteData.Values["Action"]}".ToLower()))
-            {
                 context.Succeed(requirement);
-            }
             return Task.CompletedTask;
         }
     }

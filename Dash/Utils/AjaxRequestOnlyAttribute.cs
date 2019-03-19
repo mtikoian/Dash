@@ -6,9 +6,6 @@ namespace Dash
 {
     public sealed class AjaxRequestOnlyAttribute : ActionMethodSelectorAttribute
     {
-        public override bool IsValidForRequest(RouteContext routeContext, ActionDescriptor action)
-        {
-            return routeContext.HttpContext.Request.IsAjaxRequest();
-        }
+        public override bool IsValidForRequest(RouteContext routeContext, ActionDescriptor action) => routeContext.HttpContext.Request.IsAjaxRequest();
     }
 }

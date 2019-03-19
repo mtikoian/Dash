@@ -7,41 +7,27 @@ namespace Dash.Utils
     /// </summary>
     public static class Base32Encoding
     {
-        private static int CharToValue(char c)
+        static int CharToValue(char c)
         {
             var value = (int)c;
-
             //65-90 == uppercase letters
             if (value < 91 && value > 64)
-            {
                 return value - 65;
-            }
             //50-55 == numbers 2-7
             if (value < 56 && value > 49)
-            {
                 return value - 24;
-            }
             //97-122 == lowercase letters
             if (value < 123 && value > 96)
-            {
                 return value - 97;
-            }
-
             throw new ArgumentException("Character is not a Base32 character.", nameof(c));
         }
 
-        private static char ValueToChar(byte b)
+        static char ValueToChar(byte b)
         {
             if (b < 26)
-            {
                 return (char)(b + 65);
-            }
-
             if (b < 32)
-            {
                 return (char)(b + 24);
-            }
-
             throw new ArgumentException("Byte is not a value Base32 value.", nameof(b));
         }
 
@@ -52,15 +38,12 @@ namespace Dash.Utils
         /// <returns>byte[]</returns>
         public static byte[] ToBytes(string input)
         {
-            if (string.IsNullOrEmpty(input))
-            {
+            if (input.IsEmpty())
                 throw new ArgumentNullException(nameof(input));
-            }
 
             input = input.TrimEnd('='); //remove padding characters
             var byteCount = input.Length * 5 / 8; //this must be TRUNCATED
             var returnArray = new byte[byteCount];
-
             byte curByte = 0, bitsRemaining = 8;
             int mask = 0, arrayIndex = 0;
 
@@ -86,9 +69,7 @@ namespace Dash.Utils
 
             //if we didn't end with a full byte
             if (arrayIndex != byteCount)
-            {
                 returnArray[arrayIndex] = curByte;
-            }
 
             return returnArray;
         }
@@ -101,13 +82,10 @@ namespace Dash.Utils
         public static string ToString(byte[] input)
         {
             if (input == null || input.Length == 0)
-            {
                 throw new ArgumentNullException(nameof(input));
-            }
 
             var charCount = (int)Math.Ceiling(input.Length / 5d) * 8;
             var returnArray = new char[charCount];
-
             byte nextChar = 0, bitsRemaining = 5;
             var arrayIndex = 0;
 

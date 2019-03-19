@@ -12,7 +12,6 @@ using System.Text.RegularExpressions;
 using Dash.Models;
 using Dash.Utils;
 using FastMember;
-using Jil;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -24,10 +23,9 @@ namespace Dash
 {
     public static class Extensions
     {
-        private const string RequestedWithHeader = "X-Requested-With";
-        private const string XmlHttpRequest = "XMLHttpRequest";
-        private static Regex CssRegex = new Regex(@"(?<!_)([A-Z])", RegexOptions.Compiled);
-        private static Regex CsvRegex = new Regex(@"(?:^|(,\s?))(""(?:[^""]+|"""")*""|[^(,\s?)]*)", RegexOptions.Compiled);
+        const string _RequestedWithHeader = "X-Requested-With";
+        const string _XmlHttpRequest = "XMLHttpRequest";
+        static Regex _CssRegex = new Regex(@"(?<!_)([A-Z])", RegexOptions.Compiled, TimeSpan.FromMilliseconds(250));
 
         /// <summary>
         /// Add an item to the dictionary if `add` is true.
@@ -40,9 +38,7 @@ namespace Dash
         public static TagHelperAttributeList AddIf(this TagHelperAttributeList dict, string key, string value, bool add)
         {
             if (add)
-            {
                 dict.Add(key, value);
-            }
             return dict;
         }
 
@@ -57,9 +53,7 @@ namespace Dash
         public static AttributeDictionary AddIf(this AttributeDictionary dict, string key, string value, bool add)
         {
             if (add)
-            {
                 dict.Add(key, value);
-            }
             return dict;
         }
 
@@ -74,9 +68,7 @@ namespace Dash
         public static T Cached<T>(this IMemoryCache cache, string key, Func<T> onCreate) where T : class
         {
             if (cache == null)
-            {
                 return onCreate();
-            }
 
             if (!cache.TryGetValue<T>(key, out var result))
             {
@@ -98,32 +90,9 @@ namespace Dash
             var newObj = accessor.CreateNew();
             var properties = obj.GetType().GetProperties();
             foreach (var prop in properties)
-            {
                 if (prop.CanWrite)
-                {
                     accessor[newObj, prop.Name] = accessor[obj, prop.Name];
-                }
-            }
             return (T)newObj;
-        }
-
-        /// <summary>
-        /// Breaks a JSON array, or comma delimited string into a list.
-        /// </summary>
-        /// <param name="value">Value to break up.</param>
-        /// <returns>Returns a list of values as a string.</returns>
-        public static string Delimit(this string value)
-        {
-            if (value.Substring(0, 1) == "[")
-            {
-                var jsonArr = JSON.Deserialize<List<string>>(value);
-                if (jsonArr != null && jsonArr.Any())
-                {
-                    return jsonArr.Select(x => x.Trim()).Select(x => $"'{x.Replace("'", "''")}'").Join();
-                }
-            }
-
-            return CsvRegex.Matches(value).Cast<Match>().Select(x => x.Value.TrimStart(',').Trim().TrimStart('"').TrimEnd('"')).Select(x => $"'{x.Replace("'", "''")}'").Join();
         }
 
         /// <summary>
@@ -136,13 +105,9 @@ namespace Dash
         public static IEnumerable<T> Each<T>(this IEnumerable<T> list, Action<T> action)
         {
             if (list == null)
-            {
                 return list;
-            }
             foreach (var x in list)
-            {
                 action(x);
-            }
             return list;
         }
 
@@ -254,13 +219,9 @@ namespace Dash
         public static bool IsAjaxRequest(this HttpRequest request)
         {
             if (request == null)
-            {
                 throw new ArgumentNullException(nameof(request));
-            }
             if (request.Headers != null)
-            {
-                return request.Headers[RequestedWithHeader] == XmlHttpRequest;
-            }
+                return request.Headers[_RequestedWithHeader] == _XmlHttpRequest;
             return false;
         }
 
@@ -302,9 +263,7 @@ namespace Dash
         {
             var res = list.ToList();
             if (when)
-            {
                 res.Insert(0, item);
-            }
             return res;
         }
 
@@ -317,13 +276,9 @@ namespace Dash
         public static string PrettyTrim(this string value, int maxLength)
         {
             if (value.IsEmpty())
-            {
                 return value;
-            }
             if (value.Length > (maxLength - 4))
-            {
                 return $"{value.Substring(0, maxLength - 4)} ...";
-            }
             return value;
         }
 
@@ -399,9 +354,7 @@ namespace Dash
             var culture = CultureInfo.CurrentCulture;
             var diff = dt.DayOfWeek - culture.DateTimeFormat.FirstDayOfWeek;
             if (diff < 0)
-            {
                 diff += 7;
-            }
             return dt.AddDays(-diff).Date;
         }
 
@@ -445,14 +398,14 @@ namespace Dash
         /// </summary>
         /// <param name="val">String value to convert.</param>
         /// <returns>Css class name string.</returns>
-        public static string ToCssClass(this DashButtons val) => CssRegex.Replace(val.ToString(), "-$1").Trim('-').ToLower();
+        public static string ToCssClass(this DashButtons val) => _CssRegex.Replace(val.ToString(), "-$1").Trim('-').ToLower();
 
         /// <summary>
         /// Convert an icon enum to a css class name.
         /// </summary>
         /// <param name="val">String value to convert.</param>
         /// <returns>Css class name string.</returns>
-        public static string ToCssClass(this DashIcons val) => CssRegex.Replace(val.ToString(), "-$1").Trim('-').ToLower();
+        public static string ToCssClass(this DashIcons val) => _CssRegex.Replace(val.ToString(), "-$1").Trim('-').ToLower();
 
         /// <summary>
         /// Convert an object with a datetime into a datetime object.
@@ -517,9 +470,7 @@ namespace Dash
         public static int ToInt(this string val)
         {
             if (val == null)
-            {
                 return 0;
-            }
             int.TryParse(val, out var res);
             return res;
         }
@@ -539,44 +490,31 @@ namespace Dash
         /// <returns>Returns the adjusted datetime.</returns>
         public static string ToInterval(this DateTime dt, DateIntervals dateInterval)
         {
-            var interval = "";
             switch (dateInterval)
             {
                 case DateIntervals.Day:
-                    interval = string.Format("{0:yyyy-MM-dd}", dt);
-                    break;
+                    return string.Format("{0:yyyy-MM-dd}", dt);
                 case DateIntervals.FifteenMinutes:
-                    interval = string.Format("{0:yyyy-MM-dd HH}:{1:00}", dt, (dt.Minute / 15) * 15);
-                    break;
+                    return string.Format("{0:yyyy-MM-dd HH}:{1:00}", dt, (dt.Minute / 15) * 15);
                 case DateIntervals.FiveMinutes:
-                    interval = string.Format("{0:yyyy-MM-dd HH}:{1:00}", dt, (dt.Minute / 5) * 5);
-                    break;
+                    return string.Format("{0:yyyy-MM-dd HH}:{1:00}", dt, (dt.Minute / 5) * 5);
                 case DateIntervals.Hour:
-                    interval = string.Format("{0:yyyy-MM-dd HH:00}", dt);
-                    break;
+                    return string.Format("{0:yyyy-MM-dd HH:00}", dt);
                 case DateIntervals.Month:
-                    interval = string.Format("{0:yyyy-MM}", dt);
-                    break;
+                    return string.Format("{0:yyyy-MM}", dt);
                 case DateIntervals.OneMinute:
-                    interval = string.Format("{0:yyyy-MM-dd HH}:{1:00}", dt, dt.Minute);
-                    break;
+                    return string.Format("{0:yyyy-MM-dd HH}:{1:00}", dt, dt.Minute);
                 case DateIntervals.Quarter:
-                    interval = string.Format("{0} Q{1}", dt.Year, dt.Quarter());
-                    break;
+                    return string.Format("{0} Q{1}", dt.Year, dt.Quarter());
                 case DateIntervals.TenMinutes:
-                    interval = string.Format("{0:yyyy-MM-dd HH}:{1:00}", dt, (dt.Minute / 10) * 10);
-                    break;
+                    return string.Format("{0:yyyy-MM-dd HH}:{1:00}", dt, (dt.Minute / 10) * 10);
                 case DateIntervals.ThirtyMinutes:
-                    interval = string.Format("{0:yyyy-MM-dd HH}:{1:00}", dt, (dt.Minute / 30) * 30);
-                    break;
+                    return string.Format("{0:yyyy-MM-dd HH}:{1:00}", dt, (dt.Minute / 30) * 30);
                 case DateIntervals.Week:
-                    interval = string.Format("{0} W{1}", dt.Year, dt.Week());
-                    break;
-                case DateIntervals.Year:
-                    interval = string.Format("{0:yyyy}", dt);
-                    break;
+                    return string.Format("{0} W{1}", dt.Year, dt.Week());
+                default:
+                    return string.Format("{0:yyyy}", dt);
             }
-            return interval;
         }
 
         /// <summary>
@@ -586,47 +524,34 @@ namespace Dash
         /// <returns>Returns the correct sized timespan.</returns>
         public static TimeSpan ToIntervalStep(this DateIntervals dateInterval)
         {
-            var timeSpan = new TimeSpan();
             switch (dateInterval)
             {
                 case DateIntervals.Day:
-                    timeSpan = new TimeSpan(24, 0, 0);
-                    break;
+                    return new TimeSpan(24, 0, 0);
                 case DateIntervals.FifteenMinutes:
-                    timeSpan = new TimeSpan(0, 15, 0);
-                    break;
+                    return new TimeSpan(0, 15, 0);
                 case DateIntervals.FiveMinutes:
-                    timeSpan = new TimeSpan(0, 5, 0);
-                    break;
+                    return new TimeSpan(0, 5, 0);
                 case DateIntervals.Hour:
-                    timeSpan = new TimeSpan(1, 0, 0);
-                    break;
+                    return new TimeSpan(1, 0, 0);
                 case DateIntervals.Month:
                     // rough approximation
-                    timeSpan = new TimeSpan(Math.Round(24 * 30.436875).ToInt(), 0, 0);
-                    break;
+                    return new TimeSpan(Math.Round(24 * 30.436875).ToInt(), 0, 0);
                 case DateIntervals.OneMinute:
-                    timeSpan = new TimeSpan(0, 1, 0);
-                    break;
+                    return new TimeSpan(0, 1, 0);
                 case DateIntervals.Quarter:
                     // rough approximation
-                    timeSpan = new TimeSpan(Math.Round(24 * 91.25).ToInt(), 0, 0);
-                    break;
+                    return new TimeSpan(Math.Round(24 * 91.25).ToInt(), 0, 0);
                 case DateIntervals.TenMinutes:
-                    timeSpan = new TimeSpan(0, 10, 0);
-                    break;
+                    return new TimeSpan(0, 10, 0);
                 case DateIntervals.ThirtyMinutes:
-                    timeSpan = new TimeSpan(0, 30, 0);
-                    break;
+                    return new TimeSpan(0, 30, 0);
                 case DateIntervals.Week:
-                    timeSpan = new TimeSpan(24 * 7, 0, 0);
-                    break;
-                case DateIntervals.Year:
+                    return new TimeSpan(24 * 7, 0, 0);
+                default:
                     // rough approximation
-                    timeSpan = new TimeSpan(24 * 365, 0, 0);
-                    break;
+                    return new TimeSpan(24 * 365, 0, 0);
             }
-            return timeSpan;
         }
 
         /// <summary>
@@ -661,15 +586,11 @@ namespace Dash
         public static IEnumerable<SelectListItem> TranslatedSelect(this Type t, ResourceDictionary resource = null, string prefix = "")
         {
             if (t == null || !t.IsEnum)
-            {
                 return null;
-            }
 
             var intValues = Enum.GetValues(t).Cast<int>().ToArray();
             if (resource != null)
-            {
                 return (from i in intValues select new SelectListItem() { Text = resource[prefix + Enum.GetName(t, i)], Value = i.ToString() }).OrderBy(x => x.Text).ThenBy(x => x.Value);
-            }
             return (from i in intValues select new SelectListItem() { Text = Enum.GetName(t, i), Value = i.ToString() }).OrderBy(x => x.Text).ThenBy(x => x.Value);
         }
 

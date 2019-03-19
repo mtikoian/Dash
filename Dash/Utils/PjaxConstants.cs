@@ -2,7 +2,7 @@
 
 namespace Dash
 {
-    public class PjaxConstants
+    public static class PjaxConstants
     {
         public const string PjaxHeader = "X-PJAX";
         public const string PjaxUrl = "X-PJAX-URL";

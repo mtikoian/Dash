@@ -6,9 +6,9 @@ namespace Dash.Utils
 {
     public class EmailHelper
     {
-        private bool invalid = false;
+        bool _Invalid = false;
 
-        private string DomainMapper(Match match)
+        string DomainMapper(Match match)
         {
             // IdnMapping class with default property values.
             var idn = new IdnMapping();
@@ -19,33 +19,29 @@ namespace Dash.Utils
             }
             catch (ArgumentException)
             {
-                invalid = true;
+                _Invalid = true;
             }
             return match.Groups[1].Value + domainName;
         }
 
         public bool IsValidEmail(string strIn)
         {
-            invalid = false;
-            if (string.IsNullOrEmpty(strIn))
-            {
+            _Invalid = false;
+            if (strIn.IsEmpty())
                 return false;
-            }
 
             // Use IdnMapping class to convert Unicode domain names.
             try
             {
-                strIn = Regex.Replace(strIn, @"(@)(.+)$", DomainMapper, RegexOptions.None, TimeSpan.FromMilliseconds(200));
+                strIn = Regex.Replace(strIn, @"(@)(.+)$", DomainMapper, RegexOptions.None, TimeSpan.FromMilliseconds(250));
             }
             catch (RegexMatchTimeoutException)
             {
                 return false;
             }
 
-            if (invalid)
-            {
+            if (_Invalid)
                 return false;
-            }
 
             // Return true if strIn is in valid email format.
             try

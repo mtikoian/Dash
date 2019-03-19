@@ -16,13 +16,15 @@ namespace Dash.Utils
     /// </summary>
     public class TwoFactorAuthenticator
     {
-        private static long GetCurrentCounter() => GetCurrentCounter(DateTime.UtcNow, _epoch, 30);
+        static readonly DateTime _Epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
-        private static long GetCurrentCounter(DateTime now, DateTime epoch, int timeStep) => (long)(now - epoch).TotalSeconds / timeStep;
+        static long GetCurrentCounter() => GetCurrentCounter(DateTime.UtcNow, _Epoch, 30);
 
-        private static string RemoveWhitespace(string str) => new string(str.Where(c => !char.IsWhiteSpace(c)).ToArray());
+        static long GetCurrentCounter(DateTime now, DateTime epoch, int timeStep) => (long)(now - epoch).TotalSeconds / timeStep;
 
-        private static string UrlEncode(string value)
+        static string RemoveWhitespace(string str) => new string(str.Where(c => !char.IsWhiteSpace(c)).ToArray());
+
+        static string UrlEncode(string value)
         {
             var result = new StringBuilder();
             var validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.~";
@@ -30,13 +32,9 @@ namespace Dash.Utils
             foreach (var symbol in value)
             {
                 if (validChars.IndexOf(symbol) != -1)
-                {
                     result.Append(symbol);
-                }
                 else
-                {
                     result.Append('%' + string.Format("{0:X2}", (int)symbol));
-                }
             }
 
             return result.ToString().Replace(" ", "%20");
@@ -48,9 +46,7 @@ namespace Dash.Utils
         {
             var counter = BitConverter.GetBytes(iterationNumber);
             if (BitConverter.IsLittleEndian)
-            {
                 Array.Reverse(counter);
-            }
 
             var hash = new HMACSHA1(key).ComputeHash(counter);
             var offset = hash[hash.Length - 1] & 0xf;
@@ -65,7 +61,6 @@ namespace Dash.Utils
             var password = binary % (int)Math.Pow(10, digits);
             return password.ToString(new string('0', digits));
         }
-        public static DateTime _epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
         public TwoFactorAuthenticator() => DefaultClockDriftTolerance = TimeSpan.FromMinutes(1);
 
@@ -97,9 +92,8 @@ namespace Dash.Utils
         public static SetupCode GenerateSetupCode(string issuer, string accountTitleNoSpaces, byte[] accountSecretKey, int QRPixelsPerModule)
         {
             if (accountTitleNoSpaces == null)
-            {
                 throw new NullReferenceException("Account Title is null");
-            }
+
             accountTitleNoSpaces = RemoveWhitespace(accountTitleNoSpaces);
             var encodedSecretKey = Base32Encoding.ToString(accountSecretKey);
             var provisionUrl = "";
@@ -126,33 +120,23 @@ namespace Dash.Utils
             return new SetupCode(accountTitleNoSpaces, encodedSecretKey, $"data:image/png;base64,{result}");
         }
 
-        public static string GetCurrentPIN(string accountSecretKey) => GeneratePINAtInterval(accountSecretKey, GetCurrentCounter());
-
-        public static string GetCurrentPIN(string accountSecretKey, DateTime now) => GeneratePINAtInterval(accountSecretKey, GetCurrentCounter(now, _epoch, 30));
-
         public static string[] GetCurrentPINs(string accountSecretKey, TimeSpan timeTolerance)
         {
             var codes = new List<string>();
             var iterationCounter = GetCurrentCounter();
             var iterationOffset = 0;
             if (timeTolerance.TotalSeconds > 30)
-            {
                 iterationOffset = Convert.ToInt32(timeTolerance.TotalSeconds / 30.00);
-            }
 
             var iterationStart = iterationCounter - iterationOffset;
             var iterationEnd = iterationCounter + iterationOffset;
             for (var counter = iterationStart; counter <= iterationEnd; counter++)
-            {
                 codes.Add(GeneratePINAtInterval(accountSecretKey, counter));
-            }
 
             return codes.ToArray();
         }
 
         public static bool ValidateTwoFactorPIN(string accountSecretKey, string twoFactorCodeFromClient, TimeSpan timeTolerance) => GetCurrentPINs(accountSecretKey, timeTolerance).Any(c => c == twoFactorCodeFromClient);
-
-        public string[] GetCurrentPINs(string accountSecretKey) => GetCurrentPINs(accountSecretKey, DefaultClockDriftTolerance);
 
         public bool ValidateTwoFactorPIN(string accountSecretKey, string twoFactorCodeFromClient) => ValidateTwoFactorPIN(accountSecretKey, twoFactorCodeFromClient, DefaultClockDriftTolerance);
     }

@@ -11,8 +11,8 @@ namespace Dash
     /// </summary>
     public class MemoryCacheTicketStore : ITicketStore
     {
-        private const string _KeyPrefix = "AuthSessionStore-";
-        private IMemoryCache _Cache;
+        const string _KeyPrefix = "AuthSessionStore-";
+        IMemoryCache _Cache;
 
         public MemoryCacheTicketStore() => _Cache = new MemoryCache(new MemoryCacheOptions());
 
@@ -27,9 +27,7 @@ namespace Dash
             var options = new MemoryCacheEntryOptions();
             var expiresUtc = ticket.Properties.ExpiresUtc;
             if (expiresUtc.HasValue)
-            {
                 options.SetAbsoluteExpiration(expiresUtc.Value);
-            }
             options.SetSlidingExpiration(TimeSpan.FromMinutes(15));
 
             _Cache.Set(key, ticket, options);
@@ -45,8 +43,7 @@ namespace Dash
 
         public async Task<string> StoreAsync(AuthenticationTicket ticket)
         {
-            var guid = Guid.NewGuid();
-            var key = _KeyPrefix + guid.ToString();
+            var key = _KeyPrefix + Guid.NewGuid().ToString();
             await RenewAsync(key, ticket);
             return key;
         }

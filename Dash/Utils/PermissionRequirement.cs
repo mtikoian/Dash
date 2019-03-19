@@ -4,8 +4,6 @@ namespace Dash
 {
     public class PermissionRequirement : IAuthorizationRequirement
     {
-        public PermissionRequirement()
-        {
-        }
+        public PermissionRequirement() { }
     }
 }
