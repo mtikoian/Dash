@@ -10,53 +10,46 @@ namespace Dash.Controllers
     [Authorize(Policy = "HasPermission"), Pjax]
     public class ChartController : BaseController
     {
-        public ChartController(IDbContext dbContext, IAppConfiguration appConfig) : base(dbContext, appConfig)
+        protected bool IsOwner(Chart model)
         {
+            if (model.IsOwner)
+                return true;
+            ViewBag.Error = Charts.ErrorOwnerOnly;
+            return false;
         }
+
+        public ChartController(IDbContext dbContext, IAppConfiguration appConfig) : base(dbContext, appConfig) { }
 
         [HttpGet]
         public IActionResult ChangeType(int id)
         {
-            var chart = DbContext.Get<Chart>(id);
-            if (chart == null)
-            {
-                ViewBag.Error = Core.ErrorInvalidId;
+            if (!LoadModel(id, out Chart model))
                 return Index();
-            }
-            if (!chart.IsOwner)
-            {
-                ViewBag.Error = Charts.ErrorOwnerOnly;
+            if (!IsOwner(model))
                 return Edit(id);
-            }
-            return View("ChangeType", chart);
+
+            return View("ChangeType", model);
         }
 
-        [HttpPost, ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken, ValidModel]
         public IActionResult ChangeType(ChangeType model)
         {
-            if (model == null)
-            {
-                ViewBag.Error = Core.ErrorGeneric;
-                return Index();
-            }
             if (!ModelState.IsValid)
-            {
-                ViewBag.Error = ModelState.ToErrorString();
                 return View("ChangeType", model);
-            }
+            if (!IsOwner(model.Chart))
+                return Edit(model.Chart.Id);
+
             model.Update();
             ViewBag.Message = Charts.SuccessSavingChart;
             return Edit(model.Id);
         }
 
-        [HttpGet, ParentAction("Create")]
+        [HttpGet, ParentAction("Create"), ValidModel]
         public IActionResult Copy(CopyChart model)
         {
             if (!ModelState.IsValid)
-            {
-                ViewBag.Error = ModelState.ToErrorString();
                 return Index();
-            }
+
             model.Save();
             ViewBag.Message = Charts.SuccessCopyingChart;
             return Edit(model.Id);
@@ -65,19 +58,11 @@ namespace Dash.Controllers
         [HttpGet]
         public IActionResult Create() => View("Create", new CreateChart(DbContext, User.UserId()));
 
-        [HttpPost, ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken, ValidModel]
         public IActionResult Create(CreateChart model)
         {
-            if (model == null)
-            {
-                ViewBag.Error = Core.ErrorGeneric;
-                return Index();
-            }
             if (!ModelState.IsValid)
-            {
-                ViewBag.Error = ModelState.ToErrorString();
                 return View("Create", model);
-            }
 
             var chart = Chart.Create(model, User.UserId());
             DbContext.Save(chart);
@@ -88,38 +73,22 @@ namespace Dash.Controllers
         [HttpPost, AjaxRequestOnly]
         public IActionResult Data(int id)
         {
-            var chart = DbContext.Get<Chart>(id);
-            if (chart == null)
-            {
+            if (!LoadModel(id, out Chart model))
                 return Error(Core.ErrorInvalidId);
-            }
-            var user = DbContext.Get<User>(User.UserId());
-            if (!user.CanViewChart(chart))
-            {
+            if (!CurrentUser.CanViewChart(model))
                 return Error(Charts.ErrorPermissionDenied);
-            }
-            if ((chart.ChartRange?.Count ?? 0) == 0)
-            {
+            if ((model.ChartRange?.Count ?? 0) == 0)
                 return Error(Charts.ErrorNoRanges);
-            }
-            return Data(chart.GetData(false));
+            return Data(model.GetData(false));
         }
 
         [HttpDelete]
         public IActionResult Delete(int id)
         {
-            var chart = DbContext.Get<Chart>(id);
-            if (chart == null)
-            {
-                ViewBag.Error = Core.ErrorInvalidId;
+            if (!LoadModel(id, out Chart model) || !IsOwner(model))
                 return Index();
-            }
-            if (!chart.IsOwner)
-            {
-                ViewBag.Error = Charts.ErrorOwnerOnly;
-                return Index();
-            }
-            DbContext.Delete(chart);
+
+            DbContext.Delete(model);
             ViewBag.Message = Charts.SuccessDeletingChart;
             return Index();
         }
@@ -127,93 +96,56 @@ namespace Dash.Controllers
         [HttpGet]
         public IActionResult Edit(int id)
         {
-            var chart = DbContext.Get<Chart>(id);
-            if (chart == null)
-            {
-                ViewBag.Error = Core.ErrorInvalidId;
+            if (!LoadModel(id, out Chart model))
                 return Index();
-            }
-            var user = DbContext.Get<User>(User.UserId());
-            if (!user.CanViewChart(chart))
+            if (!CurrentUser.CanViewChart(model))
             {
                 ViewBag.Error = Charts.ErrorPermissionDenied;
                 return Index();
             }
-            return View("Edit", chart);
+
+            return View("Edit", model);
         }
 
-        [HttpPost]
-        public IActionResult Export(ExportChart model)
-        {
-            if (model == null)
-            {
-                return Error(Core.ErrorGeneric);
-            }
-            if (!ModelState.IsValid)
-            {
-                return Error(ModelState.ToErrorString());
-            }
-            return File(model.Stream(), model.ContentType, model.FormattedFileName);
-        }
+        [HttpPost, ValidModel]
+        public IActionResult Export(ExportChart model) => ModelState.IsValid ? File(model.Stream(), model.ContentType, model.FormattedFileName) : Error(ModelState.ToErrorString());
 
         [HttpGet]
         public IActionResult Index()
         {
+            // @todo modify table generation via Index so it can use the IsOwner column and conditionally hide the delete button
             RouteData.Values.Remove("id");
             return View("Index");
         }
 
         [HttpPost, AjaxRequestOnly, ParentAction("Index")]
-        public IActionResult List() => Rows(DbContext.GetAll<Chart>(new { UserId = User.UserId() }).Select(x => new { x.Id, x.Name }));
+        public IActionResult List() => Rows(DbContext.GetAll<Chart>(new { UserId = User.UserId() }).Select(x => new { x.Id, x.Name, x.IsOwner }));
 
         [HttpGet, ParentAction("Edit")]
         public IActionResult Rename(int id)
         {
-            var chart = DbContext.Get<Chart>(id);
-            if (chart == null)
-            {
-                ViewBag.Error = Core.ErrorInvalidId;
+            if (!LoadModel(id, out Chart model))
                 return Index();
-            }
-            if (!chart.IsOwner)
-            {
-                ViewBag.Error = Charts.ErrorOwnerOnly;
+            if (!IsOwner(model))
                 return Edit(id);
-            }
-            return View("Rename", chart);
+
+            return View("Rename", model);
         }
 
-        [HttpPut, ParentAction("Edit")]
+        [HttpPut, ParentAction("Edit"), ValidModel]
         public IActionResult Rename(RenameChart model)
         {
-            if (model == null)
-            {
-                return Error(Core.ErrorGeneric);
-            }
-            if (!model.Chart.IsOwner)
-            {
-                ViewBag.Error = Charts.ErrorOwnerOnly;
-                return Edit(model.Chart.Id);
-            }
             if (!ModelState.IsValid)
-            {
                 return Error(ModelState.ToErrorString());
-            }
+            if (!IsOwner(model.Chart))
+                return Edit(model.Chart.Id);
+
             model.Save();
             ViewBag.Message = Charts.NameSaved;
             return Edit(model.Chart.Id);
         }
 
         [HttpGet]
-        public IActionResult Sql(int id)
-        {
-            var chart = DbContext.Get<Chart>(id);
-            if (chart == null)
-            {
-                ViewBag.Error = Core.ErrorInvalidId;
-                return Index();
-            }
-            return View("Sql", chart.GetData(true));
-        }
+        public IActionResult Sql(int id) => LoadModel(id, out Chart model) && CurrentUser.CanViewChart(model) ? View("Sql", model.GetData(true)) : Index();
     }
 }

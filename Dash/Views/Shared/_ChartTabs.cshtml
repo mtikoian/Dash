@@ -13,7 +13,7 @@
             <authorized-button controller="Chart" action="Edit" title="@Charts.ViewChart" route-values="@(new { Id = Model.Id })" class="BtnLink" role="tab" />
         }
     </tab-item>
-    <tab-item no-render="@(!User.IsInRole("chartrange.index"))">
+    <tab-item no-render="@(!User.IsInRole("chartrange.index") || !Model.IsOwner)">
         @if (Model.ActiveTab == ChartViewTab.Ranges)
         {
             <tab-active id="ranges">@Charts.Ranges</tab-active>
@@ -43,7 +43,7 @@
             <authorized-button controller="Chart" action="ChangeType" title="@Charts.ChangeType" route-values="@(new { Id = Model.Id })" class="BtnLink" role="tab" />
         }
     </tab-item>
-    <tab-item no-render="@(!User.IsInRole("chartshare.index"))">
+    <tab-item no-render="@(!User.IsInRole("chartshare.index") || !Model.IsOwner)">
         @if (Model.ActiveTab == ChartViewTab.Share)
         {
             <tab-active id="share">@Charts.ShareChart</tab-active>

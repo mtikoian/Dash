@@ -34,7 +34,11 @@ namespace Dash.Models
         [DbIgnore, BindNever, ValidateNever]
         public IEnumerable<SelectListItem> AggregatorListItems => typeof(Aggregators).TranslatedSelect(new ResourceDictionary("Filters"), "LabelGroup_");
 
-        public Chart Chart => _Chart ?? (_Chart = DbContext.Get<Chart>(ChartId));
+        public Chart Chart
+        {
+            get => _Chart ?? (_Chart = DbContext.Get<Chart>(ChartId));
+            set => _Chart = value;
+        }
 
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public int ChartId { get; set; }

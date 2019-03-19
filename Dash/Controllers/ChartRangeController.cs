@@ -10,28 +10,35 @@ namespace Dash.Controllers
     [Authorize(Policy = "HasPermission"), Pjax]
     public class ChartRangeController : BaseController
     {
-        private IActionResult CreateEditView(ChartRange model) => View("CreateEdit", model);
-
-        private IActionResult Save(ChartRange model)
+        IActionResult CreateEditView(ChartRange model)
         {
-            if (model == null)
-            {
-                ViewBag.Error = Core.ErrorGeneric;
-                return CreateEditView(model);
-            }
+            if (!IsOwner(model.Chart))
+                return RedirectToAction("Edit", "Chart", new { Id = model.ChartId });
+
+            return View("CreateEdit", model);
+        }
+
+        IActionResult Save(ChartRange model)
+        {
             if (!ModelState.IsValid)
-            {
-                ViewBag.Error = ModelState.ToErrorString();
                 return CreateEditView(model);
-            }
+            if (!IsOwner(model.Chart))
+                return RedirectToAction("Edit", "Chart", new { Id = model.ChartId });
+
             DbContext.Save(model);
             ViewBag.Message = Charts.SuccessSavingRange;
             return Index(model.ChartId);
         }
 
-        public ChartRangeController(IDbContext dbContext, IAppConfiguration appConfig) : base(dbContext, appConfig)
+        protected bool IsOwner(Chart model)
         {
+            if (model.IsOwner)
+                return true;
+            TempData["Error"] = Charts.ErrorOwnerOnly;
+            return false;
         }
+
+        public ChartRangeController(IDbContext dbContext, IAppConfiguration appConfig) : base(dbContext, appConfig) { }
 
         [HttpGet, ParentAction("Edit")]
         public IActionResult Columns(int id, int chartId, int? reportId)
@@ -39,6 +46,13 @@ namespace Dash.Controllers
             var model = DbContext.Get<ChartRange>(id) ?? new ChartRange(DbContext, id);
             model.ChartId = chartId;
             model.ReportId = reportId ?? model.ReportId;
+
+            if (!LoadModel(model.ChartId, out Chart chart, true))
+                return RedirectToAction("Index", "Chart");
+            if (!IsOwner(chart))
+                return RedirectToAction("Edit", "Chart", new { Id = chart.Id });
+            model.Chart = chart;
+
             // clear modelState so that rangeId isn't treated as the new model Id
             ModelState.Clear();
             return PartialView("_Columns", model);
@@ -47,18 +61,15 @@ namespace Dash.Controllers
         [HttpGet]
         public IActionResult Create(int id)
         {
-            var model = DbContext.Get<Chart>(id);
-            if (model == null)
-            {
-                TempData["Error"] = Core.ErrorInvalidId;
+            if (!LoadModel(id, out Chart model, true))
                 return RedirectToAction("Index", "Chart");
-            }
+
             // clear modelState so that chartId isn't treated as the new model Id
             ModelState.Clear();
             return CreateEditView(new ChartRange(DbContext, id) { DisplayOrder = model.ChartRange.Count });
         }
 
-        [HttpPost, ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken, ValidModel]
         public IActionResult Create(ChartRange model) => Save(model);
 
         [HttpGet, ParentAction("Edit")]
@@ -66,6 +77,13 @@ namespace Dash.Controllers
         {
             var model = DbContext.Get<ChartRange>(id) ?? new ChartRange(DbContext, id);
             model.XAxisColumnId = xAxisColumnId ?? model.XAxisColumnId;
+
+            if (!LoadModel(model.ChartId, out Chart chart, true))
+                return RedirectToAction("Index", "Chart");
+            if (!IsOwner(chart))
+                return RedirectToAction("Edit", "Chart", new { Id = chart.Id });
+            model.Chart = chart;
+
             // clear modelState so that rangeId isn't treated as the new model Id
             ModelState.Clear();
             return PartialView("_DateInterval", model);
@@ -74,12 +92,11 @@ namespace Dash.Controllers
         [HttpDelete, AjaxRequestOnly]
         public IActionResult Delete(int id)
         {
-            var model = DbContext.Get<ChartRange>(id);
-            if (model == null)
-            {
-                TempData["Error"] = Core.ErrorInvalidId;
+            if (!LoadModel(id, out ChartRange model, true))
                 return RedirectToAction("Index", "Chart");
-            }
+            if (!IsOwner(model.Chart))
+                return RedirectToAction("Edit", "Chart", new { Id = model.ChartId });
+
             // db will delete filter and re-order remaining ones
             DbContext.Delete(model);
             ViewBag.Message = Charts.SuccessDeletingRange;
@@ -87,47 +104,45 @@ namespace Dash.Controllers
         }
 
         [HttpGet]
-        public IActionResult Edit(int id)
-        {
-            var model = DbContext.Get<ChartRange>(id);
-            if (model == null)
-            {
-                TempData["Error"] = Core.ErrorInvalidId;
-                return RedirectToAction("Index", "Chart");
-            }
-            return CreateEditView(model);
-        }
+        public IActionResult Edit(int id) => LoadModel(id, out ChartRange model, true) ? CreateEditView(model) : RedirectToAction("Index", "Chart");
 
-        [HttpPut, ValidateAntiForgeryToken]
+        [HttpPut, ValidateAntiForgeryToken, ValidModel]
         public IActionResult Edit(ChartRange model) => Save(model);
 
         [HttpGet]
         public IActionResult Index(int id)
         {
+            if (!LoadModel(id, out Chart model, true))
+                return RedirectToAction("Index", "Chart");
+            if (!IsOwner(model))
+                return RedirectToAction("Edit", "Chart", new { Id = model.Id });
+
             RouteData.Values.Remove("id");
-            return View("Index", DbContext.Get<Chart>(id));
+            return View("Index", model);
         }
 
         [HttpPost, AjaxRequestOnly, ParentAction("Index")]
         public IActionResult List(int id)
         {
-            var ranges = DbContext.Get<Chart>(id).ChartRange.OrderBy(x => x.DisplayOrder).ToList();
+            if (!LoadModel(id, out Chart model, true))
+                return Error(Core.ErrorInvalidId);
+            if (!IsOwner(model))
+                return Error(Charts.ErrorOwnerOnly);
+
+            var ranges = model.ChartRange.OrderBy(x => x.DisplayOrder).ToList();
             if (ranges.Any())
-            {
                 ranges[ranges.Count() - 1].IsLast = true;
-            }
             return Rows(ranges.Select(x => new { x.Id, x.ChartId, x.ReportName, x.XAxisColumnName, x.YAxisColumnName, x.DisplayOrder, x.IsLast }));
         }
 
         [HttpGet, ParentAction("Edit")]
         public IActionResult MoveDown(int id)
         {
-            var model = DbContext.Get<ChartRange>(id);
-            if (model == null)
-            {
-                TempData["Error"] = Core.ErrorInvalidId;
+            if (!LoadModel(id, out ChartRange model, true))
                 return RedirectToAction("Index", "Chart");
-            }
+            if (!IsOwner(model.Chart))
+                return RedirectToAction("Edit", "Chart", new { Id = model.ChartId });
+
             if (!model.MoveDown(out var error))
             {
                 ViewBag.Error = error;
@@ -140,12 +155,11 @@ namespace Dash.Controllers
         [HttpGet, ParentAction("Edit")]
         public IActionResult MoveUp(int id)
         {
-            var model = DbContext.Get<ChartRange>(id);
-            if (model == null)
-            {
-                TempData["Error"] = Core.ErrorInvalidId;
+            if (!LoadModel(id, out ChartRange model, true))
                 return RedirectToAction("Index", "Chart");
-            }
+            if (!IsOwner(model.Chart))
+                return RedirectToAction("Edit", "Chart", new { Id = model.ChartId });
+
             if (!model.MoveUp(out var error))
             {
                 ViewBag.Error = error;
