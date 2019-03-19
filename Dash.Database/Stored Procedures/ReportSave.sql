@@ -2,7 +2,6 @@
 	@Id INT OUTPUT,
 	@DatasetId INT,
 	@Name NVARCHAR(100),
-	@OwnerId INT,	
 	@RowLimit INT = NULL,
 	@ChartTypeId INT = NULL,
 	@XAxisColumnId INT = NULL,
@@ -18,15 +17,15 @@ AS
 	BEGIN TRY
 		IF ISNULL(@Id, 0) = 0
 			BEGIN
-				INSERT INTO Report (DatasetId, Name, [OwnerId], RowLimit, ChartTypeId, XAxisColumnId, YAxisColumnId, ChartAggregatorId, AggregatorId, Width, ChartDateIntervalId, UserCreated)
-					VALUES (@DatasetId, @Name, @OwnerId, @RowLimit, (CASE @ChartTypeId WHEN 0 THEN NULL ELSE @ChartTypeId END), 
+				INSERT INTO Report (DatasetId, [Name], RowLimit, ChartTypeId, XAxisColumnId, YAxisColumnId, ChartAggregatorId, AggregatorId, Width, ChartDateIntervalId, UserCreated)
+					VALUES (@DatasetId, @Name, @RowLimit, (CASE @ChartTypeId WHEN 0 THEN NULL ELSE @ChartTypeId END), 
 					(CASE @XAxisColumnId WHEN 0 THEN NULL ELSE @XAxisColumnId END), (CASE @YAxisColumnId WHEN 0 THEN NULL ELSE @YAxisColumnId END), 
 					@ChartAggregatorId, @AggregatorId, @Width, @ChartDateIntervalId, @RequestUserId)
 				SET @Id = SCOPE_IDENTITY()
 			END
 		ELSE
 			BEGIN
-				UPDATE Report SET DatasetId = @DatasetId, Name = @Name, [OwnerId] = @OwnerId, RowLimit = @RowLimit,
+				UPDATE Report SET DatasetId = @DatasetId, [Name] = @Name, RowLimit = @RowLimit,
 					ChartTypeId = (CASE @ChartTypeId WHEN 0 THEN NULL ELSE @ChartTypeId END), XAxisColumnId = (CASE @XAxisColumnId WHEN 0 THEN NULL ELSE @XAxisColumnId END),
 					YAxisColumnId = (CASE @YAxisColumnId WHEN 0 THEN NULL ELSE @YAxisColumnId END),
 					ChartAggregatorId = @ChartAggregatorId, AggregatorId = @AggregatorId, Width = @Width, ChartDateIntervalId = @ChartDateIntervalId, 

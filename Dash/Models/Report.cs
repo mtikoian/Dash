@@ -71,16 +71,21 @@ namespace Dash.Models
         [DbIgnore]
         public bool IsDashboard { get; set; } = false;
 
-        [DbIgnore]
-        public bool IsOwner => RequestUserId == OwnerId;
+        [DbIgnore, BindNever, ValidateNever]
+        public bool IsOwner
+        {
+            get
+            {
+                if (UserCreated == 0 && Id > 0)
+                    UserCreated = DbContext.Get<Report>(Id)?.UserCreated ?? 0;
+                return RequestUserId == UserCreated;
+            }
+        }
 
         [Display(Name = "Name", ResourceType = typeof(Reports))]
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         [StringLength(100, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string Name { get; set; }
-
-        [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
-        public int OwnerId { get; set; }
 
         [BindNever, ValidateNever]
         public List<ReportColumn> ReportColumn
@@ -104,13 +109,16 @@ namespace Dash.Models
         }
 
         public int RowLimit { get; set; } = 10;
+
+        [DbIgnore]
+        public int UserCreated { get; set; }
+
         public decimal Width { get; set; } = 100;
 
         public Report Copy(string name = null)
         {
             var newReport = this.Clone();
             newReport.Id = 0;
-            newReport.OwnerId = RequestUserId ?? 0;
             newReport.Name = name.IsEmpty() ? string.Format(Core.CopyOf, Name) : name;
 
             newReport.ReportColumn = (ReportColumn ?? DbContext.GetAll<ReportColumn>(new { ReportId = Id }))?.Select(x => new ReportColumn {

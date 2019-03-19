@@ -7,7 +7,6 @@
     [YAxisColumnId]       INT                NULL,
     [ChartAggregatorId]   INT                NULL,
     [ChartTypeId]         INT                NULL,
-    [OwnerId]             INT                NULL,
     [Width]               DECIMAL (18, 14)   NULL,
     [AggregatorId]        INT                NULL,
     [ChartDateIntervalId] INT                NULL,
@@ -20,9 +19,12 @@
     CONSTRAINT [FK_Report_DatasetColumn_X] FOREIGN KEY ([XAxisColumnId]) REFERENCES [dbo].[DatasetColumn] ([Id]),
     CONSTRAINT [FK_Report_DatasetColumn_Y] FOREIGN KEY ([YAxisColumnId]) REFERENCES [dbo].[DatasetColumn] ([Id])
 );
-
-
 GO
+
 CREATE NONCLUSTERED INDEX [IX_Report_DatasetId]
     ON [dbo].[Report]([DatasetId] ASC);
+GO
 
+CREATE NONCLUSTERED INDEX [IX_Report_UserCreated]
+    ON [dbo].[Report]([UserCreated] ASC);
+GO
