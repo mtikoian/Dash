@@ -49,13 +49,11 @@ namespace Dash.Models
 
     public class Chart : BaseModel
     {
-        private Regex _AlphaNumeric = new Regex("[^a-zA-Z0-9-]", RegexOptions.Compiled);
-        private List<ChartRange> _ChartRange;
-        private List<ChartShare> _ChartShare;
+        Regex _AlphaNumeric = new Regex("[^a-zA-Z0-9-]", RegexOptions.Compiled, TimeSpan.FromMilliseconds(250));
+        List<ChartRange> _ChartRange;
+        List<ChartShare> _ChartShare;
 
-        public Chart()
-        {
-        }
+        public Chart() { }
 
         public static IEnumerable<SelectListItem> ChartTypeSelectList => typeof(ChartTypes).TranslatedSelect(new ResourceDictionary("Charts"), "LabelType_");
 
@@ -76,8 +74,16 @@ namespace Dash.Models
         [Display(Name = "Type", ResourceType = typeof(Charts))]
         public int ChartTypeId { get; set; }
 
-        [DbIgnore]
-        public bool IsOwner => RequestUserId == OwnerId;
+        [DbIgnore, BindNever, ValidateNever]
+        public bool IsOwner
+        {
+            get
+            {
+                if (UserCreated == 0 && Id > 0)
+                    UserCreated = DbContext.Get<Alert>(Id)?.UserCreated ?? 0;
+                return RequestUserId == UserCreated;
+            }
+        }
 
         [DbIgnore, BindNever, ValidateNever]
         public bool IsRadial => ChartTypeId == (int)ChartTypes.Pie || ChartTypeId == (int)ChartTypes.Doughnut || ChartTypeId == (int)ChartTypes.PolarArea;
@@ -87,16 +93,15 @@ namespace Dash.Models
         [StringLength(100, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string Name { get; set; }
 
-        [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
-        public int OwnerId { get; set; }
+        [DbIgnore]
+        public int UserCreated { get; set; }
 
-        public static Chart Create(CreateChart chart, int userId) => new Chart { Name = chart.Name, ChartTypeId = chart.ChartTypeId, OwnerId = userId, RequestUserId = userId };
+        public static Chart Create(CreateChart chart, int userId) => new Chart { Name = chart.Name, ChartTypeId = chart.ChartTypeId, RequestUserId = userId };
 
         public Chart Copy(string name = null)
         {
             var newChart = this.Clone();
             newChart.Id = 0;
-            newChart.OwnerId = RequestUserId ?? 0;
             newChart.Name = name.IsEmpty() ? string.Format(Core.CopyOf, Name) : name;
 
             // duplicate the chart ranges

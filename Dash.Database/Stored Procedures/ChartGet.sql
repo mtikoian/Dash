@@ -10,7 +10,8 @@ AS
 	ELSE IF (@UserId IS NOT NULL)
 		BEGIN
 			-- there may be a more efficient way to do this. i'm opting for multiple queries instead of a complex predicate
-			INSERT INTO @Ids SELECT Id FROM Chart WHERE OwnerId = @UserId
+			INSERT INTO @Ids SELECT Id FROM Chart WHERE UserCreated = @UserId
+			INSERT INTO @Ids SELECT DISTINCT ChartId FROM ChartShare cs WHERE cs.UserId = @UserId AND ChartId NOT IN (SELECT Id FROM @Ids)
 			INSERT INTO @Ids SELECT DISTINCT ChartId FROM ChartShare cs 
 				INNER JOIN UserRole ur ON ur.RoleId = cs.RoleId 
 				WHERE @UserId IN (ur.UserId, cs.UserId) AND ChartId NOT IN (SELECT Id FROM @Ids)
@@ -18,7 +19,7 @@ AS
 	ELSE
 		INSERT INTO @Ids SELECT Id FROM Chart
 
-	SELECT c.Id, c.Name, c.ChartTypeId, c.OwnerId, c.DateCreated, ISNULL(c.DateUpdated, c.DateCreated) AS DateUpdated
+	SELECT c.Id, c.Name, c.ChartTypeId, c.UserCreated, c.DateCreated, ISNULL(c.DateUpdated, c.DateCreated) AS DateUpdated
 	FROM @Ids i
 	INNER JOIN Chart c ON c.Id = i.Id
 	ORDER BY c.Name

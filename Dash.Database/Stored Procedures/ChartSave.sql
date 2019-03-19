@@ -1,7 +1,6 @@
 ﻿CREATE PROCEDURE ChartSave
 	@Id INT OUTPUT,
 	@Name NVARCHAR(100),
-	@OwnerId INT,	
 	@ChartTypeId INT = NULL,
 	@RequestUserId INT = NULL
 AS
@@ -10,13 +9,13 @@ AS
 	BEGIN TRY
 		IF ISNULL(@Id, 0) = 0
 			BEGIN
-				INSERT INTO Chart (Name, [OwnerId], ChartTypeId, UserCreated)
-					VALUES (@Name, @OwnerId, (CASE @ChartTypeId WHEN 0 THEN NULL ELSE @ChartTypeId END), @RequestUserId)
+				INSERT INTO Chart ([Name], ChartTypeId, UserCreated)
+					VALUES (@Name, (CASE @ChartTypeId WHEN 0 THEN NULL ELSE @ChartTypeId END), @RequestUserId)
 				SET @Id = SCOPE_IDENTITY()
 			END
 		ELSE
 			BEGIN
-				UPDATE Chart SET Name = @Name, [OwnerId] = @OwnerId, ChartTypeId = (CASE @ChartTypeId WHEN 0 THEN NULL ELSE @ChartTypeId END), 
+				UPDATE Chart SET [Name] = @Name, ChartTypeId = (CASE @ChartTypeId WHEN 0 THEN NULL ELSE @ChartTypeId END), 
 					UserUpdated = @RequestUserId, DateUpdated = SYSDATETIMEOFFSET()
 				WHERE Id = @Id
 			END
