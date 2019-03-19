@@ -1,6 +1,5 @@
 ﻿CREATE TABLE [dbo].[Alert] (
     [Id]                   INT                IDENTITY (1, 1) NOT NULL,
-    [OwnerId]              INT                NULL,
     [Name]                 NVARCHAR (100)     NOT NULL,
     [ReportId]             INT                NOT NULL,
     [SendToEmail]          NVARCHAR (1000)    NULL,
@@ -23,9 +22,8 @@
     [UserUpdated]          INT                NULL,
     CONSTRAINT [PK_Alert] PRIMARY KEY CLUSTERED ([Id] ASC)
 );
-
-
 GO
-CREATE NONCLUSTERED INDEX [IX_Alert_OwnerId]
-    ON [dbo].[Alert]([OwnerId] ASC);
 
+CREATE NONCLUSTERED INDEX [IX_Alert_UserCreated]
+    ON [dbo].[Alert]([UserCreated] ASC);
+GO

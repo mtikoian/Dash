@@ -2,7 +2,6 @@
     @Id INT OUTPUT,
     @Name NVARCHAR(100),
     @ReportId INT,
-    @OwnerId INT,
     @SendToEmail NVARCHAR(1000),
     @SendToWebhook NVARCHAR(1000),
     @Subject NVARCHAR(100),
@@ -23,8 +22,8 @@ AS
 
     IF ISNULL(@Id, 0) = 0
         BEGIN
-            INSERT INTO Alert ([Name], [ReportId], [OwnerId], SendToEmail, SendToWebhook, [Subject], ResultCount, CronMinute, CronHour, CronDayOfMonth, CronMonth, CronDayOfWeek, LastRunDate, [Hash], IsActive, NotificationInterval, LastNotificationDate, UserCreated)
-                VALUES (@Name, @ReportId, @OwnerId, @SendToEmail, @SendToWebhook, @Subject, @ResultCount, @CronMinute, @CronHour, @CronDayOfMonth, @CronMonth, @CronDayOfWeek, @LastRunDate, @Hash, @IsActive, @NotificationInterval, @LastNotificationDate, @RequestUserId)
+            INSERT INTO Alert ([Name], [ReportId], SendToEmail, SendToWebhook, [Subject], ResultCount, CronMinute, CronHour, CronDayOfMonth, CronMonth, CronDayOfWeek, LastRunDate, [Hash], IsActive, NotificationInterval, LastNotificationDate, UserCreated)
+                VALUES (@Name, @ReportId, @SendToEmail, @SendToWebhook, @Subject, @ResultCount, @CronMinute, @CronHour, @CronDayOfMonth, @CronMonth, @CronDayOfWeek, @LastRunDate, @Hash, @IsActive, @NotificationInterval, @LastNotificationDate, @RequestUserId)
             SET @Id = SCOPE_IDENTITY()
         END
     ELSE

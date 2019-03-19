@@ -13,19 +13,11 @@ namespace Dash.Models
 {
     public class Alert : BaseModel, IValidatableObject
     {
-        private Report _Report;
+        Report _Report;
 
-        public Alert()
-        {
-        }
+        public Alert() { }
 
         public Alert(IDbContext dbContext) => DbContext = dbContext;
-
-        public Alert(IDbContext dbContext, int userId)
-        {
-            DbContext = dbContext;
-            OwnerId = userId;
-        }
 
         [DbIgnore, JilDirective(true)]
         public string Cron => $"{CronMinute} {CronHour} {CronDayOfMonth} {CronMonth} {CronDayOfWeek}";
@@ -56,14 +48,23 @@ namespace Dash.Models
             get
             {
                 using (var md5 = MD5.Create())
-                {
                     return BitConverter.ToString(md5.ComputeHash(Encoding.UTF8.GetBytes(JSON.Serialize(this)))).Replace("-", "");
-                }
             }
         }
 
         [Display(Name = "IsActive", ResourceType = typeof(Alerts))]
         public bool IsActive { get; set; }
+
+        [DbIgnore, BindNever, ValidateNever]
+        public bool IsOwner
+        {
+            get
+            {
+                if (UserCreated == 0 && Id > 0)
+                    UserCreated = DbContext.Get<Alert>(Id)?.UserCreated ?? 0;
+                return RequestUserId == UserCreated;
+            }
+        }
 
         [Display(Name = "LastNotificationDate", ResourceType = typeof(Alerts))]
         public DateTimeOffset? LastNotificationDate { get; set; }
@@ -80,10 +81,6 @@ namespace Dash.Models
         [Display(Name = "NotificationInterval", ResourceType = typeof(Alerts))]
         [Required]
         public int NotificationInterval { get; set; }
-
-        [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
-        [JilDirective(true)]
-        public int OwnerId { get; set; }
 
         [DbIgnore, JilDirective(true), BindNever, ValidateNever]
         public Report Report => _Report ?? (_Report = DbContext.Get<Report>(ReportId));
@@ -109,11 +106,13 @@ namespace Dash.Models
         [StringLength(100, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string Subject { get; set; }
 
+        [JilDirective(true), DbIgnore]
+        public int UserCreated { get; set; }
+
         public Alert Copy(string name = null)
         {
             var newAlert = this.Clone();
             newAlert.Id = 0;
-            newAlert.OwnerId = RequestUserId ?? 0;
             newAlert.Name = name.IsEmpty() ? string.Format(Core.CopyOf, Name) : name;
             return newAlert;
         }
@@ -123,48 +122,36 @@ namespace Dash.Models
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             if (SendToEmail.IsEmpty() && SendToWebhook.IsEmpty())
-            {
                 yield return new ValidationResult(Alerts.ErrorEmailOrWebhookRequired, new[] { "SendToEmail" });
-            }
             if (CronMinute != "*" && !CronMinute.Contains(","))
             {
                 var x = CronMinute.ToInt();
                 if (x < 0 || x > 59)
-                {
                     yield return new ValidationResult(Alerts.ErrorCronMinute, new[] { "CronMinute" });
-                }
             }
             if (CronHour != "*" && !CronHour.Contains(","))
             {
                 var x = CronHour.ToInt();
                 if (x < 0 || x > 23)
-                {
                     yield return new ValidationResult(Alerts.ErrorCronHour, new[] { "CronHour" });
-                }
             }
             if (CronDayOfMonth != "*" && !CronDayOfMonth.Contains(","))
             {
                 var x = CronDayOfMonth.ToInt();
                 if (x < 1 || x > 31)
-                {
                     yield return new ValidationResult(Alerts.ErrorCronDayOfMonth, new[] { "CronDayOfMonth" });
-                }
             }
             if (CronMonth != "*" && !CronMonth.Contains(","))
             {
                 var x = CronMonth.ToInt();
                 if (x < 1 || x > 12)
-                {
                     yield return new ValidationResult(Alerts.ErrorCronMonth, new[] { "CronMonth" });
-                }
             }
             if (CronDayOfWeek != "*" && !CronDayOfWeek.Contains(","))
             {
                 var x = CronDayOfWeek.ToInt();
                 if (x < 0 || x > 6)
-                {
                     yield return new ValidationResult(Alerts.ErrorCronDayOfWeek, new[] { "CronDayOfWeek" });
-                }
             }
 
             ValidationResult parseError = null;
@@ -178,16 +165,11 @@ namespace Dash.Models
                 parseError = new ValidationResult(Alerts.ErrorCronParse);
             }
             if (parseError != null)
-            {
                 yield return parseError;
-            }
 
-            // currently the hash will include name so this won't work as expected. need to modify hash creation to only use alert criteria instead
-            var duplicateAlert = DbContext.GetAll<Alert>(new { UserId = RequestUserId ?? OwnerId }).FirstOrDefault(x => x.Hash == Hash);
+            var duplicateAlert = DbContext.GetAll<Alert>(new { UserId = RequestUserId ?? UserCreated }).FirstOrDefault(x => x.Hash == Hash);
             if (duplicateAlert != null && duplicateAlert.Id != Id)
-            {
                 yield return new ValidationResult(string.Format(Alerts.ErrorHash, duplicateAlert.Name));
-            }
         }
     }
 }
