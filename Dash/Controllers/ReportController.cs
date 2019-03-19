@@ -10,23 +10,22 @@ namespace Dash.Controllers
     [Authorize(Policy = "HasPermission"), Pjax]
     public class ReportController : BaseController
     {
-        public ReportController(IDbContext dbContext, IAppConfiguration appConfig) : base(dbContext, appConfig)
+        protected bool IsOwner(Report model)
         {
+            if (model.IsOwner)
+                return true;
+            ViewBag.Error = Reports.ErrorOwnerOnly;
+            return false;
         }
 
-        [HttpGet, ParentAction("Create")]
+        public ReportController(IDbContext dbContext, IAppConfiguration appConfig) : base(dbContext, appConfig) { }
+
+        [HttpGet, ParentAction("Create"), ValidModel]
         public IActionResult Copy(CopyReport model)
         {
-            if (model == null)
-            {
-                ViewBag.Error = Core.ErrorGeneric;
-                return Index();
-            }
             if (!ModelState.IsValid)
-            {
-                ViewBag.Error = ModelState.ToErrorString();
                 return Index();
-            }
+
             model.Save();
             ViewBag.Message = Reports.SuccessCopyingReport;
             return Edit(model.Id);
@@ -35,28 +34,18 @@ namespace Dash.Controllers
         [HttpGet]
         public IActionResult Create() => View("Create", new CreateReport(DbContext, User.UserId()));
 
-        [HttpPost, ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken, ValidModel]
         public IActionResult Create(CreateReport model)
         {
-            if (model == null)
-            {
-                ViewBag.Error = Core.ErrorGeneric;
-                return View("Create", model);
-            }
             if (!ModelState.IsValid)
-            {
-                ViewBag.Error = ModelState.ToErrorString();
                 return View("Create", model);
-            }
 
-            var userId = User.UserId();
             var newReport = new Report {
                 DbContext = DbContext,
                 DatasetId = model.DatasetId,
                 Name = model.Name,
                 Width = 0,
-                OwnerId = userId,
-                RequestUserId = userId
+                RequestUserId = User.UserId()
             };
             newReport.Save(false);
             ViewBag.Message = Reports.SuccessCreatingReport;
@@ -64,17 +53,14 @@ namespace Dash.Controllers
             return SelectColumns(newReport.Id);
         }
 
-        [HttpPost, AjaxRequestOnly]
+        [HttpPost, AjaxRequestOnly, ValidModel]
         public IActionResult Data([FromBody] ReportData model)
         {
-            if (model == null)
-            {
-                return Error(Core.ErrorGeneric);
-            }
             if (!ModelState.IsValid)
-            {
                 return Error(ModelState.ToErrorString());
-            }
+            if (!CurrentUser.CanViewReport(model.Report))
+                return Error(Reports.ErrorPermissionDenied);
+
             model.Update();
             return Data(model.GetResult());
         }
@@ -82,18 +68,10 @@ namespace Dash.Controllers
         [HttpDelete]
         public IActionResult Delete(int id)
         {
-            var report = DbContext.Get<Report>(id);
-            if (report == null)
-            {
-                ViewBag.Error = Core.ErrorInvalidId;
+            if (!LoadModel(id, out Report model) || !IsOwner(model))
                 return Index();
-            }
-            if (!report.IsOwner)
-            {
-                ViewBag.Error = Reports.ErrorOwnerOnly;
-                return Index();
-            }
-            DbContext.Delete(report);
+
+            DbContext.Delete(model);
             ViewBag.Message = Reports.SuccessDeletingReport;
             return Index();
         }
@@ -101,98 +79,71 @@ namespace Dash.Controllers
         [HttpGet]
         public IActionResult Edit(int id)
         {
-            var report = DbContext.Get<Report>(id);
-            if (report == null)
-            {
-                ViewBag.Error = Core.ErrorInvalidId;
+            if (!LoadModel(id, out Report model))
                 return Index();
-            }
-            var user = DbContext.Get<User>(User.UserId());
-            if (!user.CanViewReport(report))
+            if (!CurrentUser.CanViewReport(model))
             {
                 ViewBag.Error = Reports.ErrorPermissionDenied;
                 return Index();
             }
-
-            if ((report.Dataset?.DatasetColumn?.Count ?? 0) == 0 || !user.CanAccessDataset(report.Dataset.Id))
+            if ((model.Dataset?.DatasetColumn?.Count ?? 0) == 0 || !CurrentUser.CanAccessDataset(model.Dataset.Id))
             {
                 ViewBag.Error = Reports.ErrorGeneric;
                 return Index();
             }
 
-            if (report.ReportColumn.Count > 0 && !report.ReportColumn.Any(x => x.SortDirection != null))
+            if (model.ReportColumn.Count > 0 && !model.ReportColumn.Any(x => x.SortDirection != null))
             {
-                report.ReportColumn[0].SortDirection = "asc";
-                report.ReportColumn[0].SortOrder = 1;
+                model.ReportColumn[0].SortDirection = "asc";
+                model.ReportColumn[0].SortOrder = 1;
             }
-            return View("Edit", report);
+            return View("Edit", model);
         }
 
         [HttpGet]
         public IActionResult Export(int id)
         {
-            var report = DbContext.Get<Report>(id);
-            if (report == null)
-            {
+            if (!LoadModel(id, out Report model))
                 return Error(Core.ErrorInvalidId);
-            }
-            var user = DbContext.Get<User>(User.UserId());
-            if (!user.CanViewReport(report))
-            {
+            if (!CurrentUser.CanViewReport(model))
                 return Error(Reports.ErrorPermissionDenied);
-            }
-            if (report.Dataset?.DatasetColumn.Any() != true)
-            {
+            if (model.Dataset?.DatasetColumn.Any() != true)
                 return Error(Reports.ErrorNoColumnsSelected);
-            }
 
-            var export = new ExportData { Report = report, AppConfig = AppConfig };
+            var export = new ExportData { Report = model, AppConfig = AppConfig };
             return File(export.Stream(), export.ContentType, export.FormattedFileName);
         }
 
         [HttpGet]
         public IActionResult Index()
         {
+            // @todo modify table generation so it can use the IsOwner column and conditionally hide the delete button
             RouteData.Values.Remove("id");
             return View("Index");
         }
 
         [HttpPost, AjaxRequestOnly, ParentAction("Index")]
-        public IActionResult List() => Rows(DbContext.GetAll<Report>(new { UserId = User.UserId() }).Select(x => new { x.Id, x.Name, x.DatasetName, x.DatasetId }));
+        public IActionResult List() => Rows(DbContext.GetAll<Report>(new { UserId = User.UserId() }).Select(x => new { x.Id, x.Name, x.DatasetName, x.DatasetId, x.IsOwner }));
 
         [HttpGet, ParentAction("Edit")]
         public IActionResult Rename(int id)
         {
-            var report = DbContext.Get<Report>(id);
-            if (report == null)
-            {
-                ViewBag.Error = Core.ErrorInvalidId;
+            if (!LoadModel(id, out Report model))
                 return Index();
-            }
-            if (!report.IsOwner)
-            {
-                ViewBag.Error = Reports.ErrorOwnerOnly;
+            if (!IsOwner(model))
                 return Edit(id);
-            }
-            return View("Rename", report);
+
+            return View("Rename", model);
         }
 
-        [HttpPut, ParentAction("Edit")]
+        [HttpPut, ParentAction("Edit"), ValidModel]
         public IActionResult Rename(RenameReport model)
         {
-            if (model == null)
-            {
-                return Error(Core.ErrorGeneric);
-            }
-            if (!model.Report.IsOwner)
-            {
-                ViewBag.Error = Reports.ErrorOwnerOnly;
-                return Edit(model.Report.Id);
-            }
             if (!ModelState.IsValid)
-            {
                 return Error(ModelState.ToErrorString());
-            }
+            if (!IsOwner(model.Report))
+                return Error(Reports.ErrorOwnerOnly);
+
             model.Save();
             ViewBag.Message = Reports.SuccessSavingReport;
             return Edit(model.Report.Id);
@@ -201,67 +152,36 @@ namespace Dash.Controllers
         [HttpGet, ParentAction("Edit")]
         public IActionResult SelectColumns(int id)
         {
-            var report = DbContext.Get<Report>(id);
-            if (report == null)
-            {
-                ViewBag.Error = Core.ErrorInvalidId;
+            if (!LoadModel(id, out Report model))
                 return Index();
-            }
-            if (!report.IsOwner)
-            {
-                ViewBag.Error = Reports.ErrorOwnerOnly;
+            if (!IsOwner(model))
                 return Edit(id);
-            }
-            var user = DbContext.Get<User>(User.UserId());
-            if (!user.CanAccessDataset(report.DatasetId))
-            {
-                ViewBag.Error = Reports.ErrorInvalidDatasetId;
-                return Edit(id);
-            }
-            return View("SelectColumns", report);
+
+            return View("SelectColumns", model);
         }
 
-        [HttpPut, ParentAction("Edit")]
+        [HttpPut, ParentAction("Edit"), ValidModel]
         public IActionResult SelectColumns(SelectColumn model)
         {
-            if (model == null)
-            {
-                ViewBag.Error = Core.ErrorGeneric;
-                return Index();
-            }
-            if (!ModelState.IsValid)
-            {
-                ViewBag.Error = ModelState.ToErrorString();
+            if (!ModelState.IsValid || !IsOwner(model.Report))
                 return View("SelectColumns", model.Report);
-            }
+
             model.Update(User.UserId());
             ViewBag.Message = Reports.SuccessSavingReport;
             return Edit(model.Report.Id);
         }
 
         [HttpGet]
-        public IActionResult Sql(int id)
-        {
-            var report = DbContext.Get<Report>(id);
-            if (report == null)
-            {
-                ViewBag.Error = Core.ErrorInvalidId;
-                return Index();
-            }
-            return View("Sql", report.GetData(AppConfig, 0, report.RowLimit, true));
-        }
+        public IActionResult Sql(int id) => LoadModel(id, out Report model) && CurrentUser.CanViewReport(model) ? View("Sql", model.GetData(AppConfig, 0, model.RowLimit, true)) : Index();
 
-        [HttpPost, AjaxRequestOnly]
+        [HttpPost, AjaxRequestOnly, ValidModel]
         public IActionResult UpdateColumnWidths([FromBody] UpdateColumnWidth model)
         {
-            if (model == null)
-            {
-                return Error(Core.ErrorGeneric);
-            }
             if (!ModelState.IsValid)
-            {
                 return Error(ModelState.ToErrorString());
-            }
+            if (!IsOwner(model.Report))
+                return Error(Reports.ErrorOwnerOnly);
+
             model.Update(User.UserId());
             return Success();
         }

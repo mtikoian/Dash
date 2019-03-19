@@ -10,83 +10,90 @@ namespace Dash.Controllers
     [Authorize(Policy = "HasPermission"), Pjax]
     public class ReportShareController : BaseController
     {
-        private IActionResult CreateEditView(ReportShare model) => View("CreateEdit", model);
-
-        private IActionResult Save(ReportShare model)
+        IActionResult CreateEditView(ReportShare model)
         {
-            if (model == null)
-            {
-                ViewBag.Error = Core.ErrorGeneric;
-                return CreateEditView(model);
-            }
+            if (!IsOwner(model.Report))
+                return RedirectToAction("Edit", "Report", new { Id = model.ReportId });
+
+            return View("CreateEdit", model);
+        }
+
+        IActionResult Save(ReportShare model)
+        {
             if (!ModelState.IsValid)
-            {
-                ViewBag.Error = ModelState.ToErrorString();
                 return CreateEditView(model);
-            }
+            if (!IsOwner(model.Report))
+                return RedirectToAction("Edit", "Report", new { Id = model.ReportId });
+
             DbContext.Save(model);
             ViewBag.Message = Reports.SuccessSavingShare;
             return Index(model.ReportId);
         }
 
-        public ReportShareController(IDbContext dbContext, IAppConfiguration appConfig) : base(dbContext, appConfig)
+        protected bool IsOwner(Report model)
         {
+            if (model.IsOwner)
+                return true;
+            TempData["Error"] = Reports.ErrorOwnerOnly;
+            return false;
         }
+
+        public ReportShareController(IDbContext dbContext, IAppConfiguration appConfig) : base(dbContext, appConfig) { }
 
         [HttpGet]
         public IActionResult Create(int id)
         {
-            var model = DbContext.Get<Report>(id);
-            if (model == null)
-            {
-                TempData["Error"] = Core.ErrorInvalidId;
+            if (!LoadModel(id, out Report model, true))
                 return RedirectToAction("Index", "Report");
-            }
+
             // clear modelState so that reportId isn't treated as the new model Id
             ModelState.Clear();
             return CreateEditView(new ReportShare(DbContext, id));
         }
 
-        [HttpPost, ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken, ValidModel]
         public IActionResult Create(ReportShare model) => Save(model);
 
         [HttpDelete, AjaxRequestOnly]
         public IActionResult Delete(int id)
         {
-            var model = DbContext.Get<ReportShare>(id);
-            if (model == null)
-            {
-                TempData["Error"] = Core.ErrorInvalidId;
+            if (!LoadModel(id, out ReportShare model, true))
                 return RedirectToAction("Index", "Report");
-            }
+            if (!IsOwner(model.Report))
+                return RedirectToAction("Edit", "Report", new { Id = model.ReportId });
+
             DbContext.Delete(model);
             ViewBag.Message = Reports.SuccessDeletingShare;
             return Index(model.ReportId);
         }
 
         [HttpGet]
-        public IActionResult Edit(int id)
-        {
-            var model = DbContext.Get<ReportShare>(id);
-            if (model == null)
-            {
-                TempData["Error"] = Core.ErrorInvalidId;
-                return RedirectToAction("Index", "Report");
-            }
-            return CreateEditView(model);
-        }
+        public IActionResult Edit(int id) => LoadModel(id, out ReportShare model, true) ? CreateEditView(model) : RedirectToAction("Index", "Report");
 
-        [HttpPut, ValidateAntiForgeryToken]
+        [HttpPut, ValidateAntiForgeryToken, ValidModel]
         public IActionResult Edit(ReportShare model) => Save(model);
 
         [HttpGet]
         public IActionResult Index(int id)
         {
+            if (!LoadModel(id, out Report model, true))
+                return RedirectToAction("Index", "Report");
+            if (!IsOwner(model))
+                return RedirectToAction("Edit", "Report", new { Id = model.Id });
+
             RouteData.Values.Remove("id");
-            return View("Index", DbContext.Get<Report>(id));
+            return View("Index", model);
         }
 
         [HttpPost, AjaxRequestOnly, ParentAction("Index")]
-        public IActionResult List(int id) => Rows(DbContext.GetAll<ReportShare>(new { ReportId = id }).Select(x => new { x.Id, x.ReportId, x.RoleName, x.UserName }));
+        public IActionResult List(int id)
+        {
+            if (!LoadModel(id, out Report model, true))
+                return Error(Core.ErrorInvalidId);
+            if (!IsOwner(model))
+                return Error(Reports.ErrorOwnerOnly);
+
+            return Rows(model.ReportShare.Select(x => new { x.Id, x.ReportId, x.RoleName, x.UserName }));
+        }
     }
 }

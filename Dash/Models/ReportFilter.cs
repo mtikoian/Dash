@@ -168,7 +168,11 @@ namespace Dash.Models
         }
 
         [BindNever, ValidateNever]
-        public Report Report => _Report ?? (_Report = DbContext.Get<Report>(ReportId));
+        public Report Report
+        {
+            get => _Report ?? (_Report = DbContext.Get<Report>(ReportId));
+            set => _Report = value;
+        }
 
         [BindNever, ValidateNever]
         public List<ReportFilterCriteria> ReportFilterCriteria

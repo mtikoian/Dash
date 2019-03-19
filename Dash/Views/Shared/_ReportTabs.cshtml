@@ -13,7 +13,7 @@
             <authorized-button controller="Report" action="Edit" title="@Reports.ViewReport" route-values="@(new { Id = Model.Id })" class="BtnLink" role="tab" />
         }
     </tab-item>
-    <tab-item no-render="@(!User.IsInRole("reportfilter.index"))">
+    <tab-item no-render="@(!User.IsInRole("reportfilter.index") || !Model.IsOwner)">
         @if (Model.ActiveTab == ReportViewTab.Filters)
         {
             <tab-active id="filters">@Reports.Filters</tab-active>
@@ -43,7 +43,7 @@
             <authorized-button controller="Report" action="Rename" title="@Core.Rename" route-values="@(new { Id = Model.Id })" class="BtnLink" role="tab" />
         }
     </tab-item>
-    <tab-item no-render="@(!User.IsInRole("reportshare.index"))">
+    <tab-item no-render="@(!User.IsInRole("reportshare.index") || !Model.IsOwner)">
         @if (Model.ActiveTab == ReportViewTab.Share)
         {
             <tab-active id="share">@Reports.ShareReport</tab-active>
