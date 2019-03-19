@@ -10,26 +10,19 @@ namespace Dash.Controllers
     [Authorize(Policy = "HasPermission"), Pjax]
     public class DashboardController : BaseController
     {
-        private readonly IActionContextAccessor _ActionContextAccessor;
+        readonly IActionContextAccessor _ActionContextAccessor;
 
-        private IActionResult CreateEditView(Widget model)
+        IActionResult CreateEditView(Widget model)
         {
-            ViewBag.ToDateTime = model.IsCreate ? Widgets.CreateWidget : Widgets.EditWidget;
+            // @todo implement IsOwner checks based on UserCreated, standardize AllowEdit usage also
             return View("CreateEdit", model);
         }
 
-        private IActionResult Save(Widget model)
+        IActionResult Save(Widget model)
         {
-            if (model == null)
-            {
-                ViewBag.Error = Core.ErrorGeneric;
-                return CreateEditView(model);
-            }
             if (!ModelState.IsValid)
-            {
-                ViewBag.Error = ModelState.ToErrorString();
                 return CreateEditView(model);
-            }
+
             model.UserId = model.UserId > 0 ? model.UserId : User.UserId();
             model.Save();
             ViewBag.Message = Widgets.SuccessSavingWidget;
@@ -41,59 +34,39 @@ namespace Dash.Controllers
         [HttpGet]
         public IActionResult Create() => CreateEditView(new Widget(DbContext));
 
-        [HttpPost, ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken, ValidModel]
         public IActionResult Create(Widget model) => Save(model);
 
         [HttpDelete]
         public IActionResult Delete(int id)
         {
-            var widget = DbContext.Get<Widget>(id);
-            if (widget == null)
-            {
-                ViewBag.Error = Core.ErrorInvalidId;
+            if (!LoadModel(id, out Widget model) || !model.AllowEdit)
                 return Index();
-            }
-            if (!widget.AllowEdit)
-            {
-                ViewBag.Error = Core.ErrorInvalidId;
-                return Index();
-            }
 
-            DbContext.Delete(widget);
+            DbContext.Delete(model);
             return Index();
         }
 
         [HttpGet]
         public IActionResult Edit(int id)
         {
-            var widget = DbContext.Get<Widget>(id);
-            if (widget == null)
-            {
-                ViewBag.Error = Core.ErrorInvalidId;
-            }
-            if (!widget.AllowEdit)
-            {
-                ViewBag.Error = Core.ErrorInvalidId;
-            }
-            return CreateEditView(widget);
+            if (!LoadModel(id, out Widget model) || !model.AllowEdit)
+                return Index();
+
+            return CreateEditView(model);
         }
 
-        [HttpPut, ValidateAntiForgeryToken]
+        [HttpPut, ValidateAntiForgeryToken, ValidModel]
         public IActionResult Edit(Widget model) => Save(model);
 
         public IActionResult Index() => View("Index", new WidgetList(DbContext, _ActionContextAccessor, User.UserId()));
 
-        [HttpPost, AjaxRequestOnly]
+        [HttpPost, AjaxRequestOnly, ValidModel]
         public IActionResult SaveDashboard([FromBody] SaveDashboard model)
         {
-            if (model == null)
-            {
-                return Error(Core.ErrorGeneric);
-            }
             if (!ModelState.IsValid)
-            {
                 return Error(ModelState.ToErrorString());
-            }
+
             model.Update();
             return Success();
         }

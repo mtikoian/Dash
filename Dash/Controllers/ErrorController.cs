@@ -7,9 +7,7 @@ namespace Dash.Controllers
 {
     public class ErrorController : BaseController
     {
-        public ErrorController(IDbContext dbContext, IAppConfiguration appConfig) : base(dbContext, appConfig)
-        {
-        }
+        public ErrorController(IDbContext dbContext, IAppConfiguration appConfig) : base(dbContext, appConfig) { }
 
         public IActionResult Index(string code = null)
         {

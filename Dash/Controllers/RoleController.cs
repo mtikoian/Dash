@@ -10,42 +10,26 @@ namespace Dash.Controllers
     [Authorize(Policy = "HasPermission"), Pjax]
     public class RoleController : BaseController
     {
-        private IActionResult CreateEditView(Role model) => View("CreateEdit", model);
+        IActionResult CreateEditView(Role model) => View("CreateEdit", model);
 
-        private IActionResult Save(Role model)
+        IActionResult Save(Role model)
         {
-            if (model == null)
-            {
-                ViewBag.Error = Core.ErrorGeneric;
-                return CreateEditView(model);
-            }
             if (!ModelState.IsValid)
-            {
-                ViewBag.Error = ModelState.ToErrorString();
                 return CreateEditView(model);
-            }
+
             model.Save();
             ViewBag.Message = Roles.SuccessSavingRole;
             return Index();
         }
 
-        public RoleController(IDbContext dbContext, IAppConfiguration appConfig) : base(dbContext, appConfig)
-        {
-        }
+        public RoleController(IDbContext dbContext, IAppConfiguration appConfig) : base(dbContext, appConfig) { }
 
-        [HttpGet, ParentAction("Create")]
+        [HttpGet, ParentAction("Create"), ValidModel]
         public IActionResult Copy(CopyRole model)
         {
-            if (model == null)
-            {
-                ViewBag.Error = Core.ErrorGeneric;
-                return Index();
-            }
             if (!ModelState.IsValid)
-            {
-                ViewBag.Error = ModelState.ToErrorString();
                 return Index();
-            }
+
             model.Save();
             ViewBag.Message = Roles.SuccessCopyingRole;
             return Index();
@@ -54,36 +38,24 @@ namespace Dash.Controllers
         [HttpGet]
         public IActionResult Create() => CreateEditView(new Role(DbContext));
 
-        [HttpPost, ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken, ValidModel]
         public IActionResult Create(Role model) => Save(model);
 
         [HttpDelete]
         public IActionResult Delete(int id)
         {
-            var model = DbContext.Get<Role>(id);
-            if (model == null)
-            {
-                ViewBag.Error = Core.ErrorInvalidId;
+            if (!LoadModel(id, out Role model))
                 return Index();
-            }
+
             DbContext.Delete(model);
             ViewBag.Message = Roles.SuccessDeletingRole;
             return Index();
         }
 
         [HttpGet]
-        public IActionResult Edit(int id)
-        {
-            var model = DbContext.Get<Role>(id);
-            if (model == null)
-            {
-                ViewBag.Error = Core.ErrorInvalidId;
-                return Index();
-            }
-            return CreateEditView(model);
-        }
+        public IActionResult Edit(int id) => LoadModel(id, out Role model) ? CreateEditView(model) : Index();
 
-        [HttpPut, ValidateAntiForgeryToken]
+        [HttpPut, ValidateAntiForgeryToken, ValidModel]
         public IActionResult Edit(Role model) => Save(model);
 
         [HttpGet]

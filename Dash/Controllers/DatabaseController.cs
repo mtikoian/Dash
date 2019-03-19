@@ -10,44 +10,32 @@ namespace Dash.Controllers
     [Authorize(Policy = "HasPermission"), Pjax]
     public class DatabaseController : BaseController
     {
-        private IActionResult CreateEditView(Database model) => View("CreateEdit", model);
+        IActionResult CreateEditView(Database model) => View("CreateEdit", model);
 
-        private IActionResult Save(Database model)
+        IActionResult Save(Database model)
         {
-            if (model == null)
-            {
-                ViewBag.Error = Core.ErrorGeneric;
-                return CreateEditView(model);
-            }
             if (!ModelState.IsValid)
-            {
-                ViewBag.Error = ModelState.ToErrorString();
                 return CreateEditView(model);
-            }
+
             model.Save();
             ViewBag.Message = Databases.SuccessSavingDatabase;
             return Index();
         }
 
-        public DatabaseController(IDbContext dbContext, IAppConfiguration appConfig) : base(dbContext, appConfig)
-        {
-        }
+        public DatabaseController(IDbContext dbContext, IAppConfiguration appConfig) : base(dbContext, appConfig) { }
 
         [HttpGet]
         public IActionResult Create() => CreateEditView(new Database(DbContext, AppConfig));
 
-        [HttpPost, ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken, ValidModel]
         public IActionResult Create(Database model) => Save(model);
 
         [HttpDelete]
         public IActionResult Delete(int id)
         {
-            var model = DbContext.Get<Database>(id);
-            if (model == null)
-            {
-                ViewBag.Error = Core.ErrorInvalidId;
+            if (!LoadModel(id, out Database model))
                 return Index();
-            }
+
             DbContext.Delete(model);
             ViewBag.Message = Databases.SuccessDeletingDatabase;
             return Index();
@@ -56,17 +44,14 @@ namespace Dash.Controllers
         [HttpGet]
         public IActionResult Edit(int id)
         {
-            var model = DbContext.Get<Database>(id);
-            if (model == null)
-            {
-                ViewBag.Error = Core.ErrorInvalidId;
+            if (!LoadModel(id, out Database model))
                 return Index();
-            }
+
             model.ConnectionString = model.ConnectionString.IsEmpty() ? null : new Crypt(AppConfig).Decrypt(model.ConnectionString);
             return CreateEditView(model);
         }
 
-        [HttpPut, ValidateAntiForgeryToken]
+        [HttpPut, ValidateAntiForgeryToken, ValidModel]
         public IActionResult Edit(Database model) => Save(model);
 
         [HttpGet]
@@ -82,20 +67,12 @@ namespace Dash.Controllers
         [HttpGet, ParentAction("Create,Edit")]
         public IActionResult TestConnection(int id)
         {
-            var model = DbContext.Get<Database>(id);
-            if (model == null)
-            {
-                ViewBag.Error = Core.ErrorInvalidId;
+            if (!LoadModel(id, out Database model))
                 return Index();
-            }
             if (model.TestConnection(out var errorMsg))
-            {
                 ViewBag.Message = Databases.SuccessTestingConnection;
-            }
             else
-            {
                 ViewBag.Error = errorMsg;
-            }
             return Index();
         }
     }

@@ -10,20 +10,13 @@ namespace Dash.Controllers
     [Authorize(Policy = "HasPermission"), Pjax]
     public class UserController : BaseController
     {
-        private IActionResult CreateEditView(User model) => View("CreateEdit", model);
+        IActionResult CreateEditView(User model) => View("CreateEdit", model);
 
-        private IActionResult Save(User model)
+        IActionResult Save(User model)
         {
-            if (model == null)
-            {
-                ViewBag.Error = Core.ErrorGeneric;
-                return CreateEditView(model);
-            }
             if (!ModelState.IsValid)
-            {
-                ViewBag.Error = ModelState.ToErrorString();
                 return CreateEditView(model);
-            }
+
             if (!model.Save())
             {
                 ViewBag.Error = Users.ErrorSavingUser;
@@ -33,43 +26,29 @@ namespace Dash.Controllers
             return Index();
         }
 
-        public UserController(IDbContext dbContext, IAppConfiguration appConfig) : base(dbContext, appConfig)
-        {
-        }
+        public UserController(IDbContext dbContext, IAppConfiguration appConfig) : base(dbContext, appConfig) { }
 
         [HttpGet]
         public IActionResult Create() => CreateEditView(new User(DbContext, AppConfig));
 
-        [HttpPost, ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken, ValidModel]
         public IActionResult Create(User model) => Save(model);
 
         [HttpDelete]
         public IActionResult Delete(int id)
         {
-            var model = DbContext.Get<User>(id);
-            if (model == null)
-            {
-                ViewBag.Error = Core.ErrorInvalidId;
+            if (!LoadModel(id, out User model))
                 return Index();
-            }
+
             DbContext.Delete(model);
             ViewBag.Message = Users.SuccessDeletingUser;
             return Index();
         }
 
         [HttpGet]
-        public IActionResult Edit(int id)
-        {
-            var model = DbContext.Get<User>(id);
-            if (model == null)
-            {
-                ViewBag.Error = Core.ErrorInvalidId;
-                return Index();
-            }
-            return CreateEditView(model);
-        }
+        public IActionResult Edit(int id) => LoadModel(id, out User model) ? CreateEditView(model) : Index();
 
-        [HttpPut, ValidateAntiForgeryToken]
+        [HttpPut, ValidateAntiForgeryToken, ValidModel]
         public IActionResult Edit(User model) => Save(model);
 
         [HttpGet]
@@ -85,12 +64,9 @@ namespace Dash.Controllers
         [HttpPut, ParentAction("Create,Edit")]
         public IActionResult Unlock(int id)
         {
-            var model = DbContext.Get<User>(id);
-            if (model == null)
-            {
-                ViewBag.Error = Core.ErrorInvalidId;
+            if (!LoadModel(id, out User model))
                 return Index();
-            }
+
             model.Unlock();
             ViewBag.Message = Users.SuccessUnlockingUser;
             return Index();

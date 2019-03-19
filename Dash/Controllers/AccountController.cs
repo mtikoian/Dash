@@ -17,37 +17,25 @@ namespace Dash.Controllers
     [Pjax]
     public class AccountController : BaseController
     {
-        public AccountController(IDbContext dbContext, IAppConfiguration appConfig) : base(dbContext, appConfig)
-        {
-        }
+        public AccountController(IDbContext dbContext, IAppConfiguration appConfig) : base(dbContext, appConfig) { }
 
         [HttpGet]
-        public IActionResult ForgotPassword()
-        {
-            if (User.Identity.IsAuthenticated)
-            {
-                return Error(Core.ErrorAlreadyLoggedIn);
-            }
-            return View("ForgotPassword", new ForgotPassword());
-        }
+        public IActionResult ForgotPassword() => User.Identity.IsAuthenticated ? Error(Core.ErrorAlreadyLoggedIn) : View("ForgotPassword", new ForgotPassword());
 
-        [HttpPost, ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken, ValidModel]
         public IActionResult ForgotPassword(ForgotPassword model)
         {
             if (User.Identity.IsAuthenticated)
-            {
                 return Error(Core.ErrorAlreadyLoggedIn);
-            }
             if (!ModelState.IsValid)
-            {
-                ViewBag.Error = ModelState.ToErrorString();
                 return View("ForgotPassword", model);
-            }
+
             if (!model.Send(out var error, DbContext, HttpContext, AppConfig, new UrlHelper(ControllerContext)))
             {
                 ViewBag.Error = error;
                 return View("ForgotPassword", model);
             }
+
             ViewBag.Error = Account.ForgotPasswordEmailSentText;
             return View("Login", new LogOn());
         }
@@ -56,25 +44,19 @@ namespace Dash.Controllers
         public IActionResult Login(string returnUrl = null)
         {
             if (User.Identity.IsAuthenticated)
-            {
-                return RedirectToAction("Index", "Dashboard");
-            }
+                return Error(Core.ErrorAlreadyLoggedIn);
+
             return View("Login", new LogOn { ReturnUrl = returnUrl });
         }
 
-        [HttpPost, ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken, ValidModel]
         public IActionResult Login(LogOn model)
         {
             if (User.Identity.IsAuthenticated)
-            {
-                ViewBag.Error = Core.ErrorAlreadyLoggedIn;
-                return View("Login", model);
-            }
+                return Error(Core.ErrorAlreadyLoggedIn);
             if (!ModelState.IsValid)
-            {
-                ViewBag.Error = ModelState.ToErrorString();
                 return View("Login", model);
-            }
+
             if (!model.DoLogOn(out var error, DbContext, AppConfig, HttpContext))
             {
                 ViewBag.Error = error;
@@ -83,13 +65,10 @@ namespace Dash.Controllers
 
             // add localization cookie after logon
             Response.Cookies.Append(Startup.CultureCookieName, CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(new CultureInfo(model.Membership.LanguageCode))));
-
             if (model.Membership.AllowSingleFactor)
             {
                 if (!model.ReturnUrl.IsEmpty() && !model.ReturnUrl.Contains("/Data/", System.StringComparison.CurrentCultureIgnoreCase))
-                {
                     return Redirect(model.ReturnUrl);
-                }
                 return RedirectToAction("Index", "Dashboard");
             }
             model.Membership.CreateHash();
@@ -104,44 +83,34 @@ namespace Dash.Controllers
             return RedirectToAction("Login");
         }
 
-        [HttpGet]
+        [HttpGet, ValidModel]
         public IActionResult ResetPassword(ResetPassword model)
         {
             if (User.Identity.IsAuthenticated)
-            {
                 return Error(Core.ErrorAlreadyLoggedIn);
-            }
             if (!ModelState.IsValid)
-            {
-                ViewBag.Error = ModelState.ToErrorString();
                 return View("Login", new LogOn());
-            }
+
             return View("ResetPassword", model);
         }
 
-        [HttpPost, ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken, ValidModel]
         public IActionResult ResetPassword(ResetPassword model, bool resetting = true)
         {
             // resetting param is only there to disambiguate the two ResetPassword routes
             if (User.Identity.IsAuthenticated)
-            {
                 return Error(Core.ErrorAlreadyLoggedIn);
-            }
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+                return View("ResetPassword", model);
+
+            if (!model.Reset(out var error))
             {
-                if (model.Reset(out var error))
-                {
-                    ViewBag.Message = Account.PasswordChangedText;
-                    return View("Login", new LogOn());
-                }
                 ViewBag.Error = error;
-            }
-            else
-            {
-                ViewBag.Error = ModelState.ToErrorString();
+                return View("ResetPassword", model);
             }
 
-            return View("ResetPassword", model);
+            ViewBag.Message = Account.PasswordChangedText;
+            return View("Login", new LogOn());
         }
 
         [HttpGet, Authorize, ParentAction("UpdateAccount")]
@@ -162,29 +131,21 @@ namespace Dash.Controllers
         public IActionResult TwoFactorHelp(string username)
         {
             if (User.Identity.IsAuthenticated)
-            {
                 return Error(Core.ErrorAlreadyLoggedIn);
-            }
+
             var membership = DbContext.GetAll<UserMembership>(new { username }).FirstOrDefault();
             if (membership == null)
-            {
                 return Error(Core.ErrorGeneric);
-            }
             return View("TwoFactorHelp", TwoFactorAuthenticator.GenerateSetupCode(AppConfig.Membership.AuthenticatorAppName, membership.Email, AppConfig.Membership.AuthenticatorKey, true, 2));
         }
 
-        [HttpPost, ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken, ValidModel]
         public IActionResult TwoFactorLogin([FromForm] TwoFactorLogin model)
         {
             if (User.Identity.IsAuthenticated)
-            {
                 return Error(Core.ErrorAlreadyLoggedIn);
-            }
             if (!ModelState.IsValid)
-            {
-                ViewBag.Error = ModelState.ToErrorString();
                 return View("TwoFactorLogin", model);
-            }
 
             if (!model.Validate(out var error, DbContext, AppConfig))
             {
@@ -199,14 +160,12 @@ namespace Dash.Controllers
         [HttpGet, Authorize]
         public IActionResult UpdateAccount() => View("UpdateAccount", new UpdateAccount(DbContext, AppConfig, User.Identity.Name));
 
-        [HttpPost, Authorize, ValidateAntiForgeryToken]
+        [HttpPost, Authorize, ValidateAntiForgeryToken, ValidModel]
         public IActionResult UpdateAccount(UpdateAccount model)
         {
             if (!ModelState.IsValid)
-            {
-                ViewBag.Error = ModelState.ToErrorString();
                 return View("UpdateAccount", model);
-            }
+
             if (!model.Save(User.Identity.Name, out var errorMsg))
             {
                 ViewBag.Error = errorMsg;
@@ -215,7 +174,6 @@ namespace Dash.Controllers
 
             // add localization cookie after logon
             Response.Cookies.Append(Startup.CultureCookieName, CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(new CultureInfo(model.LanguageCode))));
-
             ViewBag.Message = Account.AccountUpdated;
             return View("UpdateAccount", model);
         }
@@ -223,14 +181,12 @@ namespace Dash.Controllers
         [HttpGet, Authorize]
         public IActionResult UpdatePassword() => View("UpdatePassword", new UpdatePassword(DbContext, AppConfig));
 
-        [HttpPost, Authorize, ValidateAntiForgeryToken]
+        [HttpPost, Authorize, ValidateAntiForgeryToken, ValidModel]
         public IActionResult UpdatePassword(UpdatePassword model)
         {
             if (!ModelState.IsValid)
-            {
-                ViewBag.Error = ModelState.ToErrorString();
                 return View("UpdatePassword", model);
-            }
+
             if (!model.Save(out var errorMsg))
             {
                 ViewBag.Error = errorMsg;
