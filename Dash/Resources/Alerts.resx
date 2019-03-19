@@ -171,6 +171,9 @@
   <data name="ErrorNameRequired" xml:space="preserve">
     <value>A name is required to create an alert.</value>
   </data>
+  <data name="ErrorOwnerOnly" xml:space="preserve">
+    <value>Only the owner of the alert is allowed to do this.</value>
+  </data>
   <data name="IsActive" xml:space="preserve">
     <value>Active</value>
   </data>

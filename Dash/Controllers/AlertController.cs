@@ -10,94 +10,79 @@ namespace Dash.Controllers
     [Authorize(Policy = "HasPermission"), Pjax]
     public class AlertController : BaseController
     {
-        private IActionResult CreateEditView(Alert model) => View("CreateEdit", model);
-
-        private IActionResult Save(Alert model)
+        IActionResult CreateEditView(Alert model)
         {
-            if (model == null)
-            {
-                ViewBag.Error = Core.ErrorGeneric;
-                return CreateEditView(model);
-            }
+            if (!model.IsCreate && !IsOwner(model))
+                return Index();
+
+            return View("CreateEdit", model);
+        }
+
+        IActionResult Save(Alert model)
+        {
             if (!ModelState.IsValid)
-            {
-                ViewBag.Error = ModelState.ToErrorString();
                 return CreateEditView(model);
-            }
+            if (!model.IsCreate && !IsOwner(model))
+                return Index();
+
             DbContext.Save(model);
             ViewBag.Message = Alerts.SuccessSavingAlert;
             return Index();
         }
 
-        public AlertController(IDbContext dbContext, AppConfiguration appConfig) : base(dbContext, appConfig)
+        protected bool IsOwner(Alert model)
         {
+            if (model.IsOwner)
+                return true;
+            ViewBag.Error = Alerts.ErrorOwnerOnly;
+            return false;
         }
 
-        [HttpGet, ParentAction("Create")]
+        public AlertController(IDbContext dbContext, AppConfiguration appConfig) : base(dbContext, appConfig) { }
+
+        [HttpGet, ParentAction("Create"), ValidModel]
         public IActionResult Copy(CopyAlert model)
         {
-            if (model == null)
-            {
-                ViewBag.Error = Core.ErrorGeneric;
-                return Index();
-            }
             if (!ModelState.IsValid)
-            {
-                ViewBag.Error = ModelState.ToErrorString();
                 return Index();
-            }
+
             model.Save();
             ViewBag.Message = Alerts.SuccessCopyingAlert;
             return Index();
         }
 
         [HttpGet]
-        public IActionResult Create() => CreateEditView(new Alert(DbContext, User.UserId()));
+        public IActionResult Create() => CreateEditView(new Alert(DbContext));
 
-        [HttpPost, ValidateAntiForgeryToken]
-        public IActionResult Create(Alert model)
-        {
-            model.OwnerId = model.OwnerId == 0 ? User.UserId() : model.OwnerId;
-            return Save(model);
-        }
+        [HttpPost, ValidateAntiForgeryToken, ValidModel]
+        public IActionResult Create(Alert model) => Save(model);
 
         [HttpDelete]
         public IActionResult Delete(int id)
         {
-            var model = DbContext.Get<Alert>(id);
-            if (model == null)
-            {
-                ViewBag.Error = Core.ErrorInvalidId;
+            if (!LoadModel(id, out Alert model) || !IsOwner(model))
                 return Index();
-            }
+
             DbContext.Delete(model);
             ViewBag.Message = Alerts.SuccessDeletingAlert;
             return Index();
         }
 
         [HttpGet]
-        public IActionResult Edit(int id)
-        {
-            var model = DbContext.Get<Alert>(id);
-            if (model == null)
-            {
-                ViewBag.Error = Core.ErrorInvalidId;
-                return Index();
-            }
-            return CreateEditView(model);
-        }
+        public IActionResult Edit(int id) => LoadModel(id, out Alert model) ? CreateEditView(model) : Index();
 
-        [HttpPut, ValidateAntiForgeryToken]
+        [HttpPut, ValidateAntiForgeryToken, ValidModel]
         public IActionResult Edit(Alert model) => Save(model);
 
         [HttpGet]
         public IActionResult Index()
         {
+            // @todo modify table generation so it can use the IsOwner column and conditionally hide the delete button
             RouteData.Values.Remove("id");
             return View("Index");
         }
 
         [HttpPost, AjaxRequestOnly, ParentAction("Index")]
-        public IActionResult List() => Rows(DbContext.GetAll<Alert>(new { UserID = User.UserId() }).Select(x => new { x.Id, x.Name, x.Subject, IsActive = x.IsActive ? Core.Yes : Core.No, x.LastRunDate }));
+        public IActionResult List() => Rows(DbContext.GetAll<Alert>(new { UserID = User.UserId() }).Select(x => new { x.Id, x.Name, x.Subject, IsActive = x.IsActive ? Core.Yes : Core.No, x.LastRunDate, x.IsOwner }));
     }
 }

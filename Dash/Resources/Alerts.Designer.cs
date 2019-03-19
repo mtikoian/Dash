@@ -223,6 +223,15 @@ namespace Dash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Only the owner of the alert is allowed to do this..
+        /// </summary>
+        public static string ErrorOwnerOnly {
+            get {
+                return ResourceManager.GetString("ErrorOwnerOnly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Active.
         /// </summary>
         public static string IsActive {
