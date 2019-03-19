@@ -102,7 +102,6 @@
     <Build Include="Stored Procedures\PermissionDelete.sql"/>
     <Build Include="Stored Procedures\PermissionGet.sql"/>
     <Build Include="Stored Procedures\PermissionSave.sql"/>
-    <Build Include="Stored Procedures\RangeColumnGet.sql"/>
     <Build Include="Stored Procedures\ReportCheckUserAccess.sql"/>
     <Build Include="Stored Procedures\ReportColumnDelete.sql"/>
     <Build Include="Stored Procedures\ReportColumnGet.sql"/>
