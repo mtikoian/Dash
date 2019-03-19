@@ -304,6 +304,15 @@ namespace Dash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You are not authorized to access this dataset..
+        /// </summary>
+        public static string ErrorPermissionDenied {
+            get {
+                return ResourceManager.GetString("ErrorPermissionDenied", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Import.
         /// </summary>
         public static string Import {

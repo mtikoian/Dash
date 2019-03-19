@@ -10,53 +10,50 @@ namespace Dash.Controllers
     [Authorize(Policy = "HasPermission"), Pjax]
     public class DatasetController : BaseController
     {
-        private IActionResult CreateEditView(Dataset model) => View("CreateEdit", model);
-
-        private IActionResult Save(Dataset model)
+        IActionResult CreateEditView(Dataset model)
         {
-            if (model == null)
-            {
-                ViewBag.Error = Core.ErrorGeneric;
-                return CreateEditView(model);
-            }
+            if (!CanAccessDataset(model))
+                return Index();
+
+            return View("CreateEdit", model);
+        }
+
+        IActionResult Save(Dataset model)
+        {
             if (!ModelState.IsValid)
-            {
-                ViewBag.Error = ModelState.ToErrorString();
                 return CreateEditView(model);
-            }
+            if (!CanAccessDataset(model))
+                return Index();
+
             model.Save(false, rolesOnly: true);
             ViewBag.Message = Datasets.SuccessSavingDataset;
             return CreateEditView(model);
         }
 
-        public DatasetController(IDbContext dbContext, IAppConfiguration appConfig) : base(dbContext, appConfig)
+        protected bool CanAccessDataset(Dataset model)
         {
+            if (model.IsCreate || CurrentUser.CanAccessDataset(model.Id))
+                return true;
+            ViewBag.Error = Datasets.ErrorPermissionDenied;
+            return false;
         }
+
+        public DatasetController(IDbContext dbContext, IAppConfiguration appConfig) : base(dbContext, appConfig) { }
 
         [HttpGet, AjaxRequestOnly, ParentAction("Create,Edit")]
         public IActionResult Columns(int id)
         {
-            var model = DbContext.Get<Dataset>(id);
-            if (model == null)
-            {
+            if (!LoadModel(id, out Dataset model) || !CanAccessDataset(model))
                 return Data(new { });
-            }
             return Data(model.AvailableColumns());
         }
 
         [HttpGet, ParentAction("Create")]
         public IActionResult Copy(CopyDataset model)
         {
-            if (model == null)
-            {
-                ViewBag.Error = Core.ErrorGeneric;
+            if (!ModelState.IsValid || !CanAccessDataset(model.Dataset))
                 return Index();
-            }
-            if (!ModelState.IsValid)
-            {
-                ViewBag.Error = ModelState.ToErrorString();
-                return Index();
-            }
+
             model.Save();
             ViewBag.Message = Datasets.SuccessCopyingDataset;
             return Index();
@@ -65,36 +62,24 @@ namespace Dash.Controllers
         [HttpGet]
         public IActionResult Create() => CreateEditView(new Dataset(DbContext));
 
-        [HttpPost, ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken, ValidModel]
         public IActionResult Create(Dataset model) => Save(model);
 
         [HttpDelete]
         public IActionResult Delete(int id)
         {
-            var model = DbContext.Get<Dataset>(id);
-            if (model == null)
-            {
-                ViewBag.Error = Core.ErrorInvalidId;
+            if (!LoadModel(id, out Dataset model) || !CanAccessDataset(model))
                 return Index();
-            }
+
             DbContext.Delete(model);
             ViewBag.Message = Datasets.SuccessDeletingDataset;
             return Index();
         }
 
         [HttpGet]
-        public IActionResult Edit(int id)
-        {
-            var model = DbContext.Get<Dataset>(id);
-            if (model == null)
-            {
-                ViewBag.Error = Core.ErrorInvalidId;
-                return Index();
-            }
-            return CreateEditView(model);
-        }
+        public IActionResult Edit(int id) => LoadModel(id, out Dataset model) ? CreateEditView(model) : Index();
 
-        [HttpPut, ValidateAntiForgeryToken]
+        [HttpPut, ValidateAntiForgeryToken, ValidModel]
         public IActionResult Edit(Dataset model) => Save(model);
 
         [HttpGet]
@@ -105,7 +90,7 @@ namespace Dash.Controllers
         }
 
         [HttpPost, AjaxRequestOnly, ParentAction("Index")]
-        public IActionResult List() => Rows(DbContext.GetAll<Dataset>().Select(x => new { x.Id, x.Name, x.DatabaseName, x.DatabaseHost, x.PrimarySource, x.DatabaseId }));
+        public IActionResult List() => Rows(DbContext.GetAll<Dataset>(new { UserId = User.UserId() }).Select(x => new { x.Id, x.Name, x.DatabaseName, x.DatabaseHost, x.PrimarySource, x.DatabaseId }));
 
         [HttpGet, AjaxRequestOnly, ParentAction("Create,Edit")]
         public IActionResult Sources(int? id = null, int? databaseId = null, int? typeId = null, string search = null)
@@ -113,10 +98,8 @@ namespace Dash.Controllers
             if (id.HasPositiveValue())
             {
                 var model = DbContext.Get<Dataset>(id.Value);
-                if (model == null)
-                {
+                if (model == null || !CanAccessDataset(model))
                     return Data(new { });
-                }
                 return Data(DbContext.Get<Database>(model.DatabaseId)?.GetSourceList(true, model.TypeId == (int)DatasetTypes.Proc));
             }
             if (databaseId.HasPositiveValue())

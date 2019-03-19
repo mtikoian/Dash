@@ -4,6 +4,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Dash.Resources;
 using Dash.Utils;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Dash.Models
@@ -17,6 +19,8 @@ namespace Dash.Models
 
     public class DatasetJoin : BaseModel, IEquatable<DatasetJoin>
     {
+        Dataset _Dataset;
+
         public DatasetJoin() { }
 
         public DatasetJoin(IDbContext dbContext) => DbContext = dbContext;
@@ -25,6 +29,13 @@ namespace Dash.Models
         {
             DbContext = dbContext;
             DatasetId = datasetId;
+        }
+
+        [BindNever, ValidateNever]
+        public Dataset Dataset
+        {
+            get => _Dataset ?? (_Dataset = DbContext.Get<Dataset>(DatasetId));
+            set => _Dataset = value;
         }
 
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]

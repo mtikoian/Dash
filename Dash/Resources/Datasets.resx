@@ -291,4 +291,7 @@
   <data name="ErrorAlreadyLastJoin" xml:space="preserve">
     <value>This join is already last.</value>
   </data>
+  <data name="ErrorPermissionDenied" xml:space="preserve">
+    <value>You are not authorized to access this dataset.</value>
+  </data>
 </root>
