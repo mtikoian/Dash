@@ -25,7 +25,13 @@ namespace Dash.Controllers
             if (!CanAccessDataset(model))
                 return Index();
 
+            var isCreate = model.IsCreate;
             model.Save(false, rolesOnly: true);
+            if (isCreate)
+            {
+                TempData["Message"] = Datasets.SuccessSavingDataset;
+                return RedirectToAction("Edit", new { ID = model.Id });
+            }
             ViewBag.Message = Datasets.SuccessSavingDataset;
             return CreateEditView(model);
         }
