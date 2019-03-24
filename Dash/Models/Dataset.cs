@@ -19,13 +19,13 @@ namespace Dash.Models
 
     public class Dataset : BaseModel, IValidatableObject
     {
-        private List<Role> _AllRoles;
-        private Database _Database;
-        private List<DatasetColumn> _DatasetColumn;
-        private List<DatasetJoin> _DatasetJoin;
-        private List<DatasetRole> _DatasetRole;
+        List<Role> _AllRoles;
+        Database _Database;
+        List<DatasetColumn> _DatasetColumn;
+        List<DatasetJoin> _DatasetJoin;
+        List<DatasetRole> _DatasetRole;
 
-        private List<string> TableList()
+        List<string> TableList()
         {
             var tableList = new List<string>();
             if (!PrimarySource.IsEmpty())
@@ -137,14 +137,12 @@ namespace Dash.Models
                 return columns;
 
             if (Database?.TestConnection(out var error) == true)
-            {
-                var tableList = tableNames != null ? tableNames.Distinct().ToList() : TableList();
-                tableList.Each(table => {
+                (tableNames != null ? tableNames.Distinct().ToList() : TableList()).Each(table => {
                     Database.GetTableSchema(table).Rows.OfType<DataRow>().Each(row => {
                         columns.Add(row.ToColumnName(!Database.IsMySql));
                     });
                 });
-            }
+
             return columns;
         }
 
@@ -175,7 +173,6 @@ namespace Dash.Models
         {
             var selectColumns = new Dictionary<int, Dictionary<string, LookupItem>>();
             if (Database != null && DatasetColumn?.Count > 0)
-            {
                 DatasetColumn.Where(x => x.IsSelect && !x.FilterQuery.IsEmpty()).ToList().ForEach(x => {
                     try
                     {
@@ -185,7 +182,6 @@ namespace Dash.Models
                     }
                     catch { }
                 });
-            }
 
             return selectColumns;
         }

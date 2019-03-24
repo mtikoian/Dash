@@ -8,7 +8,7 @@ namespace Dash.Models
 {
     public class RenameReport : BaseModel, IValidatableObject
     {
-        private Report _Report;
+        Report _Report;
 
         [Display(Name = "Name", ResourceType = typeof(Reports))]
         [Required(ErrorMessageResourceType = typeof(Reports), ErrorMessageResourceName = "ErrorNameRequired")]
@@ -32,9 +32,7 @@ namespace Dash.Models
         {
             DbContext = (IDbContext)validationContext.GetService(typeof(IDbContext));
             if (Report == null)
-            {
                 yield return new ValidationResult(Core.ErrorInvalidId);
-            }
         }
     }
 }

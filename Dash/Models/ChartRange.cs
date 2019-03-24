@@ -11,14 +11,12 @@ namespace Dash.Models
 {
     public class ChartRange : BaseModel
     {
-        private Chart _Chart;
-        private Report _Report;
-        private DatasetColumn _XAxisColumn;
-        private DatasetColumn _YAxisColumn;
+        Chart _Chart;
+        Report _Report;
+        DatasetColumn _XAxisColumn;
+        DatasetColumn _YAxisColumn;
 
-        public ChartRange()
-        {
-        }
+        public ChartRange() { }
 
         public ChartRange(IDbContext dbContext) => DbContext = dbContext;
 

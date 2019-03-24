@@ -12,8 +12,8 @@ namespace Dash.Models
 {
     public class DatasetColumn : BaseModel, IEquatable<DatasetColumn>
     {
-        private Dataset _Dataset;
-        private DataType _DataType;
+        Dataset _Dataset;
+        DataType _DataType;
 
         public DatasetColumn() { }
 

@@ -8,7 +8,7 @@ namespace Dash.Models
 {
     public class CopyRole : BaseModel, IValidatableObject
     {
-        private Role _Role;
+        Role _Role;
 
         [Required(ErrorMessageResourceType = typeof(Roles), ErrorMessageResourceName = "ErrorNameRequired")]
         [StringLength(100, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]

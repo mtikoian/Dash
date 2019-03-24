@@ -6,8 +6,8 @@ namespace Dash.Models
 {
     public class WidgetList : BaseModel
     {
-        private IActionContextAccessor _ActionContextAccessor;
-        private IEnumerable<WidgetView> _Widgets;
+        IActionContextAccessor _ActionContextAccessor;
+        IEnumerable<WidgetView> _Widgets;
 
         public WidgetList(IDbContext dbContext, IActionContextAccessor actionContextAccessor, int userId)
         {
@@ -21,14 +21,12 @@ namespace Dash.Models
             get
             {
                 if (_Widgets == null && RequestUserId.HasPositiveValue())
-                {
                     _Widgets = DbContext.Query<WidgetView>("WidgetGet", new { UserId = RequestUserId })
                         .Each(x => {
                             x.ActionContextAccessor = _ActionContextAccessor;
                             x.DbContext = DbContext;
                         })
                         .OrderBy(x => x.X < 0 ? int.MaxValue : x.X).ThenBy(x => x.Y < 0 ? int.MaxValue : x.Y);
-                }
                 return _Widgets;
             }
         }

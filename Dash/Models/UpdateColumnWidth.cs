@@ -9,7 +9,7 @@ namespace Dash.Models
 {
     public class UpdateColumnWidth : BaseModel, IValidatableObject
     {
-        private Report _Report;
+        Report _Report;
 
         public List<TableColumnWidth> Columns { get; set; }
 
@@ -33,13 +33,9 @@ namespace Dash.Models
             else
             {
                 if (!Report.IsOwner)
-                {
                     yield return new ValidationResult(Reports.ErrorOwnerOnly);
-                }
                 if (Columns?.Any() != true || !Report.ReportColumn.Any())
-                {
                     yield return new ValidationResult(Reports.ErrorNoColumnsSelected);
-                }
             }
         }
     }

@@ -7,11 +7,9 @@ namespace Dash.Models
 {
     public class ChartShare : Share
     {
-        private Chart _Chart;
+        Chart _Chart;
 
-        public ChartShare()
-        {
-        }
+        public ChartShare() { }
 
         public ChartShare(IDbContext dbContext) => DbContext = dbContext;
 

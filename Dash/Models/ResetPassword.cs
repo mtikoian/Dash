@@ -14,7 +14,7 @@ namespace Dash.Models
     [ModelMetadataType(typeof(PasswordMetadata))]
     public class ResetPassword : BaseModel, IValidatableObject
     {
-        private UserMembership Membership;
+        UserMembership _Membership;
 
         [DbIgnore]
         public string ConfirmPassword { get; set; }
@@ -41,8 +41,8 @@ namespace Dash.Models
             try
             {
                 var salt = Hasher.GenerateSalt();
-                DbContext.Execute("UserPasswordSave", new { Id = Membership.Id, Password = Hasher.HashPassword(Password, salt), Salt = salt, RequestUserId = Membership.Id });
-                DbContext.Execute("UserResetSave", new { Membership.Id });
+                DbContext.Execute("UserPasswordSave", new { Id = _Membership.Id, Password = Hasher.HashPassword(Password, salt), Salt = salt, RequestUserId = _Membership.Id });
+                DbContext.Execute("UserResetSave", new { _Membership.Id });
                 return true;
             }
             catch (Exception ex)
@@ -57,17 +57,15 @@ namespace Dash.Models
         {
             DbContext = (IDbContext)validationContext.GetService(typeof(IDbContext));
             AppConfig = (IAppConfiguration)validationContext.GetService(typeof(IAppConfiguration));
-            Membership = DbContext.GetAll<UserMembership>(new { Email }).FirstOrDefault();
-            if (Membership == null || Membership.ResetHash != Hash || Membership.DateReset == null || Membership.DateReset.Value < DateTimeOffset.Now.AddMinutes(-15))
+            _Membership = DbContext.GetAll<UserMembership>(new { Email }).FirstOrDefault();
+            if (_Membership == null || _Membership.ResetHash != Hash || _Membership.DateReset == null || _Membership.DateReset.Value < DateTimeOffset.Now.AddMinutes(-15))
             {
-                Membership = null;
+                _Membership = null;
                 yield return new ValidationResult(Account.ErrorResetPassword);
             }
 
             if (IsReset)
-            {
                 yield return PasswordHelper.Validate(AppConfig, Password, ConfirmPassword);
-            }
         }
     }
 }

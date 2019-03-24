@@ -8,7 +8,7 @@ namespace Dash.Models
 {
     public class ChangeType : BaseModel, IValidatableObject
     {
-        private Chart _Chart;
+        Chart _Chart;
 
         [BindNever, ValidateNever]
         public Chart Chart => _Chart ?? (_Chart = DbContext.Get<Chart>(Id));
@@ -28,21 +28,12 @@ namespace Dash.Models
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             DbContext = (IDbContext)validationContext.GetService(typeof(IDbContext));
+            if (ChartTypeId < 1)
+                yield return new ValidationResult(Charts.ErrorTypeRequired);
             if (Chart == null)
-            {
                 yield return new ValidationResult(Core.ErrorInvalidId);
-            }
-            else
-            {
-                if (!Chart.IsOwner)
-                {
-                    yield return new ValidationResult(Charts.ErrorOwnerOnly);
-                }
-                if (ChartTypeId < 1)
-                {
-                    yield return new ValidationResult(Charts.ErrorTypeRequired);
-                }
-            }
+            else if (!Chart.IsOwner)
+                yield return new ValidationResult(Charts.ErrorOwnerOnly);
         }
     }
 }

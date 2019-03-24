@@ -37,9 +37,7 @@ namespace Dash.Models
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             if (!UserId.HasValue && !RoleId.HasValue)
-            {
                 yield return new ValidationResult(Core.ErrorUserOrRole, new[] { "UserID" });
-            }
         }
     }
 }

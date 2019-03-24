@@ -4,7 +4,7 @@ namespace Dash.Models
 {
     public class Help
     {
-        private ISession _Session;
+        ISession _Session;
         public const string SettingName = "ContextHelp";
 
         public Help(ISession session) => _Session = session;

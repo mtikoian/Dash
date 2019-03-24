@@ -6,7 +6,7 @@ using Dash.Resources;
 
 namespace Dash.Models
 {
-    public class ExportChart
+    public class ExportChart : BaseModel
     {
         public string ContentType { get; } = "image/png";
 

@@ -10,8 +10,8 @@ namespace Dash.Models
 {
     public class ReportData : BaseModel, IValidatableObject
     {
-        private IHttpContextAccessor _HttpContextAccessor;
-        private Report _Report;
+        IHttpContextAccessor _HttpContextAccessor;
+        Report _Report;
 
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         public new int Id { get; set; }
@@ -33,9 +33,7 @@ namespace Dash.Models
         public void Update()
         {
             if (Save)
-            {
                 Report.DataUpdate(TotalItems, Sort);
-            }
         }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
@@ -52,13 +50,9 @@ namespace Dash.Models
             {
                 var user = DbContext.Get<User>(_HttpContextAccessor.HttpContext.User.UserId());
                 if (!user.CanViewReport(Report))
-                {
                     yield return new ValidationResult(Reports.ErrorPermissionDenied);
-                }
                 if ((Report.Dataset?.DatasetColumn?.Count ?? 0) == 0)
-                {
                     yield return new ValidationResult(Reports.ErrorNoColumnsSelected);
-                }
             }
         }
     }

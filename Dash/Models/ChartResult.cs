@@ -81,31 +81,19 @@ namespace Dash.Models
                             break;
                         case Aggregators.Max:
                             if (yType == "int" || yType == "currency")
-                            {
                                 value = (new[] { value, Convert.ToDecimal(row[yName]) }.Max());
-                            }
                             else if (yType == "date")
-                            {
                                 value = (new[] { value, (row[yName] ?? "").ToDateTime() }.Max());
-                            }
                             else
-                            {
                                 value = new[] { value, row[yName].ToString() }.Max();
-                            }
                             break;
                         case Aggregators.Min:
                             if (yType == "int" || yType == "currency")
-                            {
                                 value = (new[] { value, Convert.ToDecimal(row[yName]) }.Min());
-                            }
                             else if (yType == "date")
-                            {
                                 value = (new[] { value, (row[yName] ?? "").ToDateTime() }.Min());
-                            }
                             else
-                            {
                                 value = new[] { value, row[yName].ToString() }.Min();
-                            }
                             break;
                         case Aggregators.Count:
                         case Aggregators.Sum:

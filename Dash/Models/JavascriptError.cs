@@ -4,9 +4,7 @@ namespace Dash.Models
 {
     public class JavascriptError : BaseModel
     {
-        public JavascriptError()
-        {
-        }
+        public JavascriptError() { }
 
         public string Message { get; set; }
     }
@@ -16,16 +14,10 @@ namespace Dash.Models
     {
         protected JavaScriptException(System.Runtime.Serialization.SerializationInfo serializationInfo, System.Runtime.Serialization.StreamingContext streamingContext) => throw new NotImplementedException();
 
-        public JavaScriptException(string message) : base(message)
-        {
-        }
+        public JavaScriptException(string message) : base(message) { }
 
-        public JavaScriptException()
-        {
-        }
+        public JavaScriptException() { }
 
-        public JavaScriptException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
+        public JavaScriptException(string message, Exception innerException) : base(message, innerException) { }
     }
 }

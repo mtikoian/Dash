@@ -8,7 +8,7 @@ namespace Dash.Models
 {
     public class CopyAlert : BaseModel, IValidatableObject
     {
-        private Alert _Alert;
+        Alert _Alert;
 
         [BindNever, ValidateNever]
         public Alert Alert
@@ -32,9 +32,7 @@ namespace Dash.Models
         {
             DbContext = (IDbContext)validationContext.GetService(typeof(IDbContext));
             if (Alert == null)
-            {
                 yield return new ValidationResult(Core.ErrorInvalidId);
-            }
         }
     }
 }

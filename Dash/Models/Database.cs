@@ -99,13 +99,12 @@ namespace Dash.Models
             {
                 if (IsSqlServer)
                 {
-                    var connBuilder = new SqlConnectionStringBuilder {
+                    connectionString = new SqlConnectionStringBuilder {
                         DataSource = Host + (Port.HasPositiveValue() ? "," + Port.ToString() : ""),
                         InitialCatalog = DatabaseName,
                         UserID = User,
                         Password = crypt.Decrypt(Password)
-                    };
-                    connectionString = connBuilder.ToString();
+                    }.ToString();
                 }
                 else
                 {

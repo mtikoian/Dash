@@ -9,8 +9,8 @@ namespace Dash.Models
 {
     public class RenameChart : BaseModel, IValidatableObject
     {
-        private Chart _Chart;
-        private IHttpContextAccessor _HttpContextAccessor;
+        Chart _Chart;
+        IHttpContextAccessor _HttpContextAccessor;
 
         [BindNever, ValidateNever]
         public Chart Chart
@@ -35,9 +35,7 @@ namespace Dash.Models
             DbContext = (IDbContext)validationContext.GetService(typeof(IDbContext));
             _HttpContextAccessor = (IHttpContextAccessor)validationContext.GetService(typeof(IHttpContextAccessor));
             if (Chart == null)
-            {
                 yield return new ValidationResult(Core.ErrorInvalidId);
-            }
         }
     }
 }

@@ -8,7 +8,7 @@ namespace Dash.Models
 {
     public class CopyChart : BaseModel, IValidatableObject
     {
-        private Chart _Chart;
+        Chart _Chart;
 
         [BindNever, ValidateNever]
         public Chart Chart
@@ -32,9 +32,7 @@ namespace Dash.Models
         {
             DbContext = (IDbContext)validationContext.GetService(typeof(IDbContext));
             if (Chart == null)
-            {
                 yield return new ValidationResult(Core.ErrorInvalidId);
-            }
         }
     }
 }

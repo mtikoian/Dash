@@ -7,11 +7,9 @@ namespace Dash.Models
 {
     public class ReportShare : Share
     {
-        private Report _Report;
+        Report _Report;
 
-        public ReportShare()
-        {
-        }
+        public ReportShare() { }
 
         public ReportShare(IDbContext dbContext) => DbContext = dbContext;
 

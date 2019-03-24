@@ -9,8 +9,8 @@ namespace Dash.Models
 {
     public class CopyReport : BaseModel, IValidatableObject
     {
-        private IHttpContextAccessor _HttpContextAccessor;
-        private Report _Report;
+        IHttpContextAccessor _HttpContextAccessor;
+        Report _Report;
 
         [Required(ErrorMessageResourceType = typeof(Reports), ErrorMessageResourceName = "ErrorNameRequired")]
         [StringLength(100, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
@@ -35,14 +35,9 @@ namespace Dash.Models
             DbContext = (IDbContext)validationContext.GetService(typeof(IDbContext));
             _HttpContextAccessor = (IHttpContextAccessor)validationContext.GetService(typeof(IHttpContextAccessor));
             if (Report == null)
-            {
                 yield return new ValidationResult(Core.ErrorInvalidId);
-            }
-            var user = DbContext.Get<User>(_HttpContextAccessor.HttpContext.User.UserId());
-            if (user?.CanAccessDataset(Report.DatasetId) != true)
-            {
+            if (DbContext.Get<User>(_HttpContextAccessor.HttpContext.User.UserId())?.CanAccessDataset(Report.DatasetId) != true)
                 yield return new ValidationResult(Reports.ErrorReportDatasetAccess);
-            }
         }
     }
 }

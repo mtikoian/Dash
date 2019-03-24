@@ -4,7 +4,7 @@ namespace Dash.Models
 {
     public class Profiling
     {
-        private ISession _Session;
+        ISession _Session;
         public const string SettingName = "Profiling";
 
         public Profiling(ISession session) => _Session = session;

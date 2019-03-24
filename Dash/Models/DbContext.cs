@@ -19,14 +19,14 @@ namespace Dash.Models
         /// <summary>
         /// Specifies the type of properties that should be included when building sql parameters to save an object.
         /// </summary>
-        private static readonly Type[] SavableTypes = { typeof(string), typeof(bool), typeof(int), typeof(long), typeof(DateTime), typeof(DateTimeOffset),
+        static readonly Type[] _SavableTypes = { typeof(string), typeof(bool), typeof(int), typeof(long), typeof(DateTime), typeof(DateTimeOffset),
             typeof(decimal), typeof(int?), typeof(long?), typeof(byte[]), typeof(Enum), typeof(double), typeof(DateTimeOffset?) };
 
-        private IAppConfiguration _AppConfig;
-        private IMemoryCache _Cache;
-        private IHttpContextAccessor _HttpContextAccessor;
+        IAppConfiguration _AppConfig;
+        IMemoryCache _Cache;
+        IHttpContextAccessor _HttpContextAccessor;
 
-        private T Bind<T>(T model) where T : BaseModel
+        T Bind<T>(T model) where T : BaseModel
         {
             if (model != null)
             {
@@ -48,12 +48,10 @@ namespace Dash.Models
         public override void Delete(int id, Type type, int? requestUserId = null)
         {
             using (var conn = GetConnection())
-            {
                 conn.ExecuteAsync($"{type.Name}Delete", new {
                     RequestUserId = requestUserId ?? _HttpContextAccessor.HttpContext?.User.UserId(),
                     Id = id
                 }, commandType: CommandType.StoredProcedure);
-            }
         }
 
         public override void Delete<T>(T model)
@@ -128,7 +126,7 @@ namespace Dash.Models
 
                 // iterate through all the properties of the object adding to param list
                 accessor.GetMembers()
-                    .Where(x => (SavableTypes.Contains(x.Type) || SavableTypes.Contains(x.Type.GetTypeInfo().BaseType)) && !x.HasAttribute<DbIgnore>())
+                    .Where(x => (_SavableTypes.Contains(x.Type) || _SavableTypes.Contains(x.Type.GetTypeInfo().BaseType)) && !x.HasAttribute<DbIgnore>())
                     .ToList().ForEach(x => {
                         var val = accessor[model, x.Name];
                         if (x.Type.GetTypeInfo().BaseType == typeof(Enum))
@@ -142,35 +140,28 @@ namespace Dash.Models
             }
         }
 
-        public override void SaveMany<T, T2>(T model, List<T2> children, bool forceSaveNulls = true)
+        public override void SaveMany<T, T2>(T model, List<T2> children)
         {
             using (var conn = GetConnection())
             {
                 WithTransaction(() => {
                     var parentType = typeof(T);
                     var childType = typeof(T2);
-                    if (children == null && !forceSaveNulls)
-                        return;
-
                     var existingObjs = new Dictionary<int, T2>();
-                    try
-                    {
-                        // first lets get the full list from the db so we can figure out who to delete
-                        var childParams = new DynamicParameters();
-                        childParams.Add($"{parentType.Name}Id", model.Id);
-                        existingObjs = conn.QueryAsync<T2>($"{childType.Name}Get", childParams, commandType: CommandType.StoredProcedure).Result.ToList().ToDictionary(x => x.Id, x => x);
-                    }
-                    catch { }
 
-                    if (children.Count > 0)
+                    // first lets get the full list from the db so we can figure out who to delete
+                    var childParams = new DynamicParameters();
+                    childParams.Add($"{parentType.Name}Id", model.Id);
+                    existingObjs = conn.QueryAsync<T2>($"{childType.Name}Get", childParams, commandType: CommandType.StoredProcedure).Result.ToList().ToDictionary(x => x.Id, x => x);
+
+                    if (children?.Count > 0)
                     {
                         var childAccessor = TypeAccessor.Create(childType);
-                        var saveMethod = childType.GetMethod("Save");
-                        foreach (var child in children)
-                        {
+                        children.Each(child => {
                             if (existingObjs.TryGetValue(child.Id, out var savedChild))
                                 // remove this id from the list that has to be cleaned up later
                                 existingObjs.Remove(child.Id);
+
                             if (savedChild == null || !child.Equals(savedChild))
                             {
                                 // make sure the parent Id is set on the child object
@@ -178,7 +169,7 @@ namespace Dash.Models
                                 // now save the child
                                 Save(child);
                             }
-                        }
+                        });
                     }
 
                     // delete any child ids are that are leftover

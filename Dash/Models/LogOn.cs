@@ -57,9 +57,8 @@ namespace Dash.Models
                 }
 
                 if (Membership.AllowSingleFactor)
-                {
                     Membership.DoLogOn(dbContext, httpContext);
-                }
+
                 return true;
             }
             catch (Exception ex)

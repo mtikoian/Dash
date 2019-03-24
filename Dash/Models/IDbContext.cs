@@ -24,7 +24,7 @@ namespace Dash.Models
 
         public abstract void Save<T>(T model) where T : BaseModel;
 
-        public abstract void SaveMany<T, T2>(T model, List<T2> children, bool forceSaveNulls = true) where T : BaseModel where T2 : BaseModel;
+        public abstract void SaveMany<T, T2>(T model, List<T2> children) where T : BaseModel where T2 : BaseModel;
 
         public abstract void WithTransaction(Action commands);
     }

@@ -8,7 +8,7 @@ namespace Dash.Models
 {
     public class CopyDataset : BaseModel, IValidatableObject
     {
-        private Dataset _Dataset;
+        Dataset _Dataset;
 
         [BindNever, ValidateNever]
         public Dataset Dataset => _Dataset ?? (_Dataset = DbContext.Get<Dataset>(Id));

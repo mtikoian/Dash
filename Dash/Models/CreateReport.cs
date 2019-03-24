@@ -6,9 +6,7 @@ namespace Dash.Models
 {
     public class CreateReport : BaseModel, IValidatableObject
     {
-        public CreateReport()
-        {
-        }
+        public CreateReport() { }
 
         public CreateReport(IDbContext dbContext, int userId)
         {
@@ -31,9 +29,7 @@ namespace Dash.Models
         {
             DbContext = (IDbContext)validationContext.GetService(typeof(IDbContext));
             if (DbContext.Get<User>(RequestUserId.Value)?.CanAccessDataset(DatasetId) != true)
-            {
                 yield return new ValidationResult(Reports.ErrorReportDatasetAccess);
-            }
         }
     }
 }

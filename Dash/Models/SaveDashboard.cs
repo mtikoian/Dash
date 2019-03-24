@@ -7,7 +7,7 @@ namespace Dash.Models
 {
     public class SaveDashboard : BaseModel, IValidatableObject
     {
-        private IHttpContextAccessor _HttpContextAccessor;
+        IHttpContextAccessor _HttpContextAccessor;
 
         public List<WidgetPosition> Widgets { get; set; }
 

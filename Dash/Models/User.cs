@@ -14,9 +14,8 @@ namespace Dash.Models
     [ModelMetadataType(typeof(PasswordMetadata))]
     public class User : BaseModel, IValidatableObject
     {
-        private List<Role> _AllRoles;
-        private bool? _IsLocked;
-        private List<UserRole> _UserRole;
+        List<Role> _AllRoles;
+        List<UserRole> _UserRole;
 
         public User() { }
 
@@ -51,16 +50,7 @@ namespace Dash.Models
         public string FullName => $"{LastName?.Trim()}, {FirstName?.Trim()}".Trim(new char[] { ' ', ',' });
 
         [DbIgnore, BindNever, ValidateNever]
-        public bool IsLocked
-        {
-            get
-            {
-                if (!_IsLocked.HasValue)
-                    _IsLocked = LoginAttempts > AppConfig.Membership.MaxLoginAttempts;
-                return _IsLocked.Value;
-            }
-            set => _IsLocked = value;
-        }
+        public bool IsLocked => LoginAttempts > AppConfig?.Membership.MaxLoginAttempts;
 
         [DbIgnore]
         public string LanguageCode { get; set; }

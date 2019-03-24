@@ -12,13 +12,11 @@ namespace Dash.Models
 {
     public class ReportFilter : BaseModel, IValidatableObject
     {
-        private DatasetColumn _Column;
-        private Report _Report;
-        private List<ReportFilterCriteria> _ReportFilterCriteria;
+        DatasetColumn _Column;
+        Report _Report;
+        List<ReportFilterCriteria> _ReportFilterCriteria;
 
-        public ReportFilter()
-        {
-        }
+        public ReportFilter() { }
 
         public ReportFilter(IDbContext dbContext) => DbContext = dbContext;
 
@@ -64,9 +62,7 @@ namespace Dash.Models
             get
             {
                 if (Column.FilterTypeId == (int)FilterTypes.Boolean)
-                {
                     return Criteria == "1" ? Reports.True : Reports.False;
-                }
                 if (OperatorId == (int)FilterOperatorsAbstract.DateInterval)
                 {
                     var key = ((FilterDateRanges)Criteria.ToInt()).ToString();
@@ -76,9 +72,8 @@ namespace Dash.Models
                 if (Column.FilterTypeId == (int)FilterTypes.Select)
                 {
                     if (!IsMultipleSelect)
-                    {
                         return FilterSelectListItems.FirstOrDefault(x => x.Value.Equals(Criteria, StringComparison.CurrentCultureIgnoreCase))?.Text;
-                    }
+
                     var items = FilterSelectListItems.ToList().Where(x => !x.Value.IsEmpty()).GroupBy(x => x.Value).Select(x => x.First());
                     try
                     {
@@ -102,9 +97,7 @@ namespace Dash.Models
             get
             {
                 if (!Column.IsSelect || Column.FilterQuery.IsEmpty())
-                {
                     return new List<SelectListItem>();
-                }
                 return Report.Dataset.Database.Query<LookupItem>(Column.FilterQuery)
                     .Prepend(new LookupItem { Value = "", Text = Reports.FilterCriteria }, !IsMultipleSelect)
                     .ToSelectList(x => x.Text, x => x.Value);
@@ -128,11 +121,8 @@ namespace Dash.Models
             {
                 Type operatorType;
                 if (Report.Dataset.IsProc)
-                {
                     operatorType = typeof(FilterOperatorsBoolean);
-                }
                 else
-                {
                     switch (Column?.FilterTypeId)
                     {
                         case ((int)FilterTypes.Boolean):
@@ -151,7 +141,6 @@ namespace Dash.Models
                             operatorType = typeof(FilterOperatorsText);
                             break;
                     }
-                }
                 return operatorType.TranslatedSelect(new ResourceDictionary("Filters"), "LabelFilter_");
             }
         }
@@ -248,9 +237,7 @@ namespace Dash.Models
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             if (OperatorId == (int)FilterOperatorsAbstract.Range && Criteria2.IsEmpty())
-            {
                 yield return new ValidationResult(Reports.ErrorRangeCriteria, new[] { "Criteria2" });
-            }
         }
     }
 }

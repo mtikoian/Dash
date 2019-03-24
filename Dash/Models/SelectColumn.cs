@@ -10,8 +10,8 @@ namespace Dash.Models
 {
     public class SelectColumn : BaseModel, IValidatableObject
     {
-        private IHttpContextAccessor _HttpContextAccessor;
-        private Report _Report;
+        IHttpContextAccessor _HttpContextAccessor;
+        Report _Report;
 
         public bool AllowCloseParent { get; set; }
 
@@ -31,22 +31,13 @@ namespace Dash.Models
             _HttpContextAccessor = (IHttpContextAccessor)validationContext.GetService(typeof(IHttpContextAccessor));
 
             if (Columns?.Any(x => x.DisplayOrder > 0) != true)
-            {
                 yield return new ValidationResult(Reports.ErrorSelectColumn);
-            }
             if (Report == null)
-            {
                 yield return new ValidationResult(Core.ErrorInvalidId);
-            }
             if (!Report.IsOwner)
-            {
                 yield return new ValidationResult(Reports.ErrorOwnerOnly);
-            }
-            var user = DbContext.Get<User>(_HttpContextAccessor.HttpContext.User.UserId());
-            if (user?.CanAccessDataset(Report.DatasetId) != true)
-            {
+            if (DbContext.Get<User>(_HttpContextAccessor.HttpContext.User.UserId())?.CanAccessDataset(Report.DatasetId) != true)
                 yield return new ValidationResult(Reports.ErrorReportDatasetAccess);
-            }
         }
     }
 }

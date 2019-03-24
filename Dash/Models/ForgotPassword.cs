@@ -43,9 +43,7 @@ namespace Dash.Models
                     {
                         client.ConnectAsync(appConfig.Mail.Smtp.Host, appConfig.Mail.Smtp.Port, SecureSocketOptions.None);
                         if (!appConfig.Mail.Smtp.Username.IsEmpty())
-                        {
                             client.AuthenticateAsync(appConfig.Mail.Smtp.Username, appConfig.Mail.Smtp.Password);
-                        }
                         client.SendAsync(emailMessage);
                         client.DisconnectAsync(true);
                     }

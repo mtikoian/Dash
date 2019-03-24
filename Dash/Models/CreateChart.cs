@@ -5,9 +5,7 @@ namespace Dash.Models
 {
     public class CreateChart : BaseModel
     {
-        public CreateChart()
-        {
-        }
+        public CreateChart() { }
 
         public CreateChart(IDbContext dbContext, int userId)
         {

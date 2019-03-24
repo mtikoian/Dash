@@ -5,9 +5,7 @@ namespace Dash.Models
 {
     public class ReportFilterCriteria : BaseModel
     {
-        public ReportFilterCriteria()
-        {
-        }
+        public ReportFilterCriteria() { }
 
         public ReportFilterCriteria(IDbContext dbContext) => DbContext = dbContext;
 

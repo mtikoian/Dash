@@ -22,11 +22,9 @@ namespace Dash.Models
 
     public class WidgetView : BaseModel
     {
-        private Report _Report;
+        Report _Report;
 
-        public WidgetView()
-        {
-        }
+        public WidgetView() { }
 
         public WidgetView(IDbContext dbContext, IActionContextAccessor actionContextAccessor)
         {
@@ -82,25 +80,18 @@ namespace Dash.Models
                 {
                     case WidgetRefreshRates.ThirtySeconds:
                         return 30;
-
                     case WidgetRefreshRates.OneMinute:
                         return 60;
-
                     case WidgetRefreshRates.FiveMinutes:
                         return 300;
-
                     case WidgetRefreshRates.TenMinutes:
                         return 600;
-
                     case WidgetRefreshRates.FifteenMinutes:
                         return 900;
-
                     case WidgetRefreshRates.ThirtyMinutes:
                         return 1800;
-
                     case WidgetRefreshRates.OneHour:
                         return 3600;
-
                     default:
                         return 0;
                 }
@@ -112,16 +103,12 @@ namespace Dash.Models
             get
             {
                 if (!ReportId.HasValue)
-                {
                     return null;
-                }
                 if (_Report == null)
                 {
                     _Report = DbContext.Get<Report>(ReportId.Value);
                     if (_Report != null)
-                    {
                         _Report.IsDashboard = true;
-                    }
                 }
                 return _Report;
             }

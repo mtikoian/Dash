@@ -9,8 +9,8 @@ namespace Dash.Models
 {
     public class Role : BaseModel, IValidatableObject
     {
-        private Dictionary<string, List<Permission>> _ControllerPermissions;
-        private List<RolePermission> _RolePermission;
+        Dictionary<string, List<Permission>> _ControllerPermissions;
+        List<RolePermission> _RolePermission;
 
         public Role() { }
 
@@ -26,9 +26,7 @@ namespace Dash.Models
                     _ControllerPermissions = new Dictionary<string, List<Permission>>();
                     DbContext.GetAll<Permission>().Each(permission => {
                         if (!_ControllerPermissions.ContainsKey(permission.ControllerName))
-                        {
                             _ControllerPermissions.Add(permission.ControllerName, new List<Permission>());
-                        }
                         _ControllerPermissions[permission.ControllerName].Add(permission);
                     });
                 }

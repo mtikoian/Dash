@@ -123,7 +123,7 @@ namespace Dash.Models
 
         public ChartResult GetData(bool includeSql)
         {
-            var response = new ChartResult() { UpdatedDate = DateUpdated, ChartId = Id, ChartName = Name, IsOwner = IsOwner };
+            var response = new ChartResult { UpdatedDate = DateUpdated, ChartId = Id, ChartName = Name, IsOwner = IsOwner };
             if (ChartRange?.Any() != true)
             {
                 response.Error = Charts.ErrorNoRanges;
@@ -140,21 +140,15 @@ namespace Dash.Models
             foreach (var range in ChartRange)
             {
                 if (!reports.ContainsKey(range.ReportId))
-                {
                     reports.Add(range.ReportId, DbContext.Get<Report>(range.ReportId));
-                }
 
                 var report = reports[range.ReportId];
                 if (report?.Dataset?.Database == null)
-                {
                     continue;
-                }
 
                 var sqlQuery = new QueryBuilder(report, range);
                 if (!(sqlQuery.HasColumns && sqlQuery.DatasetColumns.ContainsKey(range.XAxisColumnId) && sqlQuery.DatasetColumns.ContainsKey(range.YAxisColumnId)))
-                {
                     continue;
-                }
                 sqlQuery.SelectStatement();
 
                 var xColumn = sqlQuery.DatasetColumns[range.XAxisColumnId];
@@ -170,9 +164,7 @@ namespace Dash.Models
                 };
 
                 if (range.AggregatorId == 0)
-                {
                     range.AggregatorId = (int)Aggregators.Count;
-                }
 
                 result.YTitle = chartResource.ContainsKey("LabelAggregator_" + (Aggregators)range.AggregatorId) ? chartResource["LabelAggregator_" + (Aggregators)range.AggregatorId] : "";
                 result.YTitle = $"{result.YTitle} {yColumn.Title}".Trim();
@@ -182,9 +174,7 @@ namespace Dash.Models
                 {
                     var dataRes = report.Dataset.Database.Query(report.Dataset.IsProc ? sqlQuery.ExecStatement() : sqlQuery.SqlResult.Sql, report.Dataset.IsProc ? sqlQuery.Params : sqlQuery.SqlResult.NamedBindings);
                     if (dataRes.Any())
-                    {
                         result.AddData(range, report.ProcessData(dataRes, sqlQuery), xColumn, yColumn);
-                    }
                 }
                 catch (Exception dataEx)
                 {
@@ -194,13 +184,9 @@ namespace Dash.Models
             }
 
             if (response.Ranges.Any(x => !x.Error.IsEmpty()))
-            {
                 response.Error = Charts.ErrorGettingData;
-            }
             else if (!response.Ranges.Any(x => x.Rows.Any()))
-            {
                 response.Error = Charts.ErrorNoData;
-            }
 
             return response;
         }
