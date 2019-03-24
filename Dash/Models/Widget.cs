@@ -13,14 +13,9 @@ namespace Dash.Models
 {
     public class Widget : BaseModel, IValidatableObject
     {
-        public Widget()
-        {
-        }
+        public Widget() { }
 
         public Widget(IDbContext dbContext) => DbContext = dbContext;
-
-        [DbIgnore, JilDirective(true)]
-        public bool AllowEdit => UserId == RequestUserId;
 
         [Display(Name = "Chart", ResourceType = typeof(Widgets))]
         public int? ChartId { get; set; }
@@ -28,6 +23,17 @@ namespace Dash.Models
         [DbIgnore, BindNever, ValidateNever]
         public IEnumerable<SelectListItem> ChartSelectListItems => DbContext.GetAll<Chart>(new { UserId = RequestUserId }).ToSelectList(r => r.Name, r => r.Id.ToString());
         public int Height { get; set; } = 4;
+
+        [DbIgnore, BindNever, ValidateNever, JilDirective(true)]
+        public bool IsOwner
+        {
+            get
+            {
+                if (UserCreated == 0 && Id > 0)
+                    UserCreated = DbContext.Get<Widget>(Id)?.UserCreated ?? 0;
+                return RequestUserId == UserCreated;
+            }
+        }
 
         [Display(Name = "RefreshRate", ResourceType = typeof(Widgets))]
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
@@ -44,9 +50,8 @@ namespace Dash.Models
         [StringLength(100, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string Title { get; set; }
 
-        [Display(Name = "User", ResourceType = typeof(Widgets))]
-        [Required]
-        public int UserId { get; set; }
+        [DbIgnore, JilDirective(true)]
+        public int UserCreated { get; set; }
 
         [DbIgnore, BindNever, ValidateNever]
         public IEnumerable<SelectListItem> WidgetRefreshRateSelectListItems => typeof(WidgetRefreshRates).TranslatedSelect(new ResourceDictionary("Widgets"), "LabelRefreshRate_");
@@ -58,8 +63,6 @@ namespace Dash.Models
 
         public void Save()
         {
-            RequestUserId = RequestUserId.HasPositiveValue() ? RequestUserId : UserId;
-
             if (Id == 0)
             {
                 // new widget - find the correct position
@@ -68,19 +71,13 @@ namespace Dash.Models
                 X = 0;
                 Y = gridBottom;
             }
-            if (UserId == 0)
-            {
-                UserId = RequestUserId ?? 0;
-            }
             DbContext.Save(this);
         }
 
         public void SavePosition(int width, int height, int x, int y)
         {
-            if (!AllowEdit)
-            {
+            if (!IsOwner)
                 return;
-            }
 
             width = width == 0 ? 1 : width;
             height = height == 0 ? 1 : height;
@@ -98,9 +95,7 @@ namespace Dash.Models
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             if (!ReportId.HasPositiveValue() && !ChartId.HasPositiveValue())
-            {
                 yield return new ValidationResult(Widgets.ErrorReportOrChartRequired, new[] { "ReportId" });
-            }
         }
     }
 }

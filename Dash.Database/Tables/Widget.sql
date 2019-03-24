@@ -1,6 +1,5 @@
 ﻿CREATE TABLE [dbo].[Widget] (
     [Id]          INT                IDENTITY (1, 1) NOT NULL,
-    [UserId]      INT                NULL,
     [ReportId]    INT                NULL,
     [ChartId]     INT                NULL,
     [RefreshRate] INT                NULL,
@@ -20,6 +19,6 @@
 
 
 GO
-CREATE NONCLUSTERED INDEX [IX_Widget_UserId]
-    ON [dbo].[Widget]([UserId] ASC);
+CREATE NONCLUSTERED INDEX [IX_Widget_UserCreated]
+    ON [dbo].[Widget]([UserCreated] ASC);
 

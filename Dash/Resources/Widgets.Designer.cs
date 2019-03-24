@@ -97,6 +97,15 @@ namespace Dash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Only the owner of the widget is allowed to do this..
+        /// </summary>
+        public static string ErrorOwnerOnly {
+            get {
+                return ResourceManager.GetString("ErrorOwnerOnly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You must select a report or a chart for this widget to display..
         /// </summary>
         public static string ErrorReportOrChartRequired {

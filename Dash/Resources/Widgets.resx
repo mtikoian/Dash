@@ -186,4 +186,7 @@
   <data name="EditWidget" xml:space="preserve">
     <value>Edit Widget</value>
   </data>
+  <data name="ErrorOwnerOnly" xml:space="preserve">
+    <value>Only the owner of the widget is allowed to do this.</value>
+  </data>
 </root>

@@ -14,7 +14,9 @@ namespace Dash.Controllers
 
         IActionResult CreateEditView(Widget model)
         {
-            // @todo implement IsOwner checks based on UserCreated, standardize AllowEdit usage also
+            if (!model.IsCreate && !IsOwner(model))
+                return Index();
+
             return View("CreateEdit", model);
         }
 
@@ -22,11 +24,20 @@ namespace Dash.Controllers
         {
             if (!ModelState.IsValid)
                 return CreateEditView(model);
+            if (!model.IsCreate && !IsOwner(model))
+                return Index();
 
-            model.UserId = model.UserId > 0 ? model.UserId : User.UserId();
             model.Save();
             ViewBag.Message = Widgets.SuccessSavingWidget;
             return Index();
+        }
+
+        protected bool IsOwner(Widget model)
+        {
+            if (model.IsOwner)
+                return true;
+            ViewBag.Error = Widgets.ErrorOwnerOnly;
+            return false;
         }
 
         public DashboardController(IDbContext dbContext, IAppConfiguration appConfig, IActionContextAccessor actionContextAccessor) : base(dbContext, appConfig) => _ActionContextAccessor = actionContextAccessor;
@@ -40,7 +51,7 @@ namespace Dash.Controllers
         [HttpDelete]
         public IActionResult Delete(int id)
         {
-            if (!LoadModel(id, out Widget model) || !model.AllowEdit)
+            if (!LoadModel(id, out Widget model) && !IsOwner(model))
                 return Index();
 
             DbContext.Delete(model);
@@ -48,13 +59,7 @@ namespace Dash.Controllers
         }
 
         [HttpGet]
-        public IActionResult Edit(int id)
-        {
-            if (!LoadModel(id, out Widget model) || !model.AllowEdit)
-                return Index();
-
-            return CreateEditView(model);
-        }
+        public IActionResult Edit(int id) => LoadModel(id, out Widget model) ? CreateEditView(model) : Index();
 
         [HttpPut, ValidateAntiForgeryToken, ValidModel]
         public IActionResult Edit(Widget model) => Save(model);
