@@ -1,8 +1,8 @@
 ﻿CREATE PROCEDURE RolePermissionDelete
-	@Id INT,
-	@RequestUserId INT = NULL
+    @Id INT,
+    @RequestUserId INT = NULL
 AS
-	SET NOCOUNT ON
+    SET NOCOUNT ON
 
-	DELETE FROM RolePermission WHERE Id = @Id
-	RETURN 0
+    DELETE FROM RolePermission WHERE Id = @Id
+    RETURN 0

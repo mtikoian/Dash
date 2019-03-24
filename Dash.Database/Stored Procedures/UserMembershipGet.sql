@@ -1,8 +1,8 @@
 ﻿CREATE PROCEDURE UserMembershipGet
-	@UserName NVARCHAR(100) = NULL,
+    @UserName NVARCHAR(100) = NULL,
     @Email NVARCHAR(100) = NULL
  AS
-	SET NOCOUNT ON
+    SET NOCOUNT ON
 
     SELECT u.Id, u.UserName, u.FirstName, u.LastName, u.LanguageId, u.[Password], u.Salt, u.LoginAttempts, u.DateUnlocks, u.AllowSingleFactor, u.Email, u.DateReset, u.ResetHash, u.DateLoginWindow, u.LoginHash, l.LanguageCode
     FROM [User] u
