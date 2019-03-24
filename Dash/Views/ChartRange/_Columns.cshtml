@@ -4,10 +4,10 @@
 <div id="rangeColumnPartial">
     @if (Model.ReportId > 0)
     {
-        <form-group-select for="XAxisColumnId" options="@Model.ColumnSelectListItems" toggle="content-replace" url="@Url.Action("DateInterval")" params="#Id,#XAxisColumnId" />
+        <form-group-select for="XAxisColumnId" options="@Model.ColumnSelectListItems" toggle="@DataToggles.ContentReplace" url="@Url.Action("DateInterval")" params="#Id,#XAxisColumnId,#ChartId" />
         <form-group-select for="YAxisColumnId" options="@Model.ColumnSelectListItems" />
         <form-group-select for="AggregatorId" options="@Model.AggregatorListItems" />
         <partial name="_DateInterval" />
-        <form-group-input for="Color" toggle="colorpicker" no-render="@Model.Chart.IsRadial" />
+        <form-group-input for="Color" toggle="@DataToggles.Colorpicker" no-render="@Model.Chart.IsRadial" />
     }
 </div>

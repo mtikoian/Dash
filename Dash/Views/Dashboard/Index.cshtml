@@ -3,14 +3,14 @@
     ViewBag.Title = Dash.Resources.Core.Dashboard;
 }
 
-<div id="bodyContent" class="dashboard" data-pjax-title="@Dash.Resources.Core.Dashboard" data-pjax-url="@Url.Action("Index")" data-toggle="dashboard" data-save-url="@Url.Action("SaveDashboard")">
+<div id="bodyContent" class="dashboard" data-pjax-title="@Dash.Resources.Core.Dashboard" data-pjax-url="@Url.Action("Index")" data-toggle="@DataToggles.Dashboard.ToHyphenCase()" data-save-url="@Url.Action("SaveDashboard")">
     @if (!((string)ViewBag.Message).IsEmpty())
     {
-        <span class="hidden" data-toggle="alertify" data-success="@ViewBag.Message" />
+        <span class="hidden" data-toggle="@DataToggles.Alertify.ToHyphenCase()" data-success="@ViewBag.Message" />
     }
     @if (!((string)ViewBag.Error).IsEmpty())
     {
-        <span class="hidden" data-toggle="alertify" data-error="@ViewBag.Error" />
+        <span class="hidden" data-toggle="@DataToggles.Alertify.ToHyphenCase()" data-error="@ViewBag.Error" />
     }
 
     @foreach (var widget in Model.Widgets)

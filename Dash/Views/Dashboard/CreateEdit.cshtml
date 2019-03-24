@@ -1,4 +1,5 @@
 ﻿@using Dash.Resources
+@using Dash.Utils;
 @model Dash.Models.Widget
 
 <body-content>
@@ -16,8 +17,8 @@
         <input asp-for="Height" type="hidden" />
 
         <form-group-input for="Title" autofocus="true" />
-        <form-group-select for="ReportId" options="@Model.ReportSelectListItems" toggle="disable" target="#ChartId" match="" />
-        <form-group-select for="ChartId" options="@Model.ChartSelectListItems" toggle="disable" target="#ReportId" match="" />
+        <form-group-select for="ReportId" options="@Model.ReportSelectListItems" toggle="@DataToggles.Disable" target="#ChartId" match="" />
+        <form-group-select for="ChartId" options="@Model.ChartSelectListItems" toggle="@DataToggles.Disable" target="#ReportId" match="" />
         <form-group-select for="RefreshRate" options="@Model.WidgetRefreshRateSelectListItems" />
         <form-buttons />
     </horizontal-form>

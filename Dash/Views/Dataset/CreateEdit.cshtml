@@ -18,18 +18,18 @@
             <form-group-input for="Name" autofocus="true" />
             <form-group-select for="DatabaseId" options="@(Model.DbContext.GetAll<Database>().ToSelectList(x => x.Name, x => x.Id.ToString()))" />
             <form-group-select for="TypeId" options="@Model.TypeList" />
-            <form-group-input for="PrimarySource" autofocus="true" toggle="autocomplete" url="@Url.Action("Sources", "Dataset")" params="#DatabaseId,#TypeId" />
+            <form-group-input for="PrimarySource" autofocus="true" toggle="@DataToggles.Autocomplete" url="@Url.Action("Sources", "Dataset")" params="#DatabaseId,#TypeId" />
             <form-group-textarea for="Conditions" />
             <form-group-input for="DateFormat">
                 <form-group-addon>
-                    <dropdown target-id="DateFormat" items="@Model.DefaultDateFormats" toggle="input-replace">
+                    <dropdown target-id="DateFormat" items="@Model.DefaultDateFormats" toggle="@DataToggles.InputReplace">
                         <icon name="@DashIcons.ListNumbered" />
                     </dropdown>
                 </form-group-addon>
             </form-group-input>
             <form-group-input for="CurrencyFormat">
                 <form-group-addon>
-                    <dropdown target-id="CurrencyFormat" items="@Model.DefaultCurrencyFormats" toggle="input-replace">
+                    <dropdown target-id="CurrencyFormat" items="@Model.DefaultCurrencyFormats" toggle="@DataToggles.InputReplace">
                         <icon name="@DashIcons.ListNumbered" />
                     </dropdown>
                 </form-group-addon>

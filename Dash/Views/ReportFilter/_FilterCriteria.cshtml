@@ -16,7 +16,7 @@
             }
             else
             {
-                <form-group-input for="Criteria" toggle="datepicker" />
+                <form-group-input for="Criteria" toggle="@DataToggles.Datepicker" />
             }
         }
         else if (Model.Column?.FilterTypeId == (int)FilterTypes.Select)
@@ -39,7 +39,7 @@
     {
         @if (Model.Column?.FilterTypeId == (int)FilterTypes.Date)
         {
-            <form-group-input for="Criteria2" toggle="datepicker" is-required="true" />
+            <form-group-input for="Criteria2" toggle="@DataToggles.Datepicker" is-required="true" />
         }
         else
         {

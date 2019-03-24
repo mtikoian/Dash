@@ -1,4 +1,5 @@
 ﻿@using Dash.Resources
+@using Dash.Utils
 @model Dash.Models.Chart
 
 @if (!Model.ChartRange.Any())
@@ -19,10 +20,10 @@
         @if (Model.ChartRange.Any())
         {
             <toolbar>
-                <button class="btn btn-primary" data-toggle="chart-export">@Core.Export</button>
+                <button class="btn btn-primary" data-toggle="@DataToggles.ChartExport.ToHyphenCase()">@Core.Export</button>
             </toolbar>
 
-            <div class="chart-container container p-2" data-toggle="chart" data-url="@Url.Action("Data", "Chart", new { Id = Model.Id })">
+            <div class="chart-container container p-2" data-toggle="@DataToggles.Chart.ToHyphenCase()" data-url="@Url.Action("Data", "Chart", new { Id = Model.Id })">
                 <partial name="_Chart" />
                 <form action="@Url.Action("Export", "Chart")" class="export-form" method="POST" target="_blank">
                     <input type="hidden" name="filename" class="export-filename" value="@Model.Name" />

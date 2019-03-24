@@ -17,7 +17,7 @@
         <input asp-for="ReportId" type="hidden" />
         <input asp-for="DisplayOrder" type="hidden" />
 
-        <form-group-select for="ColumnId" autofocus="true" options="Model.Columns.ToSelectList(x => x.Title, x => x.Id.ToString())" toggle="content-replace" url="@Url.Action("FilterOperators")" params="#Id,#ColumnId,#ReportId" />
+        <form-group-select for="ColumnId" autofocus="true" options="Model.Columns.ToSelectList(x => x.Title, x => x.Id.ToString())" toggle="@DataToggles.ContentReplace" url="@Url.Action("FilterOperators")" params="#Id,#ColumnId,#ReportId" />
         <partial name="_FilterOperators" />
 
         <form-buttons />

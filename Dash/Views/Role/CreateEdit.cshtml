@@ -16,7 +16,7 @@
         <form-group-input for="Name" autofocus="true" />
         <div class="form-group">
             <form-label for="PermissionIds" />
-            <div class="col-8 c-hand" data-toggle="collapsible-list">
+            <div class="col-8 c-hand" data-toggle="@DataToggles.CollapsibleList.ToHyphenCase()">
                 @foreach (var controller in Model.ControllerPermissions.Keys)
                 {
                     <ul class="collapsible-list">
