@@ -629,78 +629,24 @@
      * Selectors and callback function to create events.
      */
     var _toggles = {
-        'nav-menu': {
-            onLoad: menuLoad,
-            onUnload: null
-        },
-        'dotable': {
-            onLoad: doTableLoad,
-            onUnload: doTableUnload
-        },
-        'context-help': {
-            onLoad: contextHelp,
-            onUnload: null
-        },
-        'collapsible-list': {
-            onLoad: function() { new CollapsibleList(this); },
-            onUnload: null
-        },
-        'input-replace': {
-            onLoad: function() { $.on(this, 'click', inputReplace); },
-            onUnload: null
-        },
-        'hide': {
-            onLoad: hide,
-            onUnload: null
-        },
-        'disable': {
-            onLoad: disable,
-            onUnload: null
-        },
-        'alertify': {
-            onLoad: alert,
-            onUnload: null
-        },
-        'autocomplete': {
-            onLoad: autocompleteLoad,
-            onUnload: destroyList.bind(null, _autocompletes)
-        },
-        'tag-list': {
-            onLoad: tagListLoad,
-            onUnload: destroyList.bind(null, _tagListAutocompletes)
-        },
-        'column-selector': {
-            onLoad: columnSelectorLoad,
-            onUnload: destroyList.bind(null, _draggabillies)
-        },
-        'content-replace': {
-            onLoad: contentReplaceLoad,
-            onUnload: null
-        },
-        'datepicker': {
-            onLoad: datepickerLoad,
-            onUnload: datepickerUnload
-        },
-        'chart': {
-            onLoad: chartLoad,
-            onUnload: destroyList.bind(null, _charts)
-        },
-        'chart-export': {
-            onLoad: chartExportLoad,
-            onUnload: null
-        },
-        'colorpicker': {
-            onLoad: colorpickerLoad,
-            onUnload: destroyList.bind(null, _colorpickers)
-        },
-        'widget': {
-            onLoad: widgetLoad,
-            onUnload: widgetUnload
-        },
-        'dashboard': {
-            onLoad: dashboardLoad,
-            onUnload: dashboardUnload
-        }
+        'alertify': { onLoad: alert, onUnload: null },
+        'autocomplete': { onLoad: autocompleteLoad, onUnload: destroyList.bind(null, _autocompletes) },
+        'chart': { onLoad: chartLoad, onUnload: destroyList.bind(null, _charts) },
+        'chart-export': { onLoad: chartExportLoad, onUnload: null },
+        'collapsible-list': { onLoad: function() { new CollapsibleList(this); }, onUnload: null },
+        'colorpicker': { onLoad: colorpickerLoad, onUnload: destroyList.bind(null, _colorpickers) },
+        'column-selector': { onLoad: columnSelectorLoad, onUnload: destroyList.bind(null, _draggabillies) },
+        'content-replace': { onLoad: contentReplaceLoad, onUnload: null },
+        'context-help': { onLoad: contextHelp, onUnload: null },
+        'dashboard': { onLoad: dashboardLoad, onUnload: dashboardUnload },
+        'datepicker': { onLoad: datepickerLoad, onUnload: datepickerUnload },
+        'disable': { onLoad: disable, onUnload: null },
+        'dotable': { onLoad: doTableLoad, onUnload: doTableUnload },
+        'hide': { onLoad: hide, onUnload: null },
+        'input-replace': { onLoad: function() { $.on(this, 'click', inputReplace); }, onUnload: null },
+        'nav-menu': { onLoad: menuLoad, onUnload: null },
+        'tag-list': { onLoad: tagListLoad, onUnload: destroyList.bind(null, _tagListAutocompletes) },
+        'widget': { onLoad: widgetLoad, onUnload: widgetUnload }
     };
 
     /**
