@@ -292,12 +292,13 @@
     };
 
     /**
-     * Check if a node should be visible.
-     * @param {Node} node - Node to check.
+     * Check if an element should be visible.
+     * @param {Node} element - Node to check.
      * @returns {Bool} True if visible else false.
      */
-    var isVisible = function(node) {
-        return node.offsetParent !== null;
+    var isVisible = function(element) {
+        var node = get(element);
+        return node && node.offsetParent !== null;
     };
 
     /**
