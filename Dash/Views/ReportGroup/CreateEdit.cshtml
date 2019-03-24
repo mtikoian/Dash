@@ -1,0 +1,24 @@
+﻿@using Dash.Resources
+@using Dash.Models
+@model ReportGroup
+
+<body-content>
+    <breadcrumb>
+        <breadcrumb-item label="@Reports.ViewAll" controller="Report" action="Index"></breadcrumb-item>
+        <breadcrumb-item label="@Model.ReportName" controller="Report" action="Edit" route-values="@(new { Id = Model.ReportId })"></breadcrumb-item>
+        <breadcrumb-item label="@Reports.Groups" controller="ReportGroup" action="Index" route-values="@(new { Id = Model.ReportId })"></breadcrumb-item>
+        <breadcrumb-item label="@(Model.IsCreate ? Reports.CreateGroup : Reports.EditGroup)" controller="ReportGroup" action="@Model.FormAction" route-values="@(Model.IsCreate ? null : new { Id = Model.Id })" is-active="true"></breadcrumb-item>
+    </breadcrumb>
+
+    <partial name="_Toast" />
+
+    <horizontal-form for="Model">
+        <input asp-for="Id" type="hidden" />
+        <input asp-for="ReportId" type="hidden" />
+        <input asp-for="DisplayOrder" type="hidden" />
+
+        <form-group-select for="ColumnId" autofocus="true" options="Model.Columns.ToSelectList(x => x.Title, x => x.Id.ToString())" />
+
+        <form-buttons />
+    </horizontal-form>
+</body-content>

@@ -8,41 +8,97 @@ namespace Dash.Models
 {
     public class QueryBuilder
     {
-        private readonly bool IsChart;
-        private ChartRange ChartRange;
-        private Database Database;
-        private bool HasGrouping = false;
-        private Dictionary<string, DatasetJoin> Joins;
-        private Dictionary<string, string> NeededTables = new Dictionary<string, string>();
-        private Report Report;
-        private Dictionary<int, ReportColumn> ReportColumns;
+        readonly bool _IsChart;
+        ChartRange _ChartRange;
+        Database _Database;
+        bool _HasGrouping = false;
+        Dictionary<string, DatasetJoin> _Joins;
+        Dictionary<string, string> _NeededTables = new Dictionary<string, string>();
+        Report _Report;
+        Dictionary<int, ReportColumn> _ReportColumns;
+        Dictionary<int, ReportGroup> _ReportGroups;
+
+        static void CreateDateRange(FilterDateRanges range, out DateTime startDate, out DateTime endDate)
+        {
+            var today = DateTime.Today;
+            startDate = today;
+            endDate = today;
+
+            switch (range)
+            {
+                case FilterDateRanges.Today:
+                    endDate = today.AddDays(1).AddMilliseconds(-1);
+                    break;
+                case FilterDateRanges.ThisWeek:
+                    startDate = today.StartOfWeek();
+                    endDate = today.EndOfWeek();
+                    break;
+                case FilterDateRanges.ThisMonth:
+                    startDate = today.StartOfMonth();
+                    endDate = today.EndOfMonth();
+                    break;
+                case FilterDateRanges.ThisQuarter:
+                    startDate = today.StartOfQuarter();
+                    endDate = today.EndOfQuarter();
+                    break;
+                case FilterDateRanges.ThisYear:
+                    startDate = today.StartOfYear();
+                    endDate = today.EndOfYear();
+                    break;
+                case FilterDateRanges.Yesterday:
+                    startDate = today.AddDays(-1);
+                    endDate = today.AddMilliseconds(-1);
+                    break;
+                case FilterDateRanges.LastWeek:
+                    startDate = today.AddDays(-7).StartOfWeek();
+                    endDate = startDate.EndOfWeek();
+                    break;
+                case FilterDateRanges.LastMonth:
+                    startDate = today.AddMonths(-1).StartOfMonth();
+                    endDate = startDate.EndOfMonth();
+                    break;
+                case FilterDateRanges.LastQuarter:
+                    startDate = today.AddMonths(-3).StartOfQuarter();
+                    endDate = startDate.EndOfQuarter();
+                    break;
+                case FilterDateRanges.LastYear:
+                    startDate = today.AddYears(-1).StartOfYear();
+                    endDate = startDate.EndOfYear();
+                    break;
+                case FilterDateRanges.ThisHour:
+                    startDate = DateTime.Now.StartOfHour();
+                    endDate = startDate.EndOfHour();
+                    break;
+                case FilterDateRanges.ThisMinute:
+                    startDate = DateTime.Now.StartOfMinute();
+                    endDate = startDate.EndOfMinute();
+                    break;
+                case FilterDateRanges.LastMinute:
+                    startDate = DateTime.Now.StartOfMinute().AddMinutes(-1);
+                    endDate = startDate.EndOfMinute();
+                    break;
+            }
+        }
 
         /// <summary>
         /// Build a list of joins necessary to include the requested table in a query.
         /// </summary>
         /// <param name="table">Table name to get joins for.</param>
         /// <returns>Returns updated dictionary of tables.</returns>
-        private Dictionary<string, string> AddJoin(Dictionary<string, string> tables, string table)
+        Dictionary<string, string> AddJoin(Dictionary<string, string> tables, string table)
         {
-            if (!Joins.ContainsKey(table))
-            {
+            if (!_Joins.ContainsKey(table))
                 return tables;
-            }
-            var jTable = Joins[table];
+
+            var jTable = _Joins[table];
             if (tables.ContainsKey(jTable.TableName))
-            {
                 return tables;
-            }
 
             tables.Add(jTable.TableName, jTable.Keys);
             // check if we need to add any tables to get the keys to join the current table
-            foreach (var join in Joins.Values)
-            {
+            foreach (var join in _Joins.Values)
                 if (jTable.Keys.IndexOf(join.TableName + ".") > -1 && !tables.ContainsKey(join.TableName))
-                {
                     tables = AddJoin(tables, join.TableName);
-                }
-            }
             return tables;
         }
 
@@ -50,72 +106,66 @@ namespace Dash.Models
         /// Find the tables/joins needed to get this column.
         /// </summary>
         /// <param name="column">Column to find.</param>
-        private void AddNeededTables(DatasetColumn column)
+        void AddNeededTables(DatasetColumn column)
         {
             if (!column.Derived.IsEmpty())
             {
                 // check if any of the join tables are used in the derived sql
-                foreach (var join in Joins.Values)
-                {
-                    if (column.Derived.IndexOf(join.TableName + ".") > -1 && !NeededTables.ContainsKey(join.TableName))
-                    {
+                foreach (var join in _Joins.Values)
+                    if (column.Derived.IndexOf(join.TableName + ".") > -1 && !_NeededTables.ContainsKey(join.TableName))
                         // get the tables required to join this table
-                        NeededTables = AddJoin(NeededTables, join.TableName);
-                    }
-                }
+                        _NeededTables = AddJoin(_NeededTables, join.TableName);
             }
             else
             {
                 // get the table name from the column name
                 var table = column.TableName;
-                if (!table.IsEmpty() && Joins.ContainsKey(table))
-                {
+                if (!table.IsEmpty() && _Joins.ContainsKey(table))
                     // get the tables required to join this one in
-                    NeededTables = AddJoin(NeededTables, table);
-                }
+                    _NeededTables = AddJoin(_NeededTables, table);
             }
         }
 
         /// <summary>
         /// Build the column list for the query.
         /// </summary>
-        private void BuildColumnSql()
+        void BuildColumnSql()
         {
             var sql = "";
-            if (IsChart)
+            if (_IsChart)
             {
                 // if its a chart, we just need x and y columns
                 // build the sql to get the x axis
-                if (DatasetColumns.ContainsKey(ChartRange.XAxisColumnId))
+                if (DatasetColumns.ContainsKey(_ChartRange.XAxisColumnId))
                 {
-                    sql = DatasetColumns[ChartRange.XAxisColumnId].BuildSql(false);
+                    sql = DatasetColumns[_ChartRange.XAxisColumnId].BuildSql(false);
                     if (sql.Length > 0)
                     {
-                        sql += " AS " + DatasetColumns[ChartRange.XAxisColumnId].Alias;
+                        sql += " AS " + DatasetColumns[_ChartRange.XAxisColumnId].Alias;
 
                         // add any tables this field may need
-                        AddNeededTables(DatasetColumns[ChartRange.XAxisColumnId]);
+                        AddNeededTables(DatasetColumns[_ChartRange.XAxisColumnId]);
                         // add the column to the list
-                        NeededColumns.Add(ChartRange.XAxisColumnId, sql);
+                        NeededColumns.Add(_ChartRange.XAxisColumnId, sql);
                         KataQuery.SelectRaw(sql);
                     }
                 }
 
                 // now the y axis
-                ChartRange.AggregatorId = ChartRange.AggregatorId == 0 ? (int)Aggregators.Count : ChartRange.AggregatorId;
-                sql = ((Aggregators)ChartRange.AggregatorId).ToString().ToUpper();
+                _ChartRange.AggregatorId = _ChartRange.AggregatorId == 0 ? (int)Aggregators.Count : _ChartRange.AggregatorId;
+                sql = ((Aggregators)_ChartRange.AggregatorId).ToString().ToUpper();
 
-                if (DatasetColumns.ContainsKey(ChartRange.YAxisColumnId) && ((Aggregators)ChartRange.AggregatorId) != Aggregators.Count)
+                if (DatasetColumns.ContainsKey(_ChartRange.YAxisColumnId) && ((Aggregators)_ChartRange.AggregatorId) != Aggregators.Count)
                 {
-                    sql += DatasetColumns[ChartRange.YAxisColumnId].BuildSql();
+                    sql += DatasetColumns[_ChartRange.YAxisColumnId].BuildSql();
 
                     // add tables this field will need
-                    AddNeededTables(DatasetColumns[ChartRange.YAxisColumnId]);
+                    AddNeededTables(DatasetColumns[_ChartRange.YAxisColumnId]);
 
                     // add the column to the list
-                    if (!NeededColumns.ContainsKey(ChartRange.YAxisColumnId))
+                    if (!NeededColumns.ContainsKey(_ChartRange.YAxisColumnId))
                     {
-                        NeededColumns.Add(DatasetColumns[ChartRange.YAxisColumnId].Id, sql);
+                        NeededColumns.Add(DatasetColumns[_ChartRange.YAxisColumnId].Id, sql);
                         KataQuery.SelectRaw(sql);
                     }
                 }
@@ -131,125 +181,120 @@ namespace Dash.Models
             else
             {
                 // build the columns for the query
-                if (HasGrouping && Report.AggregatorId == 0)
-                {
-                    Report.AggregatorId = (int)Aggregators.Count;
-                }
+                if (_HasGrouping && _Report.AggregatorId == 0)
+                    _Report.AggregatorId = (int)Aggregators.Count;
 
                 // iterate through all the columns in the dataset and see which ones we actually need
-                foreach (var column in Report.Dataset.DatasetColumn)
-                {
-                    if (!NeededColumns.ContainsKey(column.Id) && (ReportColumns.ContainsKey(column.Id) || UsedInLink(column)))
+                _Report.Dataset.DatasetColumn.Where(x => !NeededColumns.ContainsKey(x.Id) && (_ReportColumns.ContainsKey(x.Id) || UsedInLink(x))).Each(column => {
+                    // build the sql to get this column
+                    sql = "";
+                    if (_HasGrouping && !_ReportGroups.ContainsKey(column.Id))
+                        sql = column.BuildSql(false, _Report.AggregatorId);
+                    else if (_ReportGroups.ContainsKey(column.Id))
+                        sql = column.BuildSql(false, (int)Aggregators.Max);
+                    else
+                        sql = column.BuildSql(false);
+
+                    if (sql.Length > 0)
                     {
-                        // build the sql to get this column
-                        sql = HasGrouping ? column.BuildSql(false, Report.AggregatorId) : column.BuildSql(false);
-                        if (sql.Length > 0)
-                        {
-                            // add tables this field will need
-                            AddNeededTables(column);
+                        // add tables this field will need
+                        AddNeededTables(column);
 
-                            // add the column to the array of all needed columns
-                            NeededColumns.Add(column.Id, sql + " AS " + column.Alias);
-                            if (!Database.AllowPaging)
-                            {
-                                NeededAliases.Add(column.Id, column.Alias);
-                            }
+                        // add the column to the array of all needed columns
+                        NeededColumns.Add(column.Id, sql + " AS " + column.Alias);
+                        if (!_Database.AllowPaging)
+                            NeededAliases.Add(column.Id, column.Alias);
 
-                            KataQuery.SelectRaw(sql + " AS " + column.Alias);
-                        }
+                        KataQuery.SelectRaw(sql + " AS " + column.Alias);
                     }
-                }
+                });
             }
         }
 
         /// <summary>
         /// Creates the SQL for grouping results.
         /// </summary>
-        private void BuildGroupBySql()
+        void BuildGroupBySql()
         {
-            // add chart grouping
-            if (IsChart && DatasetColumns.ContainsKey(ChartRange.XAxisColumnId))
+            // add report grouping if any
+            if (_Report.ReportGroup?.Any() == true)
             {
-                HasGrouping = true;
-                KataQuery.GroupByRaw(DatasetColumns[ChartRange.XAxisColumnId].BuildSql(false));
-                AddNeededTables(DatasetColumns[ChartRange.XAxisColumnId]);
+                _HasGrouping = true;
+                _Report.ReportGroup.OrderBy(x => x.DisplayOrder).Each(x => {
+                    KataQuery.GroupByRaw(DatasetColumns[x.ColumnId].BuildSql(false));
+                    AddNeededTables(DatasetColumns[x.ColumnId]);
+                });
+            }
+            // add chart grouping
+            if (_IsChart && DatasetColumns.ContainsKey(_ChartRange.XAxisColumnId))
+            {
+                _HasGrouping = true;
+                KataQuery.GroupByRaw(DatasetColumns[_ChartRange.XAxisColumnId].BuildSql(false));
+                AddNeededTables(DatasetColumns[_ChartRange.XAxisColumnId]);
             }
         }
 
         /// <summary>
         /// Build the from/join sql statements.
         /// </summary>
-        private void BuildJoinSql()
+        void BuildJoinSql()
         {
             var orderedJoins = new Dictionary<int, string>();
-            foreach (var key in NeededTables.Keys)
-            {
-                if (key == Report.Dataset.PrimarySource)
-                {
-                    orderedJoins[0] = Report.Dataset.PrimarySource;
-                }
+            foreach (var key in _NeededTables.Keys)
+                if (key == _Report.Dataset.PrimarySource)
+                    orderedJoins[0] = _Report.Dataset.PrimarySource;
                 else
-                {
-                    orderedJoins[Joins[key].JoinOrder + 1] = key;
-                }
-            }
+                    orderedJoins[_Joins[key].JoinOrder + 1] = key;
+
             // skip the primary source then start adding joins in the correct order
-            orderedJoins.Skip(1).OrderBy(x => x.Key).Select(x => Joins[x.Value]).Each(x => KataQuery.Join(x.TableName, j => j.WhereRaw(x.Keys), $"{((JoinTypes)x.JoinTypeId).ToString().ToUpper()} JOIN"));
+            orderedJoins.Skip(1).OrderBy(x => x.Key).Select(x => _Joins[x.Value]).Each(x => KataQuery.Join(x.TableName, j => j.WhereRaw(x.Keys), $"{((JoinTypes)x.JoinTypeId).ToString().ToUpper()} JOIN"));
         }
 
         /// <summary>
         /// Build the SQL for the order by statement.
         /// </summary>
-        private void BuildOrderBySql()
+        void BuildOrderBySql()
         {
-            if (IsChart)
+            if (_IsChart)
             {
                 KataQuery.OrderByRaw("1");
                 return;
             }
 
-            var sortStrings = Report.ReportColumn.Where(c => c.SortOrder > 0).OrderBy(c => c.SortOrder).Where(x => DatasetColumns.ContainsKey(x.ColumnId)).ToList()
+            var sortStrings = _Report.ReportColumn.Where(c => c.SortOrder > 0).OrderBy(c => c.SortOrder).Where(x => DatasetColumns.ContainsKey(x.ColumnId)).ToList()
                 .Select(x => {
                     var col = DatasetColumns[x.ColumnId];
-                    var name = Database.AllowPaging ? col.Alias : col.BuildSql(false, 0);
+                    var name = _Database.AllowPaging ? col.Alias : col.BuildSql(false, _HasGrouping ? _Report.AggregatorId : 0);
                     return $"{name} {x.SortDirection.ToUpper()}";
                 });
 
             if (sortStrings.Any())
-            {
                 KataQuery.OrderByRaw(sortStrings.Join());
-            }
             else
-            {
                 KataQuery.OrderByRaw("1");
-            }
         }
 
         /// <summary>
         /// Build parameter list for proc calls.
         /// </summary>
-        private void BuildProcParams() => Report.ReportFilter.Where(x => DatasetColumns.ContainsKey(x.ColumnId)).Each(x => {
+        void BuildProcParams() => _Report.ReportFilter.Where(x => DatasetColumns.ContainsKey(x.ColumnId)).Each(x => {
             var column = DatasetColumns[x.ColumnId];
             if (column.IsParam)
-            {
                 Params.Add(column.ColumnName, column.IsDateTime ? x.Criteria.ToDateTime().ToSqlDateTime() : x.Criteria);
-            }
         });
 
         /// <summary>
         /// Build the where statement for the sql query.
         /// </summary>
-        private void BuildWhereSql()
+        void BuildWhereSql()
         {
-            if (!Report.Dataset.Conditions.IsEmpty())
-            {
-                KataQuery.WhereRaw(Report.Dataset.Conditions);
-            }
+            if (!_Report.Dataset.Conditions.IsEmpty())
+                KataQuery.WhereRaw(_Report.Dataset.Conditions);
 
             // iterate through all the report filters we have
-            if (Report.ReportFilter != null && Report.ReportFilter.Count > 0)
+            if (_Report.ReportFilter != null && _Report.ReportFilter.Count > 0)
             {
-                Report.ReportFilter.Where(x => DatasetColumns.ContainsKey(x.ColumnId)).Each(x => {
+                _Report.ReportFilter.Where(x => DatasetColumns.ContainsKey(x.ColumnId)).Each(x => {
                     var column = DatasetColumns[x.ColumnId];
 
                     if (column.IsParam)
@@ -317,64 +362,7 @@ namespace Dash.Models
                                 break;
                             case FilterOperatorsAbstract.DateInterval:
                                 // handle special date functions
-                                var today = DateTime.Today;
-                                var startDate = today;
-                                var endDate = today;
-
-                                switch ((FilterDateRanges)x.Criteria.ToInt())
-                                {
-                                    case FilterDateRanges.Today:
-                                        endDate = today.AddDays(1).AddMilliseconds(-1);
-                                        break;
-                                    case FilterDateRanges.ThisWeek:
-                                        startDate = today.StartOfWeek();
-                                        endDate = today.EndOfWeek();
-                                        break;
-                                    case FilterDateRanges.ThisMonth:
-                                        startDate = today.StartOfMonth();
-                                        endDate = today.EndOfMonth();
-                                        break;
-                                    case FilterDateRanges.ThisQuarter:
-                                        startDate = today.StartOfQuarter();
-                                        endDate = today.EndOfQuarter();
-                                        break;
-                                    case FilterDateRanges.ThisYear:
-                                        startDate = today.StartOfYear();
-                                        endDate = today.EndOfYear();
-                                        break;
-                                    case FilterDateRanges.Yesterday:
-                                        startDate = today.AddDays(-1);
-                                        endDate = today.AddMilliseconds(-1);
-                                        break;
-                                    case FilterDateRanges.LastWeek:
-                                        startDate = today.AddDays(-7).StartOfWeek();
-                                        endDate = startDate.EndOfWeek();
-                                        break;
-                                    case FilterDateRanges.LastMonth:
-                                        startDate = today.AddMonths(-1).StartOfMonth();
-                                        endDate = startDate.EndOfMonth();
-                                        break;
-                                    case FilterDateRanges.LastQuarter:
-                                        startDate = today.AddMonths(-3).StartOfQuarter();
-                                        endDate = startDate.EndOfQuarter();
-                                        break;
-                                    case FilterDateRanges.LastYear:
-                                        startDate = today.AddYears(-1).StartOfYear();
-                                        endDate = startDate.EndOfYear();
-                                        break;
-                                    case FilterDateRanges.ThisHour:
-                                        startDate = DateTime.Now.StartOfHour();
-                                        endDate = startDate.EndOfHour();
-                                        break;
-                                    case FilterDateRanges.ThisMinute:
-                                        startDate = DateTime.Now.StartOfMinute();
-                                        endDate = startDate.EndOfMinute();
-                                        break;
-                                    case FilterDateRanges.LastMinute:
-                                        startDate = DateTime.Now.StartOfMinute().AddMinutes(-1);
-                                        endDate = startDate.EndOfMinute();
-                                        break;
-                                }
+                                CreateDateRange((FilterDateRanges)x.Criteria.ToInt(), out var startDate, out var endDate);
                                 KataQuery.WhereRaw($"{colAlias} BETWEEN ? AND ?", startDate.ToSqlDateTime(), endDate.ToSqlDateTime());
                                 break;
                         }
@@ -388,7 +376,7 @@ namespace Dash.Models
         /// </summary>
         /// <param name="column">Dataset column to check usage for.</param>
         /// <returns>Returns true if any links need this column.</returns>
-        private bool UsedInLink(DatasetColumn column) => DatasetColumns.Values.Any(x => ReportColumns.ContainsKey(x.Id) && !x.Link.IsEmpty() && x.Link.IndexOf(column.ColumnName, StringComparison.CurrentCultureIgnoreCase) > -1);
+        bool UsedInLink(DatasetColumn column) => DatasetColumns.Values.Any(x => _ReportColumns.ContainsKey(x.Id) && !x.Link.IsEmpty() && x.Link.IndexOf(column.ColumnName, StringComparison.CurrentCultureIgnoreCase) > -1);
 
         /// <summary>
         /// Builds a SQL query for a report or chart range.
@@ -397,17 +385,18 @@ namespace Dash.Models
         /// <param name="range">Change range to build the query for.</param>
         public QueryBuilder(Report report, ChartRange range = null)
         {
-            Report = report;
-            ChartRange = range;
-            IsChart = range != null;
-            Database = Report.Dataset.Database;
+            _Report = report;
+            _ChartRange = range;
+            _IsChart = range != null;
+            _Database = _Report.Dataset.Database;
 
-            Joins = report.Dataset.DatasetJoin?.ToDictionary(j => j.TableName, j => j) ?? new Dictionary<string, DatasetJoin>();
+            _Joins = report.Dataset.DatasetJoin?.ToDictionary(j => j.TableName, j => j) ?? new Dictionary<string, DatasetJoin>();
             DatasetColumns = report.Dataset.DatasetColumn?.ToDictionary(j => j.Id, j => j) ?? new Dictionary<int, DatasetColumn>();
-            ReportColumns = Report.ReportColumn?.Where(j => DatasetColumns.ContainsKey(j.ColumnId)).ToDictionary(j => j.ColumnId, j => j) ?? new Dictionary<int, ReportColumn>();
+            _ReportColumns = _Report.ReportColumn?.Where(j => DatasetColumns.ContainsKey(j.ColumnId)).ToDictionary(j => j.ColumnId, j => j) ?? new Dictionary<int, ReportColumn>();
+            _ReportGroups = _Report.ReportGroup?.Where(j => DatasetColumns.ContainsKey(j.ColumnId)).ToDictionary(j => j.ColumnId, j => j) ?? new Dictionary<int, ReportGroup>();
 
             // add the primaryTable to the list of needed tables. we always query it
-            NeededTables.Add(report.Dataset.PrimarySource, report.Dataset.PrimarySource);
+            _NeededTables.Add(report.Dataset.PrimarySource, report.Dataset.PrimarySource);
 
             if (report.Dataset.IsProc)
             {
@@ -425,7 +414,7 @@ namespace Dash.Models
         }
 
         public Dictionary<int, DatasetColumn> DatasetColumns { get; set; }
-        public bool HasColumns => NeededColumns.Count > 0 || Report.Dataset.IsProc;
+        public bool HasColumns => NeededColumns.Count > 0 || _Report.Dataset.IsProc;
         public Query KataQuery { get; set; } = new Query();
         public Dictionary<int, string> NeededAliases { get; set; } = new Dictionary<int, string>();
         public Dictionary<int, string> NeededColumns { get; set; } = new Dictionary<int, string>();
@@ -434,22 +423,22 @@ namespace Dash.Models
 
         public void CountStatement()
         {
-            if (Report.Dataset.IsProc)
-            {
+            if (_Report.Dataset.IsProc)
                 return;
-            }
 
-            if (Database.IsSqlServer)
-            {
-                SqlResult = new SqlServerCompiler { UseLegacyPagination = !Database.AllowPaging }.Compile(KataQuery.Clone().AsCount());
-            }
+            // replace the selected columns with a count column, remove unneeded ordering
+            var query = KataQuery.Clone();
+            query.ClearComponent("select");
+            query.ClearComponent("order");
+            query.SelectRaw("COUNT(1) AS count");
+
+            if (_Database.IsSqlServer)
+                SqlResult = new SqlServerCompiler { UseLegacyPagination = !_Database.AllowPaging }.Compile(query);
             else
-            {
-                SqlResult = new MySqlCompiler().Compile(KataQuery.Clone().AsCount());
-            }
+                SqlResult = new MySqlCompiler().Compile(query);
         }
 
-        public string ExecStatement() => $"EXEC {Report.Dataset.PrimarySource} " + Params.Select(x => $"@{x.Key} = @{x.Key}").Join();
+        public string ExecStatement() => $"EXEC {_Report.Dataset.PrimarySource} " + Params.Select(x => $"@{x.Key} = @{x.Key}").Join();
 
         /// <summary>
         /// Build the complete SQL SELECT statement to get all columns. Optionally can be limited using start and rows.
@@ -458,10 +447,8 @@ namespace Dash.Models
         /// <param name="rows">Number of rows to return</param>
         public void SelectStatement(int start = 0, int rows = 0)
         {
-            if (Report.Dataset.IsProc)
-            {
+            if (_Report.Dataset.IsProc)
                 return;
-            }
 
             if (rows > 0)
             {
@@ -469,14 +456,10 @@ namespace Dash.Models
                 KataQuery.Offset(start);
             }
 
-            if (Database.IsSqlServer)
-            {
-                SqlResult = new SqlServerCompiler { UseLegacyPagination = !Database.AllowPaging }.Compile(KataQuery);
-            }
+            if (_Database.IsSqlServer)
+                SqlResult = new SqlServerCompiler { UseLegacyPagination = !_Database.AllowPaging }.Compile(KataQuery);
             else
-            {
                 SqlResult = new MySqlCompiler().Compile(KataQuery);
-            }
         }
     }
 }

@@ -88,6 +88,15 @@ namespace Dash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to delete this group?.
+        /// </summary>
+        public static string ConfirmDeleteGroup {
+            get {
+                return ResourceManager.GetString("ConfirmDeleteGroup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to delete this share?.
         /// </summary>
         public static string ConfirmDeleteShare {
@@ -111,6 +120,15 @@ namespace Dash.Resources {
         public static string CreateFilter {
             get {
                 return ResourceManager.GetString("CreateFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create Group.
+        /// </summary>
+        public static string CreateGroup {
+            get {
+                return ResourceManager.GetString("CreateGroup", resourceCulture);
             }
         }
         
@@ -160,6 +178,15 @@ namespace Dash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Edit Group.
+        /// </summary>
+        public static string EditGroup {
+            get {
+                return ResourceManager.GetString("EditGroup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Edit Share.
         /// </summary>
         public static string EditShare {
@@ -178,11 +205,29 @@ namespace Dash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This group is already first..
+        /// </summary>
+        public static string ErrorAlreadyFirstGroup {
+            get {
+                return ResourceManager.GetString("ErrorAlreadyFirstGroup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This filter is already last..
         /// </summary>
         public static string ErrorAlreadyLastFilter {
             get {
                 return ResourceManager.GetString("ErrorAlreadyLastFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This group is already last..
+        /// </summary>
+        public static string ErrorAlreadyLastGroup {
+            get {
+                return ResourceManager.GetString("ErrorAlreadyLastGroup", resourceCulture);
             }
         }
         
@@ -255,6 +300,15 @@ namespace Dash.Resources {
         public static string ErrorNoFilterColumns {
             get {
                 return ResourceManager.GetString("ErrorNoFilterColumns", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This dataset doesn&apos;t have any columns you can group on..
+        /// </summary>
+        public static string ErrorNoGroupColumns {
+            get {
+                return ResourceManager.GetString("ErrorNoGroupColumns", resourceCulture);
             }
         }
         
@@ -367,6 +421,15 @@ namespace Dash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Column.
+        /// </summary>
+        public static string GroupColumn {
+            get {
+                return ResourceManager.GetString("GroupColumn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Groups.
         /// </summary>
         public static string Groups {
@@ -466,6 +529,15 @@ namespace Dash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Group deleted successfully..
+        /// </summary>
+        public static string SuccessDeletingGroup {
+            get {
+                return ResourceManager.GetString("SuccessDeletingGroup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Report deleted successfully..
         /// </summary>
         public static string SuccessDeletingReport {
@@ -489,6 +561,15 @@ namespace Dash.Resources {
         public static string SuccessSavingFilter {
             get {
                 return ResourceManager.GetString("SuccessSavingFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Group saved successfully..
+        /// </summary>
+        public static string SuccessSavingGroup {
+            get {
+                return ResourceManager.GetString("SuccessSavingGroup", resourceCulture);
             }
         }
         

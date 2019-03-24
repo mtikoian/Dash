@@ -1,0 +1,37 @@
+﻿@using Dash.Resources
+@using Dash.Models
+@model Report
+
+<body-content>
+    <breadcrumb>
+        <partial name="_ReportBreadcrumbs" />
+        <breadcrumb-item label="@Reports.Groups" controller="ReportGroup" action="Index" route-values="@(new { Model.Id })" is-active="true"></breadcrumb-item>
+    </breadcrumb>
+
+    <partial name="_Toast" />
+    <partial name="_ReportTabs" model="new ReportView(Model.Id, Model.IsOwner, ReportViewTab.Groups)" />
+
+    <tab-panel id="filters">
+        <toolbar>
+            <authorized-button controller="ReportGroup" action="Create" route-values="@(new { Id = Model.Id })" title="@Core.Add" />
+        </toolbar>
+
+        <do-table result-url="@Url.Action("List", new { Id = Model.Id })" id="tableReportGroups_@Model.Id" template="#reportGroupTemplate" searchable="false" />
+
+        <do-row id="reportGroupTemplate">
+            <do-column label="@Reports.GroupColumn" field="columnName" sortable="false">
+                <do-edit-link controller="ReportGroup" text-property="columnName" parent-id-property="reportId" />
+            </do-column>
+            <do-column label="@Core.Actions" field="actions" sortable="false">
+                <do-edit-button controller="ReportGroup" parent-id-property="reportId" />
+                <do-delete-button controller="ReportGroup" parent-id-property="reportId" confirm="@Reports.ConfirmDeleteGroup" />
+                {{?x.displayOrder > 0}}
+                <do-up-button controller="ReportGroup" parent-id-property="reportId" />
+                {{?}}
+                {{?!x.isLast}}
+                <do-down-button controller="ReportGroup" parent-id-property="reportId" />
+                {{?}}
+            </do-column>
+        </do-row>
+    </tab-panel>
+</body-content>

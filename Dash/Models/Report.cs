@@ -16,16 +16,15 @@ namespace Dash.Models
 
     public class Report : BaseModel
     {
-        private Dataset _Dataset;
-        private List<DatasetColumn> _DatasetColumns;
-        private List<DatasetColumn> _DatasetColumnsByDisplay;
-        private List<ReportColumn> _ReportColumn;
-        private List<ReportFilter> _ReportFilter;
-        private List<ReportShare> _ReportShare;
+        Dataset _Dataset;
+        List<DatasetColumn> _DatasetColumns;
+        List<DatasetColumn> _DatasetColumnsByDisplay;
+        List<ReportColumn> _ReportColumn;
+        List<ReportGroup> _ReportGroup;
+        List<ReportFilter> _ReportFilter;
+        List<ReportShare> _ReportShare;
 
-        public Report()
-        {
-        }
+        public Report() { }
 
         public int AggregatorId { get; set; }
 
@@ -95,6 +94,13 @@ namespace Dash.Models
         }
 
         [BindNever, ValidateNever]
+        public List<ReportGroup> ReportGroup
+        {
+            get => _ReportGroup ?? (_ReportGroup = DbContext.GetAll<ReportGroup>(new { ReportId = Id }).ToList());
+            set => _ReportGroup = value;
+        }
+
+        [BindNever, ValidateNever]
         public List<ReportFilter> ReportFilter
         {
             get => _ReportFilter ?? (_ReportFilter = DbContext.GetAll<ReportFilter>(new { ReportId = Id }).ToList());
@@ -121,7 +127,7 @@ namespace Dash.Models
             newReport.Id = 0;
             newReport.Name = name.IsEmpty() ? string.Format(Core.CopyOf, Name) : name;
 
-            newReport.ReportColumn = (ReportColumn ?? DbContext.GetAll<ReportColumn>(new { ReportId = Id }))?.Select(x => new ReportColumn {
+            newReport.ReportColumn = ReportColumn?.Select(x => new ReportColumn {
                 ColumnId = x.ColumnId,
                 DisplayOrder = x.DisplayOrder,
                 Width = x.Width,
@@ -129,7 +135,12 @@ namespace Dash.Models
                 SortDirection = x.SortDirection
             }).ToList();
 
-            newReport.ReportFilter = (ReportFilter ?? DbContext.GetAll<ReportFilter>(new { ReportId = Id }))?.Select(x => new ReportFilter {
+            newReport.ReportGroup = ReportGroup?.Select(x => new ReportGroup {
+                ColumnId = x.ColumnId,
+                DisplayOrder = x.DisplayOrder
+            }).ToList();
+
+            newReport.ReportFilter = ReportFilter?.Select(x => new ReportFilter {
                 ColumnId = x.ColumnId,
                 DisplayOrder = x.DisplayOrder,
                 Criteria = x.Criteria,
@@ -146,9 +157,7 @@ namespace Dash.Models
         public void DataUpdate(int rowLimit, IEnumerable<TableSorting> sort = null)
         {
             if (!IsOwner)
-            {
                 return;
-            }
 
             if (rowLimit != RowLimit)
             {
@@ -194,9 +203,7 @@ namespace Dash.Models
                     }
 
                     if (changed)
-                    {
                         DbContext.Save(x);
-                    }
                 });
             }
 
@@ -212,7 +219,7 @@ namespace Dash.Models
         public ReportResult GetData(IAppConfiguration appConfig, int start, int rowLimit, bool includeSql)
         {
             // build a obj to store our results
-            var response = new ReportResult() { UpdatedDate = DateUpdated, ReportId = Id, ReportName = Name, IsOwner = IsOwner };
+            var response = new ReportResult { UpdatedDate = DateUpdated, ReportId = Id, ReportName = Name, IsOwner = IsOwner };
 
             if (Dataset.DatasetColumn?.Any() != true)
             {
@@ -287,20 +294,14 @@ namespace Dash.Models
 
             sqlQuery.SelectStatement(start, rowLimit);
             if (includeSql)
-            {
                 response.DataSql = Dataset.IsProc ? sqlQuery.ExecStatement() : sqlQuery.SqlResult.Sql;
-            }
 
             try
             {
                 if (!Dataset.IsProc)
-                {
                     dataRes = Dataset.Database.Query(sqlQuery.SqlResult.Sql, sqlQuery.SqlResult.NamedBindings).ToList();
-                }
                 if (dataRes.Any())
-                {
                     response.Rows = ProcessData(dataRes, sqlQuery);
-                }
             }
             catch (Exception dataEx)
             {
@@ -318,20 +319,18 @@ namespace Dash.Models
             // get select filters for showing lookup data properly and figure out which we actually are using
             var replaceColumns = Dataset.GetSelectFilters().Where(x => sqlQuery.NeededColumns.ContainsKey(x.Key)).ToDictionary(x => "column" + x.Key, x => x.Value);
             var dateColumns = DatasetColumns.Where(col => col.IsDateTime).Select(c => c.Alias);
-            var colummnMap = Dataset.IsProc ? DatasetColumns.ToDictionary(x => x.ColumnName, x => x.Alias) : null;
+            var columnMap = Dataset.IsProc ? DatasetColumns.ToDictionary(x => x.ColumnName, x => x.Alias) : null;
 
             // build the data result
             foreach (IDictionary<string, object> row in dataRes)
             {
-                var dict = Dataset.IsProc ? row.ToDictionary(x => colummnMap[x.Key], x => x.Value) : row.ToDictionary(x => x.Key, x => x.Value);
+                var dict = Dataset.IsProc ? row.ToDictionary(x => columnMap[x.Key], x => x.Value) : row.ToDictionary(x => x.Key, x => x.Value);
 
                 // replace any lookup values we can match
                 replaceColumns.Where(x => dict.ContainsKey(x.Key) && dict[x.Key] != null).Each(x => {
                     var val = dict[x.Key].ToString();
                     if (x.Value.ContainsKey(val))
-                    {
                         dict[x.Key] = x.Value[val].Text;
-                    }
                 });
 
                 // date formatting

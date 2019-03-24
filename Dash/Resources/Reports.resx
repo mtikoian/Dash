@@ -276,4 +276,31 @@
   <data name="ErrorNoFilterColumns" xml:space="preserve">
     <value>This dataset doesn't have any columns you can filter on.</value>
   </data>
+  <data name="CreateGroup" xml:space="preserve">
+    <value>Create Group</value>
+  </data>
+  <data name="EditGroup" xml:space="preserve">
+    <value>Edit Group</value>
+  </data>
+  <data name="GroupColumn" xml:space="preserve">
+    <value>Column</value>
+  </data>
+  <data name="ConfirmDeleteGroup" xml:space="preserve">
+    <value>Are you sure you want to delete this group?</value>
+  </data>
+  <data name="ErrorAlreadyFirstGroup" xml:space="preserve">
+    <value>This group is already first.</value>
+  </data>
+  <data name="ErrorAlreadyLastGroup" xml:space="preserve">
+    <value>This group is already last.</value>
+  </data>
+  <data name="SuccessDeletingGroup" xml:space="preserve">
+    <value>Group deleted successfully.</value>
+  </data>
+  <data name="SuccessSavingGroup" xml:space="preserve">
+    <value>Group saved successfully.</value>
+  </data>
+  <data name="ErrorNoGroupColumns" xml:space="preserve">
+    <value>This dataset doesn't have any columns you can group on.</value>
+  </data>
 </root>
