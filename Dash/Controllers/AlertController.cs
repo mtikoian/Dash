@@ -77,7 +77,6 @@ namespace Dash.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            // @todo modify table generation so it can use the IsOwner column and conditionally hide the delete button
             RouteData.Values.Remove("id");
             return View("Index");
         }
