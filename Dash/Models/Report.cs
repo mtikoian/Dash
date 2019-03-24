@@ -236,7 +236,7 @@ namespace Dash.Models
                 return response;
             }
 
-            var totalRecords = 0;
+            long totalRecords = 0;
             var dataRes = new List<dynamic>();
             if (Dataset.IsProc)
             {
@@ -256,18 +256,15 @@ namespace Dash.Models
                 // build the final sql for getting the record count
                 sqlQuery.CountStatement();
                 if (includeSql)
-                {
                     response.CountSql = sqlQuery.SqlResult.Sql;
-                }
 
                 // get the total record count
                 try
                 {
+                    // when using a group by should use number of rows, not count
                     var countRes = Dataset.Database.Query(sqlQuery.SqlResult.Sql, sqlQuery.SqlResult.NamedBindings);
                     if (countRes.Any())
-                    {
-                        totalRecords = ((IDictionary<string, object>)countRes.First())["count"].ToString().ToInt();
-                    }
+                        totalRecords = countRes.LongCount() > 1 ? countRes.LongCount() : ((IDictionary<string, object>)countRes.First())["count"].ToString().ToLong();
                 }
                 catch (Exception countEx)
                 {
@@ -276,18 +273,9 @@ namespace Dash.Models
             }
 
             rowLimit = rowLimit == 0 ? 10 : rowLimit;
-            var totalPages = totalRecords > 0 ? Convert.ToInt32(Math.Ceiling(Convert.ToDecimal(totalRecords) / Convert.ToDecimal(rowLimit))) : 0;
-            if (start < 0)
-            {
-                start = 0;
-            }
-            var page = start / rowLimit;
-            if (page > totalPages)
-            {
-                page = totalPages;
-            }
+            start = Math.Max(start, 0);
 
-            response.Page = page;
+            response.Page = Math.Min(start / rowLimit, totalRecords > 0 ? Convert.ToInt32(Math.Ceiling(Convert.ToDecimal(totalRecords) / Convert.ToDecimal(rowLimit))) : 0);
             response.Total = totalRecords;
             response.FilteredTotal = totalRecords;
             response.Rows = new List<object>();

@@ -570,6 +570,26 @@ namespace Dash
         }
 
         /// <summary>
+        /// Convert a string to an long. Defaults to zero.
+        /// </summary>
+        /// <param name="val">String value to convert.</param>
+        /// <returns>Long value.</returns>
+        public static long ToLong(this string val)
+        {
+            if (val == null)
+                return 0;
+            long.TryParse(val, out var res);
+            return res;
+        }
+
+        /// <summary>
+        /// Convert a object to an long. Defaults to zero.
+        /// </summary>
+        /// <param name="val">Object value to convert.</param>
+        /// <returns>Long value.</returns>
+        public static long ToLong(this object val) => (val.ToString() ?? "").ToLong();
+
+        /// <summary>
         /// Convert IEnumerable to a list of select list items.
         /// </summary>
         /// <typeparam name="T">Enumerable type.</typeparam>
