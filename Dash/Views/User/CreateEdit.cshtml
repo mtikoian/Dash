@@ -26,7 +26,7 @@
             <div class="col-8 checkbox-block">
                 @foreach (var role in Model.AllRoles)
                 {
-                    <form-checkbox name="RoleIds" is-checked="@Extensions.IsChecked(Model.UserRole, x => x.RoleId == role.Id, ((int[])ViewBag.SelectedRoleIds), role.Id)" value="@role.Id" label="@role.Name" />
+                    <form-checkbox name="RoleIds" is-checked="@Extensions.IsChecked(Model.UserRole, x => x.RoleId == role.Id, Model.RoleIds?.ToArray(), role.Id)" value="@role.Id" label="@role.Name" />
                 }
                 <form-help for="UserRole" />
             </div>
