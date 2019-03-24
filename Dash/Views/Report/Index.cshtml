@@ -22,7 +22,9 @@
         </do-column>
         <do-column label="@Core.Actions" field="actions" sortable="false">
             <do-edit-button controller="Report" />
-            <do-delete-button controller="Report" confirm="@Reports.ConfirmDelete" />
+            {{? x.isOwner }}
+            <do-delete-button controller="Report" confirm="@Reports.ConfirmDelete"  />
+            {{?}}
             <do-copy-button controller="Report" prompt="@Reports.NewName" />
         </do-column>
     </do-row>

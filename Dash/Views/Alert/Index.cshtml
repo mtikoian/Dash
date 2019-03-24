@@ -22,7 +22,9 @@
         <do-column label="@Alerts.LastRunDate" field="lastRunDate" text-property="lastRunDate" type="Date" />
         <do-column label="@Core.Actions" field="actions" sortable="false">
             <do-edit-button controller="Alert" />
+            {{? x.isOwner }}
             <do-delete-button controller="Alert" confirm="@string.Format(Core.ConfirmDeleteBody, Alerts.AlertLower)" />
+            {{?}}
             <do-copy-button controller="Alert" prompt="@Alerts.CopyBody" />
         </do-column>
     </do-row>

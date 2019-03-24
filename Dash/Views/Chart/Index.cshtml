@@ -19,7 +19,9 @@
         </do-column>
         <do-column label="@Core.Actions" field="actions" sortable="false">
             <do-edit-button controller="Chart" />
+            {{? x.isOwner }}
             <do-delete-button controller="Chart" confirm="@Charts.ConfirmDelete" />
+            {{?}}
             <do-copy-button controller="Chart" prompt="@Charts.NewName" />
         </do-column>
     </do-row>
