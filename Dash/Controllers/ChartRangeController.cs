@@ -73,9 +73,9 @@ namespace Dash.Controllers
         public IActionResult Create(ChartRange model) => Save(model);
 
         [HttpGet, ParentAction("Edit")]
-        public IActionResult DateInterval(int id, int? xAxisColumnId)
+        public IActionResult DateInterval(int id, int? xAxisColumnId, int? chartId)
         {
-            var model = DbContext.Get<ChartRange>(id) ?? new ChartRange(DbContext, id);
+            var model = DbContext.Get<ChartRange>(id) ?? new ChartRange(DbContext, chartId ?? 0);
             model.XAxisColumnId = xAxisColumnId ?? model.XAxisColumnId;
 
             if (!LoadModel(model.ChartId, out Chart chart, true))
