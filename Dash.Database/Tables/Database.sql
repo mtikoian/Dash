@@ -13,6 +13,8 @@
     [UserCreated]      INT                NULL,
     [DateUpdated]      DATETIMEOFFSET (7) NULL,
     [UserUpdated]      INT                NULL,
-    CONSTRAINT [PK_Database] PRIMARY KEY CLUSTERED ([Id] ASC)
+    CONSTRAINT [PK_Database] PRIMARY KEY CLUSTERED ([Id] ASC),
+    CONSTRAINT [FK_Database_UserCreated] FOREIGN KEY ([UserCreated]) REFERENCES [dbo].[User] ([Id]),
+    CONSTRAINT [FK_Database_UserUpdated] FOREIGN KEY ([UserUpdated]) REFERENCES [dbo].[User] ([Id])
 );
 

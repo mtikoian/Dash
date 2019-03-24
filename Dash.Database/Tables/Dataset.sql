@@ -12,6 +12,8 @@
     [DateUpdated]    DATETIMEOFFSET (7) NULL,
     [UserUpdated]    INT                NULL,
     CONSTRAINT [PK_Dataset] PRIMARY KEY CLUSTERED ([Id] ASC),
-    CONSTRAINT [FK_Dataset_Database] FOREIGN KEY ([DatabaseId]) REFERENCES [dbo].[Database] ([Id])
+    CONSTRAINT [FK_Dataset_Database] FOREIGN KEY ([DatabaseId]) REFERENCES [dbo].[Database] ([Id]),
+    CONSTRAINT [FK_Dataset_UserCreated] FOREIGN KEY ([UserCreated]) REFERENCES [dbo].[User] ([Id]),
+    CONSTRAINT [FK_Dataset_UserUpdated] FOREIGN KEY ([UserUpdated]) REFERENCES [dbo].[User] ([Id])
 );
 

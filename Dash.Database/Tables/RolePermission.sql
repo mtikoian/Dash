@@ -8,6 +8,8 @@
     [UserUpdated]  INT                NULL,
     CONSTRAINT [PK_RolePermission] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK_RolePermission_Permission] FOREIGN KEY ([PermissionId]) REFERENCES [dbo].[Permission] ([Id]),
-    CONSTRAINT [FK_RolePermission_Role] FOREIGN KEY ([RoleId]) REFERENCES [dbo].[Role] ([Id])
+    CONSTRAINT [FK_RolePermission_Role] FOREIGN KEY ([RoleId]) REFERENCES [dbo].[Role] ([Id]),
+    CONSTRAINT [FK_RolePermission_UserCreated] FOREIGN KEY ([UserCreated]) REFERENCES [dbo].[User] ([Id]),
+    CONSTRAINT [FK_RolePermission_UserUpdated] FOREIGN KEY ([UserUpdated]) REFERENCES [dbo].[User] ([Id])
 );
 

@@ -14,7 +14,8 @@
     [DateUpdated] DATETIMEOFFSET (7) NULL,
     [UserUpdated] INT                NULL,
     CONSTRAINT [PK_Widget] PRIMARY KEY CLUSTERED ([Id] ASC),
-    CONSTRAINT [FK_Widget_User] FOREIGN KEY ([UserId]) REFERENCES [dbo].[User] ([Id])
+    CONSTRAINT [FK_Widget_UserCreated] FOREIGN KEY ([UserCreated]) REFERENCES [dbo].[User] ([Id]),
+    CONSTRAINT [FK_Widget_UserUpdated] FOREIGN KEY ([UserUpdated]) REFERENCES [dbo].[User] ([Id])
 );
 
 

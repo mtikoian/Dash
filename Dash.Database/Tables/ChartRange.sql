@@ -14,10 +14,12 @@
     [DateUpdated]    DATETIMEOFFSET (7) NULL,
     [UserUpdated]    INT                NULL,
     CONSTRAINT [PK_ChartRange] PRIMARY KEY CLUSTERED ([Id] ASC),
-    CONSTRAINT [FK_Chart_DatasetColumn_X] FOREIGN KEY ([XAxisColumnId]) REFERENCES [dbo].[DatasetColumn] ([Id]),
-    CONSTRAINT [FK_Chart_DatasetColumn_Y] FOREIGN KEY ([YAxisColumnId]) REFERENCES [dbo].[DatasetColumn] ([Id]),
-    CONSTRAINT [FK_ChartRange_Chart] FOREIGN KEY ([ChartId]) REFERENCES [dbo].[Chart] ([Id]) ON DELETE CASCADE,
-    CONSTRAINT [FK_ChartRange_Report] FOREIGN KEY ([ReportId]) REFERENCES [dbo].[Report] ([Id]) ON DELETE CASCADE
+    CONSTRAINT [FK_ChartRange_DatasetColumn_X] FOREIGN KEY ([XAxisColumnId]) REFERENCES [dbo].[DatasetColumn] ([Id]),
+    CONSTRAINT [FK_ChartRange_DatasetColumn_Y] FOREIGN KEY ([YAxisColumnId]) REFERENCES [dbo].[DatasetColumn] ([Id]),
+    CONSTRAINT [FK_ChartRange_Chart] FOREIGN KEY ([ChartId]) REFERENCES [dbo].[Chart] ([Id]),
+    CONSTRAINT [FK_ChartRange_Report] FOREIGN KEY ([ReportId]) REFERENCES [dbo].[Report] ([Id]),
+    CONSTRAINT [FK_ChartRange_UserCreated] FOREIGN KEY ([UserCreated]) REFERENCES [dbo].[User] ([Id]),
+    CONSTRAINT [FK_ChartRange_UserUpdated] FOREIGN KEY ([UserUpdated]) REFERENCES [dbo].[User] ([Id])
 );
 
 

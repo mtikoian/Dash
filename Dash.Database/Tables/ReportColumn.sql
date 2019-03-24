@@ -11,8 +11,10 @@
     [DateUpdated]   DATETIMEOFFSET (7) NULL,
     [UserUpdated]   INT                NULL,
     CONSTRAINT [PK_ReportColumn] PRIMARY KEY CLUSTERED ([Id] ASC),
-    CONSTRAINT [FK_Report_ReportColumn] FOREIGN KEY ([ReportId]) REFERENCES [dbo].[Report] ([Id]) ON DELETE CASCADE,
-    CONSTRAINT [FK_ReportColumn_DatasetColumn] FOREIGN KEY ([ColumnId]) REFERENCES [dbo].[DatasetColumn] ([Id])
+    CONSTRAINT [FK_ReportColumn_Report] FOREIGN KEY ([ReportId]) REFERENCES [dbo].[Report] ([Id]),
+    CONSTRAINT [FK_ReportColumn_DatasetColumn] FOREIGN KEY ([ColumnId]) REFERENCES [dbo].[DatasetColumn] ([Id]),
+    CONSTRAINT [FK_ReportColumn_UserCreated] FOREIGN KEY ([UserCreated]) REFERENCES [dbo].[User] ([Id]),
+    CONSTRAINT [FK_ReportColumn_UserUpdated] FOREIGN KEY ([UserUpdated]) REFERENCES [dbo].[User] ([Id])
 );
 
 

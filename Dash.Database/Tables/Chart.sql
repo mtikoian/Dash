@@ -6,7 +6,9 @@
     [UserCreated] INT                NULL,
     [DateUpdated] DATETIMEOFFSET (7) NULL,
     [UserUpdated] INT                NULL,
-    CONSTRAINT [PK_Chart] PRIMARY KEY CLUSTERED ([Id] ASC)
+    CONSTRAINT [PK_Chart] PRIMARY KEY CLUSTERED ([Id] ASC),
+    CONSTRAINT [FK_Chart_UserCreated] FOREIGN KEY ([UserCreated]) REFERENCES [dbo].[User] ([Id]),
+    CONSTRAINT [FK_Chart_UserUpdated] FOREIGN KEY ([UserUpdated]) REFERENCES [dbo].[User] ([Id])
 );
 GO
 

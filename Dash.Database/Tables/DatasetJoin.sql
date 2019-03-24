@@ -10,7 +10,9 @@
     [DateUpdated] DATETIMEOFFSET (7) NULL,
     [UserUpdated] INT                NULL,
     CONSTRAINT [PK_DatasetJoin] PRIMARY KEY CLUSTERED ([Id] ASC),
-    CONSTRAINT [FK_Dataset_DatasetJoin] FOREIGN KEY ([DatasetId]) REFERENCES [dbo].[Dataset] ([Id]) ON DELETE CASCADE
+    CONSTRAINT [FK_DatasetJoin_Dataset] FOREIGN KEY ([DatasetId]) REFERENCES [dbo].[Dataset] ([Id]),
+    CONSTRAINT [FK_DatasetJoin_UserCreated] FOREIGN KEY ([UserCreated]) REFERENCES [dbo].[User] ([Id]),
+    CONSTRAINT [FK_DatasetJoin_UserUpdated] FOREIGN KEY ([UserUpdated]) REFERENCES [dbo].[User] ([Id])
 );
 
 
