@@ -8,7 +8,7 @@ namespace Dash.TagHelpers
 {
     public class FormGroupTextareaTagHelper : FormBaseTagHelper
     {
-        private IHtmlContent BuildInput()
+        IHtmlContent BuildInput()
         {
             var textarea = new TagBuilder("textarea");
             textarea.AddCssClass("form-input");
@@ -27,9 +27,7 @@ namespace Dash.TagHelpers
             return textarea;
         }
 
-        public FormGroupTextareaTagHelper(IHtmlHelper htmlHelper) : base(htmlHelper)
-        {
-        }
+        public FormGroupTextareaTagHelper(IHtmlHelper htmlHelper) : base(htmlHelper) { }
 
         public int Rows { get; set; } = 4;
 

@@ -8,7 +8,7 @@ namespace Dash.TagHelpers
 {
     public class AuthorizedMenuItemTagHelper : BaseTagHelper
     {
-        private IHttpContextAccessor _HttpContextAccessor;
+        IHttpContextAccessor _HttpContextAccessor;
 
         public AuthorizedMenuItemTagHelper(IHtmlHelper htmlHelper, IHttpContextAccessor httpContextAccessor) : base(htmlHelper) => _HttpContextAccessor = httpContextAccessor;
 
@@ -23,10 +23,9 @@ namespace Dash.TagHelpers
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             Contextualize();
-            var hasAccess = HasAccess ?? _HttpContextAccessor.HttpContext.User.HasAccess(Controller, Action, HttpVerbs.Get);
 
             output.TagMode = TagMode.StartTagAndEndTag;
-            if (!hasAccess)
+            if (!(HasAccess ?? _HttpContextAccessor.HttpContext.User.HasAccess(Controller, Action, HttpVerbs.Get)))
             {
                 NoRender = true;
                 base.Process(context, output);
@@ -36,15 +35,13 @@ namespace Dash.TagHelpers
             output.TagName = "li";
 
             var a = new TagBuilder("a");
-            var urlHelper = new UrlHelper(_HtmlHelper.ViewContext);
+            var urlHelper = new UrlHelper(HtmlHelper.ViewContext);
             a.Attributes.Add("href", urlHelper.Action(Action, Controller));
             a.Attributes.Add("data-method", "GET");
             a.Attributes.Add("title", Title);
             a.Attributes.AddIf("data-reload", "true", ForceReload);
             if (!IsPjax)
-            {
                 a.AddCssClass("pjax-no-follow");
-            }
 
             var i = new TagBuilder("i");
             i.AddCssClass("dash");

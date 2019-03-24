@@ -23,9 +23,7 @@ namespace Dash.TagHelpers
 
     public class DropdownTagHelper : BaseTagHelper
     {
-        public DropdownTagHelper(IHtmlHelper htmlHelper) : base(htmlHelper)
-        {
-        }
+        public DropdownTagHelper(IHtmlHelper htmlHelper) : base(htmlHelper) { }
 
         public string Id { get; set; }
         public bool IsChecked { get; set; }
@@ -33,7 +31,7 @@ namespace Dash.TagHelpers
         public string Label { get; set; }
         public string Name { get; set; }
         public string TargetId { get; set; }
-        public string Toggle { get; set; }
+        public DataToggles? Toggle { get; set; }
         public string Value { get; set; }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
@@ -43,7 +41,7 @@ namespace Dash.TagHelpers
             var button = new TagBuilder("button");
             button.AddCssClass("btn btn-secondary dropdown-toggle");
             button.Attributes["type"] = "button";
-            button.Attributes["data-toggle"] = "dropdown";
+            button.Attributes["data-toggle"] = DataToggles.Dropdown.ToHyphenCase();
             button.InnerHtml.AppendHtml(output.GetChildContentAsync().Result);
 
             var ul = new TagBuilder("ul");
@@ -51,9 +49,9 @@ namespace Dash.TagHelpers
             Items.Each(x => {
                 var li = new TagBuilder("li");
                 li.AddCssClass("menu-item c-hand");
-                if (!Toggle.IsEmpty())
+                if (Toggle.HasValue)
                 {
-                    li.Attributes["data-toggle"] = Toggle;
+                    li.Attributes["data-toggle"] = Toggle.ToHyphenCase();
                     li.Attributes["data-target"] = $"#{TargetId}";
                     li.Attributes["data-value"] = x.Label;
                     li.InnerHtml.Append(x.Label);
@@ -61,15 +59,13 @@ namespace Dash.TagHelpers
                 else
                 {
                     var a = new TagBuilder("a");
-                    var urlHelper = new UrlHelper(_HtmlHelper.ViewContext);
+                    var urlHelper = new UrlHelper(HtmlHelper.ViewContext);
                     a.Attributes.Add("title", x.Label);
                     a.Attributes.Add("data-method", x.Method.ToString());
                     a.Attributes.AddIf("href", urlHelper.Action(x.Action, x.Controller, x.RouteValues), !x.Controller.IsEmpty());
                     a.Attributes.AddIf("data-confirm", x.Confirm, !x.Confirm.IsEmpty());
                     if (!x.ExtraClasses.IsEmpty())
-                    {
                         a.AddCssClass($" {x.ExtraClasses}");
-                    }
                     if (x.Icon.ToString().IsEmpty())
                     {
                         a.InnerHtml.Append(x.Label);
@@ -79,9 +75,7 @@ namespace Dash.TagHelpers
                         var i = new TagBuilder("i");
                         i.AddCssClass($"dash dash-{x.Icon.ToCssClass()}");
                         if (!x.IconExtraClasses.IsEmpty())
-                        {
                             i.AddCssClass($" {x.IconExtraClasses}");
-                        }
                         a.InnerHtml.AppendHtml(i);
                         a.InnerHtml.Append($" {x.Label}");
                     }

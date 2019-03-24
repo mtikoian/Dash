@@ -25,6 +25,7 @@ namespace Dash
     {
         const string _RequestedWithHeader = "X-Requested-With";
         const string _XmlHttpRequest = "XMLHttpRequest";
+        static Regex _CaseRegex = new Regex(@"([a-z])([A-Z])", RegexOptions.Compiled, TimeSpan.FromMilliseconds(250));
         static Regex _CssRegex = new Regex(@"(?<!_)([A-Z])", RegexOptions.Compiled, TimeSpan.FromMilliseconds(250));
 
         /// <summary>
@@ -461,6 +462,20 @@ namespace Dash
             }
             return columnString;
         }
+
+        /// <summary>
+        /// Convert a pascal case string to hyphen case. IE "QuickBrownFoxJumpsOverTheLazyDog" to "quick-brown-fox-jumps-over-the-lazy-dog"
+        /// </summary>
+        /// <param name="value">Toggle enum value to convert.</param>
+        /// <returns>Converted string.</returns>
+        public static string ToHyphenCase(this DataToggles toggle) => _CaseRegex.Replace(toggle.ToString(), "$1-$2").ToLower();
+
+        /// <summary>
+        /// Convert a pascal case string to hyphen case. IE "QuickBrownFoxJumpsOverTheLazyDog" to "quick-brown-fox-jumps-over-the-lazy-dog"
+        /// </summary>
+        /// <param name="value">Toggle enum value to convert.</param>
+        /// <returns>Converted string.</returns>
+        public static string ToHyphenCase(this DataToggles? toggle) => toggle.HasValue ? toggle.Value.ToHyphenCase() : "";
 
         /// <summary>
         /// Convert a string to an int. Defaults to zero.

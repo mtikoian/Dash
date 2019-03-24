@@ -1,14 +1,12 @@
-﻿using System.Text.Encodings.Web;
-using Microsoft.AspNetCore.Html;
+﻿using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace Dash.TagHelpers
 {
     public class FormGroupCheckboxTagHelper : FormBaseTagHelper
     {
-        private IHtmlContent BuildCheckbox()
+        IHtmlContent BuildCheckbox()
         {
             var label = new TagBuilder("label");
             label.AddCssClass("form-checkbox");
@@ -34,24 +32,16 @@ namespace Dash.TagHelpers
             return label;
         }
 
-        public FormGroupCheckboxTagHelper(IHtmlHelper htmlHelper) : base(htmlHelper)
-        {
-        }
+        public FormGroupCheckboxTagHelper(IHtmlHelper htmlHelper) : base(htmlHelper) { }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             Contextualize();
+            UseFormGroup(output);
             IsRequired = false;
 
-            output.TagMode = TagMode.StartTagAndEndTag;
-            output.TagName = "div";
-            output.AddClass("form-group", HtmlEncoder.Default);
-
-            var div = new TagBuilder("div");
-            div.AddCssClass("col-8");
-
-            var inputGroup = new TagBuilder("div");
-            inputGroup.AddCssClass("input-group");
+            var div = BuildFormGroup();
+            var inputGroup = BuildInputGroup();
             inputGroup.InnerHtml.AppendHtml(BuildCheckbox());
             inputGroup.InnerHtml.AppendHtml(BuildHelp());
             div.InnerHtml.AppendHtml(inputGroup);

@@ -8,9 +8,7 @@ namespace Dash.TagHelpers
 {
     public class FormButtonsTagHelper : BaseTagHelper
     {
-        public FormButtonsTagHelper() : base()
-        {
-        }
+        public FormButtonsTagHelper() : base() { }
 
         public string SubmitLabel { get; set; } = Core.Save;
 

@@ -9,7 +9,7 @@ namespace Dash.TagHelpers
 {
     public class AuthorizedButtonTagHelper : BaseTagHelper
     {
-        private IHttpContextAccessor _HttpContextAccessor;
+        IHttpContextAccessor _HttpContextAccessor;
 
         public AuthorizedButtonTagHelper(IHtmlHelper htmlHelper, IHttpContextAccessor httpContextAccessor) : base(htmlHelper) => _HttpContextAccessor = httpContextAccessor;
 
@@ -26,10 +26,9 @@ namespace Dash.TagHelpers
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             Contextualize();
-            var hasAccess = HasAccess ?? _HttpContextAccessor.HttpContext.User.HasAccess(Controller, Action, HttpVerbs.Get);
 
             output.TagMode = TagMode.StartTagAndEndTag;
-            if (!hasAccess)
+            if (!(HasAccess ?? _HttpContextAccessor.HttpContext.User.HasAccess(Controller, Action, HttpVerbs.Get)))
             {
                 NoRender = true;
                 base.Process(context, output);
@@ -37,7 +36,7 @@ namespace Dash.TagHelpers
             }
 
             output.TagName = "a";
-            var urlHelper = new UrlHelper(_HtmlHelper.ViewContext);
+            var urlHelper = new UrlHelper(HtmlHelper.ViewContext);
             output.Attributes.Add("href", urlHelper.Action(Action, Controller, RouteValues));
             output.Attributes.Add("data-method", "GET");
             output.Attributes.Add("title", Title);
@@ -48,9 +47,7 @@ namespace Dash.TagHelpers
 
             var classList = new List<string> { "btn", "mr-2" };
             if (!Target.IsEmpty())
-            {
                 classList.Add("pjax-no-follow");
-            }
             classList.Add(Class.ToCssClass());
             output.Attributes.Add("class", classList.Join(" "));
 

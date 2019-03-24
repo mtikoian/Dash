@@ -25,9 +25,7 @@ namespace Dash.TagHelpers
             output.Attributes.AddIf("data-sort-dir", SortDirection, !SortDirection.IsEmpty());
             output.Attributes.AddIf("data-sort-order", SortOrder.ToString(), SortOrder.HasValue);
             if (!TextProperty.IsEmpty())
-            {
                 output.Content.AppendHtml($"{{{{=x.{TextProperty} || ''}}}}");
-            }
             base.Process(context, output);
         }
     }

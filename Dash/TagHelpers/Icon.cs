@@ -5,9 +5,7 @@ namespace Dash.TagHelpers
 {
     public class IconTagHelper : BaseTagHelper
     {
-        public IconTagHelper(IHtmlHelper htmlHelper) : base()
-        {
-        }
+        public IconTagHelper(IHtmlHelper htmlHelper) : base() { }
 
         public DashIcons Name { get; set; }
         public string Type { get; set; } = "primary";

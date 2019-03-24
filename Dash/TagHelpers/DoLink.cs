@@ -8,7 +8,7 @@ namespace Dash.TagHelpers
 {
     public class DoLinkTagHelper : BaseTagHelper
     {
-        private IHttpContextAccessor _HttpContextAccessor;
+        IHttpContextAccessor _HttpContextAccessor;
 
         internal TagBuilder InnerContent { get; set; }
 
@@ -30,17 +30,11 @@ namespace Dash.TagHelpers
         public HttpVerbs GetMethod()
         {
             if (Method.ToUpper() == "POST")
-            {
                 return HttpVerbs.Post;
-            }
             if (Method.ToUpper() == "PUT")
-            {
                 return HttpVerbs.Put;
-            }
             if (Method.ToUpper() == "DELETE")
-            {
                 return HttpVerbs.Delete;
-            }
             return HttpVerbs.Get;
         }
 
@@ -56,13 +50,9 @@ namespace Dash.TagHelpers
                 {
                     output.TagName = "span";
                     if (InnerContent != null)
-                    {
                         output.Content.AppendHtml(InnerContent);
-                    }
                     else if (!TextProperty.IsEmpty())
-                    {
                         output.Content.AppendHtml($"{{{{=x.{TextProperty} || ''}}}}");
-                    }
                 }
                 else
                 {
@@ -73,17 +63,13 @@ namespace Dash.TagHelpers
             }
 
             output.TagName = "a";
-            var urlHelper = new UrlHelper(_HtmlHelper.ViewContext);
+            var urlHelper = new UrlHelper(HtmlHelper.ViewContext);
             // ParentIdProperty
             var url = $"{urlHelper.Action(Action, Controller)}/";
             if (!ParentIdProperty.IsEmpty())
-            {
                 url += $"{{{{=x.{ParentIdProperty}}}}}/";
-            }
             if (!IdProperty.IsEmpty())
-            {
                 url += $"{{{{=x.{IdProperty}}}}}";
-            }
             output.Attributes.Add("href", url);
             output.Attributes.Add("title", Title);
             output.Attributes.Add("data-method", Method);
@@ -92,13 +78,9 @@ namespace Dash.TagHelpers
             output.Attributes.AddIf("data-prompt", Prompt, !Prompt.IsEmpty());
 
             if (InnerContent != null)
-            {
                 output.Content.AppendHtml(InnerContent);
-            }
             else if (!TextProperty.IsEmpty())
-            {
                 output.Content.AppendHtml($"{{{{=x.{TextProperty} || ''}}}}");
-            }
 
             base.Process(context, output);
         }

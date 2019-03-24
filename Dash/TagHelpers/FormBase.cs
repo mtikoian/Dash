@@ -10,9 +10,7 @@ namespace Dash.TagHelpers
 {
     public class FormBaseTagHelper : BaseTagHelper
     {
-        public FormBaseTagHelper(IHtmlHelper htmlHelper) : base(htmlHelper)
-        {
-        }
+        public FormBaseTagHelper(IHtmlHelper htmlHelper) : base(htmlHelper) { }
 
         public bool? Disabled { get; set; }
         public string FieldName => For == null ? Name : For.Name;
@@ -23,19 +21,28 @@ namespace Dash.TagHelpers
         public string Name { get; set; }
         public string Title { get; set; }
 
+        public static TagBuilder BuildFormGroup()
+        {
+            var div = new TagBuilder("div");
+            div.AddCssClass("col-8");
+            return div;
+        }
+
+        public static TagBuilder BuildInputGroup()
+        {
+            var inputGroup = new TagBuilder("div");
+            inputGroup.AddCssClass("input-group");
+            return inputGroup;
+        }
+
         public static int GetMaxLength(IReadOnlyList<object> validatorMetadata)
         {
             for (var i = 0; i < validatorMetadata.Count; i++)
             {
                 if (validatorMetadata[i] is StringLengthAttribute stringLengthAttribute && stringLengthAttribute.MaximumLength > 0)
-                {
                     return stringLengthAttribute.MaximumLength;
-                }
-
                 if (validatorMetadata[i] is MaxLengthAttribute maxLengthAttribute && maxLengthAttribute.Length > 0)
-                {
                     return maxLengthAttribute.Length;
-                }
             }
             return 0;
         }
@@ -45,38 +52,27 @@ namespace Dash.TagHelpers
             for (var i = 0; i < validatorMetadata.Count; i++)
             {
                 if (validatorMetadata[i] is StringLengthAttribute stringLengthAttribute && stringLengthAttribute.MinimumLength > 0)
-                {
                     return stringLengthAttribute.MinimumLength;
-                }
-
                 if (validatorMetadata[i] is MinLengthAttribute minLengthAttribute && minLengthAttribute.Length > 0)
-                {
                     return minLengthAttribute.Length;
-                }
             }
             return 0;
         }
 
         public IHtmlContent BuildHelp()
         {
-            if (_HtmlHelper.ViewContext.HttpContext?.WantsHelp() != true)
-            {
+            if (HtmlHelper.ViewContext.HttpContext?.WantsHelp() != true)
                 return HtmlString.Empty;
-            }
 
             if (HelpText.IsEmpty() && For != null)
             {
                 var key = $"{For.Metadata.ContainerType.Name}_{For.Metadata.PropertyName}";
                 var resourceLib = new ResourceDictionary("ContextHelp");
                 if (resourceLib.ContainsKey($"{key}"))
-                {
                     HelpText = resourceLib[$"{key}"];
-                }
             }
             if (HelpText.IsEmpty())
-            {
                 return HtmlString.Empty;
-            }
 
             var icon = new TagBuilder("i");
             icon.AddCssClass("dash");
@@ -86,7 +82,7 @@ namespace Dash.TagHelpers
             button.AddCssClass("btn btn-secondary input-group-btn");
             button.MergeAttribute("type", "button");
             button.MergeAttribute("role", "button");
-            button.MergeAttribute("data-toggle", "context-help");
+            button.MergeAttribute("data-toggle", DataToggles.ContextHelp.ToHyphenCase());
             button.MergeAttribute("data-message", HelpText.Replace("\"", "&quot;"));
             button.InnerHtml.AppendHtml(icon);
 
@@ -104,9 +100,7 @@ namespace Dash.TagHelpers
             label.AddCssClass("form-label");
             label.AddCssClass("col-4");
             if ((IsRequired.HasValue && IsRequired.Value) || (!IsRequired.HasValue && For?.Metadata.IsRequired == true))
-            {
                 label.AddCssClass("required");
-            }
             label.Attributes.Add("for", FieldName);
             label.InnerHtml.Append(FieldTitle);
             return label;

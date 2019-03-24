@@ -1,15 +1,11 @@
-﻿using System.Text.Encodings.Web;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.TagHelpers;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace Dash.TagHelpers
 {
     public class FormCheckboxTagHelper : BaseTagHelper
     {
-        public FormCheckboxTagHelper(IHtmlHelper htmlHelper) : base(htmlHelper)
-        {
-        }
+        public FormCheckboxTagHelper(IHtmlHelper htmlHelper) : base(htmlHelper) { }
 
         public bool? Disabled { get; set; }
         public string Id { get; set; }
@@ -21,10 +17,7 @@ namespace Dash.TagHelpers
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             Contextualize();
-
-            output.TagMode = TagMode.StartTagAndEndTag;
-            output.TagName = "div";
-            output.AddClass("form-group", HtmlEncoder.Default);
+            UseFormGroup(output);
 
             var id = Id.IsEmpty() ? $"{Name}_{Value}" : Id;
             var label = new TagBuilder("label");

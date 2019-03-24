@@ -22,9 +22,7 @@ namespace Dash.TagHelpers
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             if (Id.IsEmpty())
-            {
                 Id = $"{Type.ToString().ToLower()}Toast";
-            }
 
             var colDiv = new TagBuilder("div");
             colDiv.AddCssClass("columns");
@@ -45,7 +43,7 @@ namespace Dash.TagHelpers
                 iDiv.AddCssClass("dash");
                 iDiv.AddCssClass("dash-cancel");
                 iDiv.AddCssClass("toast-dismiss");
-                iDiv.Attributes.Add("data-toggle", "hide");
+                iDiv.Attributes.Add("data-toggle", DataToggles.Hide.ToHyphenCase());
                 iDiv.Attributes.Add("data-target", $"#{Id}");
                 textDiv.InnerHtml.AppendHtml(iDiv);
             }

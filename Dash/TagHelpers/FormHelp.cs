@@ -5,9 +5,7 @@ namespace Dash.TagHelpers
 {
     public class FormHelpTagHelper : FormBaseTagHelper
     {
-        public FormHelpTagHelper(IHtmlHelper htmlHelper) : base(htmlHelper)
-        {
-        }
+        public FormHelpTagHelper(IHtmlHelper htmlHelper) : base(htmlHelper) { }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {

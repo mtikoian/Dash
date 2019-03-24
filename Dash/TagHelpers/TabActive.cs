@@ -13,7 +13,7 @@ namespace Dash.TagHelpers
             output.TagName = "a";
             output.AddClass("active", HtmlEncoder.Default);
             output.Attributes.Add("role", "tab");
-            output.Attributes.Add("data-toggle", "tab");
+            output.Attributes.Add("data-toggle", DataToggles.Tab.ToHyphenCase());
             if (!Id.IsEmpty())
             {
                 output.Attributes.Add("id", $"{Id}Tab");

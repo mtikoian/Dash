@@ -9,9 +9,7 @@ namespace Dash.TagHelpers
 {
     public class BreadcrumbItemTagHelper : BaseTagHelper
     {
-        public BreadcrumbItemTagHelper(IHtmlHelper htmlHelper) : base(htmlHelper)
-        {
-        }
+        public BreadcrumbItemTagHelper(IHtmlHelper htmlHelper) : base(htmlHelper) { }
 
         public string Action { get; set; }
         public string Controller { get; set; }
@@ -28,15 +26,15 @@ namespace Dash.TagHelpers
             if (IsActive)
             {
                 output.Attributes.Add("data-pjax-title", Label);
-                _HtmlHelper.ViewBag.Title = Label;
-                var urlHelper = new UrlHelper(_HtmlHelper.ViewContext);
+                HtmlHelper.ViewBag.Title = Label;
+                var urlHelper = new UrlHelper(HtmlHelper.ViewContext);
                 output.Attributes.Add("data-pjax-url", urlHelper.Action(Action, Controller, RouteValues));
                 output.Attributes.Add("data-pjax-method", "GET");
                 output.Content.Append(Label);
             }
             else
             {
-                output.Content.AppendHtml(_HtmlHelper.ActionLink(Label, Action, Controller, RouteValues));
+                output.Content.AppendHtml(HtmlHelper.ActionLink(Label, Action, Controller, RouteValues));
             }
             base.Process(context, output);
         }

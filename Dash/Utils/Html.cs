@@ -64,4 +64,28 @@
         Post,
         Delete
     }
+
+    public enum DataToggles
+    {
+        Alertify,
+        Autocomplete,
+        Chart,
+        ChartExport,
+        CollapsibleList,
+        Colorpicker,
+        ColumnSelector,
+        ContentReplace,
+        ContextHelp,
+        Dashboard,
+        Datepicker,
+        Disable,
+        Dotable,
+        Dropdown,
+        Hide,
+        InputReplace,
+        NavMenu,
+        Tab,
+        TagList,
+        Widget
+    }
 }

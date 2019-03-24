@@ -11,9 +11,7 @@ namespace Dash.TagHelpers
 {
     public class HorizontalFormTagHelper : BaseTagHelper
     {
-        public HorizontalFormTagHelper(IHtmlHelper htmlHelper) : base(htmlHelper)
-        {
-        }
+        public HorizontalFormTagHelper(IHtmlHelper htmlHelper) : base(htmlHelper) { }
 
         public string Action { get; set; }
         public string Controller { get; set; }
@@ -46,7 +44,7 @@ namespace Dash.TagHelpers
             output.Attributes.Add("method", Method.ToString());
             output.Attributes.Add("id", $"{Action.ToLower()}{Controller.UppercaseFirst()}Form");
             output.Attributes.Add("data-confirm", Core.DiscardChanges);
-            var urlHelper = new UrlHelper(_HtmlHelper.ViewContext);
+            var urlHelper = new UrlHelper(HtmlHelper.ViewContext);
             output.Attributes.Add("action", urlHelper.Action(Action, Controller, RouteValues));
 
             var col = new TagBuilder("div");
@@ -59,7 +57,7 @@ namespace Dash.TagHelpers
                 col.AddCssClass("col-6");
                 col.AddCssClass("col-xl-9");
             }
-            col.InnerHtml.AppendHtml(_HtmlHelper.AntiForgeryToken());
+            col.InnerHtml.AppendHtml(HtmlHelper.AntiForgeryToken());
             col.InnerHtml.AppendHtml(output.GetChildContentAsync().Result);
 
             var columns = new TagBuilder("div");

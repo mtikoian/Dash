@@ -7,9 +7,7 @@ namespace Dash.TagHelpers
 {
     public class FormGroupAddonTagHelper : BaseTagHelper
     {
-        public FormGroupAddonTagHelper(IHtmlHelper htmlHelper) : base(htmlHelper)
-        {
-        }
+        public FormGroupAddonTagHelper(IHtmlHelper htmlHelper) : base(htmlHelper) { }
 
         public string Id { get; set; }
         public bool IsChecked { get; set; }

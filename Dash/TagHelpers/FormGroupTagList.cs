@@ -1,29 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text.Encodings.Web;
 using Dash.Resources;
 using Jil;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace Dash.TagHelpers
 {
     public class FormGroupTagListTagHelper : FormBaseTagHelper
     {
-        private static readonly Type[] NumberTypes = { typeof(int), typeof(long), typeof(decimal), typeof(double), typeof(int?), typeof(long?), typeof(decimal?), typeof(double?) };
-        private Dictionary<string, string> OptionsDictionary;
+        Dictionary<string, string> _OptionsDictionary;
 
-        private IHtmlContent BuildInput()
+        IHtmlContent BuildInput()
         {
             var input = new TagBuilder("input");
             input.AddCssClass("form-input");
             input.Attributes.Add("id", FieldName);
             input.Attributes.Add("placeholder", Core.StartTyping);
             input.Attributes.Add("name", $"{FieldName}Autocomplete");
-            input.Attributes.Add("data-toggle", "tag-list");
+            input.Attributes.Add("data-toggle", DataToggles.TagList.ToHyphenCase());
             input.Attributes.AddIf("autofocus", "true", Autofocus);
             input.Attributes.AddIf("disabled", "true", Disabled == true);
 
@@ -42,9 +38,7 @@ namespace Dash.TagHelpers
             return input;
         }
 
-        public FormGroupTagListTagHelper(IHtmlHelper htmlHelper) : base(htmlHelper)
-        {
-        }
+        public FormGroupTagListTagHelper(IHtmlHelper htmlHelper) : base(htmlHelper) { }
 
         public bool Autofocus { get; set; }
         public IEnumerable<SelectListItem> Options { get; set; }
@@ -54,22 +48,16 @@ namespace Dash.TagHelpers
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             Contextualize();
+            UseFormGroup(output);
 
             if (Options != null)
             {
                 Options = Options.Where(x => !x.Value.IsEmpty()).GroupBy(x => x.Value).Select(x => x.First());
-                OptionsDictionary = Options.ToDictionary(x => x.Value, x => x.Text);
+                _OptionsDictionary = Options.ToDictionary(x => x.Value, x => x.Text);
             }
 
-            output.TagMode = TagMode.StartTagAndEndTag;
-            output.TagName = "div";
-            output.AddClass("form-group", HtmlEncoder.Default);
-
-            var div = new TagBuilder("div");
-            div.AddCssClass("col-8");
-
-            var inputGroup = new TagBuilder("div");
-            inputGroup.AddCssClass("input-group");
+            var div = BuildFormGroup();
+            var inputGroup = BuildInputGroup();
             inputGroup.InnerHtml.AppendHtml(BuildInput());
             inputGroup.InnerHtml.AppendHtml(BuildHelp());
             div.InnerHtml.AppendHtml(inputGroup);
@@ -80,10 +68,10 @@ namespace Dash.TagHelpers
             var chipGroupDiv = new TagBuilder("div");
             chipGroupDiv.AddCssClass("input-group-chips");
             var optionsDictionary =
-            SelectedValues.Where(x => OptionsDictionary?.ContainsKey(x) == true).OrderBy(x => OptionsDictionary[x]).Each(x => {
+            SelectedValues.Where(x => _OptionsDictionary?.ContainsKey(x) == true).OrderBy(x => _OptionsDictionary[x]).Each(x => {
                 var chipDiv = new TagBuilder("span");
                 chipDiv.AddCssClass("chip");
-                chipDiv.InnerHtml.Append($"{OptionsDictionary[x].Trim()} ({x.Trim()})".Trim());
+                chipDiv.InnerHtml.Append($"{_OptionsDictionary[x].Trim()} ({x.Trim()})".Trim());
 
                 var chipBtn = new TagBuilder("button");
                 chipBtn.AddCssClass("btn");

@@ -1,16 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace Dash.TagHelpers
 {
     public class FormGroupSelectTagHelper : FormBaseTagHelper
     {
-        private IHtmlContent BuildInput()
+        IHtmlContent BuildInput()
         {
             var input = new TagBuilder("select");
             input.AddCssClass("form-input");
@@ -19,7 +17,7 @@ namespace Dash.TagHelpers
             input.Attributes.Add("name", FieldName);
             input.Attributes.AddIf("required", "true", IsRequired == true || (!IsRequired.HasValue && For?.Metadata.IsRequired == true));
             input.Attributes.AddIf("autofocus", "true", Autofocus);
-            input.Attributes.AddIf("data-toggle", Toggle, !Toggle.IsEmpty());
+            input.Attributes.AddIf("data-toggle", Toggle.ToHyphenCase(), Toggle.HasValue);
             input.Attributes.AddIf("data-url", Url, !Url.IsEmpty());
             input.Attributes.AddIf("data-params", Params, !Params.IsEmpty());
             input.Attributes.AddIf("data-target", Target, !Target.IsEmpty());
@@ -39,36 +37,26 @@ namespace Dash.TagHelpers
             return input;
         }
 
-        public FormGroupSelectTagHelper(IHtmlHelper htmlHelper) : base(htmlHelper)
-        {
-        }
+        public FormGroupSelectTagHelper(IHtmlHelper htmlHelper) : base(htmlHelper) { }
 
         public bool Autofocus { get; set; }
         public string Match { get; set; }
         public IEnumerable<SelectListItem> Options { get; set; }
         public string Params { get; set; }
         public string Target { get; set; }
-        public string Toggle { get; set; }
+        public DataToggles? Toggle { get; set; }
         public string Url { get; set; }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             Contextualize();
+            UseFormGroup(output);
 
             if (Options != null)
-            {
                 Options = Options.Where(x => !x.Value.IsEmpty()).GroupBy(x => x.Value).Select(x => x.First());
-            }
 
-            output.TagMode = TagMode.StartTagAndEndTag;
-            output.TagName = "div";
-            output.AddClass("form-group", HtmlEncoder.Default);
-
-            var div = new TagBuilder("div");
-            div.AddCssClass("col-8");
-
-            var inputGroup = new TagBuilder("div");
-            inputGroup.AddCssClass("input-group");
+            var div = BuildFormGroup();
+            var inputGroup = BuildInputGroup();
             inputGroup.InnerHtml.AppendHtml(BuildInput());
             inputGroup.InnerHtml.AppendHtml(BuildHelp());
             div.InnerHtml.AppendHtml(inputGroup);

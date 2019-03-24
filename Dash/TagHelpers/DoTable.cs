@@ -28,7 +28,7 @@ namespace Dash.TagHelpers
         {
             var table = new TagBuilder("div");
             table.Attributes.Add("id", Id);
-            table.Attributes.Add("data-toggle", "dotable");
+            table.Attributes.Add("data-toggle", DataToggles.Dotable.ToHyphenCase());
             table.Attributes.Add("data-template", Template);
             table.Attributes.Add("data-result-url", ResultUrl);
             table.Attributes.Add("data-items-per-page", ItemsPerPage.ToString());
