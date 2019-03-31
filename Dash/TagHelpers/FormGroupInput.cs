@@ -83,6 +83,8 @@ namespace Dash.TagHelpers
                 button.AddCssClass("btn btn-secondary input-group-btn");
                 button.MergeAttribute("type", "button");
                 button.MergeAttribute("role", "button");
+                // empty toggle seems pointless but is needed for flatpickr
+                button.MergeAttribute("data-toggle", "");
                 button.InnerHtml.AppendHtml(icon);
 
                 var clearIcon = new TagBuilder("i");
