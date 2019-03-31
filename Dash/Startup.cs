@@ -212,11 +212,6 @@ namespace Dash
 
             services.AddHangfire(x => x.UseSqlServerStorage(appConfig.Database.ConnectionString));
 
-            services.AddMvc(options => {
-                options.OutputFormatters.Insert(0, new JilOutputFormatter());
-                options.Filters.Add(new RequireHttpsAttribute());
-            });
-
             services.AddAuthorization(options => {
                 options.AddPolicy("HasPermission", policy => policy.Requirements.Add(new PermissionRequirement()));
             });
@@ -238,12 +233,18 @@ namespace Dash
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddScoped<IDbContext, DbContext>();
 
+            // have to add this after httpContextAccessor
+            services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+
             services.AddLocalization(x => {
                 x.ResourcesPath = "Resources";
             });
 
-            // https://stackoverflow.com/questions/39276939/how-to-inject-dependencies-into-models-in-asp-net-core
-            services.AddMvc().AddMvcOptions(options => {
+            services.AddMvc(options => {
+                options.OutputFormatters.Insert(0, new JilOutputFormatter());
+                options.Filters.Add(new RequireHttpsAttribute());
+
+                // https://stackoverflow.com/questions/39276939/how-to-inject-dependencies-into-models-in-asp-net-core
                 // replace ComplexTypeModelBinderProvider with its descendent - IoCModelBinderProvider
                 var provider = options.ModelBinderProviders.FirstOrDefault(x => x.GetType() == typeof(ComplexTypeModelBinderProvider));
                 var binderIndex = options.ModelBinderProviders.IndexOf(provider);
