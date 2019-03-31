@@ -100,6 +100,20 @@ namespace Dash.TagHelpers
                 inputGroup.InnerHtml.AppendHtml(button);
                 inputGroup.InnerHtml.AppendHtml(clearButton);
             }
+            else if (Toggle == DataToggles.Colorpicker)
+            {
+                var icon = new TagBuilder("i");
+                icon.AddCssClass("dash");
+                icon.AddCssClass("dash-eyedropper text-primary");
+
+                var button = new TagBuilder("button");
+                button.AddCssClass("btn btn-secondary input-group-btn");
+                button.MergeAttribute("type", "button");
+                button.MergeAttribute("role", "button");
+                button.InnerHtml.AppendHtml(icon);
+                inputGroup.InnerHtml.AppendHtml(button);
+            }
+
             inputGroup.InnerHtml.AppendHtml(BuildHelp());
             inputGroup.InnerHtml.AppendHtml(output.GetChildContentAsync().Result);
             div.InnerHtml.AppendHtml(inputGroup);
