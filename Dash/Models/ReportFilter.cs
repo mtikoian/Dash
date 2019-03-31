@@ -69,7 +69,7 @@ namespace Dash.Models
                     new ResourceDictionary("Filters").Dictionary.TryGetValue($"LabelDateRange_{key}", out var value);
                     return value.IsEmpty() ? key : value;
                 }
-                if (Column.FilterTypeId == (int)FilterTypes.Select)
+                if (Column.IsSelect)
                 {
                     if (!IsMultipleSelect)
                         return FilterSelectListItems.FirstOrDefault(x => x.Value.Equals(Criteria, StringComparison.CurrentCultureIgnoreCase))?.Text;
@@ -219,7 +219,7 @@ namespace Dash.Models
         public bool Save(bool lazySave = true)
         {
             DbContext.WithTransaction(() => {
-                if (IsMultipleSelect)
+                if (Column.IsSelect)
                 {
                     Criteria = null;
                     ReportFilterCriteria?.Where(criteria => CriteriaList?.Any(x => x.Equals(criteria.Value, StringComparison.CurrentCultureIgnoreCase)) != true).Each(x => {

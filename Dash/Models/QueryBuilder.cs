@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
+using Jil;
+using MySql.Data.MySqlClient;
 using SqlKata;
 using SqlKata.Compilers;
 
@@ -8,6 +11,8 @@ namespace Dash.Models
 {
     public class QueryBuilder
     {
+        static Regex CsvRegex = new Regex(@"(?:^|(,\s?))(""(?:[^""]+|"""")*""|[^(,\s?)]*)", RegexOptions.Compiled);
+
         readonly bool _IsChart;
         ChartRange _ChartRange;
         Database _Database;
@@ -347,12 +352,11 @@ namespace Dash.Models
                                 break;
                             case FilterOperatorsAbstract.In:
                                 // kata doesn't like passing a single quoted list, tries to escape em unless we do it this way
-                                // @todo should look at hardening this later to prevent injection
-                                KataQuery.WhereRaw($"{colAlias} IN ({x.ReportFilterCriteria.Select(c => $"'{c.Value.Replace("'", "''")}'").Join()})");
+                                KataQuery.WhereRaw($"{colAlias} IN ({(x.Column.IsSelect ? x.ReportFilterCriteria.Select(c => $"'{EscapeString(c.Value)}'").Join() : Delimit(x.CriteriaValue))})");
                                 break;
                             case FilterOperatorsAbstract.NotIn:
                                 // kata doesn't like passing a single quoted list, tries to escape em unless we do it this way
-                                KataQuery.WhereRaw($"{colAlias} NOT IN ({x.ReportFilterCriteria.Select(c => $"'{c.Value.Replace("'", "''")}'").Join()})");
+                                KataQuery.WhereRaw($"{colAlias} NOT IN ({(x.Column.IsSelect ? x.ReportFilterCriteria.Select(c => $"'{EscapeString(c.Value)}'").Join() : Delimit(x.CriteriaValue))})");
                                 break;
                             case FilterOperatorsAbstract.Like:
                                 KataQuery.WhereRaw($"{colAlias} LIKE ?", $"%{value1}%");
@@ -369,6 +373,29 @@ namespace Dash.Models
                     }
                 });
             }
+        }
+
+        /// <summary>
+        /// Breaks a JSON array, or comma delimited string into a list.
+        /// </summary>
+        /// <param name="value">Value to break up.</param>
+        /// <returns>Returns a list of values as a string.</returns>
+        string Delimit(string value)
+        {
+            if (value.Substring(0, 1) == "[")
+                return JSON.Deserialize<List<string>>(value)?.Select(x => x.Trim()).Select(x => $"'{EscapeString(x)}'").Join();
+            return CsvRegex.Matches(value).Cast<Match>().Select(x => x.Value.TrimStart(',').Trim().TrimStart('"').TrimEnd('"')).Select(x => $"'{EscapeString(x)}'").Join();
+        }
+
+        /// <summary>
+        /// Escape a string based on the database.
+        /// </summary>
+        /// <param name="value">String to escape.</param>
+        /// <returns>Properly escaped string.</returns>
+        string EscapeString(string value)
+        {
+            // @todo should look at hardening this further later to prevent injection
+            return _Database.IsSqlServer ? value.Replace("'", "''") : MySqlHelper.EscapeString(value);
         }
 
         /// <summary>
