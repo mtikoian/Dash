@@ -1,11 +1,11 @@
 @font-face {
   font-family: 'dash';
-  src: url('../font/dash.eot?26226747');
-  src: url('../font/dash.eot?26226747#iefix') format('embedded-opentype'),
-       url('../font/dash.woff2?26226747') format('woff2'),
-       url('../font/dash.woff?26226747') format('woff'),
-       url('../font/dash.ttf?26226747') format('truetype'),
-       url('../font/dash.svg?26226747#dash') format('svg');
+  src: url('../font/dash.eot?84133173');
+  src: url('../font/dash.eot?84133173#iefix') format('embedded-opentype'),
+       url('../font/dash.woff2?84133173') format('woff2'),
+       url('../font/dash.woff?84133173') format('woff'),
+       url('../font/dash.ttf?84133173') format('truetype'),
+       url('../font/dash.svg?84133173#dash') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -15,7 +15,7 @@
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
     font-family: 'dash';
-    src: url('../font/dash.svg?26226747#dash') format('svg');
+    src: url('../font/dash.svg?84133173#dash') format('svg');
   }
 }
 */
@@ -100,3 +100,4 @@
 .dash-list-numbered:before { content: '\f0cb'; } /* '' */
 .dash-bell-alt:before { content: '\f0f3'; } /* '' */
 .dash-bug:before { content: '\f188'; } /* '' */
+.dash-eyedropper:before { content: '\f1fb'; } /* '' */

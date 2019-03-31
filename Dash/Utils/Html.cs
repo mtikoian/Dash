@@ -21,6 +21,7 @@
         Database,
         Down,
         Edit,
+        Eyedropper,
         EmoUnhappy,
         Fire,
         Heartbeat,

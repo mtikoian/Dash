@@ -28,70 +28,149 @@
     }
 }
 
-.cp-fancy {
-    padding: 10px;
-    background: -webkit-linear-gradient(top, #aaa 0%, #222 100%);
+// ColorPicker
+.color-picker,
+.color-picker::before,
+.color-picker::after,
+.color-picker *,
+.color-picker *::before,
+.color-picker *::after {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.color-picker {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+}
+
+.color-picker-container {
+    background: #000;
+    color: #000;
+    padding: 1px;
+    -webkit-box-shadow: 1px 5px 10px rgba(0,0,0,.5);
+    -moz-box-shadow: 1px 5px 10px rgba(0,0,0,.5);
+    box-shadow: 1px 5px 10px rgba(0,0,0,.5);
+    width: calc(11.5em + 3px); /* TODO */
+}
+
+.color-picker-container *,
+.color-picker-container *::before,
+.color-picker-container *::after {
+    border-color: inherit
+}
+
+.color-picker-container::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.color-picker i {
+    font: inherit;
+    font-size: 12px; /* measure the color control size by measuring the text size */
+}
+
+.color-picker-h {
+    position: relative;
+    width: 1.5em;
+    height: 10em;
+    float: right;
+    cursor: ns-resize;
+    background: transparent url('color-picker-h.png') no-repeat 50% 50%;
+    background-image: -webkit-linear-gradient(to top,#f00 0%,#ff0 17%,#0f0 33%,#0ff 50%,#00f 67%,#f0f 83%,#f00 100%);
+    background-image: -moz-linear-gradient(to top,#f00 0%,#ff0 17%,#0f0 33%,#0ff 50%,#00f 67%,#f0f 83%,#f00 100%);
+    background-image: linear-gradient(to top,#f00 0%,#ff0 17%,#0f0 33%,#0ff 50%,#00f 67%,#f0f 83%,#f00 100%);
+    -webkit-background-size: 100% 100%;
+    -moz-background-size: 100% 100%;
+    background-size: 100% 100%;
+    overflow: hidden;
+}
+
+.color-picker-h i {
+    position: absolute;
+    top: -.25em;
+    right: 0;
+    left: 0;
+    z-index: 3;
+    display: block;
+    height: .5em;
+}
+
+.color-picker-h i::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: block;
+    border: .25em solid;
+    border-color: inherit;
+    border-top-color: transparent;
+    border-bottom-color: transparent;
+}
+
+.color-picker-sv {
+    position: relative;
+    width: 10em;
+    height: 10em;
     float: left;
-    border: 1px solid #999;
-    box-shadow: inset 0 0 10px white;
-    display: inherit;
+    margin-right: 1px;
+    background: transparent url('color-picker-sv.png') no-repeat 50% 50%;
+    background-image: -webkit-linear-gradient(to top,#000,rgba(0,0,0,0)),linear-gradient(to right,#fff,rgba(255,255,255,0));
+    background-image: -moz-linear-gradient(to top,#000,rgba(0,0,0,0)),linear-gradient(to right,#fff,rgba(255,255,255,0));
+    background-image: linear-gradient(to top,#000,rgba(0,0,0,0)),linear-gradient(to right,#fff,rgba(255,255,255,0));
+    -webkit-background-size: 100% 100%;
+    -moz-background-size: 100% 100%;
+    background-size: 100% 100%;
+    cursor: crosshair;
+}
 
-    .cp-picker-wrapper {
-        position: relative;
-        float: left;
-    }
+.color-picker-sv i {
+    position: absolute;
+    top: -.4em;
+    right: -.4em;
+    z-index: 3;
+    display: block;
+    width: .8em;
+    height: .8em;
+}
 
-    .cp-picker {
-        cursor: crosshair;
-        float: left;
-        width: 200px;
-        height: 200px;
-    }
+.color-picker-sv i::before,
+.color-picker-sv i::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: block;
+    border: 1px solid;
+    border-color: inherit;
+    -webkit-border-radius: 100%;
+    -moz-border-radius: 100%;
+    border-radius: 100%;
+}
 
-    .cp-slide {
-        cursor: crosshair;
-        float: left;
-        width: 30px;
-        height: 200px;
-    }
+.color-picker-sv i::before {
+    top: -1px;
+    right: -1px;
+    bottom: -1px;
+    left: -1px;
+    border-color: #fff;
+}
 
-    .cp-slide-wrapper {
-        position: relative;
-        float: left;
-        margin-left: 10px;
-    }
-
-    .cp-picker-indicator {
-        position: absolute;
-        cursor: crosshair;
-        left: 0;
-        top: 0;
-        width: 10px;
-        height: 10px;
-        border: 2px solid darkblue;
-        -moz-border-radius: 4px;
-        -o-border-radius: 4px;
-        -webkit-border-radius: 4px;
-        border-radius: 4px;
-        opacity: .5;
-        -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
-        filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=50);
-        filter: alpha(opacity=50);
-        background-color: white;
-    }
-
-    .cp-slide-indicator {
-        position: absolute;
-        cursor: crosshair;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 10px;
-        opacity: .6;
-        -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=60)";
-        filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=60);
-        filter: alpha(opacity=60);
-        border: 4px solid gray;
-        background-color: white;
-    }
+.color-picker-h,
+.color-picker-sv {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    -webkit-tap-highlight-color: transparent;
 }

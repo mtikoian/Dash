@@ -1,7 +1,7 @@
 ﻿/*!
  * Wraps content processing functionality.
  */
-(function($, doT, Alertify, pjax, doTable, CollapsibleList, Autocomplete, Draggabilly, flatpickr, DashChart, ColorPicker, Widget) {
+(function($, doT, Alertify, pjax, doTable, CollapsibleList, Autocomplete, Draggabilly, flatpickr, DashChart, CP, Widget) {
     'use strict';
 
     var _autocompletes = [];
@@ -470,17 +470,31 @@
     var colorpickerLoad = function() {
         var node = getNode(this);
         if (node) {
-            // @todo probably want to replace this with a better looking picker later, but it'll do for now
-            var newNode = $.createNode('<div id="colorpickerContainer" class="cp-fancy"></div>');
-            node.parentNode.insertBefore(newNode, node.nextSibling);
-            var picker = new ColorPicker(newNode, function(hex) {
-                node.value = hex;
+            var picker = new CP(node, false);
+            picker.on('change', function(color) {
+                this.source.value = '#' + color;
             });
-            picker.setHex(node.value);
 
-            $.on(node, 'change', function() {
-                picker.setHex(this.value);
+            var update = function() {
+                picker.set(this.value).enter();
+            };
+            picker.source.oncut = update;
+            picker.source.onpaste = update;
+            picker.source.onkeyup = update;
+            picker.source.oninput = update;
+
+            var btn = $.get('button', node.parentNode);
+            // @todo how does this work with touch events?
+            $.on(node, 'focus', function() { picker.enter(); }, false);
+            $.on(btn, 'blur', function(e) {
+                if (e.relatedTarget !== node)
+                    picker.exit();
             });
+            $.on(node, 'blur', function(e) {
+                if (e.relatedTarget !== btn)
+                    picker.exit();
+            });
+            $.on(btn, 'click', function() { picker[picker.visible ? 'exit' : 'enter'](); }, false);
 
             _colorpickers.push(picker);
         }
@@ -756,4 +770,4 @@
         // Otherwise, wait until document is loaded
         $.on(document, 'DOMContentLoaded', pjax.init);
     }
-})(this.$, this.doT, this.Alertify, this.pjax, this.doTable, this.CollapsibleList, this.Autocomplete, this.Draggabilly, this.flatpickr, this.DashChart, this.ColorPicker, this.Widget);
+})(this.$, this.doT, this.Alertify, this.pjax, this.doTable, this.CollapsibleList, this.Autocomplete, this.Draggabilly, this.flatpickr, this.DashChart, this.CP, this.Widget);
