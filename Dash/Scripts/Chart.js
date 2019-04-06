@@ -22,25 +22,20 @@
         var additionalArgs = Array.prototype.slice.call(arguments, 3);
         // Check to see if null or undefined firstly.
         if (loopable) {
-            if (loopable.length === +loopable.length) {
-                var i;
-                for (i = 0; i < loopable.length; i++) {
+            if (loopable.length === +loopable.length)
+                for (var i = 0; i < loopable.length; i++)
                     callback.apply(self, [loopable[i], i].concat(additionalArgs));
-                }
-            } else {
-                for (var item in loopable) {
+            else
+                for (var item in loopable)
                     callback.apply(self, [loopable[item], item].concat(additionalArgs));
-                }
-            }
         }
     };
 
     helpers.clone = function(obj) {
         var objClone = {};
         helpers.each(obj, function(value, key) {
-            if (obj.hasOwnProperty(key)) {
+            if (obj.hasOwnProperty(key))
                 objClone[key] = value;
-            }
         });
         return objClone;
     };
@@ -48,9 +43,8 @@
     helpers.extend = function(base) {
         helpers.each(Array.prototype.slice.call(arguments, 1), function(extensionObject) {
             helpers.each(extensionObject, function(value, key) {
-                if (extensionObject.hasOwnProperty(key)) {
+                if (extensionObject.hasOwnProperty(key))
                     base[key] = value;
-                }
             });
         });
         return base;
@@ -66,9 +60,8 @@
     helpers.where = function(collection, filterCallback) {
         var filtered = [];
         helpers.each(collection, function(item) {
-            if (filterCallback(item)) {
+            if (filterCallback(item))
                 filtered.push(item);
-            }
         });
 
         return filtered;
@@ -76,27 +69,23 @@
 
     helpers.findNextWhere = function(arrayToSearch, filterCallback, startIndex) {
         // Default to start of the array
-        if (!startIndex) {
+        if (!startIndex)
             startIndex = -1;
-        }
         for (var i = startIndex + 1; i < arrayToSearch.length; i++) {
             var currentItem = arrayToSearch[i];
-            if (filterCallback(currentItem)) {
+            if (filterCallback(currentItem))
                 return currentItem;
-            }
         }
     };
 
     helpers.findPreviousWhere = function(arrayToSearch, filterCallback, startIndex) {
         // Default to end of the array
-        if (!startIndex) {
+        if (!startIndex)
             startIndex = arrayToSearch.length;
-        }
         for (var i = startIndex - 1; i >= 0; i--) {
             var currentItem = arrayToSearch[i];
-            if (filterCallback(currentItem)) {
+            if (filterCallback(currentItem))
                 return currentItem;
-            }
         }
     };
 
@@ -111,7 +100,8 @@
 
         ChartElement.extend = inherits;
 
-        if (extensions) helpers.extend(ChartElement.prototype, extensions);
+        if (extensions)
+            helpers.extend(ChartElement.prototype, extensions);
 
         ChartElement.__super__ = parent.prototype;
 
@@ -143,23 +133,17 @@
     helpers.getDecimalPlaces = function(num) {
         if (num % 1 !== 0 && helpers.isNumber(num)) {
             var s = num.toString();
-            if (s.indexOf('e-') < 0) {
-                // no exponent, e.g. 0.01
+            // no exponent, e.g. 0.01
+            if (s.indexOf('e-') < 0)
                 return s.split('.')[1].length;
-            }
-            else if (s.indexOf('.') < 0) {
-                // no decimal point, e.g. 1e-9
+            // no decimal point, e.g. 1e-9
+            if (s.indexOf('.') < 0)
                 return parseInt(s.split('e-')[1]);
-            }
-            else {
-                // exponent and decimal point, e.g. 1.23e-9
-                var parts = s.split('.')[1].split('e-');
-                return parts[0].length + parseInt(parts[1]);
-            }
+            // exponent and decimal point, e.g. 1.23e-9
+            var parts = s.split('.')[1].split('e-');
+            return parts[0].length + parseInt(parts[1]);
         }
-        else {
-            return 0;
-        }
+        return 0;
     };
 
     helpers.toRadians = function(degrees) {
@@ -174,9 +158,8 @@
         var angle = Math.PI * 2 + Math.atan2(distanceFromYCenter, distanceFromXCenter);
 
         // If the segment is in the top left quadrant, we need to add another rotation to the angle
-        if (distanceFromXCenter < 0 && distanceFromYCenter < 0) {
+        if (distanceFromXCenter < 0 && distanceFromYCenter < 0)
             angle += Math.PI * 2;
-        }
 
         return {
             angle: angle,
@@ -216,7 +199,8 @@
         // Filter out null values since these would min() to zero
         var values = [];
         helpers.each(valuesArray, function(v) {
-            v === null || values.push(v);
+            if (v !== null)
+                values.push(v);
         });
         var minValue = helpers.min(values),
             maxValue = helpers.max(values);
@@ -226,12 +210,11 @@
         if (maxValue === minValue) {
             maxValue += 0.5;
             // So we don't end up with a graph with a negative start value if we've said always start from zero
-            if (minValue >= 0.5 && !startFromZero) {
+            if (minValue >= 0.5 && !startFromZero)
                 minValue -= 0.5;
-            } else {
+            else
                 // Make up a whole number above the values
                 maxValue += 0.5;
-            }
         }
 
         var valueRange = Math.abs(maxValue - minValue),
@@ -248,9 +231,8 @@
                 stepValue *= 2;
                 numberOfSteps = Math.round(graphRange / stepValue);
                 // Don't ever deal with a decimal number of steps - cancel fitting and just use the minimum number of steps.
-                if (numberOfSteps % 1 !== 0) {
+                if (numberOfSteps % 1 !== 0)
                     skipFitting = true;
-                }
             } else {
                 // We can fit in double the amount of scale points on the scale
                 // If user has declared ints only, and the step value isn't a decimal
@@ -268,7 +250,6 @@
                     stepValue /= 2;
                     numberOfSteps = Math.round(graphRange / stepValue);
                 }
-
             }
         }
 
@@ -291,9 +272,8 @@
     // Javascript micro templating by John Resig - source at http://ejohn.org/blog/javascript-micro-templating/
     helpers.template = function(templateString, valuesObject) {
         // If templateString is function rather than string-template - call the function for valuesObject
-        if (templateString instanceof Function) {
+        if (templateString instanceof Function)
             return templateString(valuesObject);
-        }
 
         var cache = {};
         function tmpl(str, data) {
@@ -339,7 +319,6 @@
         if (e.touches) {
             mouseX = e.touches[0].clientX - boundingRect.left;
             mouseY = e.touches[0].clientY - boundingRect.top;
-
         } else {
             mouseX = e.clientX - boundingRect.left;
             mouseY = e.clientY - boundingRect.top;
@@ -367,7 +346,8 @@
         helpers.each(arrayOfEvents, function(handler, eventName) {
             chartInstance.chart.canvas.removeEventListener(eventName, handler);
         });
-        window && arrayOfEvents['windowResize'] && window.removeEventListener('resize', arrayOfEvents['windowResize']);
+        if (window && arrayOfEvents.windowResize)
+            window.removeEventListener('resize', arrayOfEvents.windowResize);
     };
 
     helpers.getMaximumWidth = function(domNode) {
@@ -435,25 +415,16 @@
 
     root.ChartHelpers = helpers;
 }(this));
+
 (function(root, helpers) {
     'use strict';
-
-    var previous = root.Chart;
-
-    var computeDimension = function(element, dimension) {
-        if (element['offset' + dimension]) {
-            return element['offset' + dimension];
-        } else {
-            return document.defaultView.getComputedStyle(element).getPropertyValue(dimension);
-        }
-    };
 
     // Occupy the global variable of Chart, and create a simple base class
     var Chart = function(context) {
         this.canvas = context.canvas;
         this.ctx = context;
-        this.width = computeDimension(context.canvas, 'Width') || context.canvas.width;
-        this.height = computeDimension(context.canvas, 'Height') || context.canvas.height;
+        this.width = context.canvas.offsetWidth || context.canvas.width;
+        this.height = context.canvas.offsetHeight || context.canvas.height;
         this.aspectRatio = this.width / this.height;
 
         // High pixel density displays - multiply the size of the canvas height/width by the device pixel ratio, then scale.
@@ -465,6 +436,9 @@
     // Globally expose the defaults to allow for user updating/changing
     Chart.defaults = {
         global: {
+            // String - Font family for scale, tooltips, points, etc
+            fontFamily: '"Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+
             // Boolean - If we should show the scale at all
             showScale: true,
 
@@ -489,9 +463,6 @@
             // Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
             scaleBeginAtZero: false,
 
-            // String - Scale label font declaration for the scale label
-            scaleFontFamily: '"Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-
             // Number - Scale label font size in pixels
             scaleFontSize: 12,
 
@@ -501,26 +472,17 @@
             // String - Scale label font colour
             scaleFontColor: '#666',
 
-            // Boolean - whether or not the chart should be responsive and resize when the browser does.
-            responsive: true,
-
             // Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
             maintainAspectRatio: false,
 
             // Boolean - Determines whether to draw tooltips on the canvas or not - attaches events to touchmove & mousemove
             showTooltips: true,
 
-            // Boolean - Determines whether to draw built-in tooltip or call custom tooltip function
-            customTooltips: false,
-
             // Array - Array of string names to attach tooltip events
             tooltipEvents: ['mousemove', 'touchstart', 'touchmove', 'mouseout'],
 
             // String - Tooltip background colour
             tooltipFillColor: 'rgba(0,0,0,0.8)',
-
-            // String - Tooltip label font declaration for the scale label
-            tooltipFontFamily: '"Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
 
             // Number - Tooltip label font size in pixels
             tooltipFontSize: 12,
@@ -530,9 +492,6 @@
 
             // String - Tooltip label font colour
             tooltipFontColor: '#fff',
-
-            // String - Tooltip title font declaration for the scale label
-            tooltipTitleFontFamily: '"Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
 
             // Number - Tooltip title font size in pixels
             tooltipTitleFontSize: 14,
@@ -587,22 +546,20 @@
         this.id = helpers.uid();
         this.events = {};
 
-        if (options.responsive) {
-            this.resize();
-            if (root) {
-                var self = this;
-                self.events['windowResize'] = (function() {
-                    // Basic debounce of resize function so it doesn't hurt performance when resizing browser.
-                    var timeout;
-                    return function() {
-                        clearTimeout(timeout);
-                        timeout = setTimeout(function() {
-                            self.resize(self.render, true);
-                        }, 50);
-                    };
-                })();
-                root.addEventListener('resize', self.events['windowResize']);
-            }
+        this.resize();
+        if (root) {
+            var self = this;
+            self.events.windowResize = (function() {
+                // Basic debounce of resize function so it doesn't hurt performance when resizing browser.
+                var timeout;
+                return function() {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(function() {
+                        self.resize(self.render, true);
+                    }, 50);
+                };
+            })();
+            root.addEventListener('resize', self.events.windowResize);
         }
 
         // Initialize is always called when a chart type is created. By default it is a no op, but it should be extended
@@ -630,18 +587,16 @@
 
             helpers.retinaScale(this.chart);
 
-            if (typeof callback === 'function') {
+            if (typeof callback === 'function')
                 callback.apply(this, Array.prototype.slice.call(arguments, 1));
-            }
             return this;
         },
 
         reflow: helpers.noop,
 
         render: function(reflow) {
-            if (reflow) {
+            if (reflow)
                 this.reflow();
-            }
             this.draw();
             return this;
         },
@@ -664,9 +619,8 @@
 
         showTooltip: function(chartElements) {
             // Only redraw the chart if we've actually changed what we're hovering on.
-            if (typeof this.activeElements === 'undefined') {
+            if (typeof this.activeElements === 'undefined')
                 this.activeElements = [];
-            }
 
             var isChanged = (function(elements) {
                 var changed = false;
@@ -677,22 +631,17 @@
                 }
 
                 helpers.each(elements, function(element, index) {
-                    if (element !== this.activeElements[index]) {
+                    if (element !== this.activeElements[index])
                         changed = true;
-                    }
                 }, this);
                 return changed;
             }).call(this, chartElements);
 
-            if (!isChanged) {
+            if (!isChanged)
                 return;
-            }
 
             this.activeElements = chartElements;
             this.draw();
-            if (this.options.customTooltips) {
-                this.options.customTooltips(false);
-            }
             if (chartElements.length > 0) {
                 // If we have multiple datasets, show a MultiTooltip for all of the data points at that index
                 if (this.datasets && this.datasets.length > 1) {
@@ -702,9 +651,8 @@
                     for (var i = this.datasets.length - 1; i >= 0; i--) {
                         dataArray = this.datasets[i].points || this.datasets[i].bars || this.datasets[i].segments;
                         dataIndex = dataArray.indexOf(chartElements[0]);
-                        if (dataIndex !== -1) {
+                        if (dataIndex !== -1)
                             break;
-                        }
                     }
                     var tooltipLabels = [],
                         tooltipColors = [],
@@ -734,7 +682,6 @@
                                     fill: element._saved.fillColor || element.fillColor,
                                     stroke: element._saved.strokeColor || element.strokeColor
                                 });
-
                             }, this);
 
                             yMin = helpers.min(yPositions);
@@ -756,11 +703,10 @@
                         xOffset: this.options.tooltipXOffset,
                         fillColor: this.options.tooltipFillColor,
                         textColor: this.options.tooltipFontColor,
-                        fontFamily: this.options.tooltipFontFamily,
+                        fontFamily: this.options.fontFamily,
                         fontStyle: this.options.tooltipFontStyle,
                         fontSize: this.options.tooltipFontSize,
                         titleTextColor: this.options.tooltipTitleFontColor,
-                        titleFontFamily: this.options.tooltipTitleFontFamily,
                         titleFontStyle: this.options.tooltipTitleFontStyle,
                         titleFontSize: this.options.tooltipTitleFontSize,
                         cornerRadius: this.options.tooltipCornerRadius,
@@ -769,8 +715,7 @@
                         legendColorBackground: this.options.multiTooltipKeyBackground,
                         title: helpers.template(this.options.tooltipTitleTemplate, chartElements[0]),
                         chart: this.chart,
-                        ctx: this.chart.ctx,
-                        custom: this.options.customTooltips
+                        ctx: this.chart.ctx
                     }).draw();
                 } else {
                     helpers.each(chartElements, function(element) {
@@ -782,14 +727,13 @@
                             yPadding: this.options.tooltipYPadding,
                             fillColor: this.options.tooltipFillColor,
                             textColor: this.options.tooltipFontColor,
-                            fontFamily: this.options.tooltipFontFamily,
+                            fontFamily: this.options.fontFamily,
                             fontStyle: this.options.tooltipFontStyle,
                             fontSize: this.options.tooltipFontSize,
                             caretHeight: this.options.tooltipCaretSize,
                             cornerRadius: this.options.tooltipCornerRadius,
                             text: helpers.template(this.options.tooltipTemplate, element),
-                            chart: this.chart,
-                            custom: this.options.customTooltips
+                            chart: this.chart
                         }).draw();
                     }, this);
                 }
@@ -829,8 +773,7 @@
 
             // Register this new chart type in the Chart prototype
             Chart.prototype[chartName] = function(data, options) {
-                var config = helpers.merge(Chart.defaults.global, Chart.defaults[chartName], options || {});
-                return new ChartType(data, config, this);
+                return new ChartType(data, helpers.merge(Chart.defaults.global, Chart.defaults[chartName], options || {}), this);
             };
         } else {
             root.console.warn('Name not provided for this chart, so it hasnt been registered');
@@ -846,21 +789,23 @@
 
     helpers.extend(Chart.Element.prototype, {
         initialize: function() { },
+
         restore: function(props) {
-            if (!props) {
+            if (!props)
                 helpers.extend(this, this._saved);
-            } else {
+            else
                 helpers.each(props, function(key) {
                     this[key] = this._saved[key];
                 }, this);
-            }
             return this;
         },
+
         save: function() {
             this._saved = helpers.clone(this);
             delete this._saved._saved;
             return this;
         },
+
         update: function(newProps) {
             helpers.each(newProps, function(value, key) {
                 this._saved[key] = this[key];
@@ -868,18 +813,21 @@
             }, this);
             return this;
         },
+
         transition: function(props, ease) {
             helpers.each(props, function(value, key) {
                 this[key] = ((value - this._saved[key]) * ease) + this._saved[key];
             }, this);
             return this;
         },
+
         tooltipPosition: function() {
             return {
                 x: this.x,
                 y: this.y
             };
         },
+
         hasValue: function() {
             return helpers.isNumber(this.value);
         }
@@ -891,6 +839,7 @@
         inRange: function(chartX, chartY) {
             return ((Math.pow(chartX - this.x, 2) + Math.pow(chartY - this.y, 2)) < Math.pow(this.hitDetectionRadius + this.radius, 2));
         },
+
         draw: function() {
             var ctx = this.ctx;
             ctx.beginPath();
@@ -928,6 +877,7 @@
             // Ensure within the outside of the arc centre, but inside arc outer
             return (betweenAngles && withinRadius);
         },
+
         tooltipPosition: function() {
             var centreAngle = this.startAngle + ((this.endAngle - this.startAngle) / 2),
                 rangeFromCentre = (this.outerRadius - this.innerRadius) / 2 + this.innerRadius;
@@ -936,6 +886,7 @@
                 y: this.y + (Math.sin(centreAngle) * rangeFromCentre)
             };
         },
+
         draw: function() {
             var ctx = this.ctx;
             ctx.beginPath();
@@ -949,9 +900,8 @@
             ctx.fill();
             ctx.lineJoin = 'bevel';
 
-            if (this.showStroke) {
+            if (this.showStroke)
                 ctx.stroke();
-            }
         }
     });
 
@@ -982,14 +932,16 @@
             ctx.lineTo(rightX, top);
             ctx.lineTo(rightX, this.base);
             ctx.fill();
-            if (this.showStroke) {
+            if (this.showStroke)
                 ctx.stroke();
-            }
         },
+
         height: function() {
             return this.base - this.y;
         },
+
         inRange: function(chartX, chartY) {
+            // incorporate vertical padding so tooltips will be visible when value is zero
             var yPadding = this.value === 0 ? 1 : 0;
             return (chartX >= this.x - this.width / 2 && chartX <= this.x + this.width / 2) && (chartY >= this.y - yPadding && chartY <= this.base + yPadding);
         }
@@ -1009,70 +961,63 @@
                 tooltipRectHeight = this.fontSize + 2 * this.yPadding,
                 tooltipHeight = tooltipRectHeight + this.caretHeight + caretPadding;
 
-            if (this.x + tooltipWidth / 2 > this.chart.width) {
+            if (this.x + tooltipWidth / 2 > this.chart.width)
                 this.xAlign = 'left';
-            } else if (this.x - tooltipWidth / 2 < 0) {
+            else if (this.x - tooltipWidth / 2 < 0)
                 this.xAlign = 'right';
-            }
 
-            if (this.y - tooltipHeight < 0) {
+            if (this.y - tooltipHeight < 0)
                 this.yAlign = 'below';
-            }
 
             var tooltipX = this.x - tooltipWidth / 2,
                 tooltipY = this.y - tooltipHeight;
 
             ctx.fillStyle = this.fillColor;
 
-            // Custom Tooltips
-            if (this.custom) {
-                this.custom(this);
-            } else {
-                switch (this.yAlign) {
-                    case 'above':
-                        // Draw a caret above the x/y
-                        ctx.beginPath();
-                        ctx.moveTo(this.x, this.y - caretPadding);
-                        ctx.lineTo(this.x + this.caretHeight, this.y - (caretPadding + this.caretHeight));
-                        ctx.lineTo(this.x - this.caretHeight, this.y - (caretPadding + this.caretHeight));
-                        ctx.closePath();
-                        ctx.fill();
-                        break;
-                    case 'below':
-                        tooltipY = this.y + caretPadding + this.caretHeight;
-                        // Draw a caret below the x/y
-                        ctx.beginPath();
-                        ctx.moveTo(this.x, this.y + caretPadding);
-                        ctx.lineTo(this.x + this.caretHeight, this.y + caretPadding + this.caretHeight);
-                        ctx.lineTo(this.x - this.caretHeight, this.y + caretPadding + this.caretHeight);
-                        ctx.closePath();
-                        ctx.fill();
-                        break;
-                }
-
-                switch (this.xAlign) {
-                    case 'left':
-                        tooltipX = this.x - tooltipWidth + (this.cornerRadius + this.caretHeight);
-                        break;
-                    case 'right':
-                        tooltipX = this.x - (this.cornerRadius + this.caretHeight);
-                        break;
-                }
-
-                helpers.drawRoundedRectangle(ctx, tooltipX, tooltipY, tooltipWidth, tooltipRectHeight, this.cornerRadius);
-                ctx.fill();
-                ctx.fillStyle = this.textColor;
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.fillText(this.text, tooltipX + tooltipWidth / 2, tooltipY + tooltipRectHeight / 2);
+            switch (this.yAlign) {
+                case 'above':
+                    // Draw a caret above the x/y
+                    ctx.beginPath();
+                    ctx.moveTo(this.x, this.y - caretPadding);
+                    ctx.lineTo(this.x + this.caretHeight, this.y - (caretPadding + this.caretHeight));
+                    ctx.lineTo(this.x - this.caretHeight, this.y - (caretPadding + this.caretHeight));
+                    ctx.closePath();
+                    ctx.fill();
+                    break;
+                case 'below':
+                    tooltipY = this.y + caretPadding + this.caretHeight;
+                    // Draw a caret below the x/y
+                    ctx.beginPath();
+                    ctx.moveTo(this.x, this.y + caretPadding);
+                    ctx.lineTo(this.x + this.caretHeight, this.y + caretPadding + this.caretHeight);
+                    ctx.lineTo(this.x - this.caretHeight, this.y + caretPadding + this.caretHeight);
+                    ctx.closePath();
+                    ctx.fill();
+                    break;
             }
+
+            switch (this.xAlign) {
+                case 'left':
+                    tooltipX = this.x - tooltipWidth + (this.cornerRadius + this.caretHeight);
+                    break;
+                case 'right':
+                    tooltipX = this.x - (this.cornerRadius + this.caretHeight);
+                    break;
+            }
+
+            helpers.drawRoundedRectangle(ctx, tooltipX, tooltipY, tooltipWidth, tooltipRectHeight, this.cornerRadius);
+            ctx.fill();
+            ctx.fillStyle = this.textColor;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(this.text, tooltipX + tooltipWidth / 2, tooltipY + tooltipRectHeight / 2);
         }
     });
 
     Chart.MultiTooltip = Chart.Element.extend({
         initialize: function() {
             this.font = helpers.fontString(this.fontSize, this.fontStyle, this.fontFamily);
-            this.titleFont = helpers.fontString(this.titleFontSize, this.titleFontStyle, this.titleFontFamily);
+            this.titleFont = helpers.fontString(this.titleFontSize, this.titleFontStyle, this.fontFamily);
             this.titleHeight = this.title ? this.titleFontSize * 1.5 : 0;
             this.height = (this.labels.length * this.fontSize) + ((this.labels.length - 1) * (this.fontSize / 2)) + (this.yPadding * 2) + this.titleHeight;
             this.ctx.font = this.titleFont;
@@ -1086,19 +1031,18 @@
 
             var halfHeight = this.height / 2;
             // Check to ensure the height will fit on the canvas
-            if (this.y - halfHeight < 0) {
+            if (this.y - halfHeight < 0)
                 this.y = halfHeight;
-            } else if (this.y + halfHeight > this.chart.height) {
+            else if (this.y + halfHeight > this.chart.height)
                 this.y = this.chart.height - halfHeight;
-            }
 
             // Decide whether to align left or right based on position on canvas
-            if (this.x > this.chart.width / 2) {
+            if (this.x > this.chart.width / 2)
                 this.x -= this.xOffset + this.width;
-            } else {
+            else
                 this.x += this.xOffset;
-            }
         },
+
         getLineHeight: function(index) {
             var baseLineHeight = this.y - (this.height / 2) + this.yPadding,
                 afterTitleIndex = index - 1;
@@ -1106,31 +1050,27 @@
             return index === 0 ? (baseLineHeight + this.titleHeight / 3) :
                 (baseLineHeight + ((this.fontSize * 1.5 * afterTitleIndex) + this.fontSize / 2) + this.titleHeight);
         },
-        draw: function() {
-            // Custom Tooltips
-            if (this.custom) {
-                this.custom(this);
-            } else {
-                helpers.drawRoundedRectangle(this.ctx, this.x, this.y - this.height / 2, this.width, this.height, this.cornerRadius);
-                var ctx = this.ctx;
-                ctx.fillStyle = this.fillColor;
-                ctx.fill();
-                ctx.closePath();
-                ctx.textAlign = 'left';
-                ctx.textBaseline = 'middle';
-                ctx.fillStyle = this.titleTextColor;
-                ctx.font = this.titleFont;
-                ctx.fillText(this.title, this.x + this.xPadding, this.getLineHeight(0));
-                ctx.font = this.font;
 
-                helpers.each(this.labels, function(label, index) {
-                    ctx.fillStyle = this.textColor;
-                    ctx.fillText(label, this.x + this.xPadding + this.fontSize + 3, this.getLineHeight(index + 1));
-                    ctx.clearRect(this.x + this.xPadding, this.getLineHeight(index + 1) - this.fontSize / 2, this.fontSize, this.fontSize);
-                    ctx.fillStyle = this.legendColors[index].fill;
-                    ctx.fillRect(this.x + this.xPadding, this.getLineHeight(index + 1) - this.fontSize / 2, this.fontSize, this.fontSize);
-                }, this);
-            }
+        draw: function() {
+            helpers.drawRoundedRectangle(this.ctx, this.x, this.y - this.height / 2, this.width, this.height, this.cornerRadius);
+            var ctx = this.ctx;
+            ctx.fillStyle = this.fillColor;
+            ctx.fill();
+            ctx.closePath();
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = this.titleTextColor;
+            ctx.font = this.titleFont;
+            ctx.fillText(this.title, this.x + this.xPadding, this.getLineHeight(0));
+            ctx.font = this.font;
+
+            helpers.each(this.labels, function(label, index) {
+                ctx.fillStyle = this.textColor;
+                ctx.fillText(label, this.x + this.xPadding + this.fontSize + 3, this.getLineHeight(index + 1));
+                ctx.clearRect(this.x + this.xPadding, this.getLineHeight(index + 1) - this.fontSize / 2, this.fontSize, this.fontSize);
+                ctx.fillStyle = this.legendColors[index].fill;
+                ctx.fillRect(this.x + this.xPadding, this.getLineHeight(index + 1) - this.fontSize / 2, this.fontSize, this.fontSize);
+            }, this);
         }
     });
 
@@ -1138,25 +1078,15 @@
         initialize: function() {
             this.fit();
         },
+
         buildYLabels: function() {
             this.yLabels = [];
-
             var stepDecimalPlaces = helpers.getDecimalPlaces(this.stepValue);
-            for (var i = 0; i <= this.steps; i++) {
+            for (var i = 0; i <= this.steps; i++)
                 this.yLabels.push(helpers.template(this.templateString, { value: (this.min + (i * this.stepValue)).toFixed(stepDecimalPlaces) }));
-            }
             this.yLabelWidth = (this.display && this.showLabels) ? helpers.longestText(this.ctx, this.font, this.yLabels) + 10 : 0;
         },
-        addXLabel: function(label) {
-            this.xLabels.push(label);
-            this.valuesCount++;
-            this.fit();
-        },
-        removeXLabel: function() {
-            this.xLabels.shift();
-            this.valuesCount--;
-            this.fit();
-        },
+
         // Fitting loop to rotate x Labels and figure out what fits there, and also calculate how many Y steps to use
         fit: function() {
             // First we need the width of the yLabels, assuming the xLabels aren't rotated
@@ -1206,8 +1136,8 @@
                     this.calculateXLabelRotation();
                 }
             }
-
         },
+
         calculateXLabelRotation: function() {
             //Get the width of each grid by calculating the difference
             //between x offsets between 0 and 1.
@@ -1217,7 +1147,6 @@
             var firstWidth = this.ctx.measureText(this.xLabels[0]).width,
                 lastWidth = this.ctx.measureText(this.xLabels[this.xLabels.length - 1]).width,
                 firstRotated;
-
 
             this.xScalePaddingRight = lastWidth / 2 + 3;
             this.xScalePaddingLeft = (firstWidth / 2 > this.yLabelWidth) ? firstWidth / 2 : this.yLabelWidth;
@@ -1236,45 +1165,47 @@
                     firstRotated = cosRotation * firstWidth;
 
                     // We're right aligning the text now.
-                    if (firstRotated + this.fontSize / 2 > this.yLabelWidth) {
+                    if (firstRotated + this.fontSize / 2 > this.yLabelWidth)
                         this.xScalePaddingLeft = firstRotated + this.fontSize / 2;
-                    }
                     this.xScalePaddingRight = this.fontSize / 2;
                     this.xLabelRotation++;
                     this.xLabelWidth = cosRotation * originalLabelWidth;
                 }
-                if (this.xLabelRotation > 0) {
+                if (this.xLabelRotation > 0)
                     this.endPoint -= Math.sin(helpers.toRadians(this.xLabelRotation)) * originalLabelWidth + 3;
-                }
             } else {
                 this.xLabelWidth = 0;
                 this.xScalePaddingRight = this.padding;
                 this.xScalePaddingLeft = this.padding;
             }
-
         },
+
         // Needs to be overidden in each Chart type. Otherwise we need to pass all the data into the scale class
         calculateYRange: helpers.noop,
+
         drawingArea: function() {
             return this.startPoint - this.endPoint;
         },
+
         calculateY: function(value) {
             var scalingFactor = this.drawingArea() / (this.min - this.max);
             return this.endPoint - (scalingFactor * (value - this.min));
         },
+
         calculateX: function(index) {
             var innerWidth = this.width - (this.xScalePaddingLeft + this.xScalePaddingRight),
                 valueWidth = innerWidth / Math.max((this.valuesCount - ((this.offsetGridLines) ? 0 : 1)), 1),
                 valueOffset = (valueWidth * index) + this.xScalePaddingLeft;
-            if (this.offsetGridLines) {
+            if (this.offsetGridLines)
                 valueOffset += (valueWidth / 2);
-            }
             return Math.round(valueOffset);
         },
+
         update: function(newProps) {
             helpers.extend(this, newProps);
             this.fit();
         },
+
         draw: function() {
             var ctx = this.ctx,
                 yLabelGap = (this.endPoint - this.startPoint) / this.steps,
@@ -1289,18 +1220,15 @@
 
                     ctx.textAlign = 'right';
                     ctx.textBaseline = 'middle';
-                    if (this.showLabels) {
+                    if (this.showLabels)
                         ctx.fillText(labelString, xStart - 10, yLabelCenter);
-                    }
 
                     // This is X axis, so draw it
-                    if (index === 0 && !drawHorizontalLine) {
+                    if (index === 0 && !drawHorizontalLine)
                         drawHorizontalLine = true;
-                    }
 
-                    if (drawHorizontalLine) {
+                    if (drawHorizontalLine)
                         ctx.beginPath();
-                    }
 
                     if (index > 0) {
                         // This is a grid line in the centre, so drop that
@@ -1328,7 +1256,6 @@
                     ctx.lineTo(xStart, linePositionY);
                     ctx.stroke();
                     ctx.closePath();
-
                 }, this);
 
                 //  xLabelsSkipper is a number which if gives 0 as remainder [ indexof(xLabel)/xLabelsSkipper ], we print xLabels, otherwise, we skip it
@@ -1342,13 +1269,11 @@
                         drawVerticalLine = this.showVerticalLines;
 
                     // This is Y axis, so draw it
-                    if (index === 0 && !drawVerticalLine) {
+                    if (index === 0 && !drawVerticalLine)
                         drawVerticalLine = true;
-                    }
 
-                    if (drawVerticalLine) {
+                    if (drawVerticalLine)
                         ctx.beginPath();
-                    }
 
                     if (index > 0) {
                         // This is a grid line in the centre, so drop that
@@ -1385,9 +1310,8 @@
                     ctx.font = this.font;
                     ctx.textAlign = isRotated ? 'right' : 'center';
                     ctx.textBaseline = isRotated ? 'middle' : 'top';
-                    if (index % this.xLabelsSkipper === 0) {
+                    if (index % this.xLabelsSkipper === 0)
                         ctx.fillText(label, 0, 0);
-                    }
                     ctx.restore();
                 }, this);
             }
@@ -1399,28 +1323,31 @@
             this.size = helpers.min([this.height, this.width]);
             this.drawingArea = (this.display) ? (this.size / 2) - (this.fontSize / 2 + this.backdropPaddingY) : (this.size / 2);
         },
+
         calculateCenterOffset: function(value) {
             // Take into account half font size + the yPadding of the top value
             return (value - this.min) * (this.drawingArea / (this.max - this.min));
         },
+
         update: function() {
-            if (!this.lineArc) {
+            if (!this.lineArc)
                 this.setScaleSize();
-            } else {
+            else
                 this.drawingArea = (this.display) ? (this.size / 2) - (this.fontSize / 2 + this.backdropPaddingY) : (this.size / 2);
-            }
             this.buildYLabels();
         },
+
         buildYLabels: function() {
             this.yLabels = [];
             var stepDecimalPlaces = helpers.getDecimalPlaces(this.stepValue);
-            for (var i = 0; i <= this.steps; i++) {
+            for (var i = 0; i <= this.steps; i++)
                 this.yLabels.push(helpers.template(this.templateString, { value: (this.min + (i * this.stepValue)).toFixed(stepDecimalPlaces) }));
-            }
         },
+
         getCircumference: function() {
             return ((Math.PI * 2) / this.valuesCount);
         },
+
         setScaleSize: function() {
             /*
 			 * Right, this is really confusing and there is a lot of maths going on here
@@ -1467,7 +1394,7 @@
                 xProtrusionRight,
                 radiusReductionRight,
                 radiusReductionLeft;
-            this.ctx.font = helpers.fontString(this.pointLabelFontSize, this.pointLabelFontStyle, this.pointLabelFontFamily);
+            this.ctx.font = helpers.fontString(this.pointLabelFontSize, this.pointLabelFontStyle, this.fontFamily);
             for (i = 0; i < this.valuesCount; i++) {
                 // 5px to space the text slightly out - similar to what we do in the draw function.
                 pointPosition = this.getPointPosition(i, largestPossibleRadius);
@@ -1514,6 +1441,7 @@
             this.drawingArea = largestPossibleRadius - (radiusReductionLeft + radiusReductionRight) / 2;
             this.setCenterPoint(radiusReductionLeft, radiusReductionRight);
         },
+
         setCenterPoint: function(leftMovement, rightMovement) {
             var maxRight = this.width - rightMovement - this.drawingArea,
                 maxLeft = leftMovement + this.drawingArea;
@@ -1526,6 +1454,7 @@
             // Start from the top instead of right, so remove a quarter of the circle
             return index * ((Math.PI * 2) / this.valuesCount) - (Math.PI / 2);
         },
+
         getPointPosition: function(index, distanceFromCenter) {
             var thisAngle = this.getIndexAngle(index);
             return {
@@ -1533,11 +1462,12 @@
                 y: (Math.sin(thisAngle) * distanceFromCenter) + this.yCenter
             };
         },
+
         draw: function() {
             if (this.display) {
                 var ctx = this.ctx;
                 helpers.each(this.yLabels, function(label, index) {
-                    // Don't draw a centre value
+                    // Don't draw a center value
                     if (index > 0) {
                         var yCenterOffset = index * (this.drawingArea / this.steps),
                             yHeight = this.yCenter - yCenterOffset,
@@ -1557,11 +1487,10 @@
                                 ctx.beginPath();
                                 for (var i = 0; i < this.valuesCount; i++) {
                                     pointPosition = this.getPointPosition(i, this.calculateCenterOffset(this.min + (index * this.stepValue)));
-                                    if (i === 0) {
+                                    if (i === 0)
                                         ctx.moveTo(pointPosition.x, pointPosition.y);
-                                    } else {
+                                    else
                                         ctx.lineTo(pointPosition.x, pointPosition.y);
-                                    }
                                 }
                                 ctx.closePath();
                                 ctx.stroke();
@@ -1604,12 +1533,10 @@
                         }
 
                         if (this.backgroundColors && this.backgroundColors.length === this.valuesCount) {
-                            if (centerOffset === null) {
+                            if (centerOffset === null)
                                 centerOffset = this.calculateCenterOffset(this.max);
-                            }
-                            if (outerPosition === null) {
+                            if (outerPosition === null)
                                 outerPosition = this.getPointPosition(i, centerOffset);
-                            }
                             var previousOuterPosition = this.getPointPosition(i === 0 ? this.valuesCount - 1 : i - 1, centerOffset);
                             var nextOuterPosition = this.getPointPosition(i === this.valuesCount - 1 ? 0 : i + 1, centerOffset);
                             var previousOuterHalfway = { x: (previousOuterPosition.x + outerPosition.x) / 2, y: (previousOuterPosition.y + outerPosition.y) / 2 };
@@ -1627,7 +1554,7 @@
 
                         // Extra 3px out for some label spacing
                         var pointLabelPosition = this.getPointPosition(i, this.calculateCenterOffset(this.max) + 5);
-                        ctx.font = helpers.fontString(this.pointLabelFontSize, this.pointLabelFontStyle, this.pointLabelFontFamily);
+                        ctx.font = helpers.fontString(this.pointLabelFontSize, this.pointLabelFontStyle, this.fontFamily);
                         ctx.fillStyle = this.pointLabelFontColor;
 
                         var labelsCount = this.labels.length,
@@ -1635,24 +1562,22 @@
                             quarterLabelsCount = halfLabelsCount / 2,
                             upperHalf = (i < quarterLabelsCount || i > labelsCount - quarterLabelsCount),
                             exactQuarter = (i === quarterLabelsCount || i === labelsCount - quarterLabelsCount);
-                        if (i === 0) {
+                        if (i === 0)
                             ctx.textAlign = 'center';
-                        } else if (i === halfLabelsCount) {
+                        else if (i === halfLabelsCount)
                             ctx.textAlign = 'center';
-                        } else if (i < halfLabelsCount) {
+                        else if (i < halfLabelsCount)
                             ctx.textAlign = 'left';
-                        } else {
+                        else
                             ctx.textAlign = 'right';
-                        }
 
                         // Set the correct text baseline based on outer positioning
-                        if (exactQuarter) {
+                        if (exactQuarter)
                             ctx.textBaseline = 'middle';
-                        } else if (upperHalf) {
+                        else if (upperHalf)
                             ctx.textBaseline = 'bottom';
-                        } else {
+                        else
                             ctx.textBaseline = 'top';
-                        }
 
                         ctx.fillText(this.labels[i], pointLabelPosition.x, pointLabelPosition.y);
                     }
@@ -1661,62 +1586,48 @@
         }
     });
 
-    if (typeof define === 'function' && define.amd) {
-        define('Chart', [], function() {
-            return Chart;
-        });
-    } else if (typeof module === 'object' && module.exports) {
-        module.exports = Chart;
-    }
-
     root.Chart = Chart;
-    Chart.noConflict = function() {
-        root.Chart = previous;
-        return Chart;
-    };
 }(this, this.ChartHelpers));
 
-(function(root, Chart, helpers) {
+(function(Chart, helpers) {
     'use strict';
-
-    var defaultConfig = {
-        // Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
-        scaleBeginAtZero: true,
-
-        // Boolean - Whether grid lines are shown across the chart
-        scaleShowGridLines: true,
-
-        // String - Colour of the grid lines
-        scaleGridLineColor: 'rgba(0,0,0,.05)',
-
-        // Number - Width of the grid lines
-        scaleGridLineWidth: 1,
-
-        // Boolean - Whether to show horizontal lines (except X axis)
-        scaleShowHorizontalLines: true,
-
-        // Boolean - Whether to show vertical lines (except Y axis)
-        scaleShowVerticalLines: true,
-
-        // Boolean - If there is a stroke on each bar
-        barShowStroke: true,
-
-        // Number - Pixel width of the bar stroke
-        barStrokeWidth: 2,
-
-        // Number - Spacing between each of the X value sets
-        barValueSpacing: 5,
-
-        // Number - Spacing between data sets within X values
-        barDatasetSpacing: 1,
-
-        // String - A legend template
-        legendTemplate: '<ul class="chart-legend <%=name.toLowerCase()%>-legend"><% for (var i=0; i<datasets.length; i++){%><li><span class="legend-icon" style="background-color:<%=datasets[i].fillColor%>"></span><span class="legend-text"><%if(datasets[i].label){%><%=datasets[i].label%><%}%></span></li><%}%></ul>'
-    };
 
     Chart.Type.extend({
         name: 'Bar',
-        defaults: defaultConfig,
+        defaults: {
+            // Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
+            scaleBeginAtZero: true,
+
+            // Boolean - Whether grid lines are shown across the chart
+            scaleShowGridLines: true,
+
+            // String - Colour of the grid lines
+            scaleGridLineColor: 'rgba(0,0,0,.05)',
+
+            // Number - Width of the grid lines
+            scaleGridLineWidth: 1,
+
+            // Boolean - Whether to show horizontal lines (except X axis)
+            scaleShowHorizontalLines: true,
+
+            // Boolean - Whether to show vertical lines (except Y axis)
+            scaleShowVerticalLines: true,
+
+            // Boolean - If there is a stroke on each bar
+            barShowStroke: true,
+
+            // Number - Pixel width of the bar stroke
+            barStrokeWidth: 2,
+
+            // Number - Spacing between each of the X value sets
+            barValueSpacing: 5,
+
+            // Number - Spacing between data sets within X values
+            barDatasetSpacing: 1,
+
+            // String - A legend template
+            legendTemplate: '<ul class="chart-legend <%=name.toLowerCase()%>-legend"><% for (var i=0; i<datasets.length; i++){%><li><span class="legend-icon" style="background-color:<%=datasets[i].fillColor%>"></span><span class="legend-text"><%if(datasets[i].label){%><%=datasets[i].label%><%}%></span></li><%}%></ul>'
+        },
 
         initialize: function(data) {
             // Expose options as a scope variable here so we can access it in the ScaleClass
@@ -1724,6 +1635,7 @@
 
             this.ScaleClass = Chart.Scale.extend({
                 offsetGridLines: true,
+
                 calculateBarX: function(datasetCount, datasetIndex, barIndex) {
                     // Reusable method for calculating the xPosition of a given bar based on datasetIndex & width of the bar
                     var xWidth = this.calculateBaseWidth(),
@@ -1732,9 +1644,11 @@
 
                     return xAbsolute + (barWidth * datasetIndex) + (datasetIndex * options.barDatasetSpacing) + barWidth / 2;
                 },
+
                 calculateBaseWidth: function() {
                     return (this.calculateX(1) - this.calculateX(0)) - (2 * options.barValueSpacing);
                 },
+
                 calculateBarWidth: function(datasetCount) {
                     // The padding between datasets is to the right of each bar, providing that there are more than 1 dataset
                     var baseWidth = this.calculateBaseWidth() - ((datasetCount - 1) * options.barDatasetSpacing);
@@ -1869,23 +1783,22 @@
                 textColor: this.options.scaleFontColor,
                 fontSize: this.options.scaleFontSize,
                 fontStyle: this.options.scaleFontStyle,
-                fontFamily: this.options.scaleFontFamily,
+                fontFamily: this.options.fontFamily,
                 valuesCount: labels.length,
                 beginAtZero: this.options.scaleBeginAtZero,
                 integersOnly: this.options.scaleIntegersOnly,
                 calculateYRange: function(currentHeight) {
-                    var updatedRanges = helpers.calculateScaleRange(
+                    helpers.extend(this, helpers.calculateScaleRange(
                         dataTotal(),
                         currentHeight,
                         this.fontSize,
                         this.beginAtZero,
                         this.integersOnly
-                    );
-                    helpers.extend(this, updatedRanges);
+                    ));
                 },
                 xLabels: labels,
                 showXLabels: (this.options.showXLabels) ? this.options.showXLabels : true,
-                font: helpers.fontString(this.options.scaleFontSize, this.options.scaleFontStyle, this.options.scaleFontFamily),
+                font: helpers.fontString(this.options.scaleFontSize, this.options.scaleFontStyle, this.options.fontFamily),
                 lineWidth: this.options.scaleLineWidth,
                 lineColor: this.options.scaleLineColor,
                 showHorizontalLines: this.options.scaleShowHorizontalLines,
@@ -1898,47 +1811,15 @@
             });
         },
 
-        addData: function(valuesArray, label) {
-            // Map the values array for each of the datasets
-            helpers.each(valuesArray, function(value, datasetIndex) {
-                // Add a new point for each piece of data, passing any required data to draw.
-                this.datasets[datasetIndex].bars.push(new this.BarClass({
-                    value: value,
-                    label: label,
-                    datasetLabel: this.datasets[datasetIndex].label,
-                    x: this.scale.calculateBarX(this.datasets.length, datasetIndex, this.scale.valuesCount + 1),
-                    y: this.scale.endPoint,
-                    width: this.scale.calculateBarWidth(this.datasets.length),
-                    base: this.scale.endPoint,
-                    strokeColor: this.datasets[datasetIndex].strokeColor,
-                    fillColor: this.datasets[datasetIndex].fillColor
-                }));
-            }, this);
-
-            this.scale.addXLabel(label);
-            // Then re-render the chart.
-            this.update();
-        },
-
-        removeData: function() {
-            this.scale.removeXLabel();
-            // Then re-render the chart.
-            helpers.each(this.datasets, function(dataset) {
-                dataset.bars.shift();
-            }, this);
-            this.update();
-        },
-
         reflow: function() {
             helpers.extend(this.BarClass.prototype, {
                 y: this.scale.endPoint,
                 base: this.scale.endPoint
             });
-            var newScaleProps = helpers.extend({
+            this.scale.update(helpers.extend({
                 height: this.chart.height,
                 width: this.chart.width
-            });
-            this.scale.update(newScaleProps);
+            }));
         },
 
         draw: function(ease) {
@@ -1963,9 +1844,9 @@
             }, this);
         }
     });
-}(this, this.Chart, this.ChartHelpers));
+}(this.Chart, this.ChartHelpers));
 
-(function(root, Chart, helpers) {
+(function(Chart, helpers) {
     'use strict';
 
     var defaultConfig = {
@@ -2019,10 +1900,9 @@
             this.calculateTotal(data);
 
             helpers.each(data, function(datapoint, index) {
-                if (!datapoint.color) {
+                if (!datapoint.color)
                     datapoint.color = 'hsl(' + (360 * index / data.length) + ', 100%, 50%)';
-                }
-                this.addData(datapoint, index, true);
+                this.addData(datapoint, index);
             }, this);
 
             this.render();
@@ -2030,18 +1910,18 @@
 
         getSegmentsAtEvent: function(e) {
             var segmentsArray = [];
-
             var location = helpers.getRelativePosition(e);
 
             helpers.each(this.segments, function(segment) {
-                if (segment.inRange(location.x, location.y)) segmentsArray.push(segment);
+                if (segment.inRange(location.x, location.y))
+                    segmentsArray.push(segment);
             }, this);
             return segmentsArray;
         },
 
-        addData: function(segment, atIndex, silent) {
+        addData: function(segment, atIndex) {
             var index = atIndex !== undefined ? atIndex : this.segments.length;
-            if (typeof (segment.color) === 'undefined') {
+            if (typeof segment.color === 'undefined') {
                 segment.color = Chart.defaults.global.segmentColorDefault[index % Chart.defaults.global.segmentColorDefault.length];
                 segment.highlight = Chart.defaults.global.segmentHighlightColorDefaults[index % Chart.defaults.global.segmentHighlightColorDefaults.length];
             }
@@ -2058,18 +1938,10 @@
                 circumference: this.calculateCircumference(segment.value),
                 label: segment.label
             }));
-            if (!silent) {
-                this.reflow();
-                this.update();
-            }
         },
 
         calculateCircumference: function(value) {
-            if (this.total > 0) {
-                return (Math.PI * 2) * (value / this.total);
-            } else {
-                return 0;
-            }
+            return this.total > 0 ? ((Math.PI * 2) * (value / this.total)) : 0;
         },
 
         calculateTotal: function(data) {
@@ -2091,13 +1963,6 @@
                 segment.save();
             });
             this.render();
-        },
-
-        removeData: function(atIndex) {
-            var indexToDelete = (helpers.isNumber(atIndex)) ? atIndex : this.segments.length - 1;
-            this.segments.splice(indexToDelete, 1);
-            this.reflow();
-            this.update();
         },
 
         reflow: function() {
@@ -2127,13 +1992,11 @@
                 segment.endAngle = segment.startAngle + segment.circumference;
 
                 segment.draw();
-                if (index === 0) {
+                if (index === 0)
                     segment.startAngle = Math.PI * 1.5;
-                }
                 // Check to see if it's the last segment, if not get the next and update the start angle
-                if (index < this.segments.length - 1) {
+                if (index < this.segments.length - 1)
                     this.segments[index + 1].startAngle = segment.endAngle;
-                }
             }, this);
         }
     });
@@ -2142,48 +2005,13 @@
         name: 'Pie',
         defaults: helpers.merge(defaultConfig, { percentageInnerCutout: 0 })
     });
-}(this, this.Chart, this.ChartHelpers));
+}(this.Chart, this.ChartHelpers));
 
 /**
  * https://github.com/tomsouthall/Chart.HorizontalBar.js
  */
-(function(root, Chart, helpers) {
+(function(Chart, helpers) {
     'use strict';
-
-    var defaultConfig = {
-        // Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
-        scaleBeginAtZero: true,
-
-        // Boolean - Whether grid lines are shown across the chart
-        scaleShowGridLines: true,
-
-        // String - Colour of the grid lines
-        scaleGridLineColor: 'rgba(0,0,0,.05)',
-
-        // Number - Width of the grid lines
-        scaleGridLineWidth: 1,
-
-        // Boolean - Whether to show horizontal lines (except X axis)
-        scaleShowHorizontalLines: true,
-
-        // Boolean - Whether to show vertical lines (except Y axis)
-        scaleShowVerticalLines: true,
-
-        // Boolean - If there is a stroke on each bar
-        barShowStroke: true,
-
-        // Number - Pixel width of the bar stroke
-        barStrokeWidth: 2,
-
-        // Number - Spacing between each of the X value sets
-        barValueSpacing: 5,
-
-        // Number - Spacing between data sets within X values
-        barDatasetSpacing: 1,
-
-        // String - A legend template
-        legendTemplate: '<ul class="chart-legend <%=name.toLowerCase()%>-legend"><% for (var i=0; i<datasets.length; i++){%><li><span class="legend-icon" style="background-color:<%=datasets[i].fillColor%>"></span><span class="legend-text"><%if(datasets[i].label){%><%=datasets[i].label%><%}%></span></li><%}%></ul>'
-    };
 
     Chart.HorizontalRectangle = Chart.Element.extend({
         draw: function() {
@@ -2203,21 +2031,18 @@
             }
 
             ctx.beginPath();
-
             ctx.fillStyle = this.fillColor;
             ctx.strokeStyle = this.strokeColor;
             ctx.lineWidth = this.strokeWidth;
 
-            // It'd be nice to keep this class totally generic to any rectangle
-            // and simply specify which border to miss out.
+            // It'd be nice to keep this class totally generic to any rectangle and simply specify which border to miss out.
             ctx.moveTo(this.left, top);
             ctx.lineTo(right, top);
             ctx.lineTo(right, bottom);
             ctx.lineTo(this.left, bottom);
             ctx.fill();
-            if (this.showStroke) {
+            if (this.showStroke)
                 ctx.stroke();
-            }
         },
 
         inRange: function(chartX, chartY) {
@@ -2227,31 +2052,46 @@
 
     Chart.Type.extend({
         name: 'HorizontalBar',
-        defaults: defaultConfig,
+        defaults: {
+            // Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
+            scaleBeginAtZero: true,
+
+            // Boolean - Whether grid lines are shown across the chart
+            scaleShowGridLines: true,
+
+            // String - Colour of the grid lines
+            scaleGridLineColor: 'rgba(0,0,0,.05)',
+
+            // Number - Width of the grid lines
+            scaleGridLineWidth: 1,
+
+            // Boolean - Whether to show horizontal lines (except X axis)
+            scaleShowHorizontalLines: true,
+
+            // Boolean - Whether to show vertical lines (except Y axis)
+            scaleShowVerticalLines: true,
+
+            // Boolean - If there is a stroke on each bar
+            barShowStroke: true,
+
+            // Number - Pixel width of the bar stroke
+            barStrokeWidth: 2,
+
+            // Number - Spacing between each of the X value sets
+            barValueSpacing: 5,
+
+            // Number - Spacing between data sets within X values
+            barDatasetSpacing: 1,
+
+            // String - A legend template
+            legendTemplate: '<ul class="chart-legend <%=name.toLowerCase()%>-legend"><% for (var i=0; i<datasets.length; i++){%><li><span class="legend-icon" style="background-color:<%=datasets[i].fillColor%>"></span><span class="legend-text"><%if(datasets[i].label){%><%=datasets[i].label%><%}%></span></li><%}%></ul>'
+        },
 
         initialize: function(data) {
             var options = this.options;
 
             this.ScaleClass = Chart.Scale.extend({
                 offsetGridLines: true,
-
-                calculateBarX: function(datasetCount, datasetIndex, barIndex) {
-                    // Reusable method for calculating the xPosition of a given bar based on datasetIndex & width of the bar
-                    var xWidth = this.calculateBaseWidth(),
-                        xAbsolute = this.calculateX(barIndex) - (xWidth / 2),
-                        barWidth = this.calculateBarWidth(datasetCount);
-                    return xAbsolute + (barWidth * datasetIndex) + (datasetIndex * options.barDatasetSpacing) + barWidth / 2;
-                },
-
-                calculateBaseWidth: function() {
-                    return (this.calculateX(1) - this.calculateX(0)) - (2 * options.barValueSpacing);
-                },
-
-                calculateBarWidth: function(datasetCount) {
-                    // The padding between datasets is to the right of each bar, providing that there are more than 1 dataset
-                    var baseWidth = this.calculateBaseWidth() - ((datasetCount - 1) * options.barDatasetSpacing);
-                    return (baseWidth / datasetCount);
-                },
 
                 calculateBaseHeight: function() {
                     return ((this.endPoint - this.startPoint) / this.yLabels.length) - (2 * options.barValueSpacing);
@@ -2277,9 +2117,8 @@
                     var yHeight = this.calculateBaseHeight(),
                         yAbsolute = (this.endPoint + this.calculateYInvertXY(barIndex) - (yHeight / 2)) - 5,
                         barHeight = this.calculateBarHeight(datasetCount);
-                    if (datasetCount > 1) {
+                    if (datasetCount > 1)
                         yAbsolute = yAbsolute + (barHeight * (datasetIndex - 1)) - (datasetIndex * options.barDatasetSpacing) + barHeight / 2;
-                    }
                     return yAbsolute;
                 },
 
@@ -2295,9 +2134,8 @@
                 buildYLabels: function() {
                     this.buildYLabelCounter = (typeof this.buildYLabelCounter === 'undefined') ? 0 : this.buildYLabelCounter + 1;
                     this.buildCalculatedLabels();
-                    if (this.buildYLabelCounter === 0) {
+                    if (this.buildYLabelCounter === 0)
                         this.yLabels = this.xLabels;
-                    }
                     this.xLabels = this.calculatedLabels;
                     this.yLabelWidth = (this.display && this.showLabels) ? helpers.longestText(this.ctx, this.font, this.yLabels) : 0;
                 },
@@ -2306,9 +2144,8 @@
                     var innerWidth = this.width - (this.xScalePaddingLeft + this.xScalePaddingRight),
                         valueWidth = innerWidth / (this.steps - ((this.offsetGridLines) ? 0 : 1)),
                         valueOffset = (valueWidth * index) + this.xScalePaddingLeft;
-                    if (this.offsetGridLines) {
+                    if (this.offsetGridLines)
                         valueOffset += (valueWidth / 2);
-                    }
                     return Math.round(valueOffset);
                 },
 
@@ -2328,16 +2165,14 @@
 
                             ctx.textAlign = 'right';
                             ctx.textBaseline = 'middle';
-                            if (this.showLabels) {
+                            if (this.showLabels)
                                 ctx.fillText(labelString, xStart - 10, yLabelCenter);
-                            }
 
-                            if (index === 0 && !drawHorizontalLine) {
+                            if (index === 0 && !drawHorizontalLine)
                                 drawHorizontalLine = true;
-                            }
-                            if (drawHorizontalLine) {
+                            if (drawHorizontalLine)
                                 ctx.beginPath();
-                            }
+
                             if (index > 0) {
                                 // This is a grid line in the centre, so drop that
                                 ctx.lineWidth = this.gridLineWidth;
@@ -2364,7 +2199,6 @@
                             ctx.lineTo(xStart, linePositionY);
                             ctx.stroke();
                             ctx.closePath();
-
                         }, this);
 
                         helpers.each(this.xLabels, function(label, index) {
@@ -2460,7 +2294,6 @@
                         highlightStroke: dataset.highlightStroke || dataset.strokeColor
                     }));
                 }, this);
-
             }, this);
 
             this.buildScale(data.labels);
@@ -2537,22 +2370,21 @@
                 textColor: this.options.scaleFontColor,
                 fontSize: this.options.scaleFontSize,
                 fontStyle: this.options.scaleFontStyle,
-                fontFamily: this.options.scaleFontFamily,
+                fontFamily: this.options.fontFamily,
                 valuesCount: labels.length,
                 beginAtZero: this.options.scaleBeginAtZero,
                 integersOnly: this.options.scaleIntegersOnly,
                 calculateYRange: function(currentHeight) {
-                    var updatedRanges = helpers.calculateScaleRange(
+                    helpers.extend(this, helpers.calculateScaleRange(
                         dataTotal(),
                         currentHeight,
                         this.fontSize,
                         this.beginAtZero,
                         this.integersOnly
-                    );
-                    helpers.extend(this, updatedRanges);
+                    ));
                 },
                 xLabels: labels,
-                font: helpers.fontString(this.options.scaleFontSize, this.options.scaleFontStyle, this.options.scaleFontFamily),
+                font: helpers.fontString(this.options.scaleFontSize, this.options.scaleFontStyle, this.options.fontFamily),
                 lineWidth: this.options.scaleLineWidth,
                 lineColor: this.options.scaleLineColor,
                 showHorizontalLines: this.options.scaleShowHorizontalLines,
@@ -2563,36 +2395,6 @@
                 showLabels: this.options.scaleShowLabels,
                 display: this.options.showScale
             });
-        },
-
-        addData: function(valuesArray, label) {
-            // Map the values array for each of the datasets
-            helpers.each(valuesArray, function(value, datasetIndex) {
-                // Add a new point for each piece of data, passing any required data to draw.
-                this.datasets[datasetIndex].bars.push(new this.BarClass({
-                    value: value,
-                    label: label,
-                    x: this.scale.calculateBarX(this.datasets.length, datasetIndex, this.scale.valuesCount + 1),
-                    y: this.scale.endPoint,
-                    width: this.scale.calculateBarWidth(this.datasets.length),
-                    base: this.scale.endPoint,
-                    strokeColor: this.datasets[datasetIndex].strokeColor,
-                    fillColor: this.datasets[datasetIndex].fillColor
-                }));
-            }, this);
-
-            this.scale.addXLabel(label);
-            // Then re-render the chart.
-            this.update();
-        },
-
-        removeData: function() {
-            this.scale.removeXLabel();
-            // Then re-render the chart.
-            helpers.each(this.datasets, function(dataset) {
-                dataset.bars.shift();
-            }, this);
-            this.update();
         },
 
         reflow: function() {
@@ -2630,63 +2432,53 @@
             }, this);
         }
     });
-}(this, this.Chart, this.ChartHelpers));
-(function(root, Chart, helpers) {
+}(this.Chart, this.ChartHelpers));
+
+(function(Chart, helpers) {
     'use strict';
-
-    var defaultConfig = {
-        // Boolean - Whether grid lines are shown across the chart
-        scaleShowGridLines: true,
-
-        // String - Colour of the grid lines
-        scaleGridLineColor: 'rgba(0,0,0,.05)',
-
-        // Number - Width of the grid lines
-        scaleGridLineWidth: 1,
-
-        // Boolean - Whether to show horizontal lines (except X axis)
-        scaleShowHorizontalLines: true,
-
-        // Boolean - Whether to show vertical lines (except Y axis)
-        scaleShowVerticalLines: true,
-
-        // Boolean - Whether the line is curved between points
-        bezierCurve: true,
-
-        // Number - Tension of the bezier curve between points
-        bezierCurveTension: 0.4,
-
-        // Boolean - Whether to show a dot for each point
-        pointDot: true,
-
-        // Number - Radius of each point dot in pixels
-        pointDotRadius: 4,
-
-        // Number - Pixel width of point dot stroke
-        pointDotStrokeWidth: 1,
-
-        // Number - amount extra to add to the radius to cater for hit detection outside the drawn point
-        pointHitDetectionRadius: 20,
-
-        // Boolean - Whether to show a stroke for datasets
-        datasetStroke: true,
-
-        // Number - Pixel width of dataset stroke
-        datasetStrokeWidth: 2,
-
-        // Boolean - Whether to fill the dataset with a colour
-        datasetFill: true,
-
-        // String - A legend template
-        legendTemplate: '<ul class="chart-legend <%=name.toLowerCase()%>-legend"><% for (var i=0; i<datasets.length; i++){%><li><span class="legend-icon" style="background-color:<%=datasets[i].strokeColor%>"></span><span class="legend-text"><%if(datasets[i].label){%><%=datasets[i].label%><%}%></span></li><%}%></ul>',
-
-        // Boolean - Whether to horizontally center the label and point dot inside the grid
-        offsetGridLines: false
-    };
 
     Chart.Type.extend({
         name: 'Line',
-        defaults: defaultConfig,
+        defaults: {
+            // Boolean - Whether grid lines are shown across the chart
+            scaleShowGridLines: true,
+
+            // String - Colour of the grid lines
+            scaleGridLineColor: 'rgba(0,0,0,.05)',
+
+            // Number - Width of the grid lines
+            scaleGridLineWidth: 1,
+
+            // Boolean - Whether to show horizontal lines (except X axis)
+            scaleShowHorizontalLines: true,
+
+            // Boolean - Whether to show vertical lines (except Y axis)
+            scaleShowVerticalLines: true,
+
+            // Number - Tension of the bezier curve between points
+            bezierCurveTension: 0.4,
+
+            // Boolean - Whether to show a dot for each point
+            pointDot: true,
+
+            // Number - Radius of each point dot in pixels
+            pointDotRadius: 4,
+
+            // Number - Pixel width of point dot stroke
+            pointDotStrokeWidth: 1,
+
+            // Number - amount extra to add to the radius to cater for hit detection outside the drawn point
+            pointHitDetectionRadius: 10,
+
+            // Number - Pixel width of dataset stroke
+            datasetStrokeWidth: 2,
+
+            // String - A legend template
+            legendTemplate: '<ul class="chart-legend <%=name.toLowerCase()%>-legend"><% for (var i=0; i<datasets.length; i++){%><li><span class="legend-icon" style="background-color:<%=datasets[i].strokeColor%>"></span><span class="legend-text"><%if(datasets[i].label){%><%=datasets[i].label%><%}%></span></li><%}%></ul>',
+
+            // Boolean - Whether to horizontally center the label and point dot inside the grid
+            offsetGridLines: false
+        },
 
         initialize: function(data) {
             // Declare the extension of the default point, to cater for the options passed in to the constructor
@@ -2781,7 +2573,8 @@
                 eventPosition = helpers.getRelativePosition(e);
             helpers.each(this.datasets, function(dataset) {
                 helpers.each(dataset.points, function(point) {
-                    if (point.inRange(eventPosition.x, eventPosition.y)) pointsArray.push(point);
+                    if (point.inRange(eventPosition.x, eventPosition.y))
+                        pointsArray.push(point);
                 });
             }, this);
             return pointsArray;
@@ -2807,23 +2600,22 @@
                 offsetGridLines: this.options.offsetGridLines,
                 fontSize: this.options.scaleFontSize,
                 fontStyle: this.options.scaleFontStyle,
-                fontFamily: this.options.scaleFontFamily,
+                fontFamily: this.options.fontFamily,
                 valuesCount: labels.length,
                 beginAtZero: this.options.scaleBeginAtZero,
                 integersOnly: this.options.scaleIntegersOnly,
                 calculateYRange: function(currentHeight) {
-                    var updatedRanges = helpers.calculateScaleRange(
+                    helpers.extend(this, helpers.calculateScaleRange(
                         dataTotal(),
                         currentHeight,
                         this.fontSize,
                         this.beginAtZero,
                         this.integersOnly
-                    );
-                    helpers.extend(this, updatedRanges);
+                    ));
                 },
                 xLabels: labels,
                 showXLabels: (this.options.showXLabels) ? this.options.showXLabels : true,
-                font: helpers.fontString(this.options.scaleFontSize, this.options.scaleFontStyle, this.options.scaleFontFamily),
+                font: helpers.fontString(this.options.scaleFontSize, this.options.scaleFontStyle, this.options.fontFamily),
                 lineWidth: this.options.scaleLineWidth,
                 lineColor: this.options.scaleLineColor,
                 showHorizontalLines: this.options.scaleShowHorizontalLines,
@@ -2836,41 +2628,11 @@
             });
         },
 
-        addData: function(valuesArray, label) {
-            // Map the values array for each of the datasets
-            helpers.each(valuesArray, function(value, datasetIndex) {
-                // Add a new point for each piece of data, passing any required data to draw.
-                this.datasets[datasetIndex].points.push(new this.PointClass({
-                    value: value,
-                    label: label,
-                    datasetLabel: this.datasets[datasetIndex].label,
-                    x: this.scale.calculateX(this.scale.valuesCount + 1),
-                    y: this.scale.endPoint,
-                    strokeColor: this.datasets[datasetIndex].pointStrokeColor,
-                    fillColor: this.datasets[datasetIndex].pointColor
-                }));
-            }, this);
-
-            this.scale.addXLabel(label);
-            // Then re-render the chart.
-            this.update();
-        },
-
-        removeData: function() {
-            this.scale.removeXLabel();
-            // Then re-render the chart.
-            helpers.each(this.datasets, function(dataset) {
-                dataset.points.shift();
-            }, this);
-            this.update();
-        },
-
         reflow: function() {
-            var newScaleProps = helpers.extend({
+            this.scale.update(helpers.extend({
                 height: this.chart.height,
                 width: this.chart.width
-            });
-            this.scale.update(newScaleProps);
+            }));
         },
 
         draw: function(ease) {
@@ -2884,7 +2646,8 @@
                 nextPoint = function(point, collection, index) { return helpers.findNextWhere(collection, hasValue, index) || point; },
                 previousPoint = function(point, collection, index) { return helpers.findPreviousWhere(collection, hasValue, index) || point; };
 
-            if (!this.scale) return;
+            if (!this.scale)
+                return;
             this.scale.draw(easingDecimal);
 
             helpers.each(this.datasets, function(dataset) {
@@ -2903,32 +2666,27 @@
 
                 // Control points need to be calculated in a separate loop, because we need to know the current x/y of the point
                 // This would cause issues because the y of the next point would be 0, so beziers would be skewed
-                if (this.options.bezierCurve) {
-                    helpers.each(pointsWithValues, function(point, index) {
-                        var tension = (index > 0 && index < pointsWithValues.length - 1) ? this.options.bezierCurveTension : 0;
-                        point.controlPoints = helpers.splineCurve(
-                            previousPoint(point, pointsWithValues, index),
-                            point,
-                            nextPoint(point, pointsWithValues, index),
-                            tension
-                        );
+                helpers.each(pointsWithValues, function(point, index) {
+                    point.controlPoints = helpers.splineCurve(
+                        previousPoint(point, pointsWithValues, index),
+                        point,
+                        nextPoint(point, pointsWithValues, index),
+                        index > 0 && index < pointsWithValues.length - 1 ? this.options.bezierCurveTension : 0
+                    );
 
-                        // Prevent the bezier going outside of the bounds of the graph
-                        // Cap puter bezier handles to the upper/lower scale bounds
-                        if (point.controlPoints.outer.y > this.scale.endPoint) {
-                            point.controlPoints.outer.y = this.scale.endPoint;
-                        } else if (point.controlPoints.outer.y < this.scale.startPoint) {
-                            point.controlPoints.outer.y = this.scale.startPoint;
-                        }
+                    // Prevent the bezier going outside of the bounds of the graph
+                    // Cap puter bezier handles to the upper/lower scale bounds
+                    if (point.controlPoints.outer.y > this.scale.endPoint)
+                        point.controlPoints.outer.y = this.scale.endPoint;
+                    else if (point.controlPoints.outer.y < this.scale.startPoint)
+                        point.controlPoints.outer.y = this.scale.startPoint;
 
-                        // Cap inner bezier handles to the upper/lower scale bounds
-                        if (point.controlPoints.inner.y > this.scale.endPoint) {
-                            point.controlPoints.inner.y = this.scale.endPoint;
-                        } else if (point.controlPoints.inner.y < this.scale.startPoint) {
-                            point.controlPoints.inner.y = this.scale.startPoint;
-                        }
-                    }, this);
-                }
+                    // Cap inner bezier handles to the upper/lower scale bounds
+                    if (point.controlPoints.inner.y > this.scale.endPoint)
+                        point.controlPoints.inner.y = this.scale.endPoint;
+                    else if (point.controlPoints.inner.y < this.scale.startPoint)
+                        point.controlPoints.inner.y = this.scale.startPoint;
+                }, this);
 
                 // Draw the line between all the points
                 ctx.lineWidth = this.options.datasetStrokeWidth;
@@ -2939,27 +2697,22 @@
                     if (index === 0) {
                         ctx.moveTo(point.x, point.y);
                     } else {
-                        if (this.options.bezierCurve) {
-                            var previous = previousPoint(point, pointsWithValues, index);
-                            ctx.bezierCurveTo(
-                                previous.controlPoints.outer.x,
-                                previous.controlPoints.outer.y,
-                                point.controlPoints.inner.x,
-                                point.controlPoints.inner.y,
-                                point.x,
-                                point.y
-                            );
-                        } else {
-                            ctx.lineTo(point.x, point.y);
-                        }
+                        var previous = previousPoint(point, pointsWithValues, index);
+                        ctx.bezierCurveTo(
+                            previous.controlPoints.outer.x,
+                            previous.controlPoints.outer.y,
+                            point.controlPoints.inner.x,
+                            point.controlPoints.inner.y,
+                            point.x,
+                            point.y
+                        );
                     }
                 }, this);
 
-                if (this.options.datasetStroke) {
+                if (this.options.datasetStroke)
                     ctx.stroke();
-                }
 
-                if (this.options.datasetFill && pointsWithValues.length > 0) {
+                if (pointsWithValues.length > 0) {
                     // Round off the line by going to the base of the chart, back to the start, then fill.
                     ctx.lineTo(pointsWithValues[pointsWithValues.length - 1].x, this.scale.endPoint);
                     ctx.lineTo(pointsWithValues[0].x, this.scale.endPoint);
@@ -2977,48 +2730,46 @@
             }, this);
         }
     });
-}(this, this.Chart, this.ChartHelpers));
+}(this.Chart, this.ChartHelpers));
 
-(function(root, Chart, helpers) {
+(function(Chart, helpers) {
     'use strict';
-
-    var defaultConfig = {
-        // Boolean - Show a backdrop to the scale label
-        scaleShowLabelBackdrop: true,
-
-        // String - The colour of the label backdrop
-        scaleBackdropColor: 'rgba(255,255,255,0.75)',
-
-        // Boolean - Whether the scale should begin at zero
-        scaleBeginAtZero: true,
-
-        // Number - The backdrop padding above & below the label in pixels
-        scaleBackdropPaddingY: 2,
-
-        // Number - The backdrop padding to the side of the label in pixels
-        scaleBackdropPaddingX: 2,
-
-        // Boolean - Show line for each value in the scale
-        scaleShowLine: true,
-
-        // Boolean - Stroke a line around each segment in the chart
-        segmentShowStroke: true,
-
-        // String - The colour of the stroke on each segment.
-        segmentStrokeColor: '#fff',
-
-        // Number - The width of the stroke value in pixels
-        segmentStrokeWidth: 2,
-
-        // String - A legend template
-        legendTemplate: '<ul class="chart-legend <%=name.toLowerCase()%>-legend"><% for (var i=0; i<segments.length; i++){%><li><span class="legend-icon" style="background-color:<%=segments[i].fillColor%>"></span><span class="legend-text"><%if(segments[i].label){%><%=segments[i].label%><%}%></span></li><%}%></ul>'
-    };
 
     Chart.Type.extend({
         // Passing in a name registers this chart in the Chart namespace
         name: 'PolarArea',
         // Providing a defaults will also register the defaults in the chart namespace
-        defaults: defaultConfig,
+        defaults: {
+            // Boolean - Show a backdrop to the scale label
+            scaleShowLabelBackdrop: true,
+
+            // String - The colour of the label backdrop
+            scaleBackdropColor: 'rgba(255,255,255,0.75)',
+
+            // Boolean - Whether the scale should begin at zero
+            scaleBeginAtZero: true,
+
+            // Number - The backdrop padding above & below the label in pixels
+            scaleBackdropPaddingY: 2,
+
+            // Number - The backdrop padding to the side of the label in pixels
+            scaleBackdropPaddingX: 2,
+
+            // Boolean - Show line for each value in the scale
+            scaleShowLine: true,
+
+            // Boolean - Stroke a line around each segment in the chart
+            segmentShowStroke: true,
+
+            // String - The colour of the stroke on each segment.
+            segmentStrokeColor: '#fff',
+
+            // Number - The width of the stroke value in pixels
+            segmentStrokeWidth: 2,
+
+            // String - A legend template
+            legendTemplate: '<ul class="chart-legend <%=name.toLowerCase()%>-legend"><% for (var i=0; i<segments.length; i++){%><li><span class="legend-icon" style="background-color:<%=segments[i].fillColor%>"></span><span class="legend-text"><%if(segments[i].label){%><%=segments[i].label%><%}%></span></li><%}%></ul>'
+        },
 
         // Initialize is fired when the chart is initialized - Data is passed in as a parameter
         // Config is automatically merged by the core of Chart.js, and is available at this.options
@@ -3038,7 +2789,7 @@
                 display: this.options.showScale,
                 fontStyle: this.options.scaleFontStyle,
                 fontSize: this.options.scaleFontSize,
-                fontFamily: this.options.scaleFontFamily,
+                fontFamily: this.options.fontFamily,
                 fontColor: this.options.scaleFontColor,
                 showLabels: this.options.scaleShowLabels,
                 showLabelBackdrop: this.options.scaleShowLabelBackdrop,
@@ -3084,20 +2835,18 @@
 
         getSegmentsAtEvent: function(e) {
             var segmentsArray = [];
-
             var location = helpers.getRelativePosition(e);
 
             helpers.each(this.segments, function(segment) {
-                if (segment.inRange(location.x, location.y)) {
+                if (segment.inRange(location.x, location.y))
                     segmentsArray.push(segment);
-                }
             }, this);
             return segmentsArray;
         },
 
-        addData: function(segment, atIndex, silent) {
+        addData: function(segment, atIndex) {
             var index = atIndex || this.segments.length;
-            if (typeof (segment.color) === 'undefined') {
+            if (typeof segment.color === 'undefined') {
                 segment.color = Chart.defaults.global.segmentColorDefault[index % Chart.defaults.global.segmentColorDefault.length];
                 segment.highlight = Chart.defaults.global.segmentHighlightColorDefaults[index % Chart.defaults.global.segmentHighlightColorDefaults.length];
             }
@@ -3111,17 +2860,6 @@
                 circumference: this.scale.getCircumference(),
                 startAngle: Math.PI * 1.5
             }));
-            if (!silent) {
-                this.reflow();
-                this.update();
-            }
-        },
-
-        removeData: function(atIndex) {
-            var indexToDelete = (helpers.isNumber(atIndex)) ? atIndex : this.segments.length - 1;
-            this.segments.splice(indexToDelete, 1);
-            this.reflow();
-            this.update();
         },
 
         calculateTotal: function(data) {
@@ -3184,7 +2922,6 @@
                     outerRadius: this.scale.calculateCenterOffset(segment.value)
                 });
             }, this);
-
         },
 
         draw: function(ease) {
@@ -3200,22 +2937,21 @@
                 segment.endAngle = segment.startAngle + segment.circumference;
 
                 // If we've removed the first segment we need to set the first one to start at the top.
-                if (index === 0) {
+                if (index === 0)
                     segment.startAngle = Math.PI * 1.5;
-                }
 
                 // Check to see if it's the last segment, if not get the next and update the start angle
-                if (index < this.segments.length - 1) {
+                if (index < this.segments.length - 1)
                     this.segments[index + 1].startAngle = segment.endAngle;
-                }
+
                 segment.draw();
             }, this);
             this.scale.draw();
         }
     });
-}(this, this.Chart, this.ChartHelpers));
+}(this.Chart, this.ChartHelpers));
 
-(function(root, Chart, helpers) {
+(function(Chart, helpers) {
     'use strict';
 
     Chart.Type.extend({
@@ -3242,9 +2978,6 @@
             // Number - Interval at which to draw angle lines ("every Nth point")
             angleLineInterval: 1,
 
-            // String - Point label font declaration
-            pointLabelFontFamily: 'Arial',
-
             // String - Point label font weight
             pointLabelFontStyle: 'normal',
 
@@ -3264,16 +2997,10 @@
             pointDotStrokeWidth: 1,
 
             // Number - amount extra to add to the radius to cater for hit detection outside the drawn point
-            pointHitDetectionRadius: 20,
-
-            // Boolean - Whether to show a stroke for datasets
-            datasetStroke: true,
+            pointHitDetectionRadius: 10,
 
             // Number - Pixel width of dataset stroke
             datasetStrokeWidth: 2,
-
-            // Boolean - Whether to fill the dataset with a colour
-            datasetFill: true,
 
             // String - A legend template
             legendTemplate: '<ul class="chart-legend <%=name.toLowerCase()%>-legend"><% for (var i=0; i<datasets.length; i++){%><li><span class="legend-icon" style="background-color:<%=datasets[i].strokeColor%>"></span><span class="legend-text"><%if(datasets[i].label){%><%=datasets[i].label%><%}%></span></li><%}%></ul>'
@@ -3360,15 +3087,13 @@
                 activePointsCollection = [];
 
             // If we're at the top, make the pointIndex 0 to get the first of the array.
-            if (pointIndex >= this.scale.valuesCount || pointIndex < 0) {
+            if (pointIndex >= this.scale.valuesCount || pointIndex < 0)
                 pointIndex = 0;
-            }
 
-            if (fromCenter.distance <= this.scale.drawingArea) {
+            if (fromCenter.distance <= this.scale.drawingArea)
                 helpers.each(this.datasets, function(dataset) {
                     activePointsCollection.push(dataset.points[pointIndex]);
                 });
-            }
 
             return activePointsCollection;
         },
@@ -3378,7 +3103,7 @@
                 display: this.options.showScale,
                 fontStyle: this.options.scaleFontStyle,
                 fontSize: this.options.scaleFontSize,
-                fontFamily: this.options.scaleFontFamily,
+                fontFamily: this.options.fontFamily,
                 fontColor: this.options.scaleFontColor,
                 showLabels: this.options.scaleShowLabels,
                 showLabelBackdrop: this.options.scaleShowLabelBackdrop,
@@ -3394,7 +3119,6 @@
                 // Point labels at the edge of each line
                 pointLabelFontColor: this.options.pointLabelFontColor,
                 pointLabelFontSize: this.options.pointLabelFontSize,
-                pointLabelFontFamily: this.options.pointLabelFontFamily,
                 pointLabelFontStyle: this.options.pointLabelFontStyle,
                 height: this.chart.height,
                 width: this.chart.width,
@@ -3415,13 +3139,12 @@
             var valuesArray = (function() {
                 var totalDataArray = [];
                 helpers.each(datasets, function(dataset) {
-                    if (dataset.data) {
+                    if (dataset.data)
                         totalDataArray = totalDataArray.concat(dataset.data);
-                    } else {
+                    else
                         helpers.each(dataset.points, function(point) {
                             totalDataArray.push(point.value);
                         });
-                    }
                 });
                 return totalDataArray;
             })();
@@ -3436,39 +3159,6 @@
                     this.options.scaleIntegersOnly
                 )
             );
-        },
-
-        addData: function(valuesArray, label) {
-            // Map the values array for each of the datasets
-            this.scale.valuesCount++;
-            helpers.each(valuesArray, function(value, datasetIndex) {
-                var pointPosition = this.scale.getPointPosition(this.scale.valuesCount, this.scale.calculateCenterOffset(value));
-                this.datasets[datasetIndex].points.push(new this.PointClass({
-                    value: value,
-                    label: label,
-                    datasetLabel: this.datasets[datasetIndex].label,
-                    x: pointPosition.x,
-                    y: pointPosition.y,
-                    strokeColor: this.datasets[datasetIndex].pointStrokeColor,
-                    fillColor: this.datasets[datasetIndex].pointColor
-                }));
-            }, this);
-
-            this.scale.labels.push(label);
-
-            this.reflow();
-
-            this.update();
-        },
-
-        removeData: function() {
-            this.scale.valuesCount--;
-            this.scale.labels.shift();
-            helpers.each(this.datasets, function(dataset) {
-                dataset.points.shift();
-            }, this);
-            this.reflow();
-            this.update();
         },
 
         update: function() {
@@ -3511,28 +3201,25 @@
                 ctx.strokeStyle = dataset.strokeColor;
                 ctx.beginPath();
                 helpers.each(dataset.points, function(point, index) {
-                    if (index === 0) {
+                    if (index === 0)
                         ctx.moveTo(point.x, point.y);
-                    } else {
+                    else
                         ctx.lineTo(point.x, point.y);
-                    }
                 }, this);
                 ctx.closePath();
                 ctx.stroke();
 
                 ctx.fillStyle = dataset.fillColor;
-                if (this.options.datasetFill) {
-                    ctx.fill();
-                }
+                ctx.fill();
+
                 // Now draw the points over the line
                 // A little inefficient double looping, but better than the line
                 // lagging behind the point positions
                 helpers.each(dataset.points, function(point) {
-                    if (point.hasValue()) {
+                    if (point.hasValue())
                         point.draw();
-                    }
                 });
             }, this);
         }
     });
-}(this, this.Chart, this.ChartHelpers));
+}(this.Chart, this.ChartHelpers));
