@@ -13,6 +13,16 @@
             <authorized-button controller="Report" action="Edit" title="@Reports.ViewReport" route-values="@(new { Id = Model.Id })" class="BtnLink" role="tab" />
         }
     </tab-item>
+    <tab-item no-render="@(!Model.IsOwner)">
+        @if (Model.ActiveTab == ReportViewTab.Columns)
+        {
+            <tab-active id="selectColumns">@Reports.SelectColumns</tab-active>
+        }
+        else
+        {
+            <authorized-button controller="Report" action="SelectColumns" title="@Reports.SelectColumns" route-values="@(new { Id = Model.Id })" class="BtnLink" role="tab" />
+        }
+    </tab-item>
     <tab-item no-render="@(!User.IsInRole("reportfilter.index") || !Model.IsOwner)">
         @if (Model.ActiveTab == ReportViewTab.Filters)
         {
@@ -31,16 +41,6 @@
         else
         {
             <authorized-button controller="ReportGroup" action="Index" title="@Reports.Groups" route-values="@(new { Id = Model.Id })" class="BtnLink" role="tab" />
-        }
-    </tab-item>
-    <tab-item no-render="@(!Model.IsOwner)">
-        @if (Model.ActiveTab == ReportViewTab.Columns)
-        {
-            <tab-active id="selectColumns">@Reports.SelectColumns</tab-active>
-        }
-        else
-        {
-            <authorized-button controller="Report" action="SelectColumns" title="@Reports.SelectColumns" route-values="@(new { Id = Model.Id })" class="BtnLink" role="tab" />
         }
     </tab-item>
     <tab-item no-render="@(!Model.IsOwner)">
