@@ -469,35 +469,8 @@
      */
     var colorpickerLoad = function() {
         var node = getNode(this);
-        if (node) {
-            var picker = new CP(node, false);
-            picker.on('change', function(color) {
-                this.source.value = '#' + color;
-            });
-
-            var update = function() {
-                picker.set(this.value).enter();
-            };
-            picker.source.oncut = update;
-            picker.source.onpaste = update;
-            picker.source.onkeyup = update;
-            picker.source.oninput = update;
-
-            var btn = $.get('button', node.parentNode);
-            // @todo how does this work with touch events?
-            $.on(node, 'focus', function() { picker.enter(); }, false);
-            $.on(btn, 'blur', function(e) {
-                if (e.relatedTarget !== node)
-                    picker.exit();
-            });
-            $.on(node, 'blur', function(e) {
-                if (e.relatedTarget !== btn)
-                    picker.exit();
-            });
-            $.on(btn, 'click', function() { picker[picker.visible ? 'exit' : 'enter'](); }, false);
-
-            _colorpickers.push(picker);
-        }
+        if (node)
+            _colorpickers.push(new CP(node, formChanged.bind(node)));
     };
 
     /**
