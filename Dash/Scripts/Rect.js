@@ -15,15 +15,14 @@
         var opts = {};
         classList.forEach(function(x) {
             var lx = x.toLowerCase();
-            if (lx.indexOf('grid-item-x-') === 0) {
+            if (lx.indexOf('grid-item-x-') === 0)
                 this.x = x.replace('grid-item-x-', '') * 1;
-            } else if (lx.indexOf('grid-item-y-') === 0) {
+            else if (lx.indexOf('grid-item-y-') === 0)
                 this.y = x.replace('grid-item-y-', '') * 1;
-            } else if (lx.indexOf('grid-item-width-') === 0) {
+            else if (lx.indexOf('grid-item-width-') === 0)
                 this.width = x.replace('grid-item-width-', '') * 1;
-            } else if (lx.indexOf('grid-item-height-') === 0) {
+            else if (lx.indexOf('grid-item-height-') === 0)
                 this.height = x.replace('grid-item-height-', '') * 1;
-            }
         }, opts);
 
         this.x = $.coalesce(opts.x, 0);

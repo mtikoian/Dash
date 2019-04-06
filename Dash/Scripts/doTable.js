@@ -2,8 +2,8 @@
  * doT based table component. Supports ajax data, searching, sorting, paging, & resizing columns.
  */
 (function(root, factory) {
-    root.doTable = factory(root.doT, root.$, root.flatpickr);
-})(this, function(doT, $, flatpickr) {
+    root.doTable = factory(root, root.doT, root.$, root.flatpickr);
+})(this, function(root, doT, $, flatpickr) {
     'use strict';
 
     /**
@@ -34,9 +34,8 @@
      * @returns {string} New value to use for sorting.
      */
     var getFieldValue = function(value) {
-        if ($.isNull(value)) {
+        if ($.isNull(value))
             return null;
-        }
         return value.getMonth ? value : value.toLowerCase ? value.toLowerCase() : value;
     };
 
@@ -46,16 +45,13 @@
      * @returns {Object} New copy of the object.
      */
     var clone = function(src) {
-        if ($.isNull(src)) {
+        if ($.isNull(src))
             return src;
-        }
 
         var cpy = {};
-        for (var prop in src) {
-            if (src.hasOwnProperty(prop)) {
+        for (var prop in src)
+            if (src.hasOwnProperty(prop))
                 cpy[prop] = src[prop];
-            }
-        }
         return cpy;
     };
 
@@ -72,18 +68,14 @@
             var aa = getFieldValue(a[sort.field]);
             var bb = getFieldValue(b[sort.field]);
 
-            if (aa === null) {
+            if (aa === null)
                 return 1;
-            }
-            if (bb === null) {
+            if (bb === null)
                 return -1;
-            }
-            if (aa < bb) {
+            if (aa < bb)
                 return sort.sortDir === 'ASC' ? -1 : 1;
-            }
-            if (aa > bb) {
+            if (aa > bb)
                 return sort.sortDir === 'ASC' ? 1 : -1;
-            }
         }
         return 0;
     };
@@ -94,11 +86,9 @@
      * @returns {bool} True if object contains `this`.
      */
     var filterArray = function(obj) {
-        for (var key in obj) {
-            if (key.indexOf('_') < 0 && obj.hasOwnProperty(key) && (obj[key] + '').toLowerCase().indexOf(this) > -1) {
+        for (var key in obj)
+            if (key.indexOf('_') < 0 && obj.hasOwnProperty(key) && (obj[key] + '').toLowerCase().indexOf(this) > -1)
                 return true;
-            }
-        }
         return false;
     };
 
@@ -120,16 +110,14 @@
      * @returns {string} Returns a formatted string.
      */
     var getDisplayValue = function(displayCurrencyFormat, displayDateFormat, value, dataType) {
-        if (!dataType || $.isNull(value)) {
+        if (!dataType || $.isNull(value))
             return value;
-        }
 
         var val = value;
-        if (dataType === 'currency') {
+        if (dataType === 'currency')
             val = $.accounting.formatMoney(val, displayCurrencyFormat);
-        } else if (dataType === 'date') {
+        else if (dataType === 'date')
             val = flatpickr.formatDate(val, displayDateFormat);
-        }
         return val;
     };
 
@@ -139,10 +127,9 @@
      * @returns {String} Updated string
      */
     var camelCase = function(str) {
-        var replaceFunc = function(all, letter) {
+        return str.replace(/-([a-z])/ig, function(all, letter) {
             return letter.toUpperCase();
-        };
-        return str.replace(/-([a-z])/ig, replaceFunc);
+        });
     };
 
     /**
@@ -151,30 +138,28 @@
      * @returns {Object} Options object containing data attribute values.
      */
     var parseAttributes = function(node) {
-        if (!node) {
+        if (!node)
             return {};
-        }
+
         var attributes = node.attributes;
         var opts = { id: node.id };
         for (var i = 0; i < attributes.length; ++i) {
             var name = attributes[i].name;
             if (name.toLowerCase().indexOf('data-') === 0) {
                 var value = attributes[i].value;
-                if (['true', 'false'].indexOf(value.toLowerCase()) !== -1) {
+                if (['true', 'false'].indexOf(value.toLowerCase()) !== -1)
                     value = value.toLowerCase() === 'true';
-                } else if (!isNaN(value)) {
+                else if (!isNaN(value))
                     value = value * 1;
-                }
                 opts[camelCase(name.replace('data-', ''))] = value;
             }
         }
-        if (node.hasAttribute('json-request-params')) {
+        if (node.hasAttribute('json-request-params'))
             try {
                 opts.requestParams = JSON.parse(node.getAttribute('json-request-params'));
             } catch (e) {
                 // placeholder
             }
-        }
         return opts;
     };
 
@@ -238,7 +223,7 @@
         this.initDate = new Date();
 
         var storeUrl = this.opts.storeUrl;
-        if (storeUrl) {
+        if (storeUrl)
             this.storeFunction = $.debounce(function(data) {
                 $.ajax({
                     url: storeUrl,
@@ -246,14 +231,12 @@
                     data: data
                 });
             }, 250);
-        }
 
         var template = $.get(node.getAttribute('data-template'));
         this.opts.rowTemplateFn = doT.template(template ? template.text : '');
         this.opts.displayValueFn = getDisplayValue.bind(null, this.opts.displayCurrencyFormat, this.opts.displayDateFormat);
         this.itemsPerPage = this.store('itemsPerPage') * 1 || 10;
         this.currentStartItem = this.store('currentStartItem') * 1 || 0;
-        this.currentEndItem = 0;
         this.searchQuery = this.store('searchQuery') || '';
         this.width = this.store('width') * 1 || 100;
     };
@@ -265,13 +248,12 @@
     doTable.prototype.parseSorting = function() {
         var sorting = this.store('sorting');
         var sortColumns = [];
-        if (sorting) {
+        if (sorting)
             try {
                 sortColumns = (typeof sorting === 'string' ? JSON.parse(sorting) : sorting) || [];
             } catch (e) {
                 // placeholder
             }
-        }
         return sortColumns;
     };
 
@@ -280,8 +262,7 @@
      */
     doTable.prototype.parseColumns = function() {
         var sortColumns = this.parseSorting();
-        var tempNode = $.createNode();
-        tempNode.innerHTML = '<table>' + this.opts.rowTemplateFn({}) + '</table>';
+        var tempNode = $.createNode('<table>' + this.opts.rowTemplateFn({}) + '</table>');
 
         $.getAll('td', tempNode).forEach(function(x) {
             var field = x.getAttribute('data-field');
@@ -289,13 +270,12 @@
             width = isNaN(width) ? null : width * 1;
 
             var type = x.getAttribute('data-type').toLowerCase();
-            if (type === 'int') {
+            if (type === 'int')
                 this.intColumns.push(field);
-            } else if (type === 'date') {
+            else if (type === 'date')
                 this.dateColumns.push(field);
-            } else if (type === 'currency') {
+            else if (type === 'currency')
                 this.currencyColumns.push(field);
-            }
 
             var column = {
                 width: width ? width : this.store(field + '.width'),
@@ -328,14 +308,13 @@
     * @returns {string|undefined} Value if getting, else undefined.
     */
     doTable.prototype.store = function(key, value) {
-        var myKey = this.opts.id + '.' + key;
-        if (!this.opts.editable) {
+        if (!this.opts.editable)
             return $.coalesce(this.opts[key], null);
-        }
+
+        var myKey = this.opts.id + '.' + key;
         // getter
-        if (typeof value === 'undefined') {
+        if (typeof value === 'undefined')
             return $.isNull(this.opts.storeUrl) ? sessionStorage[myKey] : $.coalesce(this.opts[key], null);
-        }
 
         // setter
         if ($.isNull(this.storeFunction)) {
@@ -358,12 +337,10 @@
      * @param {Object[]} data - Array of records to display.
      */
     doTable.prototype.processData = function(data) {
-        if (this.opts.checkUpdateDate && data.updatedDate) {
-            if (new Date(data.updatedDate) > this.initDate) {
-                // underlying table has changed so we need to reload the page.
-                $.content.forceRefresh();
-                return;
-            }
+        if (this.opts.checkUpdateDate && data.updatedDate && new Date(data.updatedDate) > this.initDate) {
+            // underlying table has changed so we need to reload the page.
+            $.content.forceRefresh();
+            return;
         }
 
         var i = 0, len = data.rows.length, j = 0;
@@ -388,7 +365,6 @@
         }
         this.data = data.rows;
         this.filteredTotal = data.filteredTotal;
-        this.currentEndItem = Math.min(this.currentStartItem + this.itemsPerPage, this.filteredTotal);
         this.loading = false;
         this.sort(false);
         this.filterResults();
@@ -431,9 +407,8 @@
     doTable.prototype.buildSortList = function() {
         var sorting = [];
         this.opts.columns.forEach(function(x) {
-            if (x.sortDir) {
+            if (x.sortDir)
                 sorting.push({ field: x.field, sortDir: x.sortDir, sortOrder: x.sortOrder });
-            }
         });
         return sorting.length ? sorting : null;
     };
@@ -443,12 +418,11 @@
      * @returns {Object} Request parameters.
      */
     doTable.prototype.buildParams = function() {
-        var sort = this.buildSortList();
         return $.extend(this.opts.requestParams, {
             startItem: this.currentStartItem,
             items: this.itemsPerPage,
             query: this.searchQuery,
-            sort: sort
+            sort: this.buildSortList()
         });
     };
 
@@ -458,7 +432,6 @@
      */
     doTable.prototype.setCurrentStartItem = function(index) {
         this.currentStartItem = index;
-        this.currentEndItem = Math.min(this.currentStartItem + this.itemsPerPage, this.filteredTotal);
         this.store('currentStartItem', index);
         this.filterResults(true);
     };
@@ -468,9 +441,8 @@
      * @param {number|Event} e - Number or items per page, or an event that triggered the change.
      */
     doTable.prototype.setItemsPerPage = function(e) {
-        if (this.loading) {
+        if (this.loading)
             return;
-        }
 
         var items = (isNaN(e) ? e.target.value : e) * 1;
         if (this.itemsPerPage !== items) {
@@ -485,9 +457,8 @@
      * @param {string} val - New search text.
      */
     doTable.prototype.setSearchQuery = function(val) {
-        if (this.loading) {
+        if (this.loading)
             return;
-        }
 
         var query = val.target ? val.target.value : val;
         if (this.searchQuery !== query) {
@@ -495,7 +466,6 @@
             this.store('searchQuery', query);
             this.requestTimer = null;
             this.currentStartItem = 0;
-            this.currentEndItem = 0;
             this.filterResults(true);
         }
     };
@@ -505,9 +475,8 @@
      * @param {bool} refresh - Force it to refresh its data.
      */
     doTable.prototype.filterResults = function(refresh) {
-        if (this.loading) {
+        if (this.loading)
             return;
-        }
 
         if (refresh && !this.opts.loadAll) {
             // force the data to reload. filterResults will get called again after the data loads
@@ -515,7 +484,6 @@
         } else if (!this.opts.loadAll) {
             // we're not loading all the data to begin with. so whatever data we have should be displayed.
             this.results = this.data;
-            //this.currentEndItem = Math.min(this.currentStartItem + this.itemsPerPage, this.filteredTotal);
             this.pageTotal = Math.ceil(this.filteredTotal / this.itemsPerPage);
             this.update();
         } else {
@@ -530,7 +498,6 @@
                 filteredTotal = res.length;
                 this.results = res.slice(startItem, startItem + this.itemsPerPage);
             }
-            this.currentEndItem = Math.min(this.currentStartItem + this.itemsPerPage, filteredTotal);
             this.pageTotal = Math.ceil(filteredTotal / this.itemsPerPage);
             this.filteredTotal = filteredTotal;
             this.update();
@@ -551,9 +518,8 @@
      * @param {number|Event} e - New page number, or an event that triggered the change.
      */
     doTable.prototype.changePage = function(e) {
-        if (this.loading) {
+        if (this.loading)
             return;
-        }
 
         var page = (isNaN(e) ? e.target.value : e) * 1;
         if (page <= this.pageTotal && page > 0) {
@@ -582,9 +548,8 @@
      * @param {Event} e - Event that triggered the change.
      */
     doTable.prototype.changeSort = function(fieldName, dataType, e) {
-        if (this.loading) {
+        if (this.loading)
             return;
-        }
 
         var sortOrder = this.opts.columns.filter(function(x) {
             return x.sortDir;
@@ -643,9 +608,8 @@
             var i = 0;
             var cells = table.tHead.rows[0].cells;
             this.opts.columns.forEach(function(x) {
-                if (!x.width) {
+                if (!x.width)
                     x.width = cells[i].offsetWidth / hWidth * 100;
-                }
                 cells[i].style.width = x.width / 100 * tWidth + 'px';
                 ++i;
             });
@@ -657,44 +621,38 @@
      */
     doTable.prototype.updateLayout = function() {
         var table = this.getTable();
-        if (!$.isVisible(table)) {
+        if (!$.isVisible(table))
             return;
-        }
+
         var contentNode = this.getContainer();
         $.get('.dotable-scrollable', contentNode).style.paddingTop = table.tHead.offsetHeight + 'px';
-        var colGroup = $.get('.dotable-column-group', contentNode);
-        var tableHeaderRow = this.getTableHeaderRow();
-        for (var i = 0; i < this.opts.columns.length; i++) {
-            colGroup.children[i].style.width = tableHeaderRow.cells[i].style.width;
-        }
-        if (this.clientWidth > 0 && contentNode.clientWidth / this.clientWidth !== 1) {
+        var colGroup = $.get('.dotable-column-group', contentNode).children;
+        var headerRow = this.getTableHeaderRow().cells;
+        for (var i = 0; i < this.opts.columns.length; i++)
+            colGroup[i].style.width = headerRow[i].style.width;
+        if (this.clientWidth > 0 && contentNode.clientWidth / this.clientWidth !== 1)
             this.onResize();
-        }
     };
 
     /**
-     * Update the table and column widths based on a window resize.
+     * Update the table and column widths based on a resize.
      */
     doTable.prototype.onResize = function() {
         var container = this.getContainer();
-        if (!container) {
+        if (!container)
             return;
-        }
         var cWidth = container.clientWidth;
-        if (cWidth === 0) {
+        if (cWidth === 0)
             return;
-        }
+
         var scale = cWidth / this.clientWidth;
         this.clientWidth = cWidth;
         var table = this.getTable();
         table.tHead.style.width = table.style.width = (pixelToFloat(table.style.width) * scale) + 'px';
 
-        var tableHeaderRow = this.getTableHeaderRow();
-        var cell;
-        for (var i = 0; i < this.opts.columns.length; i++) {
-            cell = tableHeaderRow.cells[i];
-            cell.style.width = (pixelToFloat(cell.style.width) * scale) + 'px';
-        }
+        var headerRow = this.getTableHeaderRow().cells;
+        for (var i = 0; i < this.opts.columns.length; i++)
+            headerRow[i].style.width = (pixelToFloat(headerRow[i].style.width) * scale) + 'px';
         this.updateLayout();
     };
 
@@ -705,9 +663,8 @@
     doTable.prototype.onScroll = function(e) {
         var head = this.getTable().tHead;
         var scroll = e.target;
-        if (-head.offsetLeft !== scroll.scrollLeft) {
+        if (-head.offsetLeft !== scroll.scrollLeft)
             head.style.left = '-' + scroll.scrollLeft + 'px';
-        }
     };
 
     /**
@@ -715,27 +672,24 @@
      * @param {type} e - Event that triggered the change.
      */
     doTable.prototype.onHeaderMouseDown = function(e) {
-        if (e.button !== 0) {
+        if (e.button !== 0)
             return;
-        }
 
         var self = this;
-        var callbackFunc = function(cellEl) {
+        self.inResizeArea(e, function(cellEl) {
             e.stopImmediatePropagation();
             e.preventDefault();
 
             var contentNode = this.getContainer();
-            var table = this.getTable();
             self.resizeContext = {
                 colIndex: cellEl.cellIndex,
                 initX: e.clientX,
                 scrWidth: $.get('.dotable-scrollable', contentNode).offsetWidth,
-                initTblWidth: table.offsetWidth,
+                initTblWidth: this.getTable().offsetWidth,
                 initColWidth: pixelToFloat($.get('.dotable-column-group', contentNode).children[cellEl.cellIndex].style.width),
                 layoutTimer: null
             };
-        };
-        self.inResizeArea(e, callbackFunc);
+        });
     };
 
     /**
@@ -744,19 +698,16 @@
      */
     doTable.prototype.onMouseMove = function(e) {
         var newStyle = '';
-        var cursorFunc = function() {
+        this.inResizeArea(e, function() {
             newStyle = 'col-resize';
-        };
-        this.inResizeArea(e, cursorFunc);
+        });
         var table = this.getTable();
-        if (table.tHead.style.cursor !== newStyle) {
+        if (table.tHead.style.cursor !== newStyle)
             table.tHead.style.cursor = newStyle;
-        }
 
         var ctx = this.resizeContext;
-        if ($.isNull(ctx)) {
+        if ($.isNull(ctx))
             return;
-        }
 
         e.stopImmediatePropagation();
         e.preventDefault();
@@ -764,16 +715,14 @@
         var newColWidth = Math.max(ctx.initColWidth + e.clientX - ctx.initX, this.opts.columnMinWidth);
         table.tHead.style.width = table.style.width = (ctx.initTblWidth + (newColWidth - ctx.initColWidth)) + 'px';
 
-        var tableHeaderRow = this.getTableHeaderRow();
-        $.get('.dotable-column-group', this.getContainer()).children[ctx.colIndex].style.width = tableHeaderRow.cells[ctx.colIndex].style.width = newColWidth + 'px';
+        $.get('.dotable-column-group', this.getContainer()).children[ctx.colIndex].style.width = this.getTableHeaderRow().cells[ctx.colIndex].style.width = newColWidth + 'px';
 
         if (ctx.layoutTimer === null) {
             var self = this;
-            var timerFunc = function() {
+            ctx.layoutTimer = setTimeout(function() {
                 self.resizeContext.layoutTimer = null;
                 self.updateLayout();
-            };
-            ctx.layoutTimer = setTimeout(timerFunc, 25);
+            }, 25);
         }
     };
 
@@ -782,22 +731,19 @@
      */
     doTable.prototype.onMouseUp = function() {
         var ctx = this.resizeContext;
-        if ($.isNull(ctx)) {
+        if ($.isNull(ctx))
             return;
-        }
 
-        if (ctx.layoutTimer !== null) {
+        if (ctx.layoutTimer !== null)
             clearTimeout(ctx.layoutTimer);
-        }
         this.resizeContext = null;
 
-        var table = this.getTable();
-        var tableHeaderRow = this.getTableHeaderRow();
-        var newTblWidth = table.offsetWidth;
+        var headerRow = this.getTableHeaderRow().cells;
+        var newTblWidth = this.getTable().offsetWidth;
         this.width = (newTblWidth / ctx.scrWidth * 100).toFixed(2);
         this.store('width', this.width);
         for (var i = 0; i < this.opts.columns.length; i++) {
-            this.opts.columns[i].width = (pixelToFloat(tableHeaderRow.cells[i].style.width) / newTblWidth * 100).toFixed(2);
+            this.opts.columns[i].width = (pixelToFloat(headerRow[i].style.width) / newTblWidth * 100).toFixed(2);
             this.store(this.opts.columns[i].field + '.width', this.opts.columns[i].width);
         }
 
@@ -813,15 +759,13 @@
         var tblX = e.clientX;
         var el;
         var table = this.getTable();
-        for (el = table.tHead; el !== null; el = el.offsetParent) {
+        for (el = table.tHead; el !== null; el = el.offsetParent)
             tblX -= el.offsetLeft + el.clientLeft - el.scrollLeft;
-        }
 
         var cellEl = e.target;
         while (cellEl !== table.tHead && cellEl !== null) {
-            if (cellEl.nodeName === 'TH') {
+            if (cellEl.nodeName === 'TH')
                 break;
-            }
             cellEl = cellEl.parentNode;
         }
 
@@ -829,25 +773,22 @@
             var cells = this.getTableHeaderRow().cells;
             for (var i = cells.length - 1; i >= 0; i--) {
                 cellEl = cells[i];
-                if (cellEl.offsetLeft <= tblX) {
+                if (cellEl.offsetLeft <= tblX)
                     break;
-                }
             }
         }
 
         if (cellEl !== null) {
             var x = tblX;
             for (el = cellEl; el !== table.tHead; el = el.offsetParent) {
-                if (el === null) {
+                if (el === null)
                     break;
-                }
                 x -= el.offsetLeft - el.scrollLeft + el.clientLeft;
             }
-            if (x < 10 && cellEl.cellIndex !== 0) {
+            if (x < 10 && cellEl.cellIndex !== 0)
                 callback.call(this, cellEl.previousElementSibling);
-            } else if (x > cellEl.clientWidth - 10) {
+            else if (x > cellEl.clientWidth - 10)
                 callback.call(this, cellEl);
-            }
         }
     };
 
@@ -872,18 +813,16 @@
                 mouseEvent = 'mousemove';
                 break;
             case 'touchend':
-                if (this.lastSeenAt.x) {
+                if (this.lastSeenAt.x)
                     this.totalDistance += Math.sqrt(Math.pow(this.lastSeenAt.y - touch.clientY, 2) + Math.pow(this.lastSeenAt.x - touch.clientX, 2));
-                }
                 mouseEvent = this.totalDistance > 5 ? 'mouseup' : 'click';
                 this.lastSeenAt = { x: null, y: null };
                 break;
         }
 
-        simulatedEvent.initMouseEvent(mouseEvent, true, true, window, 1, touch.screenX, touch.screenY, touch.clientX, touch.clientY, false, false, false, false, 0, null);
-        if (touch.target) {
+        simulatedEvent.initMouseEvent(mouseEvent, true, true, root, 1, touch.screenX, touch.screenY, touch.clientX, touch.clientY, false, false, false, false, 0, null);
+        if (touch.target)
             touch.target.dispatchEvent(simulatedEvent);
-        }
         e.preventDefault();
     };
 
@@ -935,7 +874,7 @@
             move: this.onMouseMove.bind(this),
             up: this.onMouseUp.bind(this)
         };
-        $.on(window, 'resize', this.events.resize);
+        $.on(root, 'resize', this.events.resize);
 
         if (this.opts.editable) {
             // bind column sort and column resize events
@@ -956,8 +895,8 @@
                     $.on(x, 'click', this.changeSort.bind(this, x.getAttribute('data-field'), x.getAttribute('data-type').toLowerCase()));
                 }, this);
             }
-            $.on(window, 'mousemove', this.events.move);
-            $.on(window, 'mouseup', this.events.up);
+            $.on(root, 'mousemove', this.events.move);
+            $.on(root, 'mouseup', this.events.up);
         }
 
         this.setLayout();
@@ -971,9 +910,8 @@
     doTable.prototype.makeRow = function(obj) {
         var newObj = clone(obj);
         this.opts.columns.forEach(function(x) {
-            if (newObj.hasOwnProperty(x.field)) {
+            if (newObj.hasOwnProperty(x.field))
                 newObj[x.field] = this(newObj[x.field], x.dataType);
-            }
         }, this.opts.displayValueFn);
         return newObj;
     };
@@ -986,17 +924,13 @@
 
         if (this.opts.editable) {
             // update column sort icons
-            $.getAll('.dotable-arrow', $.get('.dotable-head', $.get('.dash-table', contentNode))).forEach(function(x) {
+            $.getAll('.dotable-arrow', contentNode).forEach(function(x) {
                 var val = $.findByKey(this.opts.columns, 'field', x.getAttribute('data-field'));
                 if (val && val.sortDir) {
                     $.removeClass(x, 'dash-sort-up');
                     $.removeClass(x, 'dash-sort-down');
                     $.removeClass(x, 'dash-sort');
-                    if (val.sortDir === 'ASC') {
-                        $.addClass(x, 'dash-sort-up');
-                    } else {
-                        $.addClass(x, 'dash-sort-down');
-                    }
+                    $.addClass(x, val.sortDir === 'ASC' ? 'dash-sort-up' : 'dash-sort-down');
                 } else {
                     $.removeClass(x, 'dash-sort-up');
                     $.removeClass(x, 'dash-sort-down');
@@ -1014,7 +948,6 @@
         // update table body
         var body = $.get('.dotable-body', contentNode);
         if (body) {
-            body.innerHTML = '';
             $.hide('.dotable-footer', contentNode);
 
             if (this.loading) {
@@ -1036,7 +969,7 @@
 
         // set values for showing `x - x of x` rows
         $.text($.get('.dotable-start-item', contentNode), this.filteredTotal ? this.currentStartItem + 1 : 0);
-        $.text($.get('.dotable-end-item', contentNode), this.currentEndItem);
+        $.text($.get('.dotable-end-item', contentNode), Math.min(this.currentStartItem + this.itemsPerPage, this.filteredTotal));
         $.text($.get('.dotable-total-items', contentNode), this.filteredTotal);
 
         this.updateLayout();
@@ -1047,9 +980,9 @@
      */
     doTable.prototype.destroy = function() {
         if (this.opts.editable) {
-            $.off(window, 'resize', this.events.resize);
-            $.off(window, 'mousemove', this.events.move);
-            $.off(window, 'mouseup', this.events.up);
+            $.off(root, 'resize', this.events.resize);
+            $.off(root, 'mousemove', this.events.move);
+            $.off(root, 'mouseup', this.events.up);
         }
     };
 

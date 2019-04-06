@@ -39,9 +39,8 @@
                             var parent = p.parentNode.parentNode;
                             if (parent.nodeName === 'LI') {
                                 var pi = $.get('input[type="checkbox"]', parent);
-                                if (pi && pi !== node) {
+                                if (pi && pi !== node)
                                     pi.checked = true;
-                                }
                                 this.toggle(parent, true);
                             }
                         }
@@ -58,9 +57,8 @@
         createClickListener: function(node) {
             var self = this;
             return function(e) {
-                if (!e) {
+                if (!e)
                     return;
-                }
 
                 // find the list item containing the target of the event
                 var elem = $.coalesce(e.target, e.srcElement);
@@ -72,9 +70,8 @@
                     // first toggle the check for all of the children
                     var inputs = $.getAll('ul input[type="checkbox"]', $.closest('li', elem));
                     i = inputs.length;
-                    while (i--) {
+                    while (i--)
                         inputs[i].checked = checked;
-                    }
 
                     // then check all parents. if any of the children of a checkbox are checked, then it should be checked.
                     var checkedRelative = false;
@@ -85,37 +82,31 @@
                             var relatives = $.getAll('input[type="checkbox"]', p.parentNode);
                             var i = relatives.length;
                             checkedRelative = false;
-                            while (i--) {
-                                if (relatives[i].checked) {
+                            while (i--)
+                                if (relatives[i].checked)
                                     checkedRelative = true;
-                                }
-                            }
 
                             if (p.parentNode.parentNode !== self.container) {
                                 var pi = $.get('input[type="checkbox"]', p.parentNode.parentNode);
-                                if (pi && pi !== elem) {
+                                if (pi && pi !== elem)
                                     pi.checked = checkedRelative || checked;
-                                }
                             }
                         }
                     }
                     return;
                 }
 
-                if ($.hasClass(elem, 'form-group') || $.hasClass(elem, 'form-icon') || (elem.parentNode && $.hasClass(elem.parentNode, 'form-group'))) {
-                    // prevent toggling tree when checking/unchecking an element
+                // prevent toggling tree when checking/unchecking an element
+                if ($.hasClass(elem, 'form-group') || $.hasClass(elem, 'form-icon') || (elem.parentNode && $.hasClass(elem.parentNode, 'form-group')))
                     return;
-                }
 
                 // now handle the tree itself
-                while (elem.nodeName !== 'LI') {
+                while (elem.nodeName !== 'LI')
                     elem = elem.parentNode;
-                }
 
                 // toggle the state of the node if it was the target of the event
-                if (elem === node) {
+                if (elem === node)
                     self.toggle(node);
-                }
             };
         },
 
@@ -133,23 +124,20 @@
             for (var i = 0; i < uls.length; i++) {
                 // find the parent list item of this unordered list
                 var li = uls[i];
-                while (li.nodeName !== 'LI') {
+                while (li.nodeName !== 'LI')
                     li = li.parentNode;
-                }
 
                 // style the unordered list if it is directly within this node
-                if (li === node) {
+                if (li === node)
                     uls[i].style.display = open ? 'block' : 'none';
-                }
             }
 
             // remove the current class from the node
             $.removeClass(node, 'collapsible-list-' + (open ? 'closed' : 'open'));
 
             // if the node contains unordered lists, set its class
-            if (uls.length) {
+            if (uls.length)
                 $.addClass(node, 'collapsible-list-' + (open ? 'open' : 'closed'));
-            }
         }
     };
 

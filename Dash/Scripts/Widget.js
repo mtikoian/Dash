@@ -25,12 +25,10 @@
      * @returns {number} Negative number if a comes first, positive number if b, zero if equal.
      */
     var rectSort = function(a, b) {
-        if (a.rect.y === b.rect.y && a.rect.x === b.rect.x) {
+        if (a.rect.y === b.rect.y && a.rect.x === b.rect.x)
             return a.rect.updated ? -1 : b.rect.updated ? 1 : 0;
-        }
-        if (a.rect.x === b.rect.x) {
+        if (a.rect.x === b.rect.x)
             return a.rect.y - b.rect.y;
-        }
         return a.rect.x - b.rect.x;
     };
 
@@ -66,13 +64,11 @@
             this.setupDraggie(widgetNode);
 
             var chartNode = $.get('.widget-chart', widgetNode);
-            if (chartNode) {
+            if (chartNode)
                 this.chart = new DashChart(chartNode, false);
-            }
             var refreshSeconds = this.getRefreshRate();
-            if (refreshSeconds > 0) {
+            if (refreshSeconds > 0)
                 this.interval = setInterval(this.refresh.bind(this), refreshSeconds * 1000);
-            }
         },
 
         /**
@@ -129,22 +125,20 @@
                 aWidget.rect.updated = false;
 
                 for (var j = 0; j < l; j++) {
-                    if (i === j) {
+                    if (i === j)
                         continue;
-                    }
 
                     bWidget = sorted[j];
                     if (bWidget.rect.overlaps(aWidget.rect)) {
-                        if (bWidget.rect.y > aWidget.rect.y) {
+                        if (bWidget.rect.y > aWidget.rect.y)
                             // need to move down
                             bWidget.setLocation(bWidget.rect.x, aWidget.rect.y + aWidget.rect.height);
-                        } else if (aWidget.rect.x + aWidget.rect.width + bWidget.rect.width > _columns) {
+                        else if (aWidget.rect.x + aWidget.rect.width + bWidget.rect.width > _columns)
                             // need to move down
                             bWidget.setLocation(bWidget.rect.x, aWidget.rect.y + aWidget.rect.height);
-                        } else {
+                        else
                             // safe to move right
                             bWidget.setLocation(aWidget.rect.x + aWidget.rect.width, bWidget.rect.y);
-                        }
                     }
                 }
             }
@@ -198,12 +192,10 @@
         stopDrag: function() {
             var x = Math.max(Math.round(this.moveDraggie.position.x / this.opts.grid.columnWidth), 0);
             var y = Math.max(Math.round(this.moveDraggie.position.y / this.opts.grid.rowHeight), 0);
-            if (x + this.rect.width > this.opts.grid.columns) {
+            if (x + this.rect.width > this.opts.grid.columns)
                 x = this.opts.grid.columns - this.rect.width;
-            }
-            if (y + this.rect.height > this.opts.grid.rows) {
+            if (y + this.rect.height > this.opts.grid.rows)
                 y = this.opts.grid.rows - this.rect.height;
-            }
             this.setLocation(x, y);
             this.rect.updated = true;
             this.updatePosition();
@@ -227,9 +219,8 @@
             this.width = styles.width.replace('px', '') * 1;
             this.height = styles.height.replace('px', '') * 1;
 
-            if (event.target !== event.currentTarget) {
+            if (event.target !== event.currentTarget)
                 event.stopPropagation();
-            }
         },
 
         /**
@@ -241,9 +232,8 @@
             this.setSize(Math.min(Math.round(w / this.opts.grid.columnWidth), this.opts.grid.columns), Math.min(Math.round(h / this.opts.grid.rowHeight), this.opts.grid.rows));
 
             var handle = $.get('.resizable-handle', this.getContainer());
-            if (handle) {
+            if (handle)
                 handle.removeAttribute('style');
-            }
 
             this.rect.updated = true;
             this.updatePosition();
@@ -257,11 +247,10 @@
         refresh: function() {
             var container = this.getContainer();
             var table = $.get('[data-toggle="dotable"]', container);
-            if (table && table.doTable) {
+            if (table && table.doTable)
                 table.doTable.refresh();
-            } else {
+            else
                 this.chart.run();
-            }
             $.text($.get('.grid-updated-time', container), new Date().toLocaleTimeString());
         },
 
@@ -315,11 +304,10 @@
          */
         destroy: function(totalDestruction) {
             var table = $.get('[data-toggle="dotable"]', this.getContainer());
-            if (table && table.doTable) {
+            if (table && table.doTable)
                 table.doTable.destroy();
-            } else {
+            else
                 $.destroy(this.chart);
-            }
 
             $.destroy(this.moveDraggie);
             $.destroy(this.resizeDraggie);

@@ -70,9 +70,8 @@
      */
     var hide = function() {
         var node = $.get(this.getAttribute('data-target'));
-        if (node) {
+        if (node)
             $.on(this, 'click', $.hide.bind(null, node, false));
-        }
     };
 
     /**
@@ -83,9 +82,8 @@
         var node = $.get(this.getAttribute('data-target'));
         var noMatch = this.value !== this.getAttribute('data-match');
         $.disableIf(node, noMatch);
-        if (noMatch) {
+        if (noMatch)
             node.value = '';
-        }
     };
 
     /**
@@ -102,11 +100,10 @@
      * @this {Node}
      */
     var alert = function() {
-        if (this.hasAttribute('data-success')) {
+        if (this.hasAttribute('data-success'))
             Alertify.success(this.getAttribute('data-success'));
-        } else {
+        else
             Alertify.error(this.getAttribute('data-error'));
-        }
     };
 
     /**
@@ -120,9 +117,8 @@
         if (data) {
             data.split(',').forEach(function(x) {
                 var paramNode = $.get(x);
-                if (paramNode) {
+                if (paramNode)
                     params[paramNode.id] = paramNode.value;
-                }
             });
         }
         return params;
@@ -148,9 +144,8 @@
                         url: self.getAttribute('data-url'),
                         data: params
                     }, function(data) {
-                        if (data && data.length) {
+                        if (data && data.length)
                             response(data);
-                        }
                     });
                 }
             }));
@@ -205,15 +200,12 @@
         var self = this;
 
         var parentNode = $.closest('.form-group', self);
-        if (!parentNode) {
+        if (!parentNode)
             return;
-        }
         var chipNode = $.get('.input-group-chips', parentNode);
-        if (!chipNode) {
+        if (!chipNode)
             return;
-        }
 
-        // @todo may want to add support for fetching the list from a URL instead of as data-options later
         var options = parseOptions(this);
         _tagListAutocompletes.push(new Autocomplete({
             selector: self,
@@ -224,9 +216,8 @@
                 self.value = '';
 
                 var matches = term.match(_tagListItemRegex);
-                if (!matches) {
+                if (!matches)
                     return;
-                }
 
                 if (!findChip(chipNode, matches[1])) {
                     chipNode.appendChild($.createNode(_chipFn({
@@ -237,9 +228,8 @@
             source: function(search, response) {
                 search = search.toLowerCase();
                 response(options.filter(function(x) {
-                    if (x.toLowerCase().indexOf(search) === -1) {
+                    if (x.toLowerCase().indexOf(search) === -1)
                         return false;
-                    }
                     var matches = x.match(_tagListItemRegex);
                     return !matches ? false : !findChip(chipNode, matches[1]);
                 }));
@@ -249,9 +239,8 @@
 
         $.on(chipNode, 'click', function(event) {
             var target = event.target || event.srcElement;
-            if (!$.hasClass(target, 'btn-clear')) {
+            if (!$.hasClass(target, 'btn-clear'))
                 return;
-            }
             var node = $.closest('.chip', target);
             if (node) {
                 formChanged.call(self);
@@ -277,9 +266,8 @@
      */
     var doTableLoad = function() {
         var node = getNode(this);
-        if (node) {
+        if (node)
             new doTable(node);
-        }
     };
 
     /**
@@ -288,9 +276,8 @@
      */
     var doTableUnload = function() {
         var node = getNode(this);
-        if (node && node.doTable) {
+        if (node && node.doTable)
             node.doTable.destroy();
-        }
     };
 
     /**
@@ -299,9 +286,8 @@
      */
     var chartLoad = function() {
         var node = getNode(this);
-        if (node) {
+        if (node)
             _charts.push(new DashChart(node, true));
-        }
     };
 
     /**
@@ -392,9 +378,8 @@
     var updateColumn = function(element, index, isLeft) {
         element.className = element.className.replace(/column-item-y-([0-9]*)/i, '').trim() + ' column-item-y-' + index;
         var input = $.get('.column-grid-display-order', element);
-        if (input) {
+        if (input)
             input.value = isLeft ? 0 : index + 1;
-        }
     };
 
     /**
@@ -415,9 +400,8 @@
      */
     var widgetLoad = function() {
         var node = getNode(this);
-        if (node) {
+        if (node)
             new Widget(node);
-        }
     };
 
     /**
@@ -425,9 +409,8 @@
      * @this Node
      */
     var widgetUnload = function() {
-        if (this.widget) {
+        if (this.widget)
             this.widget.destroy(true);
-        }
     };
 
     /**
@@ -446,9 +429,8 @@
                 wrap: true
             };
             var lang = $.get('body').getAttribute('data-lang');
-            if (lang !== 'en') {
+            if (lang !== 'en')
                 opts.locale = lang;
-            }
             flatpickr(node.parentNode, opts);
         }
     };
@@ -458,9 +440,8 @@
      * @this Node
      */
     var datepickerUnload = function() {
-        if (this._flatpickr) {
+        if (this._flatpickr)
             this._flatpickr.destroy();
-        }
     };
 
     /**
@@ -506,32 +487,26 @@
      * @param {Node} node - Parent node to search in.
      */
     var autofocus = function(node) {
-        if (!node) {
+        if (!node)
             return;
-        }
         var elems = $.getAll('input[autofocus]', node).filter($.isVisible);
-        if (!elems.length) {
+        if (!elems.length)
             elems = $.getAll('input:not([type="hidden"]):not([disabled]):not([readonly]), select:not([disabled]):not([readonly])', node).filter($.isVisible);
-        }
-        if (!elems.length) {
+        if (!elems.length)
             elems = $.getAll('button:not([disabled]):not([data-toggle]), a:not([disabled]), [tabindex]:not([disabled]):not([tabindex="-1"])', node).filter($.isVisible);
-        }
-        if (elems.length) {
+        if (elems.length)
             elems[0].focus();
-        }
     };
 
     /**
      * Replace the value of the data-target node with the data-value from this. Used for providing defaults via a dropdown.
      */
     var inputReplace = function() {
-        if (!(this.hasAttribute('data-target') && this.hasAttribute('data-value'))) {
+        if (!(this.hasAttribute('data-target') && this.hasAttribute('data-value')))
             return;
-        }
         var target = $.get(this.getAttribute('data-target'));
-        if (!target || $.isNull(target.value)) {
+        if (!target || $.isNull(target.value))
             return;
-        }
         if (target.value !== this.getAttribute('data-value')) {
             target.value = this.getAttribute('data-value');
             formChanged.call(target);
@@ -553,9 +528,8 @@
      * @this Node
      */
     var dashboardLoad = function() {
-        if (_dashboardEvents) {
+        if (_dashboardEvents)
             return;
-        }
         _dashboardEvents = {
             keydown: dashboardCheckKeyPress,
             resize: $.debounce(dashboardResizeLayout, 200)
@@ -643,16 +617,14 @@
      */
     var processToggles = function(node, isUnload) {
         var elems = $.getAll('[data-toggle]', node);
-        if (node.hasAttribute('data-toggle')) {
+        if (node.hasAttribute('data-toggle'))
             elems.push(node);
-        }
         elems.forEach(function(x) {
             var toggle = x.getAttribute('data-toggle');
             if (_toggles[toggle]) {
                 var func = isUnload ? _toggles[toggle].onUnload : _toggles[toggle].onLoad;
-                if (func) {
+                if (func)
                     func.call(x);
-                }
             }
         });
     };
@@ -664,9 +636,8 @@
      */
     var processContent = function(node, isUnload) {
         node = node instanceof Event ? null : node;
-        if (!node) {
+        if (!node)
             return;
-        }
         processToggles(node, isUnload);
         autofocus(node);
     };
@@ -693,9 +664,8 @@
     var _loadingDiv = (function() {
         var div = $.get('#loader');
         $.on(div, 'keydown', function(e) {
-            if ($.hasClass('#loader', 'd-none')) {
+            if ($.hasClass('#loader', 'd-none'))
                 return;
-            }
             e.preventDefault();
             e.stopPropagation();
             return false;
@@ -736,11 +706,9 @@
     /**
      * Run events needed for the inital page load.
      */
-    // If document is already loaded, run method
-    if (document.readyState === 'complete') {
+    // If document is already loaded, run method. Otherwise, wait until document is loaded.
+    if (document.readyState === 'complete')
         pjax.init();
-    } else {
-        // Otherwise, wait until document is loaded
+    else
         $.on(document, 'DOMContentLoaded', pjax.init);
-    }
 })(this.$, this.doT, this.Alertify, this.pjax, this.doTable, this.CollapsibleList, this.Autocomplete, this.Draggabilly, this.flatpickr, this.DashChart, this.CP, this.Widget);

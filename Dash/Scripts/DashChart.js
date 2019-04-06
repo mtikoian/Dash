@@ -129,11 +129,10 @@
                     var legend = self.chart.generateLegend();
                     var parent = self.canvas.parentNode.parentNode;
                     var existingLegend = $.get('.chart-legend', parent);
-                    if (existingLegend) {
+                    if (existingLegend)
                         parent.replaceChild($.createNode(legend), existingLegend);
-                    } else {
+                    else
                         parent.appendChild($.createNode(legend));
-                    }
                 }
             }, function() {
                 $.hide($.get('.chart-spinner', self.content));

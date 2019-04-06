@@ -13,16 +13,14 @@
         function live(elClass, event, cb, context) {
             $.on(context || document, event, function(e) {
                 var found, el = e.target || e.srcElement;
-                while (el && !(found = $.hasClass(el, elClass))) {
+                while (el && !(found = $.hasClass(el, elClass)))
                     el = el.parentElement;
-                }
-                if (found) {
+                if (found)
                     cb.call(el, e);
-                }
             });
         }
 
-        var o = {
+        var opts = $.extend({
             selector: 0,
             source: 0,
             minChars: 2,
@@ -39,17 +37,16 @@
                 return '<div class="autocomplete-suggestion" data-val="' + item + '">' + item.replace(re, '<b>$1</b>') + '</div>';
             },
             onSelect: function(e, term, item) { }
-        };
-        for (var k in options) { if (options.hasOwnProperty(k)) o[k] = options[k]; }
+        }, options);
 
         // init
-        var elems = typeof o.selector === 'object' ? [o.selector] : document.querySelectorAll(o.selector);
+        var elems = typeof opts.selector === 'object' ? [opts.selector] : document.querySelectorAll(opts.selector);
         for (var i = 0; i < elems.length; i++) {
             var that = elems[i];
 
             // create suggestions container "sc"
             that.sc = document.createElement('div');
-            that.sc.className = 'autocomplete-suggestions ' + o.menuClass;
+            that.sc.className = 'autocomplete-suggestions ' + opts.menuClass;
 
             that.autocompleteAttr = that.getAttribute('autocomplete');
             that.setAttribute('autocomplete', 'off');
@@ -58,16 +55,19 @@
 
             that.updateSC = function(resize, next) {
                 var rect = that.getBoundingClientRect();
-                that.sc.style.left = Math.round(rect.left + (window.pageXOffset || document.documentElement.scrollLeft) + o.offsetLeft) + 'px';
-                that.sc.style.top = Math.round(rect.bottom + (window.pageYOffset || document.documentElement.scrollTop) + o.offsetTop) + 'px';
+                that.sc.style.left = Math.round(rect.left + (window.pageXOffset || document.documentElement.scrollLeft) + opts.offsetLeft) + 'px';
+                that.sc.style.top = Math.round(rect.bottom + (window.pageYOffset || document.documentElement.scrollTop) + opts.offsetTop) + 'px';
                 that.sc.style.width = Math.round(rect.right - rect.left) + 'px'; // outerWidth
                 if (!resize) {
                     that.sc.style.display = 'block';
-                    if (!that.sc.maxHeight) { that.sc.maxHeight = parseInt((window.getComputedStyle ? getComputedStyle(that.sc, null) : that.sc.currentStyle).maxHeight); }
-                    if (!that.sc.suggestionHeight) that.sc.suggestionHeight = that.sc.querySelector('.autocomplete-suggestion').offsetHeight;
+                    if (!that.sc.maxHeight)
+                        that.sc.maxHeight = parseInt((window.getComputedStyle ? getComputedStyle(that.sc, null) : that.sc.currentStyle).maxHeight);
+                    if (!that.sc.suggestionHeight)
+                        that.sc.suggestionHeight = that.sc.querySelector('.autocomplete-suggestion').offsetHeight;
                     if (that.sc.suggestionHeight)
-                        if (!next) that.sc.scrollTop = 0;
-                        else {
+                        if (!next) {
+                            that.sc.scrollTop = 0;
+                        } else {
                             var scrTop = that.sc.scrollTop, selTop = next.getBoundingClientRect().top - that.sc.getBoundingClientRect().top;
                             if (selTop + that.sc.suggestionHeight - that.sc.maxHeight > 0)
                                 that.sc.scrollTop = selTop + that.sc.suggestionHeight + scrTop - that.sc.maxHeight;
@@ -81,12 +81,14 @@
 
             live('autocomplete-suggestion', 'mouseleave', function() {
                 var sel = that.sc.querySelector('.autocomplete-suggestion.selected');
-                if (sel) setTimeout(function() { sel.className = sel.className.replace('selected', ''); }, 20);
+                if (sel)
+                    setTimeout(function() { sel.className = sel.className.replace('selected', ''); }, 20);
             }, that.sc);
 
             live('autocomplete-suggestion', 'mouseover', function() {
                 var sel = that.sc.querySelector('.autocomplete-suggestion.selected');
-                if (sel) sel.className = sel.className.replace('selected', '');
+                if (sel)
+                    sel.className = sel.className.replace('selected', '');
                 this.className += ' selected';
             }, that.sc);
 
@@ -94,7 +96,7 @@
                 if ($.hasClass(this, 'autocomplete-suggestion')) { // else outside click
                     var v = this.getAttribute('data-val');
                     that.value = v;
-                    o.onSelect(e, v, this);
+                    opts.onSelect(e, v, this);
                     that.sc.style.display = 'none';
                 }
             }, that.sc);
@@ -107,9 +109,8 @@
                     over_sb = 0;
                 }
                 if (!over_sb) {
-                    if (o.sourceData && o.sourceData.indexOf(that.value) === -1) {
+                    if (opts.sourceData && opts.sourceData.indexOf(that.value) === -1)
                         that.value = '';
-                    }
                     that.last_val = that.value;
                     that.sc.style.display = 'none';
                     setTimeout(function() { that.sc.style.display = 'none'; }, 350); // hide suggestions on fast input
@@ -122,9 +123,10 @@
             var suggest = function(data) {
                 var val = that.value;
                 that.cache[val] = data;
-                if (data.length && val.length >= o.minChars) {
+                if (data.length && val.length >= opts.minChars) {
                     var s = '';
-                    for (var i = 0; i < data.length; i++) s += o.renderItem(data[i], val);
+                    for (var i = 0; i < data.length; i++)
+                        s += opts.renderItem(data[i], val);
                     that.sc.innerHTML = s;
                     that.updateSC(0);
                 } else {
@@ -135,9 +137,8 @@
             var internalSource = function(sourceData, term, suggest) {
                 term = term.toLowerCase();
                 var matches = [];
-                for (i = 0; i < sourceData.length; i++) {
+                for (i = 0; i < sourceData.length; i++)
                     if (~sourceData[i].toLowerCase().indexOf(term)) matches.push(sourceData[i]);
-                }
                 suggest(matches);
             };
 
@@ -172,18 +173,16 @@
                 } else if (key === 13 || key === 9) {
                     // enter or tab
                     if (sel && that.sc.style.display !== 'none') {
-                        if (key === 13) {
+                        if (key === 13)
                             e.preventDefault();
-                        }
                         that.value = sel.getAttribute('data-val');
-                        o.onSelect(e, sel.getAttribute('data-val'), sel);
+                        opts.onSelect(e, sel.getAttribute('data-val'), sel);
                         setTimeout(function() {
                             that.sc.style.display = 'none';
                         }, 20);
                     } else {
-                        if (o.sourceData && o.sourceData.indexOf(that.value) === -1) {
+                        if (opts.sourceData && opts.sourceData.indexOf(that.value) === -1)
                             that.value = '';
-                        }
                     }
                 }
             };
@@ -193,19 +192,25 @@
                 var key = window.event ? e.keyCode : e.which;
                 if (!key || (key < 35 || key > 40) && key !== 13 && key !== 27) {
                     var val = that.value;
-                    if (val.length >= o.minChars) {
+                    if (val.length >= opts.minChars) {
                         if (val !== that.last_val) {
                             that.last_val = val;
                             clearTimeout(that.timer);
-                            if (o.cache) {
-                                if (val in that.cache) { suggest(that.cache[val]); return; }
+                            if (opts.cache) {
+                                if (val in that.cache) {
+                                    suggest(that.cache[val]);
+                                    return;
+                                }
                                 // no requests if previous suggestions were empty
-                                for (var i = 1; i < val.length - o.minChars; i++) {
+                                for (var i = 1; i < val.length - opts.minChars; i++) {
                                     var part = val.slice(0, val.length - i);
-                                    if (part in that.cache && !that.cache[part].length) { suggest([]); return; }
+                                    if (part in that.cache && !that.cache[part].length) {
+                                        suggest([]);
+                                        return;
+                                    }
                                 }
                             }
-                            that.timer = setTimeout(o.sourceData ? internalSource.bind(null, o.sourceData, val, suggest) : o.source.bind(this, val, suggest), o.delay);
+                            that.timer = setTimeout(opts.sourceData ? internalSource.bind(null, opts.sourceData, val, suggest) : opts.source.bind(this, val, suggest), opts.delay);
                         }
                     } else {
                         that.last_val = val;
@@ -219,9 +224,8 @@
                 that.last_val = '\n';
                 that.keyupHandler(e);
             };
-            if (!o.minChars) {
+            if (!opts.minChars)
                 $.on(that, 'focus', that.focusHandler);
-            }
         }
 
         // public destroy method
@@ -233,15 +237,15 @@
                 $.off(that, 'focus', that.focusHandler);
                 $.off(that, 'keydown', that.keydownHandler);
                 $.off(that, 'keyup', that.keyupHandler);
-                if (that.autocompleteAttr) {
+                if (that.autocompleteAttr)
                     that.setAttribute('autocomplete', that.autocompleteAttr);
-                } else {
+                else
                     that.removeAttribute('autocomplete');
-                }
                 document.body.removeChild(that.sc);
                 that = null;
             }
         };
     }
+
     return Autocomplete;
 });

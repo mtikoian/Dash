@@ -65,9 +65,8 @@
             // If no format, or object is missing valid positive value, use default.
             // If default is a string, casts it to an object for faster checking next time.
             var x = lib.settings.currency.format;
-            if ($.isString(x)) {
+            if ($.isString(x))
                 lib.settings.currency.format = x = { pos: x, neg: x.replace('%v', '-%v'), zero: x };
-            }
             return x;
         }
         return format;
@@ -79,9 +78,8 @@
      * @returns {Object} Object with format settings.
      */
     var parseFormat = function(format) {
-        if (!$.isString(format)) {
+        if (!$.isString(format))
             return format || {};
-        }
 
         var res = {}, x;
         var newFormat = format;
@@ -101,11 +99,11 @@
             res.precision = x[1] * 1;
             newFormat = newFormat.replace(x[0], '#');
         }
-        if ((x = tokens.value.exec(newFormat)) !== null) {
+
+        if ((x = tokens.value.exec(newFormat)) !== null)
             res.format = newFormat.replace(x[0], '%v');
-        } else {
+        else
             res.format = newFormat + ' %v';
-        }
         return res;
     };
 
@@ -116,9 +114,8 @@
      */
     var unformat = function(value) {
         value = value || 0;
-        if (typeof value === 'number' && !isNaN(value)) {
+        if (typeof value === 'number' && !isNaN(value))
             return value;
-        }
 
         // Build regex to strip out everything except digits, decimal point and minus sign:
         var regex = new RegExp('[^0-9-' + lib.settings.number.decimal + ']', ['g']);

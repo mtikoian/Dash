@@ -10,9 +10,8 @@
      * @param {Node} el - Element to hide.
      */
     var _hideElement = function(el) {
-        if (!el) {
+        if (!el)
             return;
-        }
 
         $.removeClass(el, 'show');
         $.hide(el);
@@ -57,16 +56,12 @@
          */
         build: function(item) {
             var btnTxt = this.dialogs.buttons.ok;
-            var html = '<div class="dialog"><div class="dialog-content">' +
-                this.dialogs.message.replace('{{message}}', item.message);
+            var html = '<div class="dialog"><div class="dialog-content">' + this.dialogs.message.replace('{{message}}', item.message);
 
-            if (item.type === 'confirm' || item.type === 'prompt') {
+            if (item.type === 'confirm' || item.type === 'prompt')
                 btnTxt = this.dialogs.buttons.ok + this.dialogs.buttons.cancel;
-            }
-
-            if (item.type === 'prompt') {
+            if (item.type === 'prompt')
                 html += this.dialogs.input;
-            }
 
             html = (html + this.dialogs.buttons.holder + '</div></div>')
                 .replace('{{buttons}}', btnTxt)
@@ -85,11 +80,10 @@
             $.on(elem, 'click', _hideElement.bind(null, elem));
 
             wait = !isNaN(+wait) ? +wait : this.delay;
-            if (wait < 0) {
+            if (wait < 0)
                 _hideElement(elem);
-            } else if (wait > 0) {
+            else if (wait > 0)
                 setTimeout(_hideElement.bind(null, elem), wait);
-            }
         },
 
         /**
@@ -119,11 +113,9 @@
             var existing = $.getAll('.alertify-logs > div');
             if (existing) {
                 var diff = existing.length - this.maxLogItems;
-                if (diff >= 0) {
-                    for (var i = 0, _i = diff + 1; i < _i; i++) {
+                if (diff >= 0)
+                    for (var i = 0, _i = diff + 1; i < _i; i++)
                         this.close(existing[i], -1);
-                    }
-                }
             }
             this.notify(message, type, click);
         },
@@ -142,9 +134,8 @@
             }
 
             // Make sure it's positioned properly.
-            if (elLog.className !== className) {
+            if (elLog.className !== className)
                 elLog.className = className;
-            }
 
             return elLog;
         },
@@ -164,9 +155,8 @@
             log.innerHTML = message;
 
             // Add the click handler, if specified.
-            if ($.isFunction(click)) {
+            if ($.isFunction(click))
                 log.addEventListener('click', click);
-            }
 
             elLog.appendChild(log);
             setTimeout(function() {
@@ -195,11 +185,10 @@
             // Set default value/placeholder of input
             if (input) {
                 // Set the label, if available, for MDL, etc.
-                if (label) {
+                if (label)
                     label.textContent = '';
-                } else {
+                else
                     input.placeholder = '';
-                }
                 input.value = '';
             }
 
@@ -208,25 +197,22 @@
              * @param {Object} resolve - Promise resolve function.
              */
             function setupHandlers(resolve) {
-                if (!$.isFunction(resolve)) {
+                if (!$.isFunction(resolve))
                     // promises are not available so resolve is a no-op
                     resolve = function() { };
-                }
 
                 if (btnOK) {
                     $.on(btnOK, 'click', function(ev) {
                         if ($.isFunction(item.onOkay)) {
-                            if (input) {
+                            if (input)
                                 item.onOkay(input.value, ev);
-                            } else {
+                            else
                                 item.onOkay(ev);
-                            }
                         }
-                        if (input) {
+                        if (input)
                             resolve({ buttonClicked: 'ok', inputValue: input.value, event: ev });
-                        } else {
+                        else
                             resolve({ buttonClicked: 'ok', event: ev });
-                        }
                         _hideElement(el);
                         self.reset();
                     });
@@ -234,31 +220,26 @@
 
                 if (btnCancel) {
                     $.on(btnCancel, 'click', function(ev) {
-                        if ($.isFunction(item.onCancel)) {
+                        if ($.isFunction(item.onCancel))
                             item.onCancel(ev);
-                        }
                         resolve({ buttonClicked: 'cancel', event: ev });
                         _hideElement(el);
                         self.reset();
                     });
                 }
 
-                if (input) {
+                if (input)
                     $.on(input, 'keydown', function(ev) {
-                        if (btnOK && ev.which === 13) {
+                        if (btnOK && ev.which === 13)
                             btnOK.click();
-                        }
                     });
-                }
 
                 $.on(window, 'keydown', function(ev) {
-                    if (ev.which === 27) {
-                        if (btnCancel) {
+                    if (ev.which === 27)
+                        if (btnCancel)
                             btnCancel.click();
-                        } else if (btnOK) {
+                        else if (btnOK)
                             btnOK.click();
-                        }
-                    }
                 });
             }
 
@@ -270,10 +251,8 @@
                 if (input && item.type && item.type === 'prompt') {
                     input.select();
                     input.focus();
-                } else {
-                    if (btnOK) {
-                        btnOK.focus();
-                    }
+                } else if (btnOK) {
+                    btnOK.focus();
                 }
             }, 100);
 

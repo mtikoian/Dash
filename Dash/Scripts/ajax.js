@@ -26,13 +26,12 @@
 
         if (options.data) {
             options.headers['Content-Type'] = 'application/json';
-            if (options.method === 'GET') {
+            if (options.method === 'GET')
                 url += '&' + Object.keys(options.data).map(function(x) {
                     return encodeURIComponent(x) + '=' + encodeURIComponent(options.data[x]);
                 }).join('&');
-            } else {
+            else
                 options.body = JSON.stringify(options.data);
-            }
             delete options.data;
         }
         options.credentials = 'same-origin';
@@ -42,37 +41,31 @@
             .then(_parse)
             .then(function(data) {
                 if (data.error) {
-                    if ($.isFunction(onError)) {
+                    if ($.isFunction(onError))
                         onError(data);
-                    }
                     Alertify.error(data.error);
                 } else {
-                    if ($.isFunction(onSuccess)) {
+                    if ($.isFunction(onSuccess))
                         onSuccess(data);
-                    }
-                    if (data.message) {
+                    if (data.message)
                         Alertify.success(data.message);
-                    }
                 }
             }).catch(function(data) {
-                if (url.indexOf('LogJavascriptError') > -1) {
+                if (url.indexOf('LogJavascriptError') > -1)
                     return;
-                }
 
                 if (data.response && data.response.status && [400, 401, 402, 403].indexOf(data.response.status) > -1) {
                     var locationHeader = data.response.headers && data.response.headers.get('location');
-                    if (locationHeader) {
+                    if (locationHeader)
                         window.location.href = locationHeader;
-                    } else {
+                    else
                         window.location.reload(true);
-                    }
                     return;
                 }
 
                 Alertify.error((data.response && data.response.error) || 'An unhandled error occurred.');
-                if ($.isFunction(onError)) {
+                if ($.isFunction(onError))
                     onError(data.response);
-                }
             });
     };
 
@@ -115,18 +108,15 @@
      * @param {Error|null} error - Error object if browser supports it
      */
     window.onerror = function(msg, url, lineNo, columnNo, error) {
-        if ($.isNull(msg)) {
+        if ($.isNull(msg))
             return;
-        }
 
         var detail = msg + ': at path \'' + (url || document.location) + '\'';
-        if (!$.isNull(lineNo)) {
+        if (!$.isNull(lineNo))
             detail += ' at ' + lineNo + ':' + columnNo;
-        }
         var stack = error && error.stack ? error.stack : null;
-        if (!$.isNull(stack)) {
+        if (!$.isNull(stack))
             detail += '\n    at ' + ($.isString(stack) ? stack : stack.join('\n    at '));
-        }
 
         // save error message to server
         ajax({ method: 'POST', url: '/Error/LogJavascriptError', data: { message: detail }, block: false }, null, null);
