@@ -11,9 +11,8 @@
      */
     var addClass = function(element, className) {
         var node = get(element);
-        if (node) {
+        if (node)
             node.classList.add(className);
-        }
     };
 
     /**
@@ -29,26 +28,21 @@
 
         while (node !== document) {
             node = node.parentNode;
-            if (!node) {
+            if (!node)
                 return null;
-            }
 
             // If selector is a class
-            if (firstChar === '.' && node.classList && node.classList.contains(tSelector)) {
+            if (firstChar === '.' && node.classList && node.classList.contains(tSelector))
                 return node;
-            }
             // If selector is an ID
-            if (firstChar === '#' && node.id === tSelector) {
+            if (firstChar === '#' && node.id === tSelector)
                 return node;
-            }
             // If selector is a data attribute
-            if (firstChar === '[' && node.hasAttribute(selector.substr(1, selector.length - 2))) {
+            if (firstChar === '[' && node.hasAttribute(selector.substr(1, selector.length - 2)))
                 return node;
-            }
             // If selector is a tag
-            if (node.tagName && node.tagName.toLowerCase() === lowerSelector) {
+            if (node.tagName && node.tagName.toLowerCase() === lowerSelector)
                 return node;
-            }
         }
         return null;
     };
@@ -101,9 +95,8 @@
             };
 
             // we only need to set the timer now if one isn't already running
-            if (!timeout) {
+            if (!timeout)
                 timeout = setTimeout(later, wait);
-            }
         };
     };
 
@@ -112,12 +105,10 @@
      * @param {Object} obj - Object to destroy.
      */
     var destroy = function(obj) {
-        if (isNull(obj)) {
+        if (isNull(obj))
             return;
-        }
-        if (obj.destroy) {
+        if (obj.destroy)
             obj.destroy();
-        }
         obj = null;
     };
 
@@ -127,14 +118,12 @@
      * @param {bool} disable - True to disable, false to enable.
      */
     var disableIf = function(node, disable) {
-        if (!node) {
+        if (!node)
             return;
-        }
-        if (disable) {
+        if (disable)
             node.setAttribute('disabled', true);
-        } else {
+        else
             node.removeAttribute('disabled');
-        }
     };
 
     /**
@@ -144,14 +133,12 @@
     var extend = function() {
         var l = arguments.length, key, i;
         var result = l > 0 ? arguments[0] : {};
-        if (isNull(result)) {
+        if (isNull(result))
             result = {};
-        }
         for (i = 1; i < l; i++) {
             for (key in arguments[i]) {
-                if (arguments[i].hasOwnProperty(key)) {
+                if (arguments[i].hasOwnProperty(key))
                     result[key] = arguments[i][key];
-                }
             }
         }
         return result;
@@ -165,9 +152,8 @@
      * @returns {*} Array value that matches or null.
      */
     var findByKey = function(arr, key, value) {
-        if (!arr || isNull(key)) {
+        if (!arr || isNull(key))
             return;
-        }
         var i = arr.length - 1;
         while (i > -1) {
             if (arr[i][key] === value) {
@@ -186,24 +172,21 @@
      * @returns {Node} Matched node.
      */
     var get = function(selector, container) {
-        if (typeof selector !== 'string') {
+        if (typeof selector !== 'string')
             return selector;
-        }
-        if (container) {
-            return container.querySelector(selector);
-        }
-        var simple = selector.indexOf(' ', 1) === -1 && selector.indexOf('.', 1) === -1;
-        if (!simple) {
-            return document.querySelector(selector);
-        }
+
+        var base = container || document;
+        if (!_isSimple(selector))
+            return base.querySelector(selector);
+
         var sel = selector.charAt(0);
         if (sel === '#') {
             return document.getElementById(selector.substr(1));
         } else if (sel === '.') {
-            var res = document.getElementsByClassName(selector.substr(1));
+            var res = base.getElementsByClassName(selector.substr(1));
             return res.length ? res[0] : null;
         } else {
-            return document.querySelector(selector);
+            return base.querySelector(selector);
         }
     };
 
@@ -216,15 +199,13 @@
      */
     var getAll = function(selector, container, includeContainer) {
         var list;
-        if (selector.charAt(0) === '.' && selector.indexOf(',') === -1 && selector.indexOf('>') === -1) {
+        if (_isSimple(selector) && selector.charAt(0) === '.')
             list = (container || document).getElementsByClassName(selector.substr(1));
-        } else {
+        else
             list = (container || document).querySelectorAll(selector);
-        }
         var res = Array.prototype.slice.call(list);
-        if (includeContainer && container && _matches(container, selector)) {
+        if (includeContainer && container && _matches(container, selector))
             res.unshift(container);
-        }
         return res;
     };
 
@@ -247,11 +228,10 @@
     var hide = function(element, maintainLayout) {
         var node = get(element);
         if (node) {
-            if (coalesce(maintainLayout, false)) {
+            if (coalesce(maintainLayout, false))
                 addClass(node, 'd-invisible');
-            } else {
+            else
                 addClass(node, 'd-none');
-            }
         }
     };
 
@@ -310,9 +290,8 @@
      */
     var off = function(element, event, fn, useCapture) {
         var node = get(element);
-        if (node) {
+        if (node)
             node.removeEventListener(event, fn, useCapture);
-        }
     };
 
     /**
@@ -324,9 +303,8 @@
      */
     var on = function(element, event, fn, useCapture) {
         var node = get(element);
-        if (node) {
+        if (node)
             node.addEventListener(event, fn, useCapture);
-        }
     };
 
     /**
@@ -336,9 +314,8 @@
      */
     var removeClass = function(element, className) {
         var node = get(element);
-        if (node) {
+        if (node)
             node.classList.remove(className);
-        }
     };
 
     /**
@@ -360,9 +337,8 @@
      */
     var text = function(element, text) {
         var node = get(element);
-        if (node) {
+        if (node)
             node.textContent = text;
-        }
     };
 
     /**
@@ -374,9 +350,8 @@
      */
     var toggleClass = function(element, className, toggle) {
         var node = get(element);
-        if (isNull(toggle)) {
+        if (isNull(toggle))
             toggle = !hasClass(node, className);
-        }
         toggle ? addClass(node, className) : removeClass(node, className);
         return;
     };
@@ -398,6 +373,15 @@
             }
             node.dispatchEvent(event);
         }
+    };
+
+    /**
+     * Check if a CSS selector is simple (IE can be used without querySelector).
+     * @param {string} selector - Valid CSS selector.
+     * @returns {bool} True if the selector is simple.
+     */
+    var _isSimple = function(selector) {
+        return selector.indexOf(' ') === -1 && selector.indexOf('.') === -1 && selector.indexOf('>') === -1;
     };
 
     /**
