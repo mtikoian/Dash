@@ -56,38 +56,9 @@
             outerWidth: 0,
             outerHeight: 0
         };
-        for (var i = 0; i < measurementsLength; i++) {
+        for (var i = 0; i < measurementsLength; i++)
             size[measurements[i]] = 0;
-        }
         return size;
-    }
-
-    var isSetup = false;
-    var isBoxSizeOuter;
-
-    /**
-     * Setup the instance.
-     */
-    function setup() {
-        // setup once
-        if (isSetup) {
-            return;
-        }
-        isSetup = true;
-
-        /**
-         * WebKit measures the outer-width on style.width on border-box elems
-         * IE & Firefox<29 measures the inner-width
-         */
-        var div = document.createElement('div');
-        div.style.cssText = 'width: 200px; padding: 1px 2px 3px 4px; borderStyle: "solid"; borderWidth: 1px 2px 3px 4px; boxSizing: "border-box"';
-
-        var body = document.body || document.documentElement;
-        body.appendChild(div);
-        var style = getComputedStyle(div);
-
-        getSize.isBoxSizeOuter = isBoxSizeOuter = getStyleSize(style.width) === 200;
-        body.removeChild(div);
     }
 
     /**
@@ -96,19 +67,15 @@
      * @returns {Object} Dimensions for node.
      */
     function getSize(elem) {
-        setup();
-
         elem = $.get(elem);
-        if (!elem) {
+        if (!elem)
             return;
-        }
 
         var style = getComputedStyle(elem);
 
         // if hidden, everything is 0
-        if (style.display === 'none') {
+        if (style.display === 'none')
             return getZeroSize();
-        }
 
         var size = { width: elem.offsetWidth, height: elem.offsetHeight };
         var isBorderBox = size.isBorderBox = style.boxSizing === 'border-box';
@@ -128,20 +95,18 @@
         var marginHeight = size.marginTop + size.marginBottom;
         var borderWidth = size.borderLeftWidth + size.borderRightWidth;
         var borderHeight = size.borderTopWidth + size.borderBottomWidth;
-        var isBorderBoxSizeOuter = isBorderBox && isBoxSizeOuter;
+        var isBorderBoxSizeOuter = isBorderBox;
 
         // overwrite width and height if we can get it from style
         var styleWidth = getStyleSize(style.width);
-        if (styleWidth !== false) {
-            // add padding and border unless it's already including it
+        // add padding and border unless it's already including it
+        if (styleWidth !== false)
             size.width = styleWidth + (isBorderBoxSizeOuter ? 0 : paddingWidth + borderWidth);
-        }
 
         var styleHeight = getStyleSize(style.height);
-        if (styleHeight !== false) {
-            // add padding and border unless it's already including it
+        // add padding and border unless it's already including it
+        if (styleHeight !== false)
             size.height = styleHeight + (isBorderBoxSizeOuter ? 0 : paddingHeight + borderHeight);
-        }
 
         size.innerWidth = size.width - (paddingWidth + borderWidth);
         size.innerHeight = size.height - (paddingHeight + borderHeight);
@@ -178,17 +143,16 @@
          * @returns {Undefined|Object} Returns undefined if the params aren't valid, else a reference to this for chaining.
          */
         on: function(eventName, listener) {
-            if (!eventName || !listener) {
+            if (!eventName || !listener)
                 return;
-            }
+
             // set events hash
             var events = this._events = this._events || {};
             // set listeners array
             var listeners = events[eventName] = events[eventName] || [];
             // only add once
-            if (listeners.indexOf(listener) === -1) {
+            if (listeners.indexOf(listener) === -1)
                 listeners.push(listener);
-            }
 
             return this;
         },
@@ -201,14 +165,11 @@
          */
         off: function(eventName, listener) {
             var listeners = this._events && this._events[eventName];
-            if (!listeners || !listeners.length) {
+            if (!listeners || !listeners.length)
                 return;
-            }
             var index = listeners.indexOf(listener);
-            if (index !== -1) {
+            if (index !== -1)
                 listeners.splice(index, 1);
-            }
-
             return this;
         },
 
@@ -220,9 +181,8 @@
          */
         emitEvent: function(eventName, args) {
             var listeners = this._events && this._events[eventName];
-            if (!listeners || !listeners.length) {
+            if (!listeners || !listeners.length)
                 return;
-            }
             args = args || [];
             listeners.forEach(function(x) {
                 x.apply(this, args);
@@ -277,18 +237,9 @@
      */
     proto._bindStartEvent = function(elem, isBind) {
         var bindMethod = $.coalesce(isBind, true) ? 'addEventListener' : 'removeEventListener';
-
-        if (window.navigator.pointerEnabled) {
-            // W3C Pointer Events, IE11. See https://coderwall.com/p/mfreca
-            elem[bindMethod]('pointerdown', this);
-        } else if (window.navigator.msPointerEnabled) {
-            // IE10 Pointer Events
-            elem[bindMethod]('MSPointerDown', this);
-        } else {
-            // listen for both, for devices like Chrome Pixel
-            elem[bindMethod]('mousedown', this);
-            elem[bindMethod]('touchstart', this);
-        }
+        // listen for both, for devices like Chrome Pixel
+        elem[bindMethod]('mousedown', this);
+        elem[bindMethod]('touchstart', this);
     };
 
     /**
@@ -297,9 +248,8 @@
      */
     proto.handleEvent = function(event) {
         var method = 'on' + event.type;
-        if (this[method]) {
+        if (this[method])
             this[method](event);
-        }
     };
 
     /**
@@ -318,9 +268,8 @@
     proto.onmousedown = function(event) {
         // dismiss clicks from right or middle buttons
         var button = event.button;
-        if (button && (button !== 0 && button !== 1)) {
+        if (button && (button !== 0 && button !== 1))
             return;
-        }
         this._pointerDown(event, event);
     };
 
@@ -333,14 +282,6 @@
     };
 
     /**
-     * Handle a mouse click for IE.
-     * @param {Event} event - Click event.
-     */
-    proto.onMSPointerDown = proto.onpointerdown = function(event) {
-        this._pointerDown(event, event);
-    };
-
-    /**
      * Start a click/touch event.
      * @param {Event} event - Original mousedown or touchstart event.
      * @param {Event|Touch} pointer - Event object that has .pageX and .pageY.
@@ -348,9 +289,8 @@
      */
     proto._pointerDown = function(event, pointer) {
         // dismiss other pointers
-        if (this.isPointerDown) {
+        if (this.isPointerDown)
             return;
-        }
 
         this.isPointerDown = true;
         // save pointer identifier to match up touch events
@@ -372,9 +312,7 @@
     // hash of events to be bound after start event
     var postStartEvents = {
         mousedown: ['mousemove', 'mouseup'],
-        touchstart: ['touchmove', 'touchend', 'touchcancel'],
-        pointerdown: ['pointermove', 'pointerup', 'pointercancel'],
-        MSPointerDown: ['MSPointerMove', 'MSPointerUp', 'MSPointerCancel']
+        touchstart: ['touchmove', 'touchend', 'touchcancel']
     };
 
     /**
@@ -383,9 +321,9 @@
      * @private
      */
     proto._bindPostStartEvents = function(event) {
-        if (!event) {
+        if (!event)
             return;
-        }
+
         // get proper events to match start event
         var events = postStartEvents[event.type];
         // bind events to node
@@ -402,14 +340,12 @@
      * @private
      */
     proto._unbindPostStartEvents = function() {
-        // check for _boundEvents, in case dragEnd triggered twice (old IE8 bug)
-        if (!this._boundPointerEvents) {
+        // check for _boundEvents, in case dragEnd triggered twice
+        if (!this._boundPointerEvents)
             return;
-        }
         this._boundPointerEvents.forEach(function(eventName) {
             window.removeEventListener(eventName, this);
         }, this);
-
         delete this._boundPointerEvents;
     };
 
@@ -422,24 +358,13 @@
     };
 
     /**
-     * Event handler when the mouse moves for IE.
-     * @param {Event} event - Original click/touch event.
-     */
-    proto.onMSPointerMove = proto.onpointermove = function(event) {
-        if (event.pointerId === this.pointerIdentifier) {
-            this._pointerMove(event, event);
-        }
-    };
-
-    /**
      * Event handler when the touch moves.
      * @param {Event} event - Original click/touch event.
      */
     proto.ontouchmove = function(event) {
         var touch = this.getTouch(event.changedTouches);
-        if (touch) {
+        if (touch)
             this._pointerMove(event, touch);
-        }
     };
 
     /**
@@ -468,26 +393,15 @@
     proto.onmouseup = function(event) {
         this._pointerUp(event, event);
     };
-
-    /**
-     * Event handler when the mouse button is released for IE.
-     * @param {Event} event - Original click/touch event.
-     */
-    proto.onMSPointerUp = proto.onpointerup = function(event) {
-        if (event.pointerId === this.pointerIdentifier) {
-            this._pointerUp(event, event);
-        }
-    };
-
+    
     /**
      * Event handler when the touch is released.
      * @param {Event} event - Original click/touch event.
      */
     proto.ontouchend = function(event) {
         var touch = this.getTouch(event.changedTouches);
-        if (touch) {
+        if (touch)
             this._pointerUp(event, touch);
-        }
     };
 
     /**
@@ -526,24 +440,13 @@
     proto.pointerDone = function() { };
 
     /**
-     * Event handler when the mouse click is canceled for IE.
-     * @param {Event} event - Original click/touch event.
-     */
-    proto.onMSPointerCancel = proto.onpointercancel = function(event) {
-        if (event.pointerId === this.pointerIdentifier) {
-            this._pointerCancel(event, event);
-        }
-    };
-
-    /**
      * Event handler when the touch is canceled.
      * @param {Event} event - Original click/touch event.
      */
     proto.ontouchcancel = function(event) {
         var touch = this.getTouch(event.changedTouches);
-        if (touch) {
+        if (touch)
             this._pointerCancel(event, touch);
-        }
     };
 
     /**
@@ -622,16 +525,14 @@
         isBind = $.coalesce(isBind, true);
         // extra bind logic
         var binderExtra;
-        var navigator = window.navigator;
-        if (navigator.pointerEnabled || navigator.msPointerEnabled) {
-            var prop = navigator.pointerEnabled ? 'touchAction' : 'msTouchAction';
+        if (window.navigator.pointerEnabled)
             binderExtra = function(handle) {
                 // disable scrolling on the element
-                handle.style[prop] = isBind ? 'none' : '';
+                handle.style['touchAction'] = isBind ? 'none' : '';
             };
-        } else {
+        else
             binderExtra = function() { };
-        }
+        
         // bind each handle
         var bindMethod = isBind ? 'addEventListener' : 'removeEventListener';
         for (var i = 0; i < this.handles.length; i++) {
@@ -659,9 +560,9 @@
         this._dragPointerDown(event, pointer);
         // kludge to blur focused inputs in dragger
         var focused = document.activeElement;
-        if (focused && focused.blur) {
+        if (focused && focused.blur)
             focused.blur();
-        }
+
         // bind move and end events
         this._bindPostStartEvents(event);
         this.emitEvent('pointerDown', [event, pointer]);
@@ -675,9 +576,8 @@
     proto._dragPointerDown = function(event, pointer) {
         // track to see when dragging starts
         this.pointerDownPoint = Unipointer.getPointerPoint(pointer);
-        if (this.canPreventDefaultOnPointerDown(event, pointer)) {
+        if (this.canPreventDefaultOnPointerDown(event, pointer))
             event.preventDefault();
-        }
     };
 
     /**
@@ -714,9 +614,8 @@
             y: movePoint.y - this.pointerDownPoint.y
         };
         // start drag if pointer has moved far enough to start drag
-        if (!this.isDragging && this.hasDragStarted(moveVector)) {
+        if (!this.isDragging && this.hasDragStarted(moveVector))
             this._dragStart(event, pointer);
-        }
         return moveVector;
     };
 
@@ -745,12 +644,11 @@
      * @param {Event|Touch} pointer - Event object that has .pageX and .pageY.
      */
     proto._dragPointerUp = function(event, pointer) {
-        if (this.isDragging) {
+        if (this.isDragging)
             this._dragEnd(event, pointer);
-        } else {
+        else
             // pointer didn't move enough for drag to start
             this._staticClick(event, pointer);
-        }
     };
 
     /**
@@ -784,9 +682,8 @@
      */
     proto._dragMove = function(event, pointer, moveVector) {
         // do not drag if not dragging yet
-        if (!this.isDragging) {
+        if (!this.isDragging)
             return;
-        }
         this.dragMove(event, pointer, moveVector);
     };
 
@@ -829,9 +726,8 @@
      * @param {Event} event - Original mousedown or touchstart event.
      */
     proto.onclick = function(event) {
-        if (this.isPreventingClicks) {
+        if (this.isPreventingClicks)
             event.preventDefault();
-        }
     };
 
     /**
@@ -841,15 +737,13 @@
      */
     proto._staticClick = function(event, pointer) {
         // ignore emulated mouse up clicks
-        if (this.isIgnoringMouseUp && event.type === 'mouseup') {
+        if (this.isIgnoringMouseUp && event.type === 'mouseup')
             return;
-        }
 
         // allow click in <input>s and <textarea>s
         var nodeName = event.target.nodeName;
-        if (nodeName === 'INPUT' || nodeName === 'TEXTAREA') {
+        if (nodeName === 'INPUT' || nodeName === 'TEXTAREA')
             event.target.focus();
-        }
         this.staticClick(event, pointer);
 
         // set flag for emulated clicks 300ms after touchend
@@ -930,9 +824,8 @@
 
         // set relative positioning
         var style = getComputedStyle(this.element);
-        if (!positionValues[style.position]) {
+        if (!positionValues[style.position])
             this.element.style.position = 'relative';
-        }
 
         this.enable();
         this.setHandles();
@@ -966,7 +859,6 @@
         // clean up 'auto' or other non-integer values
         this.position.x = isNaN(x) ? 0 : x;
         this.position.y = isNaN(y) ? 0 : y;
-
         this._addTransformPosition(style);
     };
 
@@ -993,9 +885,9 @@
     proto._addTransformPosition = function(style) {
         var transform = style[transformProperty];
         // bail out if value is 'none'
-        if (transform.indexOf('matrix') !== 0) {
+        if (transform.indexOf('matrix') !== 0)
             return;
-        }
+
         // split matrix(1, 0, 0, 1, x, y)
         var matrixValues = transform.split(',');
         // translate X value is in 12th or 4th position
@@ -1016,10 +908,8 @@
         this._dragPointerDown(event, pointer);
         // kludge to blur focused inputs in dragger
         var focused = document.activeElement;
-        // do not blur body for IE10, metafizzy/flickity#117
-        if (focused && focused.blur && focused !== document.body) {
+        if (focused && focused.blur && focused !== document.body)
             focused.blur();
-        }
         // bind move and end events
         this._bindPostStartEvents(event);
         $.addClass(this.element, 'is-pointer-down');
@@ -1043,9 +933,9 @@
      * @param {Event|Touch} pointer - Event object that has .pageX and .pageY.
      */
     proto.dragStart = function(event, pointer) {
-        if (!this.isEnabled) {
+        if (!this.isEnabled)
             return;
-        }
+
         this._getPosition();
         this.measureContainment();
         // position _when_ drag began
@@ -1068,9 +958,8 @@
      */
     proto.measureContainment = function() {
         var containment = this.options.containment;
-        if (!containment) {
+        if (!containment)
             return;
-        }
 
         // use element if element, otherwise just `true`, use the parent
         var container = containment.nodeType === 1 && containment.nodeName ? containment : $.isString(containment) ? $.get(containment) : this.element.parentNode;
@@ -1099,9 +988,8 @@
      * @param {Object} moveVector - Object with x and y coordinates of current position.
      */
     proto.dragMove = function(event, pointer, moveVector) {
-        if (!this.isEnabled) {
+        if (!this.isEnabled)
             return;
-        }
 
         var dragX = moveVector.x;
         var dragY = moveVector.y;
@@ -1162,14 +1050,12 @@
      * @returns {number} Coordinate contained with drag.
      */
     proto.containDrag = function(axis, drag, grid) {
-        if (!this.options.containment) {
+        if (!this.options.containment)
             return drag;
-        }
-        var measure = axis === 'x' ? 'width' : 'height';
 
         var rel = this.relativeStartPosition[axis];
         var min = applyGrid(-rel, grid, 'ceil');
-        var max = this.containSize[measure];
+        var max = this.containSize[axis === 'x' ? 'width' : 'height'];
         max = applyGrid(max, grid, 'floor');
         return Math.min(max, Math.max(min, drag));
     };
@@ -1191,9 +1077,9 @@
      * @param {Event|Touch} pointer - Event object that has .pageX and .pageY.
      */
     proto.dragEnd = function(event, pointer) {
-        if (!this.isEnabled) {
+        if (!this.isEnabled)
             return;
-        }
+
         // use top left position when complete
         if (transformProperty) {
             this.element.style[transformProperty] = '';
@@ -1207,9 +1093,9 @@
      * Animate while dragging.
      */
     proto.animate = function() {
-        if (!this.isDragging) {
+        if (!this.isDragging)
             return;
-        }
+
         this.positionDrag();
         requestAnimationFrame(this.animate.bind(this));
     };
@@ -1250,9 +1136,8 @@
      */
     proto.disable = function() {
         this.isEnabled = false;
-        if (this.isDragging) {
+        if (this.isDragging)
             this.dragEnd();
-        }
     };
 
     /**
