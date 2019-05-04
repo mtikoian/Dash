@@ -940,10 +940,12 @@
         }
 
         // toggle disabled status for pagination buttons
-        $.disableIf($.get('.dotable-btn-first', contentNode), this.currentStartItem === 0);
-        $.disableIf($.get('.dotable-btn-previous', contentNode), this.currentStartItem === 0);
-        $.disableIf($.get('.dotable-btn-next', contentNode), this.currentStartItem >= this.filteredTotal - this.itemsPerPage);
-        $.disableIf($.get('.dotable-btn-last', contentNode), this.currentStartItem >= this.filteredTotal - this.itemsPerPage);
+        var prev = this.currentStartItem === 0;
+        var next = this.currentStartItem >= this.filteredTotal - this.itemsPerPage;
+        $.disableIf($.get('.dotable-btn-first', contentNode), prev);
+        $.disableIf($.get('.dotable-btn-previous', contentNode), prev);
+        $.disableIf($.get('.dotable-btn-next', contentNode), next);
+        $.disableIf($.get('.dotable-btn-last', contentNode), next);
 
         // update table body
         var body = $.get('.dotable-body', contentNode);
@@ -979,8 +981,8 @@
      * Destroy the table. Remove bound events.
      */
     doTable.prototype.destroy = function() {
+        $.off(root, 'resize', this.events.resize);
         if (this.opts.editable) {
-            $.off(root, 'resize', this.events.resize);
             $.off(root, 'mousemove', this.events.move);
             $.off(root, 'mouseup', this.events.up);
         }
