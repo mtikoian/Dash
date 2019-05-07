@@ -20,7 +20,7 @@ namespace Dash.Models
         /// Specifies the type of properties that should be included when building sql parameters to save an object.
         /// </summary>
         static readonly Type[] _SavableTypes = { typeof(string), typeof(bool), typeof(int), typeof(long), typeof(DateTime), typeof(DateTimeOffset),
-            typeof(decimal), typeof(int?), typeof(long?), typeof(byte[]), typeof(Enum), typeof(double), typeof(DateTimeOffset?) };
+            typeof(decimal), typeof(int?), typeof(long?), typeof(byte[]), typeof(Enum), typeof(double), typeof(DateTimeOffset?), typeof(decimal?) };
 
         IAppConfiguration _AppConfig;
         IMemoryCache _Cache;

@@ -44,7 +44,6 @@ namespace Dash.Controllers
                 DbContext = DbContext,
                 DatasetId = model.DatasetId,
                 Name = model.Name,
-                Width = 0,
                 RequestUserId = User.UserId()
             };
             newReport.Save(false);

@@ -10,6 +10,7 @@ namespace Dash.Models
 {
     public class SelectColumn : BaseModel, IValidatableObject
     {
+        const int MaxColumns = 20;
         IHttpContextAccessor _HttpContextAccessor;
         Report _Report;
 
@@ -30,8 +31,11 @@ namespace Dash.Models
             DbContext = (IDbContext)validationContext.GetService(typeof(IDbContext));
             _HttpContextAccessor = (IHttpContextAccessor)validationContext.GetService(typeof(IHttpContextAccessor));
 
-            if (Columns?.Any(x => x.DisplayOrder > 0) != true)
-                yield return new ValidationResult(Reports.ErrorSelectColumn);
+            var count = Columns?.Count(x => x.DisplayOrder > 0) ?? 0;
+            if (count == 0)
+                yield return new ValidationResult(Reports.ErrorMinColumns);
+            if (count > MaxColumns)
+                yield return new ValidationResult(Reports.ErrorMaxColumns);
             if (Report == null)
                 yield return new ValidationResult(Core.ErrorInvalidId);
             if (!Report.IsOwner)

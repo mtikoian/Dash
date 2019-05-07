@@ -22,7 +22,6 @@ namespace Dash.TagHelpers
         public HttpVerbs? StoreRequestMethod { get; set; }
         public string StoreUrl { get; set; }
         public string Template { get; set; }
-        public string Width { get; set; }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
@@ -38,7 +37,6 @@ namespace Dash.TagHelpers
             table.Attributes.Add("data-request-method", RequestMethod.ToString());
             table.Attributes.Add("data-check-update-date", CheckUpdateDate.ToString());
             table.Attributes.AddIf("data-store-url", StoreUrl, !StoreUrl.IsEmpty());
-            table.Attributes.AddIf("data-width", Width, !Width.IsEmpty());
             table.Attributes.AddIf("data-store-request-method", StoreRequestMethod.ToString(), StoreRequestMethod.HasValue);
             table.Attributes.AddIf("data-display-date-format", DisplayDateFormat, !DisplayDateFormat.IsEmpty());
             table.Attributes.AddIf("data-display-currency-format", DisplayCurrencyFormat, !DisplayCurrencyFormat.IsEmpty());

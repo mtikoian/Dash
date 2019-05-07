@@ -7,7 +7,6 @@
     [YAxisColumnId]       INT                NULL,
     [ChartAggregatorId]   INT                NULL,
     [ChartTypeId]         INT                NULL,
-    [Width]               DECIMAL (18, 14)   NULL,
     [AggregatorId]        INT                NULL,
     [ChartDateIntervalId] INT                NULL,
     [DateCreated]         DATETIMEOFFSET (7) DEFAULT (sysdatetimeoffset()) NOT NULL,

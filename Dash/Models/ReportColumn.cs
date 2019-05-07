@@ -18,7 +18,6 @@ namespace Dash.Models
 
         public int SortOrder { get; set; }
 
-        [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
-        public decimal Width { get; set; }
+        public decimal? Width { get; set; }
     }
 }

@@ -268,6 +268,24 @@ namespace Dash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You cannot select more than 20 columns..
+        /// </summary>
+        public static string ErrorMaxColumns {
+            get {
+                return ResourceManager.GetString("ErrorMaxColumns", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You must select at least one column..
+        /// </summary>
+        public static string ErrorMinColumns {
+            get {
+                return ResourceManager.GetString("ErrorMinColumns", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A name is required to create the report..
         /// </summary>
         public static string ErrorNameRequired {
@@ -354,15 +372,6 @@ namespace Dash.Resources {
         public static string ErrorReportDatasetAccess {
             get {
                 return ResourceManager.GetString("ErrorReportDatasetAccess", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to You must select at least one column..
-        /// </summary>
-        public static string ErrorSelectColumn {
-            get {
-                return ResourceManager.GetString("ErrorSelectColumn", resourceCulture);
             }
         }
         

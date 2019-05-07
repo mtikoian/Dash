@@ -11,7 +11,7 @@
     public class TableColumnWidth
     {
         public string Field { get; set; }
-        public decimal Width { get; set; }
+        public decimal? Width { get; set; }
     }
 
     public class TableSorting

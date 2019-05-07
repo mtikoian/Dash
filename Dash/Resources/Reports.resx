@@ -132,7 +132,7 @@
   <data name="ErrorNoColumnsSelected" xml:space="preserve">
     <value>There are no columns available for this report.</value>
   </data>
-  <data name="ErrorSelectColumn" xml:space="preserve">
+  <data name="ErrorMinColumns" xml:space="preserve">
     <value>You must select at least one column.</value>
   </data>
   <data name="Name" xml:space="preserve">
@@ -302,5 +302,8 @@
   </data>
   <data name="ErrorNoGroupColumns" xml:space="preserve">
     <value>This dataset doesn't have any columns you can group on.</value>
+  </data>
+  <data name="ErrorMaxColumns" xml:space="preserve">
+    <value>You cannot select more than 20 columns.</value>
   </data>
 </root>

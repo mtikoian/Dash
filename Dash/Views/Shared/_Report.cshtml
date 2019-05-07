@@ -4,7 +4,7 @@
 
 <do-table result-url="@Url.Action("Data", "Report", new { Id = Model.Id, Save = Model.IsOwner && !Model.IsDashboard })" id="tableReport_@Model.Id" template="#reportTemplate_@Model.Id" items-per-page="@Model.RowLimit"
           searchable="false" load-all="false" editable="@Model.IsOwner && !Model.IsDashboard" store-url="@Url.Action("UpdateColumnWidths", "Report", new { Id = Model.Id, Save = Model.IsOwner && !Model.IsDashboard })"
-          width="@Model.Width" display-date-format="@Model.Dataset.DateFormat" display-currency-format="@Model.Dataset.CurrencyFormat" request-params="@(new { Id = Model.Id, Save = Model.IsOwner && !Model.IsDashboard })"
+          display-date-format="@Model.Dataset.DateFormat" display-currency-format="@Model.Dataset.CurrencyFormat" request-params="@(new { Id = Model.Id, Save = Model.IsOwner && !Model.IsDashboard })"
           check-update-date="@Model.IsDashboard || !Model.IsOwner" />
 
 <do-row id="reportTemplate_@Model.Id">

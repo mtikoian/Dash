@@ -20,7 +20,7 @@ AS
         INSERT INTO @Ids SELECT Id FROM Report
 
     SELECT r.Id, r.DatasetId, r.Name, r.RowLimit, r.XAxisColumnId, r.ChartDateIntervalId,
-        r.YAxisColumnId, r.ChartAggregatorId, r.ChartTypeId, r.UserCreated, r.Width, r.AggregatorId, d.Name AS DatasetName, d.DatabaseId, r.DateCreated, ISNULL(r.DateUpdated, r.DateCreated) AS DateUpdated
+        r.YAxisColumnId, r.ChartAggregatorId, r.ChartTypeId, r.UserCreated, r.AggregatorId, d.Name AS DatasetName, d.DatabaseId, r.DateCreated, ISNULL(r.DateUpdated, r.DateCreated) AS DateUpdated
     FROM @Ids i
     INNER JOIN Report r ON r.Id = i.Id
     INNER JOIN Dataset d ON d.Id = r.DatasetId

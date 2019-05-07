@@ -119,8 +119,6 @@ namespace Dash.Models
         [DbIgnore]
         public int UserCreated { get; set; }
 
-        public decimal Width { get; set; } = 100;
-
         public Report Copy(string name = null)
         {
             var newReport = this.Clone();
@@ -348,7 +346,6 @@ namespace Dash.Models
         public void UpdateColumns(List<ReportColumn> newColumns, int? userId = null)
         {
             var len = newColumns.Count();
-            var currentFactor = Width / 100;
             for (var i = 0; i < len; i++)
             {
                 // if this column was already being used, copy the properties we need from it
@@ -356,23 +353,18 @@ namespace Dash.Models
                 if (existingColumn != null)
                 {
                     existingColumn.DisplayOrder = newColumns[i].DisplayOrder;
-                    existingColumn.Width *= currentFactor;
                     newColumns[i] = existingColumn;
                 }
                 else
                 {
                     newColumns[i].ReportId = Id;
-                    newColumns[i].Width = 10;
-                    Width += 10;
                 }
             }
 
             // delete any removed columns
-            ReportColumn.Where(c => !newColumns.Any(x => x.Id == c.Id)).ToList().ForEach(c => { DbContext.Delete(c); Width -= c.Width * currentFactor; });
-
-            // gotta tweak the column widths to add up to 100%
-            currentFactor = Width / 100;
-            newColumns.ForEach(c => { c.Width = Math.Round(c.Width / currentFactor, 4); });
+            ReportColumn.Where(c => !newColumns.Any(x => x.Id == c.Id)).ToList().ForEach(c => {
+                DbContext.Delete(c);
+            });
 
             // try saving
             RequestUserId = userId ?? RequestUserId;
@@ -384,15 +376,8 @@ namespace Dash.Models
             ReportColumn = newColumns;
         }
 
-        public void UpdateColumnWidths(decimal reportWidth, List<TableColumnWidth> newColumns = null, int? userId = null)
+        public void UpdateColumnWidths(List<TableColumnWidth> newColumns = null, int? userId = null)
         {
-            if (Width != reportWidth)
-            {
-                Width = reportWidth;
-                RequestUserId = userId ?? RequestUserId;
-                DbContext.Save(this);
-            }
-
             var keyedReportColumns = ReportColumn.ToDictionary(x => x.ColumnId, x => x);
             newColumns.Each(x => {
                 var columnId = x.Field.Replace("column", "").ToInt();

@@ -9,7 +9,6 @@
     @ChartAggregatorId INT = NULL,
     @AggregatorId INT = NULL,
     @ChartDateIntervalId INT = NULL,
-    @Width DECIMAL(18, 14) = NULL,
     @RequestUserId INT = NULL
 AS
     SET NOCOUNT ON
@@ -17,10 +16,10 @@ AS
     BEGIN TRY
         IF ISNULL(@Id, 0) = 0
             BEGIN
-                INSERT INTO Report (DatasetId, [Name], RowLimit, ChartTypeId, XAxisColumnId, YAxisColumnId, ChartAggregatorId, AggregatorId, Width, ChartDateIntervalId, UserCreated)
+                INSERT INTO Report (DatasetId, [Name], RowLimit, ChartTypeId, XAxisColumnId, YAxisColumnId, ChartAggregatorId, AggregatorId, ChartDateIntervalId, UserCreated)
                     VALUES (@DatasetId, @Name, @RowLimit, (CASE @ChartTypeId WHEN 0 THEN NULL ELSE @ChartTypeId END),
                     (CASE @XAxisColumnId WHEN 0 THEN NULL ELSE @XAxisColumnId END), (CASE @YAxisColumnId WHEN 0 THEN NULL ELSE @YAxisColumnId END),
-                    @ChartAggregatorId, @AggregatorId, @Width, @ChartDateIntervalId, @RequestUserId)
+                    @ChartAggregatorId, @AggregatorId, @ChartDateIntervalId, @RequestUserId)
                 SET @Id = SCOPE_IDENTITY()
             END
         ELSE
@@ -28,7 +27,7 @@ AS
                 UPDATE Report SET DatasetId = @DatasetId, [Name] = @Name, RowLimit = @RowLimit,
                     ChartTypeId = (CASE @ChartTypeId WHEN 0 THEN NULL ELSE @ChartTypeId END), XAxisColumnId = (CASE @XAxisColumnId WHEN 0 THEN NULL ELSE @XAxisColumnId END),
                     YAxisColumnId = (CASE @YAxisColumnId WHEN 0 THEN NULL ELSE @YAxisColumnId END),
-                    ChartAggregatorId = @ChartAggregatorId, AggregatorId = @AggregatorId, Width = @Width, ChartDateIntervalId = @ChartDateIntervalId,
+                    ChartAggregatorId = @ChartAggregatorId, AggregatorId = @AggregatorId, ChartDateIntervalId = @ChartDateIntervalId,
                     UserUpdated = @RequestUserId, DateUpdated = SYSDATETIMEOFFSET()
                 WHERE Id = @Id
             END

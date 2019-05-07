@@ -120,9 +120,6 @@ namespace Dash.Models
         [DbIgnore]
         public int ReportRowLimit { get; set; }
 
-        [DbIgnore]
-        public decimal ReportWidth { get; set; }
-
         [Display(Name = "Title", ResourceType = typeof(Widgets))]
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
         [StringLength(100, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
