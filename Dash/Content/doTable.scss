@@ -1,0 +1,67 @@
+﻿.dash-table {
+    table {
+        width:100%;
+        table-layout: fixed;
+        word-break: break-word;
+
+        thead {
+            background-color: #eeeeee;
+        }
+
+        tr {
+            th {
+                padding: .3rem .3rem;
+                border-top: none;
+                border-right: 1px gray dotted;
+
+                .dotable-arrow {
+                    font-size: 1rem;
+                    cursor: pointer;
+
+                    &.disabled {
+                        cursor: default;
+                    }
+                }
+            }
+
+            th:last-child, col:last-child {
+                width: auto;
+            }
+
+            &.table-loading-error {
+                background-color: inherit;
+
+                div {
+                    margin: .5rem;
+
+                    &.table-loading-error-message {
+                        color: #FF0039;
+                    }
+                }
+            }
+
+            td {
+                vertical-align: middle;
+
+                a.btn, button {
+                    margin-right: .5em;
+                }
+
+                .btn-link {
+                    height: 1.3rem;
+                    padding-left: 0;
+                    padding-right: 0;
+                    max-width: 100%;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    text-align: left;
+                }
+            }
+        }
+    }
+
+    &.table-no-edit table tr th i {
+        cursor: default !important;
+    }
+}

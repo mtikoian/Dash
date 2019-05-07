@@ -93,12 +93,12 @@
     };
 
     /**
-     * Convert a style with 'px' to a float.
+     * Convert a style with '%' or 'px' to a float.
      * @param {string} val - CSS style to convert.
      * @returns {number} Numeric value.
      */
-    var pixelToFloat = function(val) {
-        return val.replace('px', '').replace('%', '') * 1.0;
+    var toFloat = function(val) {
+        return (val + '').replace('px', '').replace('%', '') * 1.0;
     };
 
     /**
@@ -176,8 +176,7 @@
             requestParams: {},
             searchable: true,
             loadAll: true,
-            columnMinWidth: 50,
-            width: 100,
+            columnMinWidth: 5,
             editable: true,
             storeUrl: null,
             itemsPerPage: null,
@@ -238,7 +237,6 @@
         this.itemsPerPage = this.store('itemsPerPage') * 1 || 10;
         this.currentStartItem = this.store('currentStartItem') * 1 || 0;
         this.searchQuery = this.store('searchQuery') || '';
-        this.width = this.store('width') * 1 || 100;
     };
 
     /**
@@ -324,7 +322,6 @@
                 itemsPerPage: this.itemsPerPage,
                 currentStartItem: this.currentStartItem,
                 searchQuery: this.searchQuery,
-                width: this.width,
                 sorting: this.buildSortList(),
                 columns: this.opts.columns.map(function(x) { return { field: x.field, width: x.width * 1.0 }; })
             });
@@ -599,72 +596,14 @@
     doTable.prototype.setLayout = function() {
         var table = this.getTable();
         if (table !== null) {
-            table.style.tableLayout = 'fixed';
-            this.clientWidth = this.getContainer().clientWidth;
-            table.tHead.style.width = table.style.width = (this.width / 100 * table.offsetWidth) + 'px';
-
-            var hWidth = table.tHead.offsetWidth;
-            var tWidth = table.offsetWidth;
-            var i = 0;
-            var cells = table.tHead.rows[0].cells;
-            this.opts.columns.forEach(function(x) {
-                if (!x.width)
-                    x.width = cells[i].offsetWidth / hWidth * 100;
-                cells[i].style.width = x.width / 100 * tWidth + 'px';
-                ++i;
+            var cells = this.getTableHeaderRow().cells;
+            this.opts.columns.forEach(function(x, i) {
+                if (i === (cells.length - 1))
+                    x.width = null;
+                if (x.width)
+                    cells[i].style.width = x.width + '%';
             });
         }
-    };
-
-    /**
-     * Update the table header style.
-     */
-    doTable.prototype.updateLayout = function() {
-        var table = this.getTable();
-        if (!$.isVisible(table))
-            return;
-
-        var contentNode = this.getContainer();
-        $.get('.dotable-scrollable', contentNode).style.paddingTop = table.tHead.offsetHeight + 'px';
-        var colGroup = $.get('.dotable-column-group', contentNode).children;
-        var headerRow = this.getTableHeaderRow().cells;
-        for (var i = 0; i < this.opts.columns.length; i++)
-            colGroup[i].style.width = headerRow[i].style.width;
-        if (this.clientWidth > 0 && contentNode.clientWidth / this.clientWidth !== 1)
-            this.onResize();
-    };
-
-    /**
-     * Update the table and column widths based on a resize.
-     */
-    doTable.prototype.onResize = function() {
-        var container = this.getContainer();
-        if (!container)
-            return;
-        var cWidth = container.clientWidth;
-        if (cWidth === 0)
-            return;
-
-        var scale = cWidth / this.clientWidth;
-        this.clientWidth = cWidth;
-        var table = this.getTable();
-        table.tHead.style.width = table.style.width = (pixelToFloat(table.style.width) * scale) + 'px';
-
-        var headerRow = this.getTableHeaderRow().cells;
-        for (var i = 0; i < this.opts.columns.length; i++)
-            headerRow[i].style.width = (pixelToFloat(headerRow[i].style.width) * scale) + 'px';
-        this.updateLayout();
-    };
-
-    /**
-     * Make the table header scroll horizontally with the table
-     * @param {Event} e - Event that triggered the scroll.
-     */
-    doTable.prototype.onScroll = function(e) {
-        var head = this.getTable().tHead;
-        var scroll = e.target;
-        if (-head.offsetLeft !== scroll.scrollLeft)
-            head.style.left = '-' + scroll.scrollLeft + 'px';
     };
 
     /**
@@ -680,14 +619,11 @@
             e.stopImmediatePropagation();
             e.preventDefault();
 
-            var contentNode = this.getContainer();
             self.resizeContext = {
                 colIndex: cellEl.cellIndex,
                 initX: e.clientX,
-                scrWidth: $.get('.dotable-scrollable', contentNode).offsetWidth,
-                initTblWidth: this.getTable().offsetWidth,
-                initColWidth: pixelToFloat($.get('.dotable-column-group', contentNode).children[cellEl.cellIndex].style.width),
-                layoutTimer: null
+                initWidth: toFloat(cellEl.clientWidth),
+                initPercent: cellEl.style.width ? toFloat(cellEl.style.width) : 0
             };
         });
     };
@@ -701,9 +637,9 @@
         this.inResizeArea(e, function() {
             newStyle = 'col-resize';
         });
-        var table = this.getTable();
-        if (table.tHead.style.cursor !== newStyle)
-            table.tHead.style.cursor = newStyle;
+        var tHead = this.getTable().tHead;
+        if (tHead.style.cursor !== newStyle)
+            tHead.style.cursor = newStyle;
 
         var ctx = this.resizeContext;
         if ($.isNull(ctx))
@@ -712,18 +648,16 @@
         e.stopImmediatePropagation();
         e.preventDefault();
 
-        var newColWidth = Math.max(ctx.initColWidth + e.clientX - ctx.initX, this.opts.columnMinWidth);
-        table.tHead.style.width = table.style.width = (ctx.initTblWidth + (newColWidth - ctx.initColWidth)) + 'px';
+        var minColWidth = this.opts.columnMinWidth;
+        var totalColWidth = 0;
+        this.opts.columns.forEach(function(x) {
+            totalColWidth += (x.width ? x.width : minColWidth) * 1.0;
+        });
+        totalColWidth = totalColWidth - ctx.initPercent;
 
-        $.get('.dotable-column-group', this.getContainer()).children[ctx.colIndex].style.width = this.getTableHeaderRow().cells[ctx.colIndex].style.width = newColWidth + 'px';
-
-        if (ctx.layoutTimer === null) {
-            var self = this;
-            ctx.layoutTimer = setTimeout(function() {
-                self.resizeContext.layoutTimer = null;
-                self.updateLayout();
-            }, 25);
-        }
+        var newColWidth = ((ctx.initWidth + (e.clientX - ctx.initX)) / this.getContainer().clientWidth) * 100;
+        newColWidth = Math.min(Math.max(newColWidth, this.opts.columnMinWidth), 100 - totalColWidth).toFixed(2);
+        this.getTableHeaderRow().cells[ctx.colIndex].style.width = newColWidth + '%';
     };
 
     /**
@@ -734,20 +668,17 @@
         if ($.isNull(ctx))
             return;
 
-        if (ctx.layoutTimer !== null)
-            clearTimeout(ctx.layoutTimer);
         this.resizeContext = null;
 
         var headerRow = this.getTableHeaderRow().cells;
-        var newTblWidth = this.getTable().offsetWidth;
-        this.width = (newTblWidth / ctx.scrWidth * 100).toFixed(2);
-        this.store('width', this.width);
         for (var i = 0; i < this.opts.columns.length; i++) {
-            this.opts.columns[i].width = (pixelToFloat(headerRow[i].style.width) / newTblWidth * 100).toFixed(2);
-            this.store(this.opts.columns[i].field + '.width', this.opts.columns[i].width);
+            var width = headerRow[i].style.width;
+            if (width) {
+                width = toFloat(width).toFixed(2);
+                this.opts.columns[i].width = width;
+                this.store(this.opts.columns[i].field + '.width', width);
+            }
         }
-
-        this.updateLayout();
     };
 
     /**
@@ -756,40 +687,12 @@
      * @param {Function} callback - Function to run if in the resize area.
      */
     doTable.prototype.inResizeArea = function(e, callback) {
-        var tblX = e.clientX;
-        var el;
-        var table = this.getTable();
-        for (el = table.tHead; el !== null; el = el.offsetParent)
-            tblX -= el.offsetLeft + el.clientLeft - el.scrollLeft;
-
         var cellEl = e.target;
-        while (cellEl !== table.tHead && cellEl !== null) {
-            if (cellEl.nodeName === 'TH')
-                break;
-            cellEl = cellEl.parentNode;
-        }
-
-        if (cellEl === table.tHead) {
-            var cells = this.getTableHeaderRow().cells;
-            for (var i = cells.length - 1; i >= 0; i--) {
-                cellEl = cells[i];
-                if (cellEl.offsetLeft <= tblX)
-                    break;
-            }
-        }
-
-        if (cellEl !== null) {
-            var x = tblX;
-            for (el = cellEl; el !== table.tHead; el = el.offsetParent) {
-                if (el === null)
-                    break;
-                x -= el.offsetLeft - el.scrollLeft + el.clientLeft;
-            }
-            if (x < 10 && cellEl.cellIndex !== 0)
-                callback.call(this, cellEl.previousElementSibling);
-            else if (x > cellEl.clientWidth - 10)
-                callback.call(this, cellEl);
-        }
+        var x = e.clientX - cellEl.getBoundingClientRect().left;
+        if (x < 10 && cellEl.cellIndex !== 0)
+            callback.call(this, cellEl.previousElementSibling);
+        else if (x > cellEl.clientWidth - 10 && cellEl.cellIndex !== cellEl.parentNode.children.length - 1)
+            callback.call(this, cellEl);
     };
 
     /**
@@ -839,7 +742,7 @@
      * @returns {Node} Table node reference.
      */
     doTable.prototype.getTable = function() {
-        return $.get('.dotable-data', this.getContainer());
+        return $.get('table', this.getContainer());
     };
 
     /**
@@ -847,7 +750,7 @@
      * @returns {Node} Header row node reference.
      */
     doTable.prototype.getTableHeaderRow = function() {
-        return $.get('.dotable-data', this.getContainer()).tHead.rows[0];
+        return $.get('.dotable-head', this.getContainer()).rows[0];
     };
 
     /**
@@ -867,31 +770,28 @@
         $.on($.get('.dotable-btn-previous', container), 'click', this.moveToPage.bind(this, -1, false));
         $.on($.get('.dotable-btn-next', container), 'click', this.moveToPage.bind(this, 1, false));
         $.on($.get('.dotable-btn-last', container), 'click', this.moveToPage.bind(this, 1, true));
-        $.on($.get('.dotable-area', container), 'scroll', this.onScroll.bind(this));
 
         this.events = {
-            resize: $.debounce(this.onResize.bind(this), 50),
             move: this.onMouseMove.bind(this),
             up: this.onMouseUp.bind(this)
         };
-        $.on(root, 'resize', this.events.resize);
 
         if (this.opts.editable) {
             // bind column sort and column resize events
-            var thead = $.get('.dotable-head', container);
-            if (thead) {
+            var tHead = $.get('.dotable-head', container);
+            if (tHead) {
                 var handler = this.touchHandler.bind(this);
-                $.on(thead, 'touchstart', handler);
-                $.on(thead, 'touchend', handler);
-                $.on(thead, 'touchmove', handler);
-                $.on(thead, 'touchcancel', handler);
+                $.on(tHead, 'touchstart', handler);
+                $.on(tHead, 'touchend', handler);
+                $.on(tHead, 'touchmove', handler);
+                $.on(tHead, 'touchcancel', handler);
 
                 var mouseFunc = this.onHeaderMouseDown.bind(this);
-                $.getAll('th', thead).forEach(function(x) {
+                $.getAll('th', tHead).forEach(function(x) {
                     $.on(x, 'mousedown', mouseFunc);
                 });
 
-                $.getAll('.dotable-arrow', thead).forEach(function(x) {
+                $.getAll('.dotable-arrow', tHead).forEach(function(x) {
                     $.on(x, 'click', this.changeSort.bind(this, x.getAttribute('data-field'), x.getAttribute('data-type').toLowerCase()));
                 }, this);
             }
@@ -973,15 +873,12 @@
         $.text($.get('.dotable-start-item', contentNode), this.filteredTotal ? this.currentStartItem + 1 : 0);
         $.text($.get('.dotable-end-item', contentNode), Math.min(this.currentStartItem + this.itemsPerPage, this.filteredTotal));
         $.text($.get('.dotable-total-items', contentNode), this.filteredTotal);
-
-        this.updateLayout();
     };
 
     /**
      * Destroy the table. Remove bound events.
      */
     doTable.prototype.destroy = function() {
-        $.off(root, 'resize', this.events.resize);
         if (this.opts.editable) {
             $.off(root, 'mousemove', this.events.move);
             $.off(root, 'mouseup', this.events.up);

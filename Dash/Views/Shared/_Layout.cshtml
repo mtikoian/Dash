@@ -72,28 +72,19 @@
     </script>
 
     <script id="tableBodyTemplate" type="text/html">
-        <div class="dotable-scrollable">
-            <div class="dotable-area">
-                <table class="table table-hover table-sm table-striped dotable-data">
-                    <colgroup class="dotable-column-group">
-                        {{~x.opts.columns :value:index}}
-                        <col>
-                        {{~}}
-                    </colgroup>
-                    <thead class="dotable-head">
-                        <tr>
-                            {{~x.opts.columns :value:index}}
-                            <th class="text-no-select{{?!value.sortable}} disabled{{?}}">
-                                {{=value.label}}
-                                {{?value.sortable}}<i class="float-right dash dotable-arrow {{?!value.sortDir && x.opts.editable}}dash-sort{{??value.sortDir === 'DESC'}}dash-sort-down{{??value.sortDir === 'ASC'}}dash-sort-up{{?}} {{?!x.opts.editable}}disabled{{?}}" data-type="{{=value.dataType}}" data-field="{{=value.field}}" />{{?}}
-                            </th>
-                            {{~}}
-                        </tr>
-                    </thead>
-                    <tbody class="dotable-body"></tbody>
-                </table>
-            </div>
-        </div>
+        <table class="table table-hover table-sm table-striped">
+            <thead class="dotable-head">
+                <tr>
+                    {{~x.opts.columns :value:index}}
+                    <th class="text-no-select{{?!value.sortable}} disabled{{?}}">
+                        {{=value.label}}
+                        {{?value.sortable}}<i class="float-right dash dotable-arrow {{?!value.sortDir && x.opts.editable}}dash-sort{{??value.sortDir === 'DESC'}}dash-sort-down{{??value.sortDir === 'ASC'}}dash-sort-up{{?}} {{?!x.opts.editable}}disabled{{?}}" data-type="{{=value.dataType}}" data-field="{{=value.field}}" />{{?}}
+                    </th>
+                    {{~}}
+                </tr>
+            </thead>
+            <tbody class="dotable-body"></tbody>
+        </table>
     </script>
 
     <script id="tableLoadingTemplate" type="text/html">
