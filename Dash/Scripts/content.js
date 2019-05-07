@@ -579,6 +579,7 @@
                 x.toggleFullScreen();
             });
         } else if (evt.key === 'F5' && !evt.ctrlKey) {
+            Alertify.dismissAll();
             getWidgets().forEach(function(x) {
                 x.refresh();
             });
