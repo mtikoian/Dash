@@ -53,6 +53,37 @@ namespace Dash.Models
         List<ChartRange> _ChartRange;
         List<ChartShare> _ChartShare;
 
+        static ChartResult FillGaps(ChartResult response)
+        {
+            if (response.Ranges.Count == 1)
+                return response;
+
+            // when there are multiple ranges, check for labels that exist in one range but not in others and add the missing labels in the correct position
+            var ranges = response.Ranges.ToDictionary(x => x.Id, x => x);
+            response.Ranges.Each(outer => {
+                for (var i = 0; i < outer.Labels.Count; i++)
+                {
+                    response.Ranges.Where(x => x.Id != outer.Id).Each(inner => {
+                        var label = outer.Labels[i];
+                        if (i > inner.Labels.Count - 1)
+                        {
+                            inner.Labels.Add(label);
+                            inner.Rows.Add(null);
+                        }
+                        else if (inner.Labels[i] != label)
+                        {
+                            inner.Labels.Insert(i, label);
+                            inner.Rows.Insert(i, null);
+                        }
+                        ranges[inner.Id] = inner;
+                    });
+                }
+            });
+            response.Ranges = ranges.Select(x => x.Value).ToList();
+
+            return response;
+        }
+
         public Chart() { }
 
         public static IEnumerable<SelectListItem> ChartTypeSelectList => typeof(ChartTypes).TranslatedSelect(new ResourceDictionary("Charts"), "LabelType_");
@@ -154,6 +185,7 @@ namespace Dash.Models
                 var xColumn = sqlQuery.DatasetColumns[range.XAxisColumnId];
                 var yColumn = sqlQuery.DatasetColumns[range.YAxisColumnId];
                 var result = new ChartResultRange {
+                    Id = range.Id,
                     Color = range.Color,
                     CurrencyFormat = report.Dataset.CurrencyFormat,
                     DateFormat = report.Dataset.DateFormat,
@@ -188,7 +220,7 @@ namespace Dash.Models
             else if (!response.Ranges.Any(x => x.Rows.Any()))
                 response.Error = Charts.ErrorNoData;
 
-            return response;
+            return FillGaps(response);
         }
 
         public bool Save(bool lazySave = true)
