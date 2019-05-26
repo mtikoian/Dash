@@ -1,7 +1,7 @@
 ﻿/*!
  * Chart.js
  * https://github.com/avlcodemonkey/Chart.js
- * Version: 1.2.1
+ * Version: 1.3.0
  *
  * Copyright 2015 Nick Downie
  * Released under the MIT license
@@ -1725,19 +1725,6 @@
             this.render();
         },
 
-        update: function() {
-            this.scale.update();
-            // Reset any highlight colours before updating.
-            helpers.each(this.activeElements, function(activeElement) {
-                activeElement.restore(['fillColor', 'strokeColor']);
-            });
-
-            this.eachBars(function(bar) {
-                bar.save();
-            });
-            this.render();
-        },
-
         eachBars: function(callback) {
             helpers.each(this.datasets, function(dataset, datasetIndex) {
                 helpers.each(dataset.bars, callback, this, datasetIndex);
@@ -1949,20 +1936,6 @@
             helpers.each(data, function(segment) {
                 this.total += Math.abs(segment.value);
             }, this);
-        },
-
-        update: function() {
-            this.calculateTotal(this.segments);
-
-            // Reset any highlight colours before updating.
-            helpers.each(this.activeElements, function(activeElement) {
-                activeElement.restore(['fillColor']);
-            });
-
-            helpers.each(this.segments, function(segment) {
-                segment.save();
-            });
-            this.render();
         },
 
         reflow: function() {
@@ -2312,19 +2285,6 @@
             this.render();
         },
 
-        update: function() {
-            this.scale.update();
-            // Reset any highlight colours before updating.
-            helpers.each(this.activeElements, function(activeElement) {
-                activeElement.restore(['fillColor', 'strokeColor']);
-            });
-
-            this.eachBars(function(bar) {
-                bar.save();
-            });
-            this.render();
-        },
-
         eachBars: function(callback) {
             helpers.each(this.datasets, function(dataset, datasetIndex) {
                 helpers.each(dataset.bars, callback, this, datasetIndex);
@@ -2547,18 +2507,6 @@
                 }, this);
             }, this);
 
-            this.render();
-        },
-
-        update: function() {
-            this.scale.update();
-            // Reset any highlight colours before updating.
-            helpers.each(this.activeElements, function(activeElement) {
-                activeElement.restore(['fillColor', 'strokeColor']);
-            });
-            this.eachPoints(function(point) {
-                point.save();
-            });
             this.render();
         },
 
@@ -2893,17 +2841,6 @@
             );
         },
 
-        update: function() {
-            this.calculateTotal(this.segments);
-
-            helpers.each(this.segments, function(segment) {
-                segment.save();
-            });
-
-            this.reflow();
-            this.render();
-        },
-
         reflow: function() {
             helpers.extend(this.SegmentArc.prototype, {
                 x: this.chart.width / 2,
@@ -3159,14 +3096,6 @@
                     this.options.scaleIntegersOnly
                 )
             );
-        },
-
-        update: function() {
-            this.eachPoints(function(point) {
-                point.save();
-            });
-            this.reflow();
-            this.render();
         },
 
         reflow: function() {
