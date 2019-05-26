@@ -58,9 +58,11 @@ namespace Dash.Models
             if (response.Ranges.Count == 1)
                 return response;
 
-            // when there are multiple ranges, check for labels that exist in one range but not in others and add the missing labels in the correct position
+            // when there are multiple ranges, 
+            // start by ordering based on the first value of each range - hopefully this results in ranges ordered by which contains the first/earliest value.
+            // then check for labels that exist in one range but not in others and add the missing labels in the correct position.
             var ranges = response.Ranges.ToDictionary(x => x.Id, x => x);
-            response.Ranges.Each(outer => {
+            response.Ranges.OrderBy(x => x.Labels.First()).Each(outer => {
                 for (var i = 0; i < outer.Labels.Count; i++)
                 {
                     response.Ranges.Where(x => x.Id != outer.Id).Each(inner => {
@@ -70,7 +72,7 @@ namespace Dash.Models
                             inner.Labels.Add(label);
                             inner.Rows.Add(null);
                         }
-                        else if (inner.Labels[i] != label)
+                        else if (!inner.Labels[i].Equals(label, StringComparison.InvariantCultureIgnoreCase))
                         {
                             inner.Labels.Insert(i, label);
                             inner.Rows.Insert(i, null);
@@ -79,6 +81,7 @@ namespace Dash.Models
                     });
                 }
             });
+
             response.Ranges = ranges.Select(x => x.Value).ToList();
 
             return response;
