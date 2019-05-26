@@ -15,10 +15,6 @@
         options.headers = $.extend({
             'X-Requested-With': 'XMLHttpRequest'
         }, options.headers);
-        if (options.token) {
-            options.headers['X-XSRF-TOKEN'] = options.token;
-            delete options.token;
-        }
 
         // keep browser from caching requests by tacking milliseconds to end of url
         var url = options.url + (options.url.indexOf('?') > -1 ? '&' : '?') + '_t=' + Date.now();
@@ -37,8 +33,8 @@
         options.credentials = 'same-origin';
 
         fetch(url, options)
-            .then(_checkStatus)
-            .then(_parse)
+            .then(checkStatus)
+            .then(parse)
             .then(function(data) {
                 if (data.error) {
                     if ($.isFunction(onError))
@@ -74,14 +70,12 @@
      * @param {Object} response - Fetch response.
      * @returns {Object} Returns fetch response.
      */
-    var _checkStatus = function(response) {
-        if (response.status >= 200 && response.status < 300) {
+    var checkStatus = function(response) {
+        if (response.status >= 200 && response.status < 300)
             return response;
-        } else {
-            var error = new Error(response.statusText);
-            error.response = response;
-            throw error;
-        }
+        var error = new Error(response.statusText);
+        error.response = response;
+        throw error;
     };
 
     /**
@@ -89,7 +83,7 @@
      * @param {Object} response - Response object
      * @returns {Object} Result object from JSON, or object with a single 'content' property if that fails.
      */
-    var _parse = function(response) {
+    var parse = function(response) {
         try {
             var contentType = response && response.headers.has('content-type') ? response.headers.get('content-type') : '';
             return contentType && contentType.indexOf('application/json') > -1 ? response.json() : response.text();

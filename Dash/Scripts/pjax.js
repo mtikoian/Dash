@@ -290,10 +290,7 @@
         // Ignore change unless its form input
         if (['INPUT', 'SELECT', 'TEXTAREA'].indexOf(target.nodeName) === -1)
             return;
-
-        var form = $.closest('FORM', target);
-        if (form)
-            $.addClass(form, 'has-changes');
+        $.addClass($.closest('FORM', target), 'has-changes');
     });
 
     /**

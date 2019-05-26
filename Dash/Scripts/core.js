@@ -172,22 +172,21 @@
      * @returns {Node} Matched node.
      */
     var get = function(selector, container) {
-        if (typeof selector !== 'string')
+        if (!isString(selector))
             return selector;
 
         var base = container || document;
-        if (!_isSimple(selector))
+        if (!isSimple(selector))
             return base.querySelector(selector);
 
         var sel = selector.charAt(0);
-        if (sel === '#') {
+        if (sel === '#')
             return document.getElementById(selector.substr(1));
-        } else if (sel === '.') {
+        if (sel === '.') {
             var res = base.getElementsByClassName(selector.substr(1));
             return res.length ? res[0] : null;
-        } else {
-            return base.querySelector(selector);
         }
+        return base.querySelector(selector);
     };
 
     /**
@@ -199,12 +198,12 @@
      */
     var getAll = function(selector, container, includeContainer) {
         var list;
-        if (_isSimple(selector) && selector.charAt(0) === '.')
+        if (isSimple(selector) && selector.charAt(0) === '.')
             list = (container || document).getElementsByClassName(selector.substr(1));
         else
             list = (container || document).querySelectorAll(selector);
         var res = Array.prototype.slice.call(list);
-        if (includeContainer && container && _matches(container, selector))
+        if (includeContainer && container && matches(container, selector))
             res.unshift(container);
         return res;
     };
@@ -365,7 +364,7 @@
         var node = element ? get(element) : window;
         if (node) {
             var event;
-            if (typeof (Event) === 'function') {
+            if (typeof Event === 'function') {
                 event = new Event(eventName);
             } else {
                 event = document.createEvent('Event');
@@ -380,7 +379,7 @@
      * @param {string} selector - Valid CSS selector.
      * @returns {bool} True if the selector is simple.
      */
-    var _isSimple = function(selector) {
+    var isSimple = function(selector) {
         return selector.indexOf(' ') === -1 && selector.indexOf('.') === -1 && selector.indexOf('>') === -1;
     };
 
@@ -390,7 +389,7 @@
      * @param {string} selector - Valid CSS selector.
      * @returns {bool} True if the element matches the selector.
      */
-    var _matches = function(element, selector) {
+    var matches = function(element, selector) {
         var p = Element.prototype;
         var f = p.matches || p.webkitMatchesSelector || p.mozMatchesSelector || p.msMatchesSelector || function(s) {
             return [].indexOf.call(getAll(s), this) !== -1;

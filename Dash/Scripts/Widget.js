@@ -330,12 +330,12 @@
         toggleFullScreen: function() {
             var container = this.getContainer();
             var fullScreenIcon = $.get('.btn-fullscreen i', container);
-            $.toggleClass(container, 'full-screen', !this.isFullscreen);
-            $.toggleClass(fullScreenIcon, 'dash-min', !this.isFullscreen);
-            $.toggleClass(fullScreenIcon, 'dash-max', this.isFullscreen);
             var isFullscreen = this.isFullscreen;
+            $.toggleClass(container, 'full-screen', !isFullscreen);
+            $.toggleClass(fullScreenIcon, 'dash-min', !isFullscreen);
+            $.toggleClass(fullScreenIcon, 'dash-max', isFullscreen);
             $.getAll('.fs-disabled', container).forEach(function(x) { $.toggleClass(x, 'disabled', !isFullscreen); });
-            this.isFullscreen = !this.isFullscreen;
+            this.isFullscreen = !isFullscreen;
             // trigger window resize event to force widget content to resize itself
             $.trigger(null, 'resize');
         }

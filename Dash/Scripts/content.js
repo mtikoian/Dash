@@ -131,7 +131,7 @@
     var autocompleteLoad = function() {
         var self = this;
 
-        // request autocomplete options from server during use
+        // load autocomplete options from server during use
         if ((this.getAttribute('data-preload') || '').toLowerCase() !== 'true') {
             _autocompletes.push(new Autocomplete({
                 selector: self,
@@ -476,9 +476,7 @@
                     }
                 }
                 done();
-            }, function() {
-                done();
-            });
+            }, done);
         });
     };
 
@@ -662,7 +660,7 @@
     /**
      * Closure to set up the loading splash screen and return the node for it.
      */
-    var _loadingDiv = (function() {
+    var loadingDiv = (function() {
         var div = $.get('#loader');
         $.on(div, 'keydown', function(e) {
             if ($.hasClass('#loader', 'd-none'))
@@ -678,7 +676,7 @@
      * Show loading indicator.
      */
     var loading = function() {
-        $.show(_loadingDiv);
+        $.show(loadingDiv);
     };
 
     /**
@@ -693,7 +691,7 @@
      * Hide loading indicator.
      */
     var done = function() {
-        $.hide(_loadingDiv);
+        $.hide(loadingDiv);
     };
 
     $.content = {

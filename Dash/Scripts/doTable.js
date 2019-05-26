@@ -318,14 +318,13 @@
         if ($.isNull(this.storeFunction)) {
             sessionStorage[myKey] = value;
         } else {
-            var data = $.extend(this.opts.requestParams, {
+            this.storeFunction.call(null, $.extend(this.opts.requestParams, {
                 itemsPerPage: this.itemsPerPage,
                 currentStartItem: this.currentStartItem,
                 searchQuery: this.searchQuery,
                 sorting: this.buildSortList(),
                 columns: this.opts.columns.map(function(x) { return { field: x.field, width: x.width * 1.0 }; })
-            });
-            this.storeFunction.call(null, data);
+            }));
         }
     };
 

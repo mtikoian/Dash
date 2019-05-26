@@ -1,4 +1,5 @@
 ﻿// doT.js
+// version 1.1.1
 // 2011-2014, Laura Doktorova, https://github.com/olado/doT
 // Licensed under the MIT license.
 /* eslint-disable */
@@ -7,7 +8,6 @@
 
     var doT = {
         name: "doT",
-        version: "1.1.1",
         templateSettings: {
             evaluate: /\{\{([\s\S]+?(\}?)+)\}\}/g,
             interpolate: /\{\{=([\s\S]+?)\}\}/g,
@@ -25,8 +25,7 @@
             doNotSkipEncoded: false
         },
         template: undefined, //fn, compile template
-        compile: undefined, //fn, for express
-        log: true
+        compile: undefined //fn, for express
     }, _globals;
 
     doT.encodeHTMLSource = function(doNotSkipEncoded) {
@@ -120,13 +119,7 @@
                 + doT.encodeHTMLSource.toString() + "(" + (c.doNotSkipEncoded || '') + "));"
                 + str;
         }
-        try {
-            return new Function(c.varname, str);
-        } catch (e) {
-            /* istanbul ignore else */
-            if (typeof console !== "undefined") console.log("Could not create a template function: " + str);
-            throw e;
-        }
+        return new Function(c.varname, str);
     };
 
     doT.compile = function(tmpl, def) {

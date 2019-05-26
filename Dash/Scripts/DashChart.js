@@ -13,7 +13,6 @@
      */
     var DashChart = function(content, showLegend) {
         this.content = content;
-        this.url = content.getAttribute('data-url');
         this.canvas = $.get('.chart-canvas', content);
         this.showLegend = $.coalesce(showLegend, true);
         this.initDate = new Date();
@@ -34,7 +33,7 @@
 
             $.ajax({
                 method: 'POST',
-                url: self.url,
+                url: self.content.getAttribute('data-url'),
                 block: false
             }, function(data) {
                 // destroy existing chart if any

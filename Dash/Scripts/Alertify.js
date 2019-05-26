@@ -156,7 +156,7 @@
 
             // Add the click handler, if specified.
             if ($.isFunction(click))
-                log.addEventListener('click', click);
+                $.on(log, 'click', click);
 
             elLog.appendChild(log);
             setTimeout(function() {
