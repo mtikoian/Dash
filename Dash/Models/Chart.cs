@@ -170,6 +170,7 @@ namespace Dash.Models
 
             var chartResource = new ResourceDictionary("Charts");
             var reports = new Dictionary<int, Report>();
+            var hasMultiple = ChartRange.Count() > 1;
 
             foreach (var range in ChartRange)
             {
@@ -192,7 +193,7 @@ namespace Dash.Models
                     Color = range.Color,
                     CurrencyFormat = report.Dataset.CurrencyFormat,
                     DateFormat = report.Dataset.DateFormat,
-                    Title = $"{report.Name} ({xColumn.Title})",
+                    Title = report.Name,
                     XType = xColumn.TableDataType.ToString(),
                     YType = yColumn.TableDataType.ToString(),
                     Sql = includeSql ? (report.Dataset.IsProc ? sqlQuery.ExecStatement() : sqlQuery.SqlResult.Sql) : null
@@ -201,8 +202,10 @@ namespace Dash.Models
                 if (range.AggregatorId == 0)
                     range.AggregatorId = (int)Aggregators.Count;
 
-                result.YTitle = chartResource.ContainsKey("LabelAggregator_" + (Aggregators)range.AggregatorId) ? chartResource["LabelAggregator_" + (Aggregators)range.AggregatorId] : "";
-                result.YTitle = $"{result.YTitle} {yColumn.Title}".Trim();
+                if (hasMultiple)
+                    result.YTitle = result.Title;
+                else
+                    result.YTitle = $"{(chartResource.ContainsKey("LabelAggregator_" + (Aggregators)range.AggregatorId) ? chartResource["LabelAggregator_" + (Aggregators)range.AggregatorId] : "")} {yColumn.Title}".Trim();
 
                 // get the actual query data
                 try
