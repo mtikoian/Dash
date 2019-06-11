@@ -2,6 +2,6 @@
 @model ChartRange
 
 <div id="rangeDateIntervalPartial" class="pb-2">
-    <form-group-select for="DateIntervalId" options="@Model.DateIntervalSelectListItems" disabled="@(Model.XAxisColumn?.FilterTypeId != (int)FilterTypes.Date)" />
-    <form-group-checkbox for="FillDateGaps" disabled="@(Model.XAxisColumn?.FilterTypeId != (int)FilterTypes.Date)" />
+    <form-group-select for="DateIntervalId" options="@Model.DateIntervalSelectListItems" disabled="@(Model.XAxisColumn?.FilterTypeId != (int)FilterTypes.Date && Model.XAxisColumn?.FilterTypeId != (int)FilterTypes.Time)" />
+    <form-group-checkbox for="FillDateGaps" disabled="@(Model.XAxisColumn?.FilterTypeId != (int)FilterTypes.Date && Model.XAxisColumn?.FilterTypeId != (int)FilterTypes.Time)" />
 </div>

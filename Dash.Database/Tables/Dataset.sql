@@ -6,6 +6,7 @@
     [Conditions]     NVARCHAR (500)     NULL,
     [DatabaseId]     INT                NULL,
     [DateFormat]     NVARCHAR (50)      NULL,
+    [TimeFormat]     NVARCHAR (50)      NULL,
     [CurrencyFormat] NVARCHAR (50)      NULL,
     [DateCreated]    DATETIMEOFFSET (7) DEFAULT (sysdatetimeoffset()) NOT NULL,
     [UserCreated]    INT                NULL,

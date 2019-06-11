@@ -107,6 +107,12 @@ namespace Dash.Models
         };
 
         [DbIgnore]
+        public List<DropdownListItem> DefaultTimeFormats => new List<DropdownListItem> {
+            new DropdownListItem { Label = "H:i:S" },
+            new DropdownListItem { Label = "h:i:S K" }
+        };
+
+        [DbIgnore]
         public bool IsProc => TypeId == (int)DatasetTypes.Proc;
 
         [Display(Name = "Name", ResourceType = typeof(Datasets))]
@@ -122,6 +128,11 @@ namespace Dash.Models
         [Display(Name = "Roles", ResourceType = typeof(Datasets))]
         [DbIgnore]
         public List<int> RoleIds { get; set; }
+
+        [Display(Name = "TimeFormat", ResourceType = typeof(Datasets))]
+        [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
+        [StringLength(50, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
+        public string TimeFormat { get; set; } = "H:i:S";
 
         [Display(Name = "Type", ResourceType = typeof(Datasets))]
         [Required(ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorRequired")]
@@ -239,6 +250,8 @@ namespace Dash.Models
                                 newColumn.FilterTypeId = (int)FilterTypes.Boolean;
                             else if (dataTypes[dataType].IsDateTime)
                                 newColumn.FilterTypeId = (int)FilterTypes.Date;
+                            else if (dataTypes[dataType].IsTime)
+                                newColumn.FilterTypeId = (int)FilterTypes.Time;
                             else
                                 newColumn.FilterTypeId = (int)FilterTypes.Text;
 

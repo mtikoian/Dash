@@ -20,8 +20,8 @@ namespace Dash.Models
         List<DatasetColumn> _DatasetColumns;
         List<DatasetColumn> _DatasetColumnsByDisplay;
         List<ReportColumn> _ReportColumn;
-        List<ReportGroup> _ReportGroup;
         List<ReportFilter> _ReportFilter;
+        List<ReportGroup> _ReportGroup;
         List<ReportShare> _ReportShare;
 
         public Report() { }
@@ -94,17 +94,17 @@ namespace Dash.Models
         }
 
         [BindNever, ValidateNever]
-        public List<ReportGroup> ReportGroup
-        {
-            get => _ReportGroup ?? (_ReportGroup = DbContext.GetAll<ReportGroup>(new { ReportId = Id }).ToList());
-            set => _ReportGroup = value;
-        }
-
-        [BindNever, ValidateNever]
         public List<ReportFilter> ReportFilter
         {
             get => _ReportFilter ?? (_ReportFilter = DbContext.GetAll<ReportFilter>(new { ReportId = Id }).ToList());
             set => _ReportFilter = value;
+        }
+
+        [BindNever, ValidateNever]
+        public List<ReportGroup> ReportGroup
+        {
+            get => _ReportGroup ?? (_ReportGroup = DbContext.GetAll<ReportGroup>(new { ReportId = Id }).ToList());
+            set => _ReportGroup = value;
         }
 
         [BindNever, ValidateNever]
@@ -305,6 +305,7 @@ namespace Dash.Models
             // get select filters for showing lookup data properly and figure out which we actually are using
             var replaceColumns = Dataset.GetSelectFilters().Where(x => sqlQuery.NeededColumns.ContainsKey(x.Key)).ToDictionary(x => "column" + x.Key, x => x.Value);
             var dateColumns = DatasetColumns.Where(col => col.IsDateTime).Select(c => c.Alias);
+            var timeColumns = DatasetColumns.Where(col => col.IsTime).Select(c => c.Alias);
             var columnMap = Dataset.IsProc ? DatasetColumns.ToDictionary(x => x.ColumnName, x => x.Alias) : null;
 
             // build the data result
@@ -321,6 +322,9 @@ namespace Dash.Models
 
                 // date formatting
                 dateColumns.Where(x => dict.ContainsKey(x) && dict[x] != null).Each(x => dict[x] = dict[x].ToDateTime());
+
+                // time formatting
+                timeColumns.Where(x => dict.ContainsKey(x) && dict[x] != null).Each(x => dict[x] = dict[x].ToTimespan().ToString());
 
                 result.Add(dict);
             }

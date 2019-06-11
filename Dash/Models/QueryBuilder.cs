@@ -85,6 +85,8 @@ namespace Dash.Models
             }
         }
 
+        static string ForSql(DatasetColumn column, string value) => column.IsDateTime ? value.ToDateTime().ToSqlDateTime() : (column.IsTime ? value.ToTimespan().ToSqlTime() : value);
+
         /// <summary>
         /// Build a list of joins necessary to include the requested table in a query.
         /// </summary>
@@ -285,7 +287,7 @@ namespace Dash.Models
         void BuildProcParams() => _Report.ReportFilter.Where(x => DatasetColumns.ContainsKey(x.ColumnId)).Each(x => {
             var column = DatasetColumns[x.ColumnId];
             if (column.IsParam)
-                Params.Add(column.ColumnName, column.IsDateTime ? x.Criteria.ToDateTime().ToSqlDateTime() : x.Criteria);
+                Params.Add(column.ColumnName, ForSql(column, x.Criteria));
         });
 
         /// <summary>
@@ -304,14 +306,14 @@ namespace Dash.Models
 
                     if (column.IsParam)
                     {
-                        Params.Add(column.ColumnName, column.IsDateTime ? x.Criteria.ToDateTime().ToSqlDateTime() : x.Criteria);
+                        Params.Add(column.ColumnName, ForSql(column, x.Criteria));
                     }
                     else
                     {
                         AddNeededTables(column);
                         var colAlias = column.BuildSql(false);
-                        var value1 = column.IsDateTime ? x.Criteria.ToDateTime().ToSqlDateTime() : x.Criteria;
-                        var value2 = x.Criteria2 != null ? (column.IsDateTime ? x.Criteria2.ToDateTime().ToSqlDateTime() : x.Criteria2) : null;
+                        var value1 = ForSql(column, x.Criteria);
+                        var value2 = x.Criteria2 != null ? (ForSql(column, x.Criteria2)) : null;
 
                         switch ((FilterOperatorsAbstract)x.OperatorId)
                         {
@@ -340,6 +342,13 @@ namespace Dash.Models
                                     var end = x.Criteria2.ToDateTime();
                                     value1 = (start > end ? end : start).ToSqlDateTime();
                                     value2 = (start > end ? start : end).ToSqlDateTime();
+                                }
+                                else if (column.IsTime)
+                                {
+                                    var start = x.Criteria.ToTimespan();
+                                    var end = x.Criteria2.ToTimespan();
+                                    value1 = (start > end ? end : start).ToSqlTime();
+                                    value2 = (start > end ? start : end).ToSqlTime();
                                 }
                                 else
                                 {

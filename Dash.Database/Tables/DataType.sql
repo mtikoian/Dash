@@ -3,6 +3,7 @@
     [Name]        NVARCHAR (100)     NULL,
     [IsCurrency]  BIT                NULL,
     [IsDateTime]  BIT                NULL,
+    [IsTime]      BIT                NULL,
     [IsDecimal]   BIT                NULL,
     [IsInteger]   BIT                NULL,
     [IsText]      BIT                NULL,

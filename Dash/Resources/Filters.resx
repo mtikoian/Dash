@@ -261,4 +261,7 @@
   <data name="LabelType_Text" xml:space="preserve">
     <value>Text</value>
   </data>
+  <data name="LabelType_Time" xml:space="preserve">
+    <value>Time</value>
+  </data>
 </root>

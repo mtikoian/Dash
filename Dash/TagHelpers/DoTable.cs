@@ -11,6 +11,7 @@ namespace Dash.TagHelpers
         public bool CheckUpdateDate { get; set; }
         public string DisplayCurrencyFormat { get; set; }
         public string DisplayDateFormat { get; set; }
+        public string DisplayTimeFormat { get; set; }
         public bool Editable { get; set; } = true;
         public string Id { get; set; }
         public int ItemsPerPage { get; set; } = 10;
@@ -39,6 +40,7 @@ namespace Dash.TagHelpers
             table.Attributes.AddIf("data-store-url", StoreUrl, !StoreUrl.IsEmpty());
             table.Attributes.AddIf("data-store-request-method", StoreRequestMethod.ToString(), StoreRequestMethod.HasValue);
             table.Attributes.AddIf("data-display-date-format", DisplayDateFormat, !DisplayDateFormat.IsEmpty());
+            table.Attributes.AddIf("data-display-time-format", DisplayTimeFormat, !DisplayTimeFormat.IsEmpty());
             table.Attributes.AddIf("data-display-currency-format", DisplayCurrencyFormat, !DisplayCurrencyFormat.IsEmpty());
             table.Attributes.AddIf("json-request-params", JSON.SerializeDynamic(RequestParams, JilOutputFormatter.Options), RequestParams != null);
 

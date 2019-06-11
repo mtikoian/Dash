@@ -27,6 +27,13 @@
                     </dropdown>
                 </form-group-addon>
             </form-group-input>
+            <form-group-input for="TimeFormat">
+                <form-group-addon>
+                    <dropdown target-id="TimeFormat" items="@Model.DefaultTimeFormats" toggle="@DataToggles.InputReplace">
+                        <icon name="@DashIcons.ListNumbered" />
+                    </dropdown>
+                </form-group-addon>
+            </form-group-input>
             <form-group-input for="CurrencyFormat">
                 <form-group-addon>
                     <dropdown target-id="CurrencyFormat" items="@Model.DefaultCurrencyFormats" toggle="@DataToggles.InputReplace">

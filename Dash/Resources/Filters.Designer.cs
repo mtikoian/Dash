@@ -491,5 +491,14 @@ namespace Dash.Resources {
                 return ResourceManager.GetString("LabelType_Text", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Time.
+        /// </summary>
+        public static string LabelType_Time {
+            get {
+                return ResourceManager.GetString("LabelType_Time", resourceCulture);
+            }
+        }
     }
 }

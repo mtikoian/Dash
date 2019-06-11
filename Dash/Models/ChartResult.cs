@@ -37,7 +37,7 @@ namespace Dash.Models
             var yName = (Aggregators)range.AggregatorId != Aggregators.Count ? yColumn.Alias : "yValue";
             var asDictionary = data.Cast<IDictionary<string, object>>();
 
-            if (!(range.DateIntervalId > 0 && xColumn.IsDateTime))
+            if (!(range.DateIntervalId > 0 && (xColumn.IsDateTime || xColumn.IsTime)))
             {
                 Labels = asDictionary.Select(x => x[xName].ToString()).ToList();
                 Rows = asDictionary.Select(x => x[yName] ?? 0).ToList();

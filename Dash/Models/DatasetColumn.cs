@@ -105,6 +105,9 @@ namespace Dash.Models
         [DbIgnore, BindNever, ValidateNever]
         public bool IsText => DataType.IsText;
 
+        [DbIgnore, BindNever, ValidateNever]
+        public bool IsTime => DataType.IsTime;
+
         [Display(Name = "ColumnLink", ResourceType = typeof(Datasets))]
         [StringLength(250, ErrorMessageResourceType = typeof(Core), ErrorMessageResourceName = "ErrorMaxLength")]
         public string Link { get; set; }
@@ -125,6 +128,8 @@ namespace Dash.Models
                     return TableDataType.Int;
                 if (IsDateTime)
                     return TableDataType.Date;
+                if (IsTime)
+                    return TableDataType.Time;
                 return TableDataType.String;
             }
         }
@@ -159,7 +164,7 @@ namespace Dash.Models
                 if (IsBinary && DataType.Name.ToLower() != "binary")
                     // handling for guids
                     columnSql = $"(CAST({columnSql} AS NVARCHAR(1000)))";
-                columnSql = $"({(IsText || IsDateTime ? "MAX" : ((Aggregators)aggregatorId).ToString().ToUpper())}{columnSql})";
+                columnSql = $"({(IsText || IsDateTime || IsTime ? "MAX" : ((Aggregators)aggregatorId).ToString().ToUpper())}{columnSql})";
             }
             return includeAlias ? $"{columnSql} AS {Alias}" : columnSql;
         }

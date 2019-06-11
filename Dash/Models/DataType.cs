@@ -11,6 +11,7 @@ namespace Dash.Models
         public bool IsDecimal { get; set; } = false;
         public bool IsInteger { get; set; } = false;
         public bool IsText { get; set; } = true;
+        public bool IsTime { get; set; } = false;
 
         [Required, MaxLength(100)]
         public string Name { get; set; }

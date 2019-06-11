@@ -5,7 +5,8 @@
         String,
         Int,
         Date,
-        Currency
+        Currency,
+        Time
     }
 
     public class TableColumnWidth

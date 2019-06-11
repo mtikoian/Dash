@@ -110,6 +110,7 @@
         Select = 3,
         Numeric = 4,
         Text = 5,
-        Binary = 6
+        Binary = 6,
+        Time = 7
     }
 }

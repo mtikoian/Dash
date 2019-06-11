@@ -105,11 +105,12 @@
      * Format a field value for display.
      * @param {string} displayCurrencyFormat - Format to use for currency.
      * @param {string} displayDateFormat - Format to use for dates.
+     * @param {string} displayTimeFormat - Format to use for times.
      * @param {string} value - Value to format.
      * @param {string} dataType - Datatype of column.
      * @returns {string} Returns a formatted string.
      */
-    var getDisplayValue = function(displayCurrencyFormat, displayDateFormat, value, dataType) {
+    var getDisplayValue = function(displayCurrencyFormat, displayDateFormat, displayTimeFormat, value, dataType) {
         if (!dataType || $.isNull(value))
             return value;
 
@@ -118,11 +119,13 @@
             val = $.accounting.formatMoney(val, displayCurrencyFormat);
         else if (dataType === 'date')
             val = flatpickr.formatDate(val, displayDateFormat);
+        else if (dataType === 'time')
+            val = flatpickr.formatDate(val, displayTimeFormat);
         return val;
     };
 
     /**
-     * Convert a name with dashes to camel case. 
+     * Convert a name with dashes to camel case.
      * @param {String} str - String to format
      * @returns {String} Updated string
      */
@@ -182,7 +185,9 @@
             itemsPerPage: null,
             searchQuery: null,
             dataDateFormat: 'Y-m-d H:i:S',
+            dataTimeFormat: 'H:i:S',
             displayDateFormat: 'Y-m-d H:i:S',
+            displayTimeFormat: 'H:i:S',
             displayCurrencyFormat: '{s:$} {[t:,][d:.][p:2]}',
             checkUpdateDate: false
         }, parseAttributes(node));
@@ -217,6 +222,7 @@
         this.lastSeenAt = { x: null, y: null };
         this.intColumns = [];
         this.dateColumns = [];
+        this.timeColumns = [];
         this.currencyColumns = [];
         this.storeFunction = null;
         this.initDate = new Date();
@@ -233,7 +239,7 @@
 
         var template = $.get(node.getAttribute('data-template'));
         this.opts.rowTemplateFn = doT.template(template ? template.text : '');
-        this.opts.displayValueFn = getDisplayValue.bind(null, this.opts.displayCurrencyFormat, this.opts.displayDateFormat);
+        this.opts.displayValueFn = getDisplayValue.bind(null, this.opts.displayCurrencyFormat, this.opts.displayDateFormat, this.opts.displayTimeFormat);
         this.itemsPerPage = this.store('itemsPerPage') * 1 || 10;
         this.currentStartItem = this.store('currentStartItem') * 1 || 0;
         this.searchQuery = this.store('searchQuery') || '';
@@ -272,6 +278,8 @@
                 this.intColumns.push(field);
             else if (type === 'date')
                 this.dateColumns.push(field);
+            else if (type === 'time')
+                this.timeColumns.push(field);
             else if (type === 'currency')
                 this.currencyColumns.push(field);
 
@@ -353,6 +361,10 @@
             for (j = 0; j < this.dateColumns.length; j++) {
                 x = this.dateColumns[j];
                 data.rows[i][x] = $.isNull(data.rows[i][x]) ? null : flatpickr.parseDate(data.rows[i][x], this.opts.dataDateFormat);
+            }
+            for (j = 0; j < this.timeColumns.length; j++) {
+                x = this.timeColumns[j];
+                data.rows[i][x] = $.isNull(data.rows[i][x]) ? null : flatpickr.parseDate(data.rows[i][x], this.opts.dataTimeFormat);
             }
             for (j = 0; j < this.currencyColumns.length; j++) {
                 x = this.currencyColumns[j];
@@ -695,7 +707,7 @@
     };
 
     /**
-     * Make column resizing play nice with touch. 
+     * Make column resizing play nice with touch.
      * http://stackoverflow.com/questions/28218888/touch-event-handler-overrides-click-handlers
      * @param {Event} e Event that triggered the handler.
      */

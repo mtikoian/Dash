@@ -11,7 +11,7 @@ AS
         INSERT INTO @Ids SELECT Id FROM Widget WHERE UserCreated = @UserId
 
     SELECT w.Id, w.UserCreated, w.Title, w.ReportId, w.ChartId, w.RefreshRate, w.X, w.Y, w.Width, w.Height,
-        r.RowLimit AS ReportRowLimit, r.DatasetId, d.[DateFormat] AS DisplayDateFormat, d.CurrencyFormat AS DisplayCurrencyFormat
+        r.RowLimit AS ReportRowLimit, r.DatasetId, d.[DateFormat] AS DisplayDateFormat, d.TimeFormat AS DisplayTimeFormat, d.CurrencyFormat AS DisplayCurrencyFormat
     FROM @Ids i
     INNER JOIN Widget w ON w.Id = i.Id
     LEFT JOIN Report r ON r.Id = w.ReportId

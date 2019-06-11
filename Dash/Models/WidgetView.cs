@@ -50,6 +50,9 @@ namespace Dash.Models
         [DbIgnore]
         public string DisplayDateFormat { get; set; }
 
+        [DbIgnore]
+        public string DisplayTimeFormat { get; set; }
+
         [DbIgnore, BindNever, ValidateNever]
         public IEnumerable<DropdownListItem> DropDownItems => new List<DropdownListItem> {
             new DropdownListItem { Label = Widgets.Refresh, ExtraClasses = "btn btn-link btn-refresh", Icon = DashIcons.ArrowsCw },

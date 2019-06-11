@@ -607,12 +607,31 @@ namespace Dash
         public static string ToSqlDateTime(this DateTime val) => val.ToString("yyyy-MM-dd HH:mm:ss");
 
         /// <summary>
+        /// Format a timespan into a string SQL will always understand - to avoid culture issues.
+        /// </summary>
+        /// <param name="val">Timespan value to format.</param>
+        /// <returns>Time value.</returns>
+        public static string ToSqlTime(this TimeSpan val) => val.ToString("HH:mm:ss");
+
+        /// <summary>
         /// Convert a DataRow with table schema data into a fully qualified, delimited table name.
         /// </summary>
         /// <param name="row">DataRow with schema info.</param>
         /// <param name="hasSchema">False if MySQL server, else true.</param>
         /// <returns>Returns the delimited table name.</returns>
         public static string ToTableName(this DataRow row, bool hasSchema = true) => hasSchema ? $"{row["TABLE_SCHEMA"]}.{row["TABLE_NAME"]}" : $"{row["TABLE_NAME"]}";
+
+        /// <summary>
+        /// Convert an object with a time into a timespan object.
+        /// </summary>
+        /// <param name="val">String value to attempt to convert.</param>
+        /// <returns>Timespan value.</returns>
+        public static TimeSpan ToTimespan(this object val)
+        {
+            var res = new TimeSpan();
+            TimeSpan.TryParse(val.ToString(), out res);
+            return res;
+        }
 
         /// <summary>
         /// Converts Enumeration type into an object of ids and names.
