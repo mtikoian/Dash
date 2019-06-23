@@ -62,7 +62,7 @@ namespace Dash.Models
             // start by ordering based on the first value of each range - hopefully this results in ranges ordered by which contains the first/earliest value.
             // then check for labels that exist in one range but not in others and add the missing labels in the correct position.
             var ranges = response.Ranges.ToDictionary(x => x.Id, x => x);
-            response.Ranges.OrderBy(x => x.Labels.First()).Each(outer => {
+            response.Ranges.OrderBy(x => x.Labels.FirstOrDefault() ?? "").Each(outer => {
                 for (var i = 0; i < outer.Labels.Count; i++)
                 {
                     response.Ranges.Where(x => x.Id != outer.Id).Each(inner => {
