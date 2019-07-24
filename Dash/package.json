@@ -3,10 +3,10 @@
   "name": "dash",
   "private": true,
   "devDependencies": {
-    "autoprefixer": "^9.5.1",
+    "autoprefixer": "^9.6.1",
     "del": "^3.0.0",
     "eslint": "^5.16.0",
-    "gulp": "^4.0.1",
+    "gulp": "^4.0.2",
     "gulp-add-src": "^1.0.0",
     "gulp-clean-css": "^4.2.0",
     "gulp-concat": "^2.6.1",
