@@ -209,6 +209,7 @@ namespace Dash
             }).AddCookie(x => {
                 x.Cookie.HttpOnly = true;
                 x.Cookie.Name = AuthCookieName;
+                x.Cookie.IsEssential = true;
                 x.SessionStore = new MemoryCacheTicketStore();
             });
 
