@@ -98,7 +98,6 @@ namespace Dash.Controllers
         public IActionResult LogOff()
         {
             HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            HttpContext.Session.Clear();
             return RedirectToAction("Login");
         }
 

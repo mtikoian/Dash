@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿//using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -146,7 +147,9 @@ namespace Dash
                 });
             });
 
-            app.UseSession();
+            app.UseAuthentication();
+            app.UseMiddleware<UniqueSessionMiddleware>();
+
             app.UseStaticFiles(new StaticFileOptions {
                 OnPrepareResponse = content => {
                     if (content.File.Name.EndsWith(".gz"))
@@ -156,7 +159,6 @@ namespace Dash
                     }
                 }
             });
-            app.UseAuthentication();
 
             var cultures = new List<CultureInfo> {
                 new CultureInfo("en"),
@@ -224,10 +226,6 @@ namespace Dash
             });
 
             services.AddSingleton(new MemoryCache(new MemoryCacheOptions()));
-
-            services.AddSession(options => {
-                options.Cookie.HttpOnly = true;
-            });
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
