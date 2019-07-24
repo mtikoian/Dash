@@ -8,6 +8,6 @@
 
     <partial name="_Toast" />
 
-    <toast id="profiling" message="@(Model.IsEnabled ? Core.ProfilingEnabled : Core.ProfilingDisabled)" type="Info" allow-close="false" />
+    <toast id="profiling" message="@(Model.Enabled ? Core.ProfilingEnabled : Core.ProfilingDisabled)" type="Info" allow-close="false" />
     <authorized-button controller="Dashboard" action="Index" title="@Core.Reload" class="BtnWarning" target="_self" />
 </body-content>

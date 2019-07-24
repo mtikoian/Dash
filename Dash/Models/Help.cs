@@ -1,14 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
-
-namespace Dash.Models
+﻿namespace Dash.Models
 {
     public class Help
     {
-        ISession _Session;
-        public const string SettingName = "ContextHelp";
+        public Help(bool enabled) => Enabled = enabled;
 
-        public Help(ISession session) => _Session = session;
-
-        public bool IsEnabled => _Session.GetString(SettingName).ToBool();
+        public bool Enabled { get; set; }
     }
 }

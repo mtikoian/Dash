@@ -1,14 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
-
-namespace Dash.Models
+﻿namespace Dash.Models
 {
     public class Profiling
     {
-        ISession _Session;
-        public const string SettingName = "Profiling";
+        public Profiling(bool enabled) => Enabled = enabled;
 
-        public Profiling(ISession session) => _Session = session;
-
-        public bool IsEnabled => _Session.GetString(SettingName).ToBool();
+        public bool Enabled { get; set; }
     }
 }

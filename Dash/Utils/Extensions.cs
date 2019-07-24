@@ -667,14 +667,14 @@ namespace Dash
         /// </summary>
         /// <param name="httpContext">Current request context.</param>
         /// <returns>True if user enabled help, else false.</returns>
-        public static bool WantsHelp(this HttpContext httpContext) => httpContext.Session.GetString(Help.SettingName).ToBool();
+        public static bool WantsHelp(this HttpContext httpContext) => httpContext.User.HasClaim(CustomClaimTypes.ContextHelp, "true");
 
         /// <summary>
         /// Check if user has profiler enabled.
         /// </summary>
         /// <param name="httpContext">Current request context.</param>
         /// <returns>True if user enabled help, else false.</returns>
-        public static bool WantsProfiling(this HttpContext httpContext) => httpContext.Session.GetString(Profiling.SettingName).ToBool();
+        public static bool WantsProfiling(this HttpContext httpContext) => httpContext.User.HasClaim(CustomClaimTypes.Profiling, "true");
 
         /// <summary>
         /// Get the week of the year for a date.

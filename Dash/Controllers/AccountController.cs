@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Linq;
+using System.Security.Claims;
 using Dash.Configuration;
 using Dash.Models;
 using Dash.Resources;
@@ -17,6 +18,24 @@ namespace Dash.Controllers
     [Pjax]
     public class AccountController : BaseController
     {
+        void AddClaim(string claimType)
+        {
+            var identity = User.Identity as ClaimsIdentity;
+            var claim = GetClaim(claimType);
+            if (claim == null)
+                identity.AddClaim(new Claim(claimType, "true"));
+        }
+
+        Claim GetClaim(string claimType) => (User.Identity as ClaimsIdentity).Claims.FirstOrDefault(x => x.Type == claimType);
+
+        void RemoveClaim(string claimType)
+        {
+            var identity = User.Identity as ClaimsIdentity;
+            var claim = GetClaim(claimType);
+            if (claim != null)
+                identity.RemoveClaim(claim);
+        }
+
         public AccountController(IDbContext dbContext, IAppConfiguration appConfig) : base(dbContext, appConfig) { }
 
         [HttpGet]
@@ -116,15 +135,25 @@ namespace Dash.Controllers
         [HttpGet, Authorize, ParentAction("UpdateAccount")]
         public IActionResult ToggleContextHelp()
         {
-            HttpContext.Session.SetString(Help.SettingName, (!HttpContext.Session.GetString(Help.SettingName).ToBool()).ToString());
-            return View("ToggleContextHelp", new Help(HttpContext.Session));
+            var claim = GetClaim(CustomClaimTypes.ContextHelp);
+            var wantsHelp = !(claim != null);
+            if (wantsHelp)
+                AddClaim(CustomClaimTypes.ContextHelp);
+            else
+                RemoveClaim(CustomClaimTypes.ContextHelp);
+            return View("ToggleContextHelp", new Help(wantsHelp));
         }
 
         [HttpGet, Authorize, ParentAction("UpdateAccount")]
         public IActionResult ToggleProfiling()
         {
-            HttpContext.Session.SetString(Profiling.SettingName, (!HttpContext.Session.GetString(Profiling.SettingName).ToBool()).ToString());
-            return View("ToggleProfiling", new Profiling(HttpContext.Session));
+            var claim = GetClaim(CustomClaimTypes.Profiling);
+            var wantsProfiling = !(claim != null);
+            if (wantsProfiling)
+                AddClaim(CustomClaimTypes.Profiling);
+            else
+                RemoveClaim(CustomClaimTypes.Profiling);
+            return View("ToggleProfiling", new Profiling(wantsProfiling));
         }
 
         [HttpGet]
