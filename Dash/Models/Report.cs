@@ -341,6 +341,7 @@ namespace Dash.Models
                     DbContext.SaveMany(this, ReportColumn);
                     DbContext.SaveMany(this, ReportFilter);
                     DbContext.SaveMany(this, ReportShare);
+                    DbContext.SaveMany(this, ReportGroup);
                 }
             });
 
