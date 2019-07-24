@@ -318,6 +318,13 @@ namespace Dash
         }
 
         /// <summary>
+        /// Get the session ID from the claims.
+        /// </summary>
+        /// <param name="claimsPrincipal">Claims principal for user.</param>
+        /// <returns>SessionId if available, else null.</returns>
+        public static string SessionId(this ClaimsPrincipal claimsPrincipal) => claimsPrincipal?.Claims.FirstOrDefault(x => x.Type == CustomClaimTypes.SessionId)?.Value;
+
+        /// <summary>
         /// Get the start time of the hour for the date.
         /// </summary>
         /// <param name="dt">Date to get value for.</param>

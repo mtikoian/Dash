@@ -279,4 +279,7 @@
   <data name="StartTyping" xml:space="preserve">
     <value>Start typing to search...</value>
   </data>
+  <data name="ErrorSessionInvalid" xml:space="preserve">
+    <value>This session is no longer valid because the user logged in on another device.</value>
+  </data>
 </root>

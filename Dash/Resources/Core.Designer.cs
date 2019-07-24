@@ -268,6 +268,15 @@ namespace Dash.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This session is no longer valid because the user logged in on another device..
+        /// </summary>
+        public static string ErrorSessionInvalid {
+            get {
+                return ResourceManager.GetString("ErrorSessionInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You must select a user or a role..
         /// </summary>
         public static string ErrorUserOrRole {

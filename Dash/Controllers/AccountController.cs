@@ -132,6 +132,9 @@ namespace Dash.Controllers
             return View("Login", new LogOn());
         }
 
+        [HttpGet]
+        public IActionResult SessionInvalid() => Error(Core.ErrorSessionInvalid);
+
         [HttpGet, Authorize, ParentAction("UpdateAccount")]
         public IActionResult ToggleContextHelp()
         {

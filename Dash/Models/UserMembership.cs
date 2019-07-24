@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.Claims;
 using Dash.Resources;
+using Dash.Utils;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
@@ -30,6 +31,7 @@ namespace Dash.Models
         public string Password { get; set; }
         public string ResetHash { get; set; }
         public string Salt { get; set; }
+        public string SessionId { get; set; }
         public string UserName { get; set; }
 
         public string CreateHash()
@@ -41,13 +43,14 @@ namespace Dash.Models
 
         public void DoLogOn(IDbContext dbContext, HttpContext httpContext)
         {
+            var sessionId = Guid.NewGuid().ToString();
             dbContext.Execute("UserLoginAttemptsSave", new {
-                Id = Id, LoginAttempts = 0, DateUnlocks = DateTimeOffset.MinValue
+                Id = Id, LoginAttempts = 0, DateUnlocks = DateTimeOffset.MinValue, SessionId = sessionId
             });
-
             var claims = new List<Claim> {
                 new Claim(ClaimTypes.Name, UserName),
                 new Claim(CustomClaimTypes.UserId, Id.ToString()),
+                new Claim(CustomClaimTypes.SessionId, sessionId)
             };
             claims.AddRange(dbContext.GetAll<UserClaim>(new { Id })
                 .Select(x => new Claim(ClaimTypes.Role, $"{x.ControllerName}.{x.ActionName}".ToLower())));

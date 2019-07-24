@@ -10,6 +10,7 @@
     [Salt]              NVARCHAR (500)     NULL,
     [ResetHash]         NVARCHAR (500)     NULL,
     [DateReset]         DATETIMEOFFSET (7) NULL,
+    [SessionId]         VARCHAR(50)        NULL, 
     [LoginHash]         NVARCHAR(50)       NULL, 
     [DateLoginWindow]   DATETIMEOFFSET     NULL, 
     [LoginAttempts]     INT                NULL, 
