@@ -659,8 +659,8 @@ namespace Dash
         /// Get the user ID from the claims.
         /// </summary>
         /// <param name="claimsPrincipal">Claims principal for user.</param>
-        /// <returns>UserID if available, else null.</returns>
-        public static int UserId(this ClaimsPrincipal claimsPrincipal) => claimsPrincipal?.Claims.FirstOrDefault(x => x.Type == ClaimTypes.PrimarySid)?.Value.ToInt() ?? 0;
+        /// <returns>UserId if available, else null.</returns>
+        public static int UserId(this ClaimsPrincipal claimsPrincipal) => claimsPrincipal?.Claims.FirstOrDefault(x => x.Type == CustomClaimTypes.UserId)?.Value.ToInt() ?? 0;
 
         /// <summary>
         /// Check if user has help enabled.

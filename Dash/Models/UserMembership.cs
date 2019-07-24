@@ -47,7 +47,7 @@ namespace Dash.Models
 
             var claims = new List<Claim> {
                 new Claim(ClaimTypes.Name, UserName),
-                new Claim(ClaimTypes.PrimarySid, Id.ToString()),
+                new Claim(CustomClaimTypes.UserId, Id.ToString()),
             };
             claims.AddRange(dbContext.GetAll<UserClaim>(new { Id })
                 .Select(x => new Claim(ClaimTypes.Role, $"{x.ControllerName}.{x.ActionName}".ToLower())));
