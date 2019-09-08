@@ -301,7 +301,7 @@ namespace Dash.Models
             // iterate through all the report filters we have
             if (_Report.ReportFilter != null && _Report.ReportFilter.Count > 0)
             {
-                _Report.ReportFilter.Where(x => DatasetColumns.ContainsKey(x.ColumnId)).Each(x => {
+                _Report.ReportFilter.Where(x => DatasetColumns.ContainsKey(x.ColumnId)).OrderBy(x => x.DisplayOrder).Each(x => {
                     var column = DatasetColumns[x.ColumnId];
 
                     if (column.IsParam)
