@@ -1,4 +1,4 @@
-﻿//using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -26,6 +26,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Polly;
 using Serilog;
 
 namespace Dash
@@ -71,6 +72,10 @@ namespace Dash
         public static string AntiforgeryCookieName = ".Dash.AntiForgery";
         public static string AuthCookieName = ".Dash.Auth";
         public static string CultureCookieName = ".Dash.Culture";
+
+        public static string TeamsClient = "Dash.Teams";
+        public static int TeamsExceptionBeforeBreak = 10;
+        public static int TeamsBreakMinutes = 10;
 
         public Startup(IConfiguration configuration) => Configuration = configuration;
 
@@ -260,7 +265,7 @@ namespace Dash
                 options.UserIdProvider = request => MiniProfilerUser(request);
             });
 
-            services.AddHttpClient();
+            services.AddHttpClient(TeamsClient).AddTransientHttpErrorPolicy(builder => builder.CircuitBreakerAsync(TeamsExceptionBeforeBreak, TimeSpan.FromMinutes(TeamsBreakMinutes)));
         }
     }
 }

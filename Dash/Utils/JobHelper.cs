@@ -57,13 +57,12 @@ namespace Dash
                     recipients.Each(x => emailMessage.To.Add(new MailboxAddress(x)));
                     emailMessage.Subject = subject;
 
-                    var builder = new BodyBuilder();
                     var export = new ExportData { Report = alert.Report, AppConfig = _AppConfig, FileName = $"{alert.Name} {DateTime.Now.Ticks}" };
+                    var builder = new BodyBuilder { TextBody = "See attached file." };
                     builder.Attachments.Add(export.FormattedFileName, export.Stream());
-                    // @todo better body
-                    builder.TextBody = "See attached file.";
                     emailMessage.Body = builder.ToMessageBody();
 
+                    // @todo add in Polly circuitbreaker
                     using (var client = new SmtpClient())
                     {
                         client.ConnectAsync(_AppConfig.Mail.Smtp.Host, _AppConfig.Mail.Smtp.Port, SecureSocketOptions.None);
@@ -76,7 +75,8 @@ namespace Dash
 
                 if (!alert.SendToWebhook.IsEmpty())
                 {
-                    var res = _ClientFactory.CreateClient().PostAsync(alert.SendToWebhook, new StringContent(JSON.Serialize(new { Text = subject }))).Result;
+                    // named client will handle circuit breaker logic
+                    var res = _ClientFactory.CreateClient(Startup.TeamsClient).PostAsync(alert.SendToWebhook, new StringContent(JSON.Serialize(new { Text = subject }))).Result;
                     if (!res.IsSuccessStatusCode)
                         throw new Exception($"Error sending to webhook: {res.StatusCode}: {res.Content.ReadAsStringAsync().Result}");
                 }
