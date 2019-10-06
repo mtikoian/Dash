@@ -11,8 +11,7 @@ namespace Dash.Models
 {
     public class QueryBuilder
     {
-        static Regex CsvRegex = new Regex(@"(?:^|(,\s?))(""(?:[^""]+|"""")*""|[^(,\s?)]*)", RegexOptions.Compiled);
-
+        static Regex _CsvRegex = new Regex(@"(?:^|(,\s?))(""(?:[^""]+|"""")*""|[^(,\s?)]*)", RegexOptions.Compiled, TimeSpan.FromMilliseconds(250));
         readonly bool _IsChart;
         ChartRange _ChartRange;
         Database _Database;
@@ -393,7 +392,7 @@ namespace Dash.Models
         {
             if (value.Substring(0, 1) == "[")
                 return JSON.Deserialize<List<string>>(value)?.Select(x => x.Trim()).Select(x => $"'{EscapeString(x)}'").Join();
-            return CsvRegex.Matches(value).Cast<Match>().Select(x => x.Value.TrimStart(',').Trim().TrimStart('"').TrimEnd('"')).Select(x => $"'{EscapeString(x)}'").Join();
+            return _CsvRegex.Matches(value).Cast<Match>().Select(x => x.Value.TrimStart(',').Trim().TrimStart('"').TrimEnd('"')).Select(x => $"'{EscapeString(x)}'").Join();
         }
 
         /// <summary>

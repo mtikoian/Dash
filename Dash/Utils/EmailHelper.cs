@@ -7,6 +7,10 @@ namespace Dash.Utils
     public class EmailHelper
     {
         bool _Invalid = false;
+        static Regex _DomainRegex = new Regex(@"(@)(.+)$",  RegexOptions.Compiled, TimeSpan.FromMilliseconds(250));
+
+        static Regex _EmailRegex = new Regex(@"^(?("")("".+?(?<!\\)""@)|(([0-9a-z]((\.(?!\.))|[-!#\$%&'\*\+/=\?\^`\{\}\|~\w])*)(?<=[0-9a-z])@))(?(\[)(\[(\d{1,3}\.){3}\d{1,3}\])|(([0-9a-z][-0-9a-z]*[0-9a-z]*\.)+[a-z0-9][\-a-z0-9]{0,22}[a-z0-9]))$",
+            RegexOptions.Compiled | RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250));
 
         string DomainMapper(Match match)
         {
@@ -33,7 +37,7 @@ namespace Dash.Utils
             // Use IdnMapping class to convert Unicode domain names.
             try
             {
-                strIn = Regex.Replace(strIn, @"(@)(.+)$", DomainMapper, RegexOptions.None, TimeSpan.FromMilliseconds(250));
+                strIn = _DomainRegex.Replace(strIn, DomainMapper);
             }
             catch (RegexMatchTimeoutException)
             {
@@ -46,10 +50,7 @@ namespace Dash.Utils
             // Return true if strIn is in valid email format.
             try
             {
-                return Regex.IsMatch(strIn,
-                      @"^(?("")("".+?(?<!\\)""@)|(([0-9a-z]((\.(?!\.))|[-!#\$%&'\*\+/=\?\^`\{\}\|~\w])*)(?<=[0-9a-z])@))" +
-                      @"(?(\[)(\[(\d{1,3}\.){3}\d{1,3}\])|(([0-9a-z][-0-9a-z]*[0-9a-z]*\.)+[a-z0-9][\-a-z0-9]{0,22}[a-z0-9]))$",
-                      RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250));
+                return _EmailRegex.IsMatch(strIn);
             }
             catch (RegexMatchTimeoutException)
             {
