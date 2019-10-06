@@ -20,7 +20,7 @@ namespace Dash.Utils
         protected override void LogBlockedRequest(HttpContext httpContext, ClientRequestIdentity identity, RateLimitCounter counter, RateLimitRule rule)
         {
             _Logger.LogWarning("Request {0}:{1} from IP {2} has been blocked, quota {3}/{4} exceeded by {5}. Blocked by rule {6}, TraceIdentifier {7}.",
-                identity.HttpVerb.ToUpper(), identity.Path, identity.ClientIp, rule.Limit, rule.Period, counter.TotalRequests, rule.Endpoint, httpContext.TraceIdentifier);
+                identity.HttpVerb.ToUpper(), identity.Path, identity.ClientIp, rule.Limit, rule.Period, counter.Count, rule.Endpoint, httpContext.TraceIdentifier);
         }
     }
 }
