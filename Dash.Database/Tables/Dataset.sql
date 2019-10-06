@@ -18,3 +18,9 @@
     CONSTRAINT [FK_Dataset_UserUpdated] FOREIGN KEY ([UserUpdated]) REFERENCES [dbo].[User] ([Id])
 );
 
+
+GO
+CREATE NONCLUSTERED INDEX [IX_Dataset_UserCreated]
+    ON [dbo].[Dataset]([UserCreated] ASC);
+
+
